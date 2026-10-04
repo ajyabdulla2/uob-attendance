@@ -1,1 +1,51 @@
-# uob-attendance
+# نظام الحضور والغياب — قسم علوم الحاسوب، جامعة البصرة
+
+تطبيق Flutter (Android و iOS و Web) لتسجيل حضور الطلبة، يعمل على خطة Firebase المجانية (Spark): Authentication + Cloud Firestore فقط.
+
+- المواصفات: [`docs/SPEC.md`](docs/SPEC.md)
+- القرارات التقنية ودليل المطوّر: [`CLAUDE.md`](CLAUDE.md)
+
+## الإعداد لأول مرة
+
+1. **مشروع Firebase** بحساب Google خاص بالقسم (خطة Spark).
+2. **Authentication** → Sign-in method → فعّل **Email/Password**. (اترك «إنشاء الحسابات» مفعّلاً: التدريسي يفعّل حسابه بنفسه بعد أن تضيفه الإدارة.)
+3. **Firestore Database** → أنشئ قاعدة بيانات في وضع الإنتاج.
+4. **ربط التطبيق** (يولّد ملفات المفاتيح، وكلها مستثناة من git):
+   ```bash
+   dart pub global activate flutterfire_cli
+   flutterfire configure --platforms=android,ios,web
+   ```
+5. **نشر قواعد الأمان**:
+   ```bash
+   firebase use --add            # اختر المشروع
+   firebase deploy --only firestore:rules,firestore:indexes
+   ```
+6. **أول مدير عام**: في Firestore Console أنشئ المجموعة `users` ووثيقة معرّفها بريدك **بأحرف صغيرة** وحقولها:
+   | الحقل | النوع | القيمة |
+   | --- | --- | --- |
+   | `email` | string | البريد نفسه (أحرف صغيرة) |
+   | `name` | string | اسمك |
+   | `roles` | array | `superAdmin`, `teacher` |
+   | `stageScopes` | array | فارغة |
+   | `teachingStages` | array | فارغة |
+   | `active` | boolean | `true` |
+   | `departmentId` | string | `cs` |
+
+   ثم في التطبيق: «أول مرة؟ فعّل حسابك» بالبريد نفسه → افتح رسالة التأكيد → «أكّدت بريدي».
+7. من الرئيسية اضغط **«تهيئة الآن»** لإنشاء المراحل الثمان والسنة الدراسية، ثم استورد التدريسيين والمواد والطلبة من **الاستيراد**، واربط التدريسيين من **الربط**.
+
+## التشغيل والتطوير
+
+```bash
+flutter pub get
+flutter run                                   # جهاز Android/iOS أو Chrome
+flutter run --dart-define=USE_FIREBASE_EMULATOR=true   # مع محاكيات Firebase المحلية
+./tool/check_all.sh                           # التحليل + الاختبارات + اختبارات القواعد
+flutter build web --release && firebase deploy --only hosting   # لوحة الويب (اختياري)
+```
+
+لاستعمال قاعدة البيانات المحلية على الويب نفّذ `./tool/build_drift_web.sh` مرة واحدة.
+
+## الخط
+
+خط [Cairo](https://github.com/Gue3bara/Cairo) مضمَّن تحت رخصة SIL Open Font License 1.1 (`assets/fonts/cairo/OFL.txt`).

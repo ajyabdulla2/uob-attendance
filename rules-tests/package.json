@@ -1,0 +1,14 @@
+{
+  "name": "uob-attendance-rules-tests",
+  "private": true,
+  "type": "module",
+  "description": "Firestore security rules tests (run against the Firebase Emulator).",
+  "scripts": {
+    "test": "node --test --test-concurrency=1 \"test/**/*.test.js\"",
+    "test:emulator": "cd .. && firebase emulators:exec --only firestore --project demo-uob-attendance \"npm --prefix rules-tests test\""
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "firebase": "^12.19.0"
+  }
+}

@@ -1,0 +1,76 @@
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../features/assignments/presentation/assignments_screen.dart';
+import '../../features/auth/application/auth_providers.dart';
+import '../../features/auth/presentation/login_screen.dart';
+import '../../features/auth/presentation/no_access_screen.dart';
+import '../../features/auth/presentation/splash_screen.dart';
+import '../../features/auth/presentation/verify_email_screen.dart';
+import '../../features/home/presentation/app_shell.dart';
+import '../../features/home/presentation/home_screen.dart';
+import '../../features/import/presentation/import_screen.dart';
+import '../../features/settings/presentation/profile_screen.dart';
+
+abstract final class Routes {
+  static const splash = '/splash';
+  static const login = '/login';
+  static const verifyEmail = '/verify-email';
+  static const noAccess = '/no-access';
+  static const home = '/home';
+  static const import = '/import';
+  static const assignments = '/assignments';
+  static const profile = '/profile';
+
+  static const _gates = {splash, login, verifyEmail, noAccess};
+}
+
+/// Pure redirect logic (unit-tested): where should [location] go for [status]?
+/// Returns null to stay.
+@visibleForTesting
+String? redirectFor(AuthStatus status, String location) {
+  String? goTo(String target) => location == target ? null : target;
+  return switch (status) {
+    AuthLoading() => goTo(Routes.splash),
+    SignedOut() => goTo(Routes.login),
+    NeedsVerification() => goTo(Routes.verifyEmail),
+    NotProvisioned() || Suspended() || ProfileLoadFailed() => goTo(Routes.noAccess),
+    SignedIn(:final permissions) => switch (location) {
+        _ when Routes._gates.contains(location) => Routes.home,
+        _ when location.startsWith(Routes.import) && !permissions.canImportAnything => Routes.home,
+        _ when location.startsWith(Routes.assignments) && !permissions.canManageAssignments => Routes.home,
+        _ => null,
+      },
+  };
+}
+
+final routerProvider = Provider<GoRouter>((ref) {
+  final refresh = ValueNotifier<int>(0);
+  ref.listen(authStatusProvider, (_, _) => refresh.value++);
+  ref.onDispose(refresh.dispose);
+
+  NoTransitionPage<void> page(GoRouterState state, Widget child) =>
+      NoTransitionPage(key: state.pageKey, child: child);
+
+  return GoRouter(
+    initialLocation: Routes.home,
+    refreshListenable: refresh,
+    redirect: (context, state) => redirectFor(ref.read(authStatusProvider), state.matchedLocation),
+    routes: [
+      GoRoute(path: Routes.splash, builder: (_, _) => const SplashScreen()),
+      GoRoute(path: Routes.login, builder: (_, _) => const LoginScreen()),
+      GoRoute(path: Routes.verifyEmail, builder: (_, _) => const VerifyEmailScreen()),
+      GoRoute(path: Routes.noAccess, builder: (_, _) => const NoAccessScreen()),
+      ShellRoute(
+        builder: (context, state, child) => AppShell(location: state.matchedLocation, child: child),
+        routes: [
+          GoRoute(path: Routes.home, pageBuilder: (_, s) => page(s, const HomeScreen())),
+          GoRoute(path: Routes.import, pageBuilder: (_, s) => page(s, const ImportScreen())),
+          GoRoute(path: Routes.assignments, pageBuilder: (_, s) => page(s, const AssignmentsScreen())),
+          GoRoute(path: Routes.profile, pageBuilder: (_, s) => page(s, const ProfileScreen())),
+        ],
+      ),
+    ],
+  );
+});

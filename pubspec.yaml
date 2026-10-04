@@ -1,0 +1,72 @@
+name: uob_attendance
+description: "نظام حضور طلبة قسم علوم الحاسوب - كلية التربية للعلوم الصرفة - جامعة البصرة"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^3.4.3
+
+  # Local database (offline-first store + upload outbox)
+  drift: ^2.35.1
+  drift_flutter: ^0.3.1
+
+  # Firebase (Spark plan: Auth + Firestore only — no Functions, no Storage)
+  firebase_core: ^4.15.0
+  firebase_auth: ^6.7.0
+  cloud_firestore: ^6.10.0
+
+  # Import / export
+  excel: ^4.0.6
+  csv: ^8.0.0
+  file_picker: ^13.1.0
+
+  # Navigation, prefs, i18n
+  go_router: ^18.0.2
+  shared_preferences: ^2.5.5
+  intl: ^0.20.3
+  path_provider: ^2.1.6
+  cupertino_icons: ^2.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  drift_dev: ^2.35.1
+  build_runner: ^2.16.1
+  fake_cloud_firestore: ^4.3.0
+  firebase_auth_mocks: ^0.15.2
+  mock_exceptions: ^0.8.2
+
+hooks:
+  user_defines:
+    sqlite3:
+      # Linux is not a shipping target of this app; it is only used to run
+      # `flutter test` on dev machines / CI. Using the system libsqlite3 there
+      # avoids downloading prebuilt binaries from GitHub releases (blocked in
+      # the cloud dev environment). Android/iOS keep the package defaults.
+      source:
+        linux: system
+        default: sqlite3
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  fonts:
+    - family: Cairo
+      fonts:
+        - asset: assets/fonts/cairo/Cairo-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/cairo/Cairo-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/cairo/Cairo-Bold.ttf
+          weight: 700
