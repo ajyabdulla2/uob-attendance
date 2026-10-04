@@ -28,6 +28,8 @@ source tool/cloud_setup.sh   # يثبّت Flutter 3.47.6 في /opt/flutter-sdk �
   - `dl.google.com` → لا Android SDK، فلا يمكن بناء APK هنا.
   - `www.gstatic.com` → حزمة Firebase JS للويب لا تُحمَّل، فلا يمكن تشغيل تطبيق الويب مع Firebase داخل الحاوية (البناء نفسه ينجح).
   - `firebase-public.firebaseio.com` → تحذير MOTD من firebase CLI فقط، غير مؤثر.
+  - `*.shorebird.dev` → لا يمكن تثبيت Shorebird أو اختباره هنا (يعمل على جهازك أو في GitHub Actions).
+- البناء الذي لا يمكن هنا (APK) يتم على **GitHub Actions**؛ بعد الدفع راقب النتيجة بأدوات GitHub MCP (`actions_list`, `get_job_logs`).
 - المسموح: `pub.dev`، `registry.npmjs.org`، `storage.googleapis.com` (Flutter + jar المحاكي)، `fonts.googleapis.com`/`fonts.gstatic.com`، `raw.githubusercontent.com`، Maven.
 - **sqlite3 / Drift في الاختبارات**: `pubspec.yaml` يضبط `hooks.user_defines.sqlite3.source` على `linux: system` (يستعمل `libsqlite3.so` من النظام) و`default: sqlite3` لبقية المنصات. Linux ليس منصة شحن للتطبيق، فهذا لا يمس Android/iOS.
 - Java 21 و`firebase` CLI (15.x) مثبّتان. المحاكي: `firebase emulators:exec --only firestore --project demo-uob-attendance "npm --prefix rules-tests test"`.
@@ -45,6 +47,7 @@ source tool/cloud_setup.sh   # يثبّت Flutter 3.47.6 في /opt/flutter-sdk �
 | توليد الترجمة بعد تعديل ARB | `flutter gen-l10n` (الملفات المولَّدة مُلتزَمة) |
 | بناء الويب | `flutter build web --release` |
 | ملفات Drift للويب | `./tool/build_drift_web.sh` (يحتاج github.com — نفّذه على جهاز المطوّر) |
+| فحص سير عمل GitHub | `go install github.com/rhysd/actionlint/cmd/actionlint@latest && ~/go/bin/actionlint` |
 
 ---
 
@@ -140,6 +143,60 @@ tool/            سكربتات الإعداد والفحص
 
 ### قرارات القسم المعلّقة (القيم الحالية افتراضية فقط)
 العتبات 5/10/15٪، `weeksPerSemester = 15`، `lecturesPerUnitPerWeek = 1`، `lockHours = 48`، الإجازات لا تُحتسب، نسبة واحدة مدمجة للنظري والعملي، عدم حصر البريد بنطاق `uobasrah.edu.iq` (موجود في `AppConfig` للإشارة فقط).
+
+---
+
+## البناء والنشر والتحديثات
+
+دروس مشروع سابق (Expo + EAS) مطبّقة على Flutter:
+
+| في Expo | المقابل هنا | الحالة |
+| --- | --- | --- |
+| EAS Build (بناء APK على خوادم سحابية) | **GitHub Actions** `.github/workflows/android.yml` على خوادم GitHub (فيها Android SDK) | ✅ جاهز |
+| EAS Update (تحديث JS بلا بناء جديد) | **Shorebird** (`shorebird.dev`) code push لكود Dart | 📝 موثّق، يحتاج حساباً (محجوب هنا) |
+| رسالة «تحديث جديد جاهز» | `config/app` + `UpdateGate` (لافتة أو شاشة إلزامية مع رابط التنزيل) | ✅ جاهز |
+| EAS Submit | iOS: `flutter build ipa` على macOS (GitHub macOS runner أو Codemagic) ثم TestFlight | 📝 يحتاج حساب Apple (99$ سنوياً) |
+| Firebase Hosting (نسخة الحاسوب + صفحة الخصوصية) | `firebase.json` + `web/privacy.html` (تُخدَم في `/privacy.html`) | ✅ جاهز (الصفحة مسودة) |
+| «اختبر القواعد قبل النشر» | `ci.yml` في كل push، و`deploy.yml` لا ينشر القواعد إلا بعد نجاح اختبارات المحاكي | ✅ جاهز |
+| Expo Push | FCM يحتاج خادماً للإرسال (غير متاح في Spark) → إشعارات داخل التطبيق من Firestore، وإشعارات محلية على الجهاز (مثل «سجلات غير مرفوعة منذ 24 ساعة») في المرحلة 2 | 📝 قرار |
+
+### قاعدة رقم الإصدار (مقابل runtimeVersion في Expo)
+`pubspec.yaml`: `version: X.Y.Z+N`. الجزء `N` (versionCode) يضعه CI من `github.run_number` ويجب أن يزيد دائماً.
+- **تغيير أصلي (native)**: إضافة/ترقية حزمة فيها كود Android/iOS (مثل `package_info_plus`, `url_launcher`, Drift/sqlite)، تعديل `android/` أو `ios/`، ترقية Flutter → ارفع `X.Y.Z`، ثم `git tag vX.Y.Z && git push --tags` → `android.yml` يبني APK موقّعاً ويرفقه بـ GitHub Release → حدّث `config/app.latestVersion` (و`minVersion` إن لزم إيقاف النسخ القديمة).
+- **تغيير Dart فقط** (شاشات/منطق): مع Shorebird يكفي `shorebird patch android`؛ بدونه يُعامل كتغيير أصلي (APK جديد).
+- **الويب**: لا تحديث على الأجهزة؛ `Deploy Firebase` (hosting) فيصل للجميع فوراً، لذلك `UpdateGate` معطّل على الويب.
+- غيّرت القواعد أو شكل البيانات بطريقة تكسر النسخ القديمة؟ ارفع `minVersion` في `config/app` بعد توزيع النسخة الجديدة.
+
+### التوقيع (حرج)
+- كل APK يجب أن يُوقَّع **بالمفتاح نفسه**، وإلا رفض Android تثبيته فوق السابق واضطر التدريسي لحذف التطبيق → **ضياع الحضور غير المرفوع**.
+- `android/app/build.gradle.kts` يقرأ `android/key.properties` (مُهمَل في git)؛ بدونه يوقّع بمفتاح debug للتجربة فقط. `android.yml` يرفض إصدار tag بلا مفتاح.
+- أسرار GitHub (Settings → Secrets and variables → Actions):
+
+| الاسم | النوع | المحتوى |
+| --- | --- | --- |
+| `ANDROID_KEYSTORE_B64` | secret | `base64 -w0 upload-keystore.jks` |
+| `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD` | secret | من إنشاء المفتاح |
+| `FIREBASE_OPTIONS_DART_B64` | secret | `base64 -w0 lib/firebase_options.dart` |
+| `GOOGLE_SERVICES_JSON_B64` | secret | `base64 -w0 android/app/google-services.json` (إن وُجد) |
+| `FIREBASE_SERVICE_ACCOUNT_JSON` | secret | حساب خدمة بصلاحيات Rules Admin + Datastore Index Admin + Hosting Admin |
+| `FIREBASE_PROJECT_ID` | variable | معرّف مشروع Firebase |
+
+### سير العمل (`.github/workflows/`)
+- `ci.yml` (كل push/PR): analyze + الكود المولَّد محدَّث + `flutter test` + بناء الويب، و`rules-tests.yml` (قابل لإعادة الاستعمال) على المحاكي.
+- `android.yml`: push يمس `android/` أو `pubspec` (فحص بناء)، أو تشغيل يدوي، أو tag `v*` (إصدار). الـ tag يجب أن يطابق `version` في pubspec.
+- `deploy.yml` (يدوي، بيئة `production`): اختبارات القواعد ← نشر القواعد/الفهارس و/أو الويب.
+- `workflow_dispatch` لا يظهر إلا بعد دمج الملف في الفرع الافتراضي.
+
+### Shorebird (عند اعتماده)
+1. `shorebird login` ثم `shorebird init` (يضيف `shorebird.yaml` بمعرّف التطبيق — يُلتزَم في المستودع، ليس سراً).
+2. تحقّق أن نسخة Flutter مدعومة: `shorebird flutter versions list` (وإلا استعمل `--flutter-version`).
+3. الإصدار الأساسي: `shorebird release android --artifact=apk` بدل `flutter build apk` (عدّل `android.yml` حينها، مع `SHOREBIRD_TOKEN` وإجراء `shorebirdtech/setup-shorebird`).
+4. التعديلات: `shorebird patch android` — جرّبها أولاً على `--track=staging` (مقابل قناة preview) ثم stable.
+- الرقعة تصل فقط للنسخ بنفس رقم الإصدار، ولا تغيّر كوداً أصلياً — القاعدة نفسها أعلاه. الخطة المجانية: 5,000 تثبيت رقعة شهرياً.
+- ترحيلات مخطط Drift كود Dart (قابلة للترقيع) لكن اختبرها جيداً؛ القاعدة المحلية تحمل بيانات غير مرفوعة.
+
+### `config/app` (إضافة على جدول SPEC)
+`latestVersion`، `minVersion` (نصوص `X.Y.Z`)، `androidUrl`، `iosUrl`، `notes`. يقرؤها كل حساب نشط، ويكتبها المدراء فقط. تُضبط حالياً من Firebase Console.
 
 ---
 

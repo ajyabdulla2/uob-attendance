@@ -107,3 +107,18 @@ describe('audit log is append-only', () => {
     await assertFails(getDoc(doc(as(env, T1), 'auditLog', 'a1')));
   });
 });
+
+describe('config (app update policy)', () => {
+  const policy = { latestVersion: '1.1.0', minVersion: '1.0.0', androidUrl: 'https://example.org/app.apk' };
+
+  it('admins publish versions; everyone active reads them', async () => {
+    await assertSucceeds(setDoc(doc(as(env, DEPUTY), 'config', 'app'), policy));
+    await assertSucceeds(getDoc(doc(as(env, T1), 'config', 'app')));
+  });
+
+  it('stage managers and teachers cannot change it; strangers cannot read it', async () => {
+    await assertFails(setDoc(doc(as(env, SM3), 'config', 'app'), policy));
+    await assertFails(setDoc(doc(as(env, T1), 'config', 'app'), { ...policy, minVersion: '0.0.1' }));
+    await assertFails(getDoc(doc(env.unauthenticatedContext().firestore(), 'config', 'app')));
+  });
+});

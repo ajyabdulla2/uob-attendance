@@ -1,0 +1,135 @@
+# Builds the Android APK on GitHub's servers (no local Android SDK needed).
+#
+#   * push touching native parts (android/, pubspec) → build check + downloadable artifact
+#   * manual run (Actions → Android APK → Run workflow) → APK artifact
+#   * tag vX.Y.Z (must equal `version:` in pubspec.yaml) → signed APK attached
+#     to a GitHub Release, ready to distribute.
+#
+# Secrets (Settings → Secrets and variables → Actions), see CLAUDE.md:
+#   FIREBASE_OPTIONS_DART_B64   base64 of lib/firebase_options.dart
+#   GOOGLE_SERVICES_JSON_B64    base64 of android/app/google-services.json (if flutterfire created it)
+#   ANDROID_KEYSTORE_B64        base64 of the upload keystore (.jks)
+#   ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
+name: Android APK
+
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+    # Path filters apply to branch pushes only; tag pushes always build.
+    paths:
+      - 'android/**'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - '.github/workflows/android.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: 3.47.6
+
+jobs:
+  apk:
+    name: Build APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write # create the GitHub Release on tags
+    env:
+      IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Tag must match pubspec version
+        if: env.IS_RELEASE == 'true'
+        run: |
+          version=$(sed -n 's/^version: *\([^+]*\).*/\1/p' pubspec.yaml)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match pubspec version $version"
+            exit 1
+          fi
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Firebase configuration from secrets
+        env:
+          FIREBASE_OPTIONS_DART_B64: ${{ secrets.FIREBASE_OPTIONS_DART_B64 }}
+          GOOGLE_SERVICES_JSON_B64: ${{ secrets.GOOGLE_SERVICES_JSON_B64 }}
+        run: |
+          if [ -n "$FIREBASE_OPTIONS_DART_B64" ]; then
+            echo "$FIREBASE_OPTIONS_DART_B64" | base64 -d > lib/firebase_options.dart
+          elif [ "$IS_RELEASE" = "true" ]; then
+            echo "::error::FIREBASE_OPTIONS_DART_B64 is required for a release"
+            exit 1
+          else
+            echo "::warning::No FIREBASE_OPTIONS_DART_B64 secret: this APK only shows the configuration screen."
+            ./tool/ensure_firebase_options.sh
+          fi
+          if [ -n "$GOOGLE_SERVICES_JSON_B64" ]; then
+            echo "$GOOGLE_SERVICES_JSON_B64" | base64 -d > android/app/google-services.json
+          fi
+
+      - name: Upload keystore from secrets
+        env:
+          ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -n "$ANDROID_KEYSTORE_B64" ]; then
+            echo "$ANDROID_KEYSTORE_B64" | base64 -d > android/app/upload-keystore.jks
+            {
+              echo "storeFile=upload-keystore.jks"
+              echo "storePassword=$ANDROID_KEYSTORE_PASSWORD"
+              echo "keyAlias=$ANDROID_KEY_ALIAS"
+              echo "keyPassword=$ANDROID_KEY_PASSWORD"
+            } > android/key.properties
+          elif [ "$IS_RELEASE" = "true" ]; then
+            # A debug-signed APK cannot update a release-signed install.
+            echo "::error::ANDROID_KEYSTORE_B64 is required for a release"
+            exit 1
+          else
+            echo "::warning::No keystore secret: APK is signed with a throw-away debug key (testing only)."
+          fi
+
+      - run: flutter pub get
+
+      # versionCode must grow with every APK, or Android refuses the update.
+      - name: Build release APK
+        run: flutter build apk --release --build-number=${{ github.run_number }}
+
+      - name: Name the APK
+        id: apk
+        run: |
+          version=$(sed -n 's/^version: *\([^+]*\).*/\1/p' pubspec.yaml)
+          name="uob-attendance-${version}-${{ github.run_number }}.apk"
+          cp build/app/outputs/flutter-apk/app-release.apk "$name"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: ${{ steps.apk.outputs.name }}
+          path: ${{ steps.apk.outputs.name }}
+          retention-days: 30
+
+      - name: GitHub Release
+        if: env.IS_RELEASE == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "${{ steps.apk.outputs.name }}" \
+            --title "$GITHUB_REF_NAME" \
+            --notes "APK للأندرويد (build ${{ github.run_number }}). ثبّته فوق النسخة السابقة؛ البيانات المحلية تبقى." \
+            --verify-tag

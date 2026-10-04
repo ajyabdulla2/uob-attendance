@@ -219,5 +219,12 @@
   "assignmentsNoTeachers": "No teachers. Import teachers first.",
   "assignmentsNoStudents": "No attending students in this stage to distribute.",
   "assignmentsAlreadyAssigned": "This assignment already exists.",
-  "assignmentsSearchTeacher": "Search by teacher name or e-mail"
+  "assignmentsSearchTeacher": "Search by teacher name or e-mail",
+  "updateAvailable": "A new version ({version}) is available",
+  "updateDownload": "Download",
+  "updateLater": "Later",
+  "updateRequiredTitle": "Update required",
+  "updateRequiredBody": "The installed version ({installed}) is no longer supported. Install the new version over it; your local data is kept.",
+  "updateNoLink": "No download link is set yet; contact the department.",
+  "updateOpenFailed": "Could not open the link: {url}"
 }

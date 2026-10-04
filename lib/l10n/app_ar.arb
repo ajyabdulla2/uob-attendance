@@ -563,5 +563,33 @@
   "assignmentsNoTeachers": "لا يوجد تدريسيون. استورد التدريسيين أولاً.",
   "assignmentsNoStudents": "لا يوجد طلبة مستمرون في هذه المرحلة لتوزيعهم.",
   "assignmentsAlreadyAssigned": "هذا الإسناد موجود مسبقاً.",
-  "assignmentsSearchTeacher": "ابحث باسم التدريسي أو بريده"
+  "assignmentsSearchTeacher": "ابحث باسم التدريسي أو بريده",
+  "updateAvailable": "إصدار جديد ({version}) متاح",
+  "@updateAvailable": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updateDownload": "تنزيل",
+  "updateLater": "لاحقاً",
+  "updateRequiredTitle": "يجب تحديث التطبيق",
+  "updateRequiredBody": "الإصدار المثبّت ({installed}) لم يعد مدعوماً. ثبّت الإصدار الجديد فوقه مباشرة، وستبقى بياناتك المحلية كما هي.",
+  "@updateRequiredBody": {
+    "placeholders": {
+      "installed": {
+        "type": "String"
+      }
+    }
+  },
+  "updateNoLink": "رابط التنزيل غير مضبوط بعد؛ راجع إدارة القسم.",
+  "updateOpenFailed": "تعذّر فتح الرابط: {url}",
+  "@updateOpenFailed": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  }
 }

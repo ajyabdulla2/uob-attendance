@@ -783,4 +783,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get assignmentsSearchTeacher => 'Search by teacher name or e-mail';
+
+  @override
+  String updateAvailable(String version) {
+    return 'A new version ($version) is available';
+  }
+
+  @override
+  String get updateDownload => 'Download';
+
+  @override
+  String get updateLater => 'Later';
+
+  @override
+  String get updateRequiredTitle => 'Update required';
+
+  @override
+  String updateRequiredBody(String installed) {
+    return 'The installed version ($installed) is no longer supported. Install the new version over it; your local data is kept.';
+  }
+
+  @override
+  String get updateNoLink =>
+      'No download link is set yet; contact the department.';
+
+  @override
+  String updateOpenFailed(String url) {
+    return 'Could not open the link: $url';
+  }
 }

@@ -14,4 +14,7 @@ abstract final class Col {
   static const warningLists = 'warningLists';
   static const editRequests = 'editRequests';
   static const auditLog = 'auditLog';
+
+  /// App-wide settings (`config/app`: published versions + download links).
+  static const config = 'config';
 }

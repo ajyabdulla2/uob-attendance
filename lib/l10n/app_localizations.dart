@@ -1417,6 +1417,48 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'ابحث باسم التدريسي أو بريده'**
   String get assignmentsSearchTeacher;
+
+  /// No description provided for @updateAvailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'إصدار جديد ({version}) متاح'**
+  String updateAvailable(String version);
+
+  /// No description provided for @updateDownload.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنزيل'**
+  String get updateDownload;
+
+  /// No description provided for @updateLater.
+  ///
+  /// In ar, this message translates to:
+  /// **'لاحقاً'**
+  String get updateLater;
+
+  /// No description provided for @updateRequiredTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'يجب تحديث التطبيق'**
+  String get updateRequiredTitle;
+
+  /// No description provided for @updateRequiredBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإصدار المثبّت ({installed}) لم يعد مدعوماً. ثبّت الإصدار الجديد فوقه مباشرة، وستبقى بياناتك المحلية كما هي.'**
+  String updateRequiredBody(String installed);
+
+  /// No description provided for @updateNoLink.
+  ///
+  /// In ar, this message translates to:
+  /// **'رابط التنزيل غير مضبوط بعد؛ راجع إدارة القسم.'**
+  String get updateNoLink;
+
+  /// No description provided for @updateOpenFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر فتح الرابط: {url}'**
+  String updateOpenFailed(String url);
 }
 
 class _AppLocalizationsDelegate

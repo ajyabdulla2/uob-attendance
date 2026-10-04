@@ -784,4 +784,31 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get assignmentsSearchTeacher => 'ابحث باسم التدريسي أو بريده';
+
+  @override
+  String updateAvailable(String version) {
+    return 'إصدار جديد ($version) متاح';
+  }
+
+  @override
+  String get updateDownload => 'تنزيل';
+
+  @override
+  String get updateLater => 'لاحقاً';
+
+  @override
+  String get updateRequiredTitle => 'يجب تحديث التطبيق';
+
+  @override
+  String updateRequiredBody(String installed) {
+    return 'الإصدار المثبّت ($installed) لم يعد مدعوماً. ثبّت الإصدار الجديد فوقه مباشرة، وستبقى بياناتك المحلية كما هي.';
+  }
+
+  @override
+  String get updateNoLink => 'رابط التنزيل غير مضبوط بعد؛ راجع إدارة القسم.';
+
+  @override
+  String updateOpenFailed(String url) {
+    return 'تعذّر فتح الرابط: $url';
+  }
 }

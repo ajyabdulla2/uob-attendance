@@ -8,6 +8,8 @@ import 'package:uob_attendance/app.dart';
 import 'package:uob_attendance/core/database/database_provider.dart';
 import 'package:uob_attendance/core/firebase/firebase_providers.dart';
 import 'package:uob_attendance/core/theme/app_settings.dart';
+import 'package:uob_attendance/features/app_update/application/app_update_providers.dart';
+import 'package:uob_attendance/features/app_update/domain/app_update_policy.dart';
 import 'package:uob_attendance/features/auth/domain/app_user.dart';
 import 'package:uob_attendance/features/import/application/import_controller.dart';
 import 'package:uob_attendance/features/import/data/import_templates.dart';
@@ -21,11 +23,13 @@ Future<({FakeFirebaseFirestore db, MockFirebaseAuth auth})> pumpApp(
   MockUser? user,
   AppUser? profile,
   Map<String, Object> prefs = const {},
+  Map<String, Object>? appPolicy,
 }) async {
   SharedPreferences.setMockInitialValues(prefs);
   final sharedPrefs = await SharedPreferences.getInstance();
   final db = FakeFirebaseFirestore();
   if (profile != null) await db.doc('users/${profile.id}').set(profile.toMap());
+  if (appPolicy != null) await db.doc('config/app').set(appPolicy);
   final auth = MockFirebaseAuth(signedIn: user != null, mockUser: user);
 
   tester.view.physicalSize = const Size(1200, 1600);
@@ -40,6 +44,7 @@ Future<({FakeFirebaseFirestore db, MockFirebaseAuth auth})> pumpApp(
       // Drift's stream cleanup leaves a zero-length timer that flutter_test
       // flags after disposal; the local DB has its own tests.
       pendingUploadsProvider.overrideWith((ref) => Stream.value(0)),
+      installedVersionProvider.overrideWith((ref) async => const AppVersion(1, 0, 0)),
     ],
     child: const AttendanceApp(),
   ));
@@ -179,6 +184,36 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('لم يُسند النظري بعد.'), findsOneWidget);
       expect(find.text('لا توجد مجاميع عملي بعد.'), findsOneWidget);
+    });
+  });
+
+  group('update notice (config/app)', () {
+    final teacher = MockUser(email: 't@uobasrah.edu.iq', isEmailVerified: true);
+    const profile = AppUser(email: 't@uobasrah.edu.iq', name: 'علي');
+
+    testWidgets('no policy or up to date → no banner', (tester) async {
+      await pumpApp(tester, user: teacher, profile: profile, appPolicy: {'latestVersion': '1.0.0'});
+      expect(find.byKey(const Key('update.banner')), findsNothing);
+      expect(find.text('أهلاً، علي'), findsOneWidget);
+    });
+
+    testWidgets('newer version → dismissible banner above the screen', (tester) async {
+      await pumpApp(tester, user: teacher, profile: profile,
+          appPolicy: {'latestVersion': '1.1.0', 'androidUrl': 'https://example.org/app.apk'});
+      expect(find.byKey(const Key('update.banner')), findsOneWidget);
+      expect(find.textContaining('إصدار جديد'), findsOneWidget);
+      expect(find.text('أهلاً، علي'), findsOneWidget); // still usable
+      await tester.tap(find.text('لاحقاً'));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('update.banner')), findsNothing);
+    });
+
+    testWidgets('below the minimum version → blocking update screen', (tester) async {
+      await pumpApp(tester, user: teacher, profile: profile,
+          appPolicy: {'latestVersion': '2.0.0', 'minVersion': '2.0.0'});
+      expect(find.byKey(const Key('update.required')), findsOneWidget);
+      expect(find.text('يجب تحديث التطبيق'), findsOneWidget);
+      expect(find.text('أهلاً، علي'), findsNothing);
     });
   });
 }

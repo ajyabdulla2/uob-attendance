@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>سياسة الخصوصية — نظام الحضور والغياب</title>
+  <style>
+    /* Cairo is bundled with the Flutter web build (assets/fonts/cairo). */
+    @font-face { font-family: Cairo; src: url("assets/assets/fonts/cairo/Cairo-Regular.ttf"); font-weight: 400; }
+    @font-face { font-family: Cairo; src: url("assets/assets/fonts/cairo/Cairo-Bold.ttf"); font-weight: 700; }
+    :root { --bg: #f7f9fc; --fg: #1b1f24; --muted: #555d68; --card: #ffffff; --accent: #0d3b66; --note: #fff4ce; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #111418; --fg: #e6e9ee; --muted: #a9b1bc; --card: #1b2026; --accent: #9cc4ff; --note: #3d3417; }
+    }
+    body { margin: 0; background: var(--bg); color: var(--fg); font-family: Cairo, "Segoe UI", Tahoma, sans-serif; line-height: 1.9; }
+    main { max-width: 760px; margin: 0 auto; padding: 24px 16px 48px; }
+    h1 { color: var(--accent); font-size: 1.6rem; margin-bottom: 4px; }
+    h2 { color: var(--accent); font-size: 1.15rem; margin-top: 28px; }
+    .sub { color: var(--muted); margin-top: 0; }
+    .note { background: var(--note); border-radius: 10px; padding: 10px 14px; }
+    section { background: var(--card); border-radius: 12px; padding: 4px 18px 12px; margin-top: 16px; }
+    ul { padding-inline-start: 22px; }
+    .ltr { direction: ltr; unicode-bidi: isolate; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>سياسة الخصوصية</h1>
+  <p class="sub">تطبيق «نظام الحضور والغياب» — قسم علوم الحاسوب، كلية التربية للعلوم الصرفة، جامعة البصرة</p>
+  <!-- DRAFT: the department must review and approve this text before publishing it in the stores. -->
+  <p class="note">مسودة بانتظار اعتماد القسم. آخر تحديث: تشرين الأول 2026.</p>
+
+  <section>
+    <h2>الجهة المسؤولة</h2>
+    <p>يُدير التطبيقَ قسمُ علوم الحاسوب في كلية التربية للعلوم الصرفة — جامعة البصرة، ويستعمله منتسبو القسم فقط لتسجيل حضور الطلبة في المحاضرات النظرية ومجاميع العملي.</p>
+  </section>
+
+  <section>
+    <h2>البيانات التي يحفظها التطبيق</h2>
+    <ul>
+      <li><strong>الطلبة:</strong> الاسم الرباعي، الرقم الجامعي، المرحلة، الدراسة (صباحي/مسائي)، الشعبة، الحالة الدراسية، ومجموعة العملي.</li>
+      <li><strong>الحضور:</strong> حالة الطالب في كل محاضرة (حاضر، غائب، متأخر، مُجاز) مع ملاحظة اختيارية، ونِسب الغياب المحسوبة منها.</li>
+      <li><strong>الإجازات:</strong> نوعها وتاريخها ورقم الكتاب أو التقرير فقط، دون رفع صور أو مستندات.</li>
+      <li><strong>التدريسيون:</strong> الاسم، اللقب العلمي، البريد الجامعي، رقم الهاتف، والصلاحيات.</li>
+      <li><strong>سجل التدقيق:</strong> من سجّل أو عدّل كل قيد ومتى، لضمان الشفافية عند الاعتراض.</li>
+    </ul>
+    <p>لا يجمع التطبيق الموقع الجغرافي ولا جهات الاتصال ولا الصور، ولا يحتوي إعلانات أو أدوات تتبّع أو تحليلات لطرف ثالث.</p>
+  </section>
+
+  <section>
+    <h2>الغرض من البيانات</h2>
+    <p>تُستعمل البيانات حصراً لتسجيل الحضور، واحتساب نسب الغياب، وإصدار قوائم التنبيه والإنذار والفصل والتقارير الرسمية للقسم والعمادة. لا تُباع ولا تُشارك مع أي جهة خارج الجامعة.</p>
+  </section>
+
+  <section>
+    <h2>مكان الحفظ وأمانه</h2>
+    <ul>
+      <li>تُحفظ البيانات في خدمات <span class="ltr">Google Firebase</span> (المصادقة وقاعدة البيانات <span class="ltr">Cloud Firestore</span>)، وتُنقل مشفّرة عبر <span class="ltr">HTTPS</span>.</li>
+      <li>يحتفظ هاتف التدريسي بنسخة محلية من بيانات مواده فقط ليعمل دون إنترنت، وتُرفع السجلات عند عودة الاتصال.</li>
+      <li>قواعد أمان في الخادم تمنع الوصول دون تسجيل دخول، ولا يرى كل مستخدم إلا ما تسمح به صلاحيته: التدريسي يرى طلبة مواده، ومسؤول المرحلة يرى مرحلته، والإدارة ترى القسم.</li>
+      <li>ملفات النسخ الاحتياطي المُصدَّرة مشفّرة بكلمة مرور.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>مدة الاحتفاظ</h2>
+    <p>تُحفظ سجلات السنة الدراسية طوال السنة، ثم تُؤرشف للاطلاع فقط وفق تعليمات الجامعة ووزارة التعليم العالي والبحث العلمي.</p>
+  </section>
+
+  <section>
+    <h2>حقوق الطالب والتدريسي</h2>
+    <p>يحق للطالب الاطلاع على سجل حضوره وطلب تصحيح أي خطأ عن طريق مسؤول المرحلة أو إدارة القسم. ويحق للتدريسي تعديل رقم هاتفه من التطبيق، وطلب تصحيح بقية بياناته من الإدارة.</p>
+  </section>
+
+  <section>
+    <h2>التواصل</h2>
+    <p>للاستفسار عن الخصوصية: إدارة قسم علوم الحاسوب — كلية التربية للعلوم الصرفة — جامعة البصرة.
+      <!-- TODO: add the department's official e-mail address. --></p>
+  </section>
+</main>
+</body>
+</html>

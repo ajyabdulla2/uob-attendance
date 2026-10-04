@@ -34,6 +34,29 @@
    ثم في التطبيق: «أول مرة؟ فعّل حسابك» بالبريد نفسه → افتح رسالة التأكيد → «أكّدت بريدي».
 7. من الرئيسية اضغط **«تهيئة الآن»** لإنشاء المراحل الثمان والسنة الدراسية، ثم استورد التدريسيين والمواد والطلبة من **الاستيراد**، واربط التدريسيين من **الربط**.
 
+## الإصدار والتوزيع (Android)
+
+يُبنى ملف APK على خوادم GitHub، فلا حاجة لـ Android Studio. التفاصيل وقاعدة رقم الإصدار في [`CLAUDE.md`](CLAUDE.md#البناء-والنشر-والتحديثات).
+
+1. **مفتاح التوقيع، مرة واحدة فقط** (احفظه مع كلمات المرور في مكان آمن؛ ضياعه يعني أن المستخدمين سيحذفون التطبيق ليحدّثوه، فتضيع بياناتهم غير المرفوعة):
+   ```bash
+   keytool -genkey -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+   base64 -w0 upload-keystore.jks          # macOS: base64 -i upload-keystore.jks
+   ```
+2. أضف الأسرار في GitHub ← Settings ← Secrets and variables ← Actions:
+   `ANDROID_KEYSTORE_B64` و`ANDROID_KEYSTORE_PASSWORD` و`ANDROID_KEY_ALIAS` و`ANDROID_KEY_PASSWORD` و`FIREBASE_OPTIONS_DART_B64` (ناتج `base64 -w0 lib/firebase_options.dart`)، و`GOOGLE_SERVICES_JSON_B64` إن أنشأ flutterfire الملف.
+3. لكل إصدار: ارفع `version` في `pubspec.yaml`، ثم:
+   ```bash
+   git tag v1.1.0 && git push origin v1.1.0
+   ```
+   فيبني GitHub ملف APK موقّعاً ويضعه في صفحة **Releases**.
+4. وزّع الرابط، ثم في Firestore أنشئ أو حدّث الوثيقة `config/app` بالحقول: `latestVersion: "1.1.0"` و`androidUrl: "<الرابط>"` و`notes`. ستظهر للمستخدمين رسالة «إصدار جديد متاح». ولإيقاف نسخة قديمة غير متوافقة اضبط `minVersion`.
+   إن كان المستودع **خاصاً** فملفات Releases تتطلب حساب GitHub؛ نزّل الـ APK منها وارفعه إلى Google Drive (رابط عام) وضع ذلك الرابط في `androidUrl`.
+
+**النشر على Firebase** (القواعد ونسخة الويب): من Actions شغّل **Deploy Firebase**. لا تُنشَر القواعد إلا بعد نجاح اختباراتها. يحتاج المتغير `FIREBASE_PROJECT_ID` والسر `FIREBASE_SERVICE_ACCOUNT_JSON`.
+
+**صفحة الخصوصية**: `web/privacy.html` تظهر على `https://<المشروع>.web.app/privacy.html`، وتطلبها متاجر Google Play وApp Store. النص الحالي مسودة تحتاج اعتماد القسم وبريد التواصل.
+
 ## التشغيل والتطوير
 
 ```bash
