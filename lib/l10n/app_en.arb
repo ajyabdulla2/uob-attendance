@@ -363,5 +363,9 @@
   "fixDeleteTeachersHelp": "Deletes plain teacher accounts that never recorded a lecture, with their class links (e.g. imported with wrong e-mails). Accounts with lectures stay: suspend them or change their e-mail.",
   "fixOnlyTeacherHint": "Leave empty for every teacher who never recorded a lecture",
   "fixOnlyEmail": "One e-mail only (optional)",
-  "fixProblemHasHistory": "This account recorded lectures, so it is kept to protect the register. Suspend it instead, or change its e-mail under Data fixes."
+  "fixProblemHasHistory": "This account recorded lectures, so it is kept to protect the register. Suspend it instead, or change its e-mail under Data fixes.",
+  "accountChangeEmail": "Change e-mail",
+  "accountNewEmail": "Correct e-mail",
+  "accountChangeEmailBody": "The account {from} and its class links ({count}) move to {to}. Its owner then activates with the new e-mail («First time? Activate») and sets their own password.",
+  "accountEmailChanged": "E-mail changed."
 }

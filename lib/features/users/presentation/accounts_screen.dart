@@ -11,6 +11,7 @@ import '../../auth/domain/app_user.dart';
 import '../../auth/domain/permissions.dart';
 import '../../data_fix/application/data_fix_providers.dart';
 import '../../data_fix/domain/fix_plan.dart';
+import '../../import/domain/value_parsers.dart';
 import '../application/users_providers.dart';
 import '../data/accounts_repository.dart';
 import '../domain/access_request.dart';
@@ -61,9 +62,44 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
       mode: AccountEditorMode.edit,
       initial: before,
       onDelete: perms.canDeleteAccount(before) ? () => _delete(before) : null,
+      onChangeEmail: perms.canRenameTeachers && before.id != _actor ? () => _changeEmail(before) : null,
     );
     if (after == null || !mounted) return;
     await _save(() => ref.read(accountsRepositoryProvider).update(before, after, actor: _actor), context.l10n.accountsSaved);
+  }
+
+  /// Moves an account (e.g. imported with a wrong e-mail) and its class
+  /// links to the correct e-mail; the owner then activates with it.
+  Future<void> _changeEmail(AppUser user) async {
+    final l10n = context.l10n;
+    final to = await showDialog<String>(context: context, builder: (_) => _NewEmailDialog(current: user.id));
+    if (to == null || !mounted) return;
+    final repo = ref.read(dataFixRepositoryProvider);
+    try {
+      final plan = await repo.planTeacherRename(user.id, to, actor: _actor);
+      if (!mounted) return;
+      if (plan.problems.isNotEmpty) {
+        showSnack(context, l10n.fixProblem(plan.problems.first, plan.mergeInto));
+        return;
+      }
+      final body = l10n.accountChangeEmailBody(
+        bidiIsolate(user.id),
+        plan.counts[FixCount.assignments] ?? 0,
+        bidiIsolate(to),
+      );
+      final ok = await confirmDialog(
+        context,
+        title: l10n.accountChangeEmail,
+        body: plan.mergeInto == null ? body : '$body\n\n${l10n.fixMerge(plan.mergeInto!)}',
+        confirmLabel: l10n.accountChangeEmail,
+      );
+      if (!ok || !mounted) return;
+      await _save(() => repo.apply(plan), l10n.accountEmailChanged);
+    } on FirebaseException catch (e) {
+      if (mounted) {
+        showSnack(context, e.code == 'permission-denied' ? l10n.permissionDenied : l10n.errorGeneric(e.message ?? e.code));
+      }
+    }
   }
 
   /// Removes an account that never recorded a lecture (e.g. imported with a
@@ -292,12 +328,14 @@ class _AccountTile extends StatelessWidget {
 enum AccountEditorMode { create, approve, edit }
 
 /// Shows the account form; returns the normalized account, or null when
-/// cancelled. [onDelete] adds «حذف الحساب» (the dialog closes first).
+/// cancelled. [onDelete] / [onChangeEmail] add «حذف الحساب» / «تغيير البريد»
+/// (the dialog closes first).
 Future<AppUser?> showAccountEditor(
   BuildContext context, {
   required AccountEditorMode mode,
   AppUser? initial,
   VoidCallback? onDelete,
+  VoidCallback? onChangeEmail,
 }) =>
     showDialog<AppUser>(
       context: context,
@@ -305,15 +343,80 @@ Future<AppUser?> showAccountEditor(
         mode: mode,
         initial: initial ?? const AppUser(email: '', name: ''),
         onDelete: onDelete,
+        onChangeEmail: onChangeEmail,
       ),
     );
 
+/// Asks for the correct e-mail of an account.
+class _NewEmailDialog extends StatefulWidget {
+  const _NewEmailDialog({required this.current});
+
+  final String current;
+
+  @override
+  State<_NewEmailDialog> createState() => _NewEmailDialogState();
+}
+
+class _NewEmailDialogState extends State<_NewEmailDialog> {
+  final _email = TextEditingController();
+  bool _invalid = false;
+
+  @override
+  void dispose() {
+    _email.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    final email = ValueParsers.email(_email.text);
+    if (email == null) {
+      setState(() => _invalid = true);
+      return;
+    }
+    Navigator.pop(context, email);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AlertDialog(
+      title: Text(l10n.accountChangeEmail),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(widget.current, textDirection: TextDirection.ltr, style: Theme.of(context).textTheme.bodySmall),
+          const SizedBox(height: 12),
+          TextField(
+            key: const Key('account.newEmail'),
+            controller: _email,
+            autofocus: true,
+            keyboardType: TextInputType.emailAddress,
+            textDirection: TextDirection.ltr,
+            decoration: InputDecoration(
+              labelText: l10n.accountNewEmail,
+              prefixIcon: const Icon(Icons.alternate_email),
+              errorText: _invalid ? l10n.validationEmail : null,
+            ),
+            onSubmitted: (_) => _submit(),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.cancel)),
+        FilledButton(key: const Key('account.newEmail.ok'), onPressed: _submit, child: Text(l10n.confirm)),
+      ],
+    );
+  }
+}
+
 class _AccountEditorDialog extends ConsumerStatefulWidget {
-  const _AccountEditorDialog({required this.mode, required this.initial, this.onDelete});
+  const _AccountEditorDialog({required this.mode, required this.initial, this.onDelete, this.onChangeEmail});
 
   final AccountEditorMode mode;
   final AppUser initial;
   final VoidCallback? onDelete;
+  final VoidCallback? onChangeEmail;
 
   @override
   ConsumerState<_AccountEditorDialog> createState() => _AccountEditorDialogState();
@@ -401,6 +504,16 @@ class _AccountEditorDialogState extends ConsumerState<_AccountEditorDialog> {
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.alternate_email),
                 title: Text(widget.initial.email, textDirection: TextDirection.ltr),
+                trailing: widget.onChangeEmail == null
+                    ? null
+                    : TextButton(
+                        key: const Key('account.changeEmail'),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          widget.onChangeEmail!();
+                        },
+                        child: Text(l10n.accountChangeEmail),
+                      ),
               ),
             const SizedBox(height: 8),
             TextField(

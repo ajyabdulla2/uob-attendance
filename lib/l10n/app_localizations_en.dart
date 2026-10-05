@@ -1307,4 +1307,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get fixProblemHasHistory =>
       'This account recorded lectures, so it is kept to protect the register. Suspend it instead, or change its e-mail under Data fixes.';
+
+  @override
+  String get accountChangeEmail => 'Change e-mail';
+
+  @override
+  String get accountNewEmail => 'Correct e-mail';
+
+  @override
+  String accountChangeEmailBody(String from, int count, String to) {
+    return 'The account $from and its class links ($count) move to $to. Its owner then activates with the new e-mail («First time? Activate») and sets their own password.';
+  }
+
+  @override
+  String get accountEmailChanged => 'E-mail changed.';
 }

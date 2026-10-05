@@ -179,4 +179,38 @@ void main() {
     expect((await env.db.collection('assignments').get()).docs, isEmpty);
     expect(find.byKey(const Key('accounts.user.$wrong')), findsNothing);
   });
+
+  testWidgets('the super admin corrects a wrong e-mail; the classes follow', (tester) async {
+    const wrong = 'wrong.teacher@uobasrah.edu.iq';
+    const right = 'real.teacher@gmail.com';
+    final env = await pumpApp(tester, user: MockUser(email: adminEmail, isEmailVerified: true), profile: admin);
+    await env.db.doc('users/$wrong').set(const AppUser(email: wrong, name: 'تدريسي').toMap());
+    await env.db.doc('assignments/CS101_1-morning__theory__all__$wrong').set({
+      'teacherId': wrong, 'courseId': 'CS101_1-morning', 'stageId': '1-morning', 'type': 'theory', 'target': 'all',
+    });
+    await tester.tap(find.text('الحسابات'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('accounts.user.$wrong')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('account.changeEmail')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('account.newEmail')), 'not-an-email');
+    await tester.tap(find.byKey(const Key('account.newEmail.ok')));
+    await tester.pump();
+    expect(find.text('صيغة البريد غير صحيحة'), findsOneWidget);
+    await tester.enterText(find.byKey(const Key('account.newEmail')), ' Real.Teacher@Gmail.com ');
+    await tester.tap(find.byKey(const Key('account.newEmail.ok')));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('مع إسناداته (1)'), findsOneWidget);
+    await tester.tap(find.descendant(of: find.byType(AlertDialog), matching: find.byType(FilledButton)));
+    await tester.pumpAndSettle();
+
+    expect(find.text('تغيّر البريد.'), findsOneWidget);
+    expect((await env.db.doc('users/$wrong').get()).exists, isFalse);
+    expect((await env.db.doc('users/$right').get()).data()!['email'], right);
+    final links = await env.db.collection('assignments').get();
+    expect(links.docs.single.data()['teacherId'], right);
+    expect(links.docs.single.id, 'CS101_1-morning__theory__all__$right');
+  });
 }

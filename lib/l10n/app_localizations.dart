@@ -2281,6 +2281,30 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'سجّل هذا الحساب محاضرات، فلا يُحذف حفاظاً على السجل. أوقف الحساب بدلاً من ذلك، أو غيّر بريده من «تصحيح البيانات».'**
   String get fixProblemHasHistory;
+
+  /// No description provided for @accountChangeEmail.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغيير البريد'**
+  String get accountChangeEmail;
+
+  /// No description provided for @accountNewEmail.
+  ///
+  /// In ar, this message translates to:
+  /// **'البريد الصحيح'**
+  String get accountNewEmail;
+
+  /// No description provided for @accountChangeEmailBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'سينتقل الحساب {from} مع إسناداته ({count}) إلى {to}. بعدها يفعّل صاحبه حسابه بالبريد الجديد من «أول مرة؟ فعّل حسابك» ويضع كلمة مروره.'**
+  String accountChangeEmailBody(String from, int count, String to);
+
+  /// No description provided for @accountEmailChanged.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغيّر البريد.'**
+  String get accountEmailChanged;
 }
 
 class _AppLocalizationsDelegate

@@ -1301,4 +1301,18 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get fixProblemHasHistory =>
       'سجّل هذا الحساب محاضرات، فلا يُحذف حفاظاً على السجل. أوقف الحساب بدلاً من ذلك، أو غيّر بريده من «تصحيح البيانات».';
+
+  @override
+  String get accountChangeEmail => 'تغيير البريد';
+
+  @override
+  String get accountNewEmail => 'البريد الصحيح';
+
+  @override
+  String accountChangeEmailBody(String from, int count, String to) {
+    return 'سينتقل الحساب $from مع إسناداته ($count) إلى $to. بعدها يفعّل صاحبه حسابه بالبريد الجديد من «أول مرة؟ فعّل حسابك» ويضع كلمة مروره.';
+  }
+
+  @override
+  String get accountEmailChanged => 'تغيّر البريد.';
 }
