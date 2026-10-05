@@ -9,6 +9,7 @@ import '../features/auth/domain/app_user.dart';
 import '../features/data_fix/domain/fix_plan.dart';
 import '../features/import/domain/import_models.dart';
 import '../features/leaves/domain/leave.dart';
+import '../features/stats/domain/student_course_stat.dart';
 import '../features/students/domain/student.dart';
 import 'app_localizations.dart';
 
@@ -79,6 +80,13 @@ extension DomainLabels on AppLocalizations {
           groupLabel(a.target),
         ],
       ].join(' · ');
+
+  String warningLevel(WarningLevel l) => switch (l) {
+        WarningLevel.none => warnAll,
+        WarningLevel.alert => levelAlert,
+        WarningLevel.warning => levelWarning,
+        WarningLevel.dismissal => levelDismissal,
+      };
 
   String leaveType(LeaveType t) => switch (t) {
         LeaveType.sick => leaveTypeSick,

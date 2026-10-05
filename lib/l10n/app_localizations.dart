@@ -2683,6 +2683,222 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تُحذف إجازة {name}، فيعود غيابه في أيامها غياباً.'**
   String leaveDeleteBody(String name);
+
+  /// No description provided for @warnTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'النسب والقوائم'**
+  String get warnTitle;
+
+  /// No description provided for @warnAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'النسب وقوائم التنبيه والإنذار'**
+  String get warnAction;
+
+  /// No description provided for @warnTabLists.
+  ///
+  /// In ar, this message translates to:
+  /// **'القوائم'**
+  String get warnTabLists;
+
+  /// No description provided for @warnTabDecisions.
+  ///
+  /// In ar, this message translates to:
+  /// **'القرارات'**
+  String get warnTabDecisions;
+
+  /// No description provided for @warnCourse.
+  ///
+  /// In ar, this message translates to:
+  /// **'المادة'**
+  String get warnCourse;
+
+  /// No description provided for @warnAllCourses.
+  ///
+  /// In ar, this message translates to:
+  /// **'كل المواد'**
+  String get warnAllCourses;
+
+  /// No description provided for @warnAll.
+  ///
+  /// In ar, this message translates to:
+  /// **'الكل'**
+  String get warnAll;
+
+  /// No description provided for @warnEdge.
+  ///
+  /// In ar, this message translates to:
+  /// **'على الحافة'**
+  String get warnEdge;
+
+  /// No description provided for @warnHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'النسبة = الغيابات المحتسبة ÷ محاضرات المادة المقررة في الفصل (من إعدادات السنة). تُحدَّث مع كل حفظ وإجازة.'**
+  String get warnHelp;
+
+  /// No description provided for @warnEdgeHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبة يصلون إلى المستوى التالي بعد غياب واحد.'**
+  String get warnEdgeHelp;
+
+  /// No description provided for @warnEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا أحد في هذه القائمة.'**
+  String get warnEmpty;
+
+  /// No description provided for @warnSaveAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظ قرار قسم بقائمة {level}'**
+  String warnSaveAction(String level);
+
+  /// No description provided for @warnSaveTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظ قرار القسم؟'**
+  String get warnSaveTitle;
+
+  /// No description provided for @warnSaveBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تُحفظ قائمة {level} بـ {count} طالب كما هي اليوم. يبقى القرار قابلاً للتعديل وإعادة التوليد حتى يحوّله المدير إلى قرار عمادة.'**
+  String warnSaveBody(int count, String level);
+
+  /// No description provided for @warnSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُفظ قرار القسم. تجده في «القرارات».'**
+  String get warnSaved;
+
+  /// No description provided for @warnAbsences.
+  ///
+  /// In ar, this message translates to:
+  /// **'الغياب {absences} من {planned} محاضرة = {percent}٪'**
+  String warnAbsences(int absences, int planned, String percent);
+
+  /// No description provided for @warnExcused.
+  ///
+  /// In ar, this message translates to:
+  /// **'مُجاز (لا يُحتسب): {count}'**
+  String warnExcused(int count);
+
+  /// No description provided for @warnOneMore.
+  ///
+  /// In ar, this message translates to:
+  /// **'⚠ يصل إلى {level} بعد غياب واحد'**
+  String warnOneMore(String level);
+
+  /// No description provided for @warnNoDecisions.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا قرارات محفوظة لهذه المرحلة.'**
+  String get warnNoDecisions;
+
+  /// No description provided for @warnDecisionTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'{level} · {course} · {count} طالب'**
+  String warnDecisionTitle(String level, String course, int count);
+
+  /// No description provided for @warnDeanery.
+  ///
+  /// In ar, this message translates to:
+  /// **'قرار عمادة رقم {number} في {date}'**
+  String warnDeanery(String number, String date);
+
+  /// No description provided for @warnDepartment.
+  ///
+  /// In ar, this message translates to:
+  /// **'قرار قسم (أولي) · {date}'**
+  String warnDepartment(String date);
+
+  /// No description provided for @warnDeaneryLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'قرار عمادة (نهائي ومقفل)'**
+  String get warnDeaneryLabel;
+
+  /// No description provided for @warnDepartmentLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'قرار قسم (أولي)'**
+  String get warnDepartmentLabel;
+
+  /// No description provided for @warnDepartmentHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'يمكن إعادة توليده من نسب اليوم (بعد نقل أو تأجيل أو إجازة)، ثم يحوّله المدير إلى قرار عمادة برقم الأمر وتاريخه.'**
+  String get warnDepartmentHelp;
+
+  /// No description provided for @warnRegenerate.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعادة التوليد'**
+  String get warnRegenerate;
+
+  /// No description provided for @warnRegenerateBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تُستبدل قائمة القرار ({before} طالب) بقائمة اليوم ({after} طالب).'**
+  String warnRegenerateBody(int before, int after);
+
+  /// No description provided for @warnRegenerated.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُعيد توليد القرار.'**
+  String get warnRegenerated;
+
+  /// No description provided for @warnFinalize.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحويل إلى قرار عمادة'**
+  String get warnFinalize;
+
+  /// No description provided for @warnFinalizeBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'بعد التحويل يُقفل القرار نهائياً ولا يُعدَّل ولا يُحذف؛ أي تغيير بعده يحتاج قراراً جديداً.'**
+  String get warnFinalizeBody;
+
+  /// No description provided for @warnOrderNumber.
+  ///
+  /// In ar, this message translates to:
+  /// **'رقم الأمر الإداري'**
+  String get warnOrderNumber;
+
+  /// No description provided for @warnOrderDate.
+  ///
+  /// In ar, this message translates to:
+  /// **'تاريخ الأمر'**
+  String get warnOrderDate;
+
+  /// No description provided for @warnFinalized.
+  ///
+  /// In ar, this message translates to:
+  /// **'صار القرار قرار عمادة مقفلاً.'**
+  String get warnFinalized;
+
+  /// No description provided for @warnDeleteTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف قرار القسم؟'**
+  String get warnDeleteTitle;
+
+  /// No description provided for @warnDeleteBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُحذف القرار المحفوظ (النسب نفسها لا تتأثر).'**
+  String get warnDeleteBody;
+
+  /// No description provided for @warnDeleted.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُذف القرار.'**
+  String get warnDeleted;
 }
 
 class _AppLocalizationsDelegate

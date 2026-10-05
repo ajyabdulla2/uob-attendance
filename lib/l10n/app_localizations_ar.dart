@@ -1543,4 +1543,133 @@ class AppLocalizationsAr extends AppLocalizations {
   String leaveDeleteBody(String name) {
     return 'تُحذف إجازة $name، فيعود غيابه في أيامها غياباً.';
   }
+
+  @override
+  String get warnTitle => 'النسب والقوائم';
+
+  @override
+  String get warnAction => 'النسب وقوائم التنبيه والإنذار';
+
+  @override
+  String get warnTabLists => 'القوائم';
+
+  @override
+  String get warnTabDecisions => 'القرارات';
+
+  @override
+  String get warnCourse => 'المادة';
+
+  @override
+  String get warnAllCourses => 'كل المواد';
+
+  @override
+  String get warnAll => 'الكل';
+
+  @override
+  String get warnEdge => 'على الحافة';
+
+  @override
+  String get warnHelp =>
+      'النسبة = الغيابات المحتسبة ÷ محاضرات المادة المقررة في الفصل (من إعدادات السنة). تُحدَّث مع كل حفظ وإجازة.';
+
+  @override
+  String get warnEdgeHelp => 'طلبة يصلون إلى المستوى التالي بعد غياب واحد.';
+
+  @override
+  String get warnEmpty => 'لا أحد في هذه القائمة.';
+
+  @override
+  String warnSaveAction(String level) {
+    return 'حفظ قرار قسم بقائمة $level';
+  }
+
+  @override
+  String get warnSaveTitle => 'حفظ قرار القسم؟';
+
+  @override
+  String warnSaveBody(int count, String level) {
+    return 'تُحفظ قائمة $level بـ $count طالب كما هي اليوم. يبقى القرار قابلاً للتعديل وإعادة التوليد حتى يحوّله المدير إلى قرار عمادة.';
+  }
+
+  @override
+  String get warnSaved => 'حُفظ قرار القسم. تجده في «القرارات».';
+
+  @override
+  String warnAbsences(int absences, int planned, String percent) {
+    return 'الغياب $absences من $planned محاضرة = $percent٪';
+  }
+
+  @override
+  String warnExcused(int count) {
+    return 'مُجاز (لا يُحتسب): $count';
+  }
+
+  @override
+  String warnOneMore(String level) {
+    return '⚠ يصل إلى $level بعد غياب واحد';
+  }
+
+  @override
+  String get warnNoDecisions => 'لا قرارات محفوظة لهذه المرحلة.';
+
+  @override
+  String warnDecisionTitle(String level, String course, int count) {
+    return '$level · $course · $count طالب';
+  }
+
+  @override
+  String warnDeanery(String number, String date) {
+    return 'قرار عمادة رقم $number في $date';
+  }
+
+  @override
+  String warnDepartment(String date) {
+    return 'قرار قسم (أولي) · $date';
+  }
+
+  @override
+  String get warnDeaneryLabel => 'قرار عمادة (نهائي ومقفل)';
+
+  @override
+  String get warnDepartmentLabel => 'قرار قسم (أولي)';
+
+  @override
+  String get warnDepartmentHelp =>
+      'يمكن إعادة توليده من نسب اليوم (بعد نقل أو تأجيل أو إجازة)، ثم يحوّله المدير إلى قرار عمادة برقم الأمر وتاريخه.';
+
+  @override
+  String get warnRegenerate => 'إعادة التوليد';
+
+  @override
+  String warnRegenerateBody(int before, int after) {
+    return 'تُستبدل قائمة القرار ($before طالب) بقائمة اليوم ($after طالب).';
+  }
+
+  @override
+  String get warnRegenerated => 'أُعيد توليد القرار.';
+
+  @override
+  String get warnFinalize => 'تحويل إلى قرار عمادة';
+
+  @override
+  String get warnFinalizeBody =>
+      'بعد التحويل يُقفل القرار نهائياً ولا يُعدَّل ولا يُحذف؛ أي تغيير بعده يحتاج قراراً جديداً.';
+
+  @override
+  String get warnOrderNumber => 'رقم الأمر الإداري';
+
+  @override
+  String get warnOrderDate => 'تاريخ الأمر';
+
+  @override
+  String get warnFinalized => 'صار القرار قرار عمادة مقفلاً.';
+
+  @override
+  String get warnDeleteTitle => 'حذف قرار القسم؟';
+
+  @override
+  String get warnDeleteBody => 'يُحذف القرار المحفوظ (النسب نفسها لا تتأثر).';
+
+  @override
+  String get warnDeleted => 'حُذف القرار.';
 }

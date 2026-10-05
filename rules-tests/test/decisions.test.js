@@ -53,6 +53,39 @@ describe('warning lists: department (provisional) vs deanery (final)', () => {
   });
 });
 
+describe('warning lists: the app\'s writes', () => {
+  const entry = { studentId: '1001', studentName: 'طالب', courseId: 'CS301_3-morning', courseName: 'هياكل', type: null,
+    percent: 13.33, absences: 2, planned: 15, section: '' };
+
+  it('stage manager saves, regenerates; an admin finalizes with the order; the stats query works', async () => {
+    const fs = as(env, SM3);
+    const b = writeBatch(fs);
+    b.set(doc(fs, 'warningLists', 'app1'), {
+      stageId: '3-morning', courseId: null, level: 'warning', decision: 'department', orderNumber: null, orderDate: null,
+      entries: [entry], createdBy: SM3, departmentId: 'cs', createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
+    });
+    b.set(doc(collection(fs, 'auditLog')), {
+      actor: SM3, action: 'warnings.create', targetPath: 'warningLists/app1', stageId: '3-morning',
+      before: null, after: { count: 1 }, departmentId: 'cs', at: serverTimestamp(),
+    });
+    await assertSucceeds(b.commit());
+    await assertSucceeds(updateDoc(doc(fs, 'warningLists', 'app1'), {
+      entries: [entry, { ...entry, studentId: '1002' }], updatedAt: serverTimestamp(), updatedBy: SM3,
+    }));
+    await assertFails(updateDoc(doc(fs, 'warningLists', 'app1'), {
+      decision: 'deanery', orderNumber: '1', orderDate: Timestamp.fromDate(new Date()),
+    }));
+    await assertSucceeds(updateDoc(doc(as(env, DEPUTY), 'warningLists', 'app1'), {
+      decision: 'deanery', orderNumber: '3/4/1234', orderDate: Timestamp.fromDate(new Date()),
+      updatedAt: serverTimestamp(), updatedBy: DEPUTY,
+    }));
+    await assertSucceeds(getDocs(query(collection(fs, 'warningLists'), where('stageId', '==', '3-morning'))));
+    await assertFails(getDocs(query(collection(as(env, T1), 'warningLists'), where('stageId', '==', '3-morning'))));
+    await assertSucceeds(getDocs(query(collection(fs, 'stats'), where('stageId', '==', '3-morning'))));
+    await assertFails(getDocs(query(collection(fs, 'stats'), where('stageId', '==', '1-evening'))));
+  });
+});
+
 describe('leaves', () => {
   const leave = (approvedBy, extra = {}) => ({
     studentId: '1001', stageId: '3-morning', type: 'sick',

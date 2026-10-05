@@ -1,9 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:uob_attendance/features/academic/domain/academic_year.dart';
 import 'package:uob_attendance/features/attendance/domain/attendance_session.dart';
+import 'package:uob_attendance/core/domain/stage_ref.dart';
+import 'package:uob_attendance/features/courses/domain/course.dart';
 import 'package:uob_attendance/features/leaves/domain/leave.dart';
 import 'package:uob_attendance/features/stats/domain/absence_summary.dart';
+import 'package:uob_attendance/features/stats/domain/standings.dart';
 import 'package:uob_attendance/features/stats/domain/student_course_stat.dart';
+import 'package:uob_attendance/features/students/domain/student.dart';
 
 String sid(String day, {String type = 'theory', int n = 1}) => 'CS1_1-morning__${type}__all__${day}__$n';
 
@@ -111,5 +115,50 @@ void main() {
       'bySession': {sid('20261001'): 'absent', sid('20261002'): 'excused'},
     });
     expect(stat.bySession.values, [AttendanceStatus.absent, AttendanceStatus.excused]);
+  });
+
+  group('buildStandings', () {
+    const stage = StageRef(1, Shift.morning);
+    final course = Course(code: 'CS1', name: 'برمجة', stage: stage, semester: 1, units: 2, hasPractical: true);
+    final students = [
+      Student(universityId: '1', fullName: 'أحمد', stage: stage),
+      Student(universityId: '2', fullName: 'باقر', stage: stage),
+      Student(universityId: '3', fullName: 'محمّل', stage: stage, carryOver: true),
+    ];
+    StudentCourseStat stat(String id, Map<String, AttendanceStatus> m) =>
+        StudentCourseStat(courseId: course.id, studentId: id, stageId: stage.id, bySession: m);
+
+    test('highest first; students who do not attend and unknown courses are left out', () {
+      final rows = buildStandings(
+        students: students,
+        courses: [course],
+        stats: [
+          stat('1', {sid('20261001'): AttendanceStatus.absent}),
+          stat('2', {sid('20261001'): AttendanceStatus.absent, sid('20261002'): AttendanceStatus.absent}),
+          stat('3', {sid('20261001'): AttendanceStatus.absent}),
+          StudentCourseStat(courseId: 'OTHER_1-morning', studentId: '1', stageId: stage.id),
+        ],
+        leaves: const [],
+        year: year,
+      );
+      expect(rows.map((r) => r.student.id), ['2', '1']);
+      expect(rows.first.level, WarningLevel.warning);
+      expect(rows.first.type, isNull);
+    });
+
+    test('separate percentages give a theory and a practical row', () {
+      const separate = AcademicYear(id: 'y', semester: 1, weeksPerSemester: 10, combinedTheoryPractical: false);
+      final rows = buildStandings(
+        students: students,
+        courses: [course],
+        stats: [
+          stat('1', {sid('20261001'): AttendanceStatus.absent, sid('20261001', type: 'practical'): AttendanceStatus.absent}),
+        ],
+        leaves: const [],
+        year: separate,
+      );
+      expect(rows.map((r) => r.type), unorderedEquals(['theory', 'practical']));
+      expect(rows.every((r) => r.summary.absences == 1), isTrue);
+    });
   });
 }

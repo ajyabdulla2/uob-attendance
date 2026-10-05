@@ -55,6 +55,14 @@ class HomeScreen extends ConsumerWidget {
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => context.go(Routes.assignments),
                     ),
+                  if (perms.canViewWarnings)
+                    ListTile(
+                      key: const Key('home.warnings'),
+                      leading: const Icon(Icons.warning_amber),
+                      title: Text(l10n.warnAction),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => context.push(Routes.warnings),
+                    ),
                   if (perms.canManageLeaves)
                     ListTile(
                       key: const Key('home.leaves'),

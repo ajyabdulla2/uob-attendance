@@ -1103,5 +1103,125 @@
         "type": "String"
       }
     }
-  }
+  },
+  "warnTitle": "النسب والقوائم",
+  "warnAction": "النسب وقوائم التنبيه والإنذار",
+  "warnTabLists": "القوائم",
+  "warnTabDecisions": "القرارات",
+  "warnCourse": "المادة",
+  "warnAllCourses": "كل المواد",
+  "warnAll": "الكل",
+  "warnEdge": "على الحافة",
+  "warnHelp": "النسبة = الغيابات المحتسبة ÷ محاضرات المادة المقررة في الفصل (من إعدادات السنة). تُحدَّث مع كل حفظ وإجازة.",
+  "warnEdgeHelp": "طلبة يصلون إلى المستوى التالي بعد غياب واحد.",
+  "warnEmpty": "لا أحد في هذه القائمة.",
+  "warnSaveAction": "حفظ قرار قسم بقائمة {level}",
+  "@warnSaveAction": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "warnSaveTitle": "حفظ قرار القسم؟",
+  "warnSaveBody": "تُحفظ قائمة {level} بـ {count} طالب كما هي اليوم. يبقى القرار قابلاً للتعديل وإعادة التوليد حتى يحوّله المدير إلى قرار عمادة.",
+  "@warnSaveBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "warnSaved": "حُفظ قرار القسم. تجده في «القرارات».",
+  "warnAbsences": "الغياب {absences} من {planned} محاضرة = {percent}٪",
+  "@warnAbsences": {
+    "placeholders": {
+      "absences": {
+        "type": "int"
+      },
+      "planned": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "warnExcused": "مُجاز (لا يُحتسب): {count}",
+  "@warnExcused": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "warnOneMore": "⚠ يصل إلى {level} بعد غياب واحد",
+  "@warnOneMore": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "warnNoDecisions": "لا قرارات محفوظة لهذه المرحلة.",
+  "warnDecisionTitle": "{level} · {course} · {count} طالب",
+  "@warnDecisionTitle": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "course": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "warnDeanery": "قرار عمادة رقم {number} في {date}",
+  "@warnDeanery": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "warnDepartment": "قرار قسم (أولي) · {date}",
+  "@warnDepartment": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "warnDeaneryLabel": "قرار عمادة (نهائي ومقفل)",
+  "warnDepartmentLabel": "قرار قسم (أولي)",
+  "warnDepartmentHelp": "يمكن إعادة توليده من نسب اليوم (بعد نقل أو تأجيل أو إجازة)، ثم يحوّله المدير إلى قرار عمادة برقم الأمر وتاريخه.",
+  "warnRegenerate": "إعادة التوليد",
+  "warnRegenerateBody": "تُستبدل قائمة القرار ({before} طالب) بقائمة اليوم ({after} طالب).",
+  "@warnRegenerateBody": {
+    "placeholders": {
+      "before": {
+        "type": "int"
+      },
+      "after": {
+        "type": "int"
+      }
+    }
+  },
+  "warnRegenerated": "أُعيد توليد القرار.",
+  "warnFinalize": "تحويل إلى قرار عمادة",
+  "warnFinalizeBody": "بعد التحويل يُقفل القرار نهائياً ولا يُعدَّل ولا يُحذف؛ أي تغيير بعده يحتاج قراراً جديداً.",
+  "warnOrderNumber": "رقم الأمر الإداري",
+  "warnOrderDate": "تاريخ الأمر",
+  "warnFinalized": "صار القرار قرار عمادة مقفلاً.",
+  "warnDeleteTitle": "حذف قرار القسم؟",
+  "warnDeleteBody": "يُحذف القرار المحفوظ (النسب نفسها لا تتأثر).",
+  "warnDeleted": "حُذف القرار."
 }

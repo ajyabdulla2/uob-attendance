@@ -18,6 +18,7 @@ import '../../features/import/presentation/import_screen.dart';
 import '../../features/leaves/presentation/leaves_screen.dart';
 import '../../features/settings/presentation/profile_screen.dart';
 import '../../features/users/presentation/accounts_screen.dart';
+import '../../features/warnings/presentation/warnings_screen.dart';
 import '../firebase/doc_ids.dart';
 
 abstract final class Routes {
@@ -35,6 +36,7 @@ abstract final class Routes {
   static const dataFix = '/data-fix';
   static const yearSettings = '/year-settings';
   static const leaves = '/leaves';
+  static const warnings = '/warnings';
 
   /// Record screen of a class, optionally on a given lecture.
   static String recordFor(String assignmentId, {DateTime? date, int? lectureNo}) => Uri(path: record, queryParameters: {
@@ -66,6 +68,7 @@ String? redirectFor(AuthStatus status, String location) {
         _ when location.startsWith(Routes.dataFix) && !permissions.canFixData => Routes.home,
         _ when location.startsWith(Routes.yearSettings) && !permissions.canEditYear => Routes.home,
         _ when location.startsWith(Routes.leaves) && !permissions.canManageLeaves => Routes.home,
+        _ when location.startsWith(Routes.warnings) && !permissions.canViewWarnings => Routes.home,
         _ => null,
       },
   };
@@ -100,6 +103,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.dataFix, builder: (_, _) => const DataFixScreen()),
       GoRoute(path: Routes.yearSettings, builder: (_, _) => const YearSettingsScreen()),
       GoRoute(path: Routes.leaves, builder: (_, _) => const LeavesScreen()),
+      GoRoute(path: Routes.warnings, builder: (_, _) => const WarningsScreen()),
       GoRoute(
         path: Routes.register,
         builder: (_, s) => RegisterScreen(assignmentId: s.uri.queryParameters['a'] ?? ''),

@@ -1553,4 +1553,136 @@ class AppLocalizationsEn extends AppLocalizations {
   String leaveDeleteBody(String name) {
     return '$name\'s leave is deleted; their absences on its days count again.';
   }
+
+  @override
+  String get warnTitle => 'Percentages & lists';
+
+  @override
+  String get warnAction => 'Percentages, alert & warning lists';
+
+  @override
+  String get warnTabLists => 'Lists';
+
+  @override
+  String get warnTabDecisions => 'Decisions';
+
+  @override
+  String get warnCourse => 'Course';
+
+  @override
+  String get warnAllCourses => 'All courses';
+
+  @override
+  String get warnAll => 'All';
+
+  @override
+  String get warnEdge => 'On the edge';
+
+  @override
+  String get warnHelp =>
+      'Percentage = counted absences ÷ the course\'s planned lectures this semester (year settings). Updates with every save and leave.';
+
+  @override
+  String get warnEdgeHelp =>
+      'Students who reach the next level after one more absence.';
+
+  @override
+  String get warnEmpty => 'Nobody in this list.';
+
+  @override
+  String warnSaveAction(String level) {
+    return 'Save a department decision: $level list';
+  }
+
+  @override
+  String get warnSaveTitle => 'Save the department decision?';
+
+  @override
+  String warnSaveBody(int count, String level) {
+    return 'The $level list of $count student(s) is saved as it stands today. It stays editable and can be regenerated until an admin turns it into a deanery decision.';
+  }
+
+  @override
+  String get warnSaved =>
+      'Department decision saved. Find it under «Decisions».';
+
+  @override
+  String warnAbsences(int absences, int planned, String percent) {
+    return '$absences absence(s) of $planned lectures = $percent%';
+  }
+
+  @override
+  String warnExcused(int count) {
+    return 'Excused (not counted): $count';
+  }
+
+  @override
+  String warnOneMore(String level) {
+    return '⚠ Reaches $level after one more absence';
+  }
+
+  @override
+  String get warnNoDecisions => 'No saved decisions for this stage.';
+
+  @override
+  String warnDecisionTitle(String level, String course, int count) {
+    return '$level · $course · $count student(s)';
+  }
+
+  @override
+  String warnDeanery(String number, String date) {
+    return 'Deanery decision no. $number of $date';
+  }
+
+  @override
+  String warnDepartment(String date) {
+    return 'Department decision (provisional) · $date';
+  }
+
+  @override
+  String get warnDeaneryLabel => 'Deanery decision (final, locked)';
+
+  @override
+  String get warnDepartmentLabel => 'Department decision (provisional)';
+
+  @override
+  String get warnDepartmentHelp =>
+      'Can be regenerated from today\'s percentages (after a transfer, postponement or leave); an admin then turns it into a deanery decision with the order number and date.';
+
+  @override
+  String get warnRegenerate => 'Regenerate';
+
+  @override
+  String warnRegenerateBody(int before, int after) {
+    return 'The decision\'s list ($before) is replaced by today\'s ($after).';
+  }
+
+  @override
+  String get warnRegenerated => 'Decision regenerated.';
+
+  @override
+  String get warnFinalize => 'Make it a deanery decision';
+
+  @override
+  String get warnFinalizeBody =>
+      'Once converted the decision is locked for good — no edits, no deletion; any change needs a new decision.';
+
+  @override
+  String get warnOrderNumber => 'Administrative order number';
+
+  @override
+  String get warnOrderDate => 'Order date';
+
+  @override
+  String get warnFinalized => 'The decision is now a locked deanery decision.';
+
+  @override
+  String get warnDeleteTitle => 'Delete the department decision?';
+
+  @override
+  String get warnDeleteBody =>
+      'The saved decision is deleted (the percentages themselves are unaffected).';
+
+  @override
+  String get warnDeleted => 'Decision deleted.';
 }

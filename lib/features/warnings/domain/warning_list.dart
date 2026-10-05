@@ -5,24 +5,43 @@ import '../../stats/domain/student_course_stat.dart';
 /// قرار القسم (أولي، قابل للتعديل) / قرار العمادة (نهائي ومقفل).
 enum DecisionType { department, deanery }
 
+/// A student in a decision, as it stood when the list was saved (names and
+/// numbers are copied so the decision reads the same years later).
 final class WarningListEntry {
   const WarningListEntry({
     required this.studentId,
     required this.studentName,
     required this.courseId,
     required this.percent,
+    this.courseName = '',
+    this.type,
+    this.absences = 0,
+    this.planned = 0,
+    this.section = '',
   });
 
   final String studentId;
   final String studentName;
   final String courseId;
   final double percent;
+  final String courseName;
+
+  /// `theory` / `practical` when the year keeps separate percentages.
+  final String? type;
+  final int absences;
+  final int planned;
+  final String section;
 
   factory WarningListEntry.fromMap(Map<String, Object?> map) => WarningListEntry(
         studentId: Fs.str(map['studentId']),
         studentName: Fs.str(map['studentName']),
         courseId: Fs.str(map['courseId']),
         percent: Fs.dbl(map['percent']),
+        courseName: Fs.str(map['courseName']),
+        type: Fs.strOrNull(map['type']),
+        absences: Fs.integer(map['absences']),
+        planned: Fs.integer(map['planned']),
+        section: Fs.str(map['section']),
       );
 
   Map<String, Object?> toMap() => {
@@ -30,6 +49,11 @@ final class WarningListEntry {
         'studentName': studentName,
         'courseId': courseId,
         'percent': percent,
+        'courseName': courseName,
+        'type': type,
+        'absences': absences,
+        'planned': planned,
+        'section': section,
       };
 }
 
@@ -45,6 +69,7 @@ final class WarningList {
     this.orderDate,
     this.entries = const [],
     this.createdBy = '',
+    this.createdAt,
     this.departmentId = AppConfig.departmentId,
   });
 
@@ -59,6 +84,7 @@ final class WarningList {
   final DateTime? orderDate;
   final List<WarningListEntry> entries;
   final String createdBy;
+  final DateTime? createdAt;
   final String departmentId;
 
   /// Deanery decisions are frozen; any change needs a new decision.
@@ -77,6 +103,7 @@ final class WarningList {
             if (e is Map) WarningListEntry.fromMap(Fs.map(e)),
         ],
         createdBy: Fs.str(map['createdBy']),
+        createdAt: Fs.date(map['createdAt']),
         departmentId: Fs.str(map['departmentId'], AppConfig.departmentId),
       );
 
