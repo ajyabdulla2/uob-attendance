@@ -18,7 +18,7 @@ command -v convert >/dev/null || { echo "ImageMagick (convert) not found"; exit 
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 root="$PWD"
-bg_color='#1A1714' # darkest stop of the design's background gradient
+bg_color='#FFFFFF' # the design's background (white, no dark frame)
 
 # render NAME VIEWBOX CSS — the design at 1024×1024 with CSS tweaks.
 render() {
@@ -43,9 +43,11 @@ full_bleed='svg>rect:nth-of-type(1){x:0;y:0;width:512px;height:512px;rx:0}svg>re
 render rounded '0 0 512 512' ''                                     # the design as drawn
 render full '0 0 512 512' "$full_bleed"                              # square, OS applies its mask
 render background '0 0 512 512' "$full_bleed svg>g{display:none}"    # gradient only
-# Adaptive foreground: content shrunk to 60% so the launcher's circle /
-# squircle mask (inner 66% of the layer) never cuts it.
-render foreground '-170.67 -170.67 853.33 853.33' 'svg>rect{display:none}'
+# Adaptive foreground: on the white background only the clipboard's
+# contents matter (title, rows, logo, clip — within a 200-unit radius of
+# (256,240)), so they are framed to fit the launcher's safe circle (66 of
+# the 108 dp layer) and the paper's edges may fall outside it.
+render foreground '-74 -90 660 660' 'svg>rect{display:none}'
 
 opaque() { convert "$1" -background "$bg_color" -alpha remove -alpha off "$2"; }
 
