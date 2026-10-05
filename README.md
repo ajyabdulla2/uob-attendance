@@ -53,6 +53,8 @@
 4. وزّع الرابط، ثم في Firestore أنشئ أو حدّث الوثيقة `config/app` بالحقول: `latestVersion: "1.1.0"` و`androidUrl: "<الرابط>"` و`notes`. ستظهر للمستخدمين رسالة «إصدار جديد متاح». ولإيقاف نسخة قديمة غير متوافقة اضبط `minVersion`.
    إن كان المستودع **خاصاً** فملفات Releases تتطلب حساب GitHub؛ نزّل الـ APK منها وارفعه إلى Google Drive (رابط عام) وضع ذلك الرابط في `androidUrl`.
 
+**فحص الإعداد**: من Actions شغّل **Setup check** بعد إضافة الأسرار أو تغييرها؛ يتحقق من الأسرار (دون إظهارها) ومن مشروع Firebase، ويكتب تقريراً بما ينقص.
+
 **النشر على Firebase** (القواعد ونسخة الويب): من Actions شغّل **Deploy Firebase**. لا تُنشَر القواعد إلا بعد نجاح اختباراتها. يحتاج المتغير `FIREBASE_PROJECT_ID` والسر `FIREBASE_SERVICE_ACCOUNT_JSON`.
 
 **صفحة الخصوصية**: `web/privacy.html` تظهر على `https://<المشروع>.web.app/privacy.html`، وتطلبها متاجر Google Play وApp Store. النص الحالي مسودة تحتاج اعتماد القسم وبريد التواصل.

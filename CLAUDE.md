@@ -185,6 +185,7 @@ tool/            سكربتات الإعداد والفحص
 - `ci.yml` (كل push/PR): analyze + الكود المولَّد محدَّث + `flutter test` + بناء الويب، و`rules-tests.yml` (قابل لإعادة الاستعمال) على المحاكي.
 - `android.yml`: push يمس `android/` أو `pubspec` (فحص بناء)، أو تشغيل يدوي، أو tag `v*` (إصدار). الـ tag يجب أن يطابق `version` في pubspec.
 - `deploy.yml` (يدوي، بيئة `production`): اختبارات القواعد ← نشر القواعد/الفهارس و/أو الويب.
+- `setup-check.yml` (يدوي، أو push يمس ملفاته): `tool/check_setup.mjs` يتحقق دون كشف أي سر من الأسرار (يفتح المفتاح بكلمات المرور عبر `tool/CheckKeystore.java` كما يفعل Gradle)، ومن مشروع Firebase الحي: تفعيل Email/Password، وجود Firestore وإغلاقها للزوار، تطابق القواعد المنشورة مع `firestore.rules` (بحساب الخدمة)، صفحة الخصوصية، والبيانات الأولى إن سمحت الصلاحية. للقراءة فقط. التقرير في Job summary؛ وأنا أقرؤه بـ `get_job_logs`.
 - `workflow_dispatch` لا يظهر إلا بعد دمج الملف في الفرع الافتراضي.
 
 ### Shorebird (عند اعتماده)
