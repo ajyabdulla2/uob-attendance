@@ -50,6 +50,15 @@ source tool/cloud_setup.sh   # يثبّت Flutter 3.47.6 في /opt/flutter-sdk �
 | أيقونات التطبيق (Android/iOS/الويب) بعد تعديل التصميم | `./tool/build_icons.sh` (Chromium + ImageMagick، متوفران هنا) ثم التزم الملفات المولَّدة؛ المعاينة في `build/icon_preview.png` |
 | فحص سير عمل GitHub | `go install github.com/rhysd/actionlint/cmd/actionlint@latest && ~/go/bin/actionlint` |
 
+### على جهاز المطوّر (Windows، Claude Code محلياً)
+
+- المجلد: `F:\attendance\uob-attendance`. كل العمل على الفرع `claude/intelligent-keller-wlg3ld` (`main` فيه المواصفات فقط حتى الدمج). `git pull` قبل البدء و`git push` بعد كل التزام، ولا تعمل على الفرع في جلسة سحابية ومحلية معاً.
+- Flutter 3.47.6 وNode و`firebase` CLI مثبّتة على الجهاز وفي PATH، فلا حاجة لتعديل PATH. `source tool/cloud_setup.sh` هنا يجلب الحزم والمحاكي فقط (لا يثبّت Flutter إلا على Linux). المحاكي يحتاج Java 11+.
+- الملفات الحقيقية موجودة هنا ومُهمَلة في git: `lib/firebase_options.dart` (السكربت `ensure_firebase_options.sh` لا يمسّه)، و`android/key.properties` والمفتاح و`google-services.json` إن وُجدت. لا تعرض محتواها ولا تلتزمها.
+- لا قيود شبكة: `./tool/build_drift_web.sh` يعمل هنا. بناء APK محلياً يحتاج Android Studio (SDK)؛ وإلا فـ GitHub Actions كما في السحابة. `gh` غير مضمون؛ أدوات GitHub MCP أو موقع GitHub.
+- سكربتات `tool/*.sh` تعمل في Git Bash، و`.gitattributes` يثبّت نهايات LF لها. إن ظهر `$'\r': command not found` فالملفات سُحبت بـ CRLF قبله: مع شجرة نظيفة `git rm -r -q --cached . && git reset -q --hard`.
+- النشر للإنتاج من هنا ممكن (`firebase deploy --only firestore:rules --project basrah-researches`)، لكن بعد نجاح اختبارات القواعد وبتأكيد المستخدم.
+
 ---
 
 ## البنية
