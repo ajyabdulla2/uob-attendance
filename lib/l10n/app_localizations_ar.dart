@@ -1679,4 +1679,93 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get registerPercentHelp =>
       'نسبة غياب الطالب في المادة كلها (النظري والعملي حسب إعدادات السنة)، بعد احتساب الإجازات. تُحدَّث بزر التحديث عند الاتصال.';
+
+  @override
+  String get recordRequestHint =>
+      'المحاضرة مقفلة: المس طالباً لطلب تعديل حالته من مسؤول المرحلة.';
+
+  @override
+  String get editRequestTitle => 'طلب تعديل';
+
+  @override
+  String editRequestNow(String status) {
+    return 'الحالة الآن: $status';
+  }
+
+  @override
+  String get editRequestReason => 'سبب التعديل (إلزامي)';
+
+  @override
+  String get editRequestSend => 'إرسال الطلب';
+
+  @override
+  String get editRequestSent => 'أُرسل الطلب إلى مسؤول المرحلة.';
+
+  @override
+  String get editRequestPending => '⏳ طلب تعديل بانتظار الموافقة';
+
+  @override
+  String get editRequestsTitle => 'طلبات التعديل';
+
+  @override
+  String get editRequestsAction => 'طلبات التعديل';
+
+  @override
+  String get editRequestsEmpty => 'لا طلبات معلّقة.';
+
+  @override
+  String editRequestLecture(String course, String date, int n) {
+    return '$course · $date · المحاضرة $n';
+  }
+
+  @override
+  String editRequestWhy(String reason) {
+    return 'السبب: $reason';
+  }
+
+  @override
+  String get editRequestApprove => 'موافقة وتعديل';
+
+  @override
+  String get editRequestReject => 'رفض';
+
+  @override
+  String get editRequestNote => 'ملاحظة (اختياري)';
+
+  @override
+  String get editRequestApproved =>
+      'عُدّل السجل ووصل التعديل إلى هواتف التدريسيين عند التحديث.';
+
+  @override
+  String get editRequestRejected => 'رُفض الطلب.';
+
+  @override
+  String get dashTitle => 'لوحة المرحلة';
+
+  @override
+  String get dashAction => 'لوحة المرحلة';
+
+  @override
+  String dashToday(int count) {
+    return 'محاضرات مسجّلة اليوم: $count';
+  }
+
+  @override
+  String dashWeek(int count) {
+    return 'آخر 7 أيام: $count محاضرة';
+  }
+
+  @override
+  String dashIdle(int count) {
+    return 'صفوف بلا تسجيل منذ 7 أيام: $count';
+  }
+
+  @override
+  String get dashIdleHelp =>
+      'قد تكون عطلة أو محاضرات ملغاة؛ تابع مع تدريسييها.';
+
+  @override
+  String dashRequests(int count) {
+    return 'طلبات تعديل معلّقة: $count';
+  }
 }

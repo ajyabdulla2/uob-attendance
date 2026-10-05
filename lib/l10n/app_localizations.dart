@@ -2911,6 +2911,150 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'نسبة غياب الطالب في المادة كلها (النظري والعملي حسب إعدادات السنة)، بعد احتساب الإجازات. تُحدَّث بزر التحديث عند الاتصال.'**
   String get registerPercentHelp;
+
+  /// No description provided for @recordRequestHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحاضرة مقفلة: المس طالباً لطلب تعديل حالته من مسؤول المرحلة.'**
+  String get recordRequestHint;
+
+  /// No description provided for @editRequestTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلب تعديل'**
+  String get editRequestTitle;
+
+  /// No description provided for @editRequestNow.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحالة الآن: {status}'**
+  String editRequestNow(String status);
+
+  /// No description provided for @editRequestReason.
+  ///
+  /// In ar, this message translates to:
+  /// **'سبب التعديل (إلزامي)'**
+  String get editRequestReason;
+
+  /// No description provided for @editRequestSend.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال الطلب'**
+  String get editRequestSend;
+
+  /// No description provided for @editRequestSent.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُرسل الطلب إلى مسؤول المرحلة.'**
+  String get editRequestSent;
+
+  /// No description provided for @editRequestPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'⏳ طلب تعديل بانتظار الموافقة'**
+  String get editRequestPending;
+
+  /// No description provided for @editRequestsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبات التعديل'**
+  String get editRequestsTitle;
+
+  /// No description provided for @editRequestsAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبات التعديل'**
+  String get editRequestsAction;
+
+  /// No description provided for @editRequestsEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا طلبات معلّقة.'**
+  String get editRequestsEmpty;
+
+  /// No description provided for @editRequestLecture.
+  ///
+  /// In ar, this message translates to:
+  /// **'{course} · {date} · المحاضرة {n}'**
+  String editRequestLecture(String course, String date, int n);
+
+  /// No description provided for @editRequestWhy.
+  ///
+  /// In ar, this message translates to:
+  /// **'السبب: {reason}'**
+  String editRequestWhy(String reason);
+
+  /// No description provided for @editRequestApprove.
+  ///
+  /// In ar, this message translates to:
+  /// **'موافقة وتعديل'**
+  String get editRequestApprove;
+
+  /// No description provided for @editRequestReject.
+  ///
+  /// In ar, this message translates to:
+  /// **'رفض'**
+  String get editRequestReject;
+
+  /// No description provided for @editRequestNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملاحظة (اختياري)'**
+  String get editRequestNote;
+
+  /// No description provided for @editRequestApproved.
+  ///
+  /// In ar, this message translates to:
+  /// **'عُدّل السجل ووصل التعديل إلى هواتف التدريسيين عند التحديث.'**
+  String get editRequestApproved;
+
+  /// No description provided for @editRequestRejected.
+  ///
+  /// In ar, this message translates to:
+  /// **'رُفض الطلب.'**
+  String get editRequestRejected;
+
+  /// No description provided for @dashTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لوحة المرحلة'**
+  String get dashTitle;
+
+  /// No description provided for @dashAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'لوحة المرحلة'**
+  String get dashAction;
+
+  /// No description provided for @dashToday.
+  ///
+  /// In ar, this message translates to:
+  /// **'محاضرات مسجّلة اليوم: {count}'**
+  String dashToday(int count);
+
+  /// No description provided for @dashWeek.
+  ///
+  /// In ar, this message translates to:
+  /// **'آخر 7 أيام: {count} محاضرة'**
+  String dashWeek(int count);
+
+  /// No description provided for @dashIdle.
+  ///
+  /// In ar, this message translates to:
+  /// **'صفوف بلا تسجيل منذ 7 أيام: {count}'**
+  String dashIdle(int count);
+
+  /// No description provided for @dashIdleHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'قد تكون عطلة أو محاضرات ملغاة؛ تابع مع تدريسييها.'**
+  String get dashIdleHelp;
+
+  /// No description provided for @dashRequests.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبات تعديل معلّقة: {count}'**
+  String dashRequests(int count);
 }
 
 class _AppLocalizationsDelegate

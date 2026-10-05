@@ -68,6 +68,8 @@ final class Permissions {
 
   // ------------------------------------------------- percentages, lists --
   bool get canViewWarnings => isAdmin || isStageManager;
+  bool get canReviewEditRequests => isAdmin || isStageManager;
+  bool get canViewStageDashboard => isAdmin || isStageManager;
 
   // ---------------------------------------------------------- data fixes --
   /// Changing IDs and undoing imports deletes documents: admins only.

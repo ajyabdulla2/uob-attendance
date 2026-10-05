@@ -1225,5 +1225,84 @@
   "warnDeleteBody": "يُحذف القرار المحفوظ (النسب نفسها لا تتأثر).",
   "warnDeleted": "حُذف القرار.",
   "registerPercent": "النسبة",
-  "registerPercentHelp": "نسبة غياب الطالب في المادة كلها (النظري والعملي حسب إعدادات السنة)، بعد احتساب الإجازات. تُحدَّث بزر التحديث عند الاتصال."
+  "registerPercentHelp": "نسبة غياب الطالب في المادة كلها (النظري والعملي حسب إعدادات السنة)، بعد احتساب الإجازات. تُحدَّث بزر التحديث عند الاتصال.",
+  "recordRequestHint": "المحاضرة مقفلة: المس طالباً لطلب تعديل حالته من مسؤول المرحلة.",
+  "editRequestTitle": "طلب تعديل",
+  "editRequestNow": "الحالة الآن: {status}",
+  "@editRequestNow": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "editRequestReason": "سبب التعديل (إلزامي)",
+  "editRequestSend": "إرسال الطلب",
+  "editRequestSent": "أُرسل الطلب إلى مسؤول المرحلة.",
+  "editRequestPending": "⏳ طلب تعديل بانتظار الموافقة",
+  "editRequestsTitle": "طلبات التعديل",
+  "editRequestsAction": "طلبات التعديل",
+  "editRequestsEmpty": "لا طلبات معلّقة.",
+  "editRequestLecture": "{course} · {date} · المحاضرة {n}",
+  "@editRequestLecture": {
+    "placeholders": {
+      "course": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "editRequestWhy": "السبب: {reason}",
+  "@editRequestWhy": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "editRequestApprove": "موافقة وتعديل",
+  "editRequestReject": "رفض",
+  "editRequestNote": "ملاحظة (اختياري)",
+  "editRequestApproved": "عُدّل السجل ووصل التعديل إلى هواتف التدريسيين عند التحديث.",
+  "editRequestRejected": "رُفض الطلب.",
+  "dashTitle": "لوحة المرحلة",
+  "dashAction": "لوحة المرحلة",
+  "dashToday": "محاضرات مسجّلة اليوم: {count}",
+  "@dashToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashWeek": "آخر 7 أيام: {count} محاضرة",
+  "@dashWeek": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashIdle": "صفوف بلا تسجيل منذ 7 أيام: {count}",
+  "@dashIdle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashIdleHelp": "قد تكون عطلة أو محاضرات ملغاة؛ تابع مع تدريسييها.",
+  "dashRequests": "طلبات تعديل معلّقة: {count}",
+  "@dashRequests": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -1692,4 +1692,93 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get registerPercentHelp =>
       'The student\'s absence percentage in the whole course (theory and practical per the year settings), after leaves. Refresh online to update.';
+
+  @override
+  String get recordRequestHint =>
+      'The lecture is locked: tap a student to ask the stage manager to change their status.';
+
+  @override
+  String get editRequestTitle => 'Edit request';
+
+  @override
+  String editRequestNow(String status) {
+    return 'Now: $status';
+  }
+
+  @override
+  String get editRequestReason => 'Reason (required)';
+
+  @override
+  String get editRequestSend => 'Send the request';
+
+  @override
+  String get editRequestSent => 'Request sent to the stage manager.';
+
+  @override
+  String get editRequestPending => '⏳ Edit request awaiting approval';
+
+  @override
+  String get editRequestsTitle => 'Edit requests';
+
+  @override
+  String get editRequestsAction => 'Edit requests';
+
+  @override
+  String get editRequestsEmpty => 'No pending requests.';
+
+  @override
+  String editRequestLecture(String course, String date, int n) {
+    return '$course · $date · lecture $n';
+  }
+
+  @override
+  String editRequestWhy(String reason) {
+    return 'Reason: $reason';
+  }
+
+  @override
+  String get editRequestApprove => 'Approve and apply';
+
+  @override
+  String get editRequestReject => 'Reject';
+
+  @override
+  String get editRequestNote => 'Note (optional)';
+
+  @override
+  String get editRequestApproved =>
+      'Record changed; teachers\' phones get it on refresh.';
+
+  @override
+  String get editRequestRejected => 'Request rejected.';
+
+  @override
+  String get dashTitle => 'Stage dashboard';
+
+  @override
+  String get dashAction => 'Stage dashboard';
+
+  @override
+  String dashToday(int count) {
+    return 'Lectures recorded today: $count';
+  }
+
+  @override
+  String dashWeek(int count) {
+    return 'Last 7 days: $count lecture(s)';
+  }
+
+  @override
+  String dashIdle(int count) {
+    return 'Classes with nothing recorded for 7 days: $count';
+  }
+
+  @override
+  String get dashIdleHelp =>
+      'May be a holiday or cancelled lectures; check with their teachers.';
+
+  @override
+  String dashRequests(int count) {
+    return 'Pending edit requests: $count';
+  }
 }

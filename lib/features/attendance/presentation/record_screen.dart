@@ -11,6 +11,8 @@ import '../../../l10n/l10n.dart';
 import '../../academic/domain/academic_year.dart';
 import '../../assignments/domain/assignment.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../edit_requests/application/edit_requests_providers.dart';
+import '../../edit_requests/domain/edit_request.dart';
 import '../../students/domain/student.dart';
 import '../application/attendance_providers.dart';
 import '../data/attendance_store.dart';
@@ -150,6 +152,34 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
     if (mark != null && mounted) setState(() => _marks[s.id] = mark);
   }
 
+  /// A locked lecture: ask the stage manager to change one student's status.
+  Future<void> _requestEdit(Assignment a, String sid, Student s) async {
+    final l10n = context.l10n;
+    final current = _markOf(s.id).status;
+    final picked = await showModalBottomSheet<(AttendanceStatus, String)>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (_) => _EditRequestSheet(student: s, current: current),
+    );
+    if (picked == null || !mounted) return;
+    try {
+      await ref.read(editRequestsRepositoryProvider).file(EditRequest(
+            id: '',
+            sessionId: sid,
+            studentId: s.id,
+            stageId: a.stageId,
+            requestedStatus: picked.$1,
+            currentStatus: current,
+            reason: picked.$2,
+            requestedBy: ref.read(signedInUserProvider).id,
+          ));
+      if (mounted) showSnack(context, l10n.editRequestSent);
+    } on Object catch (e) {
+      if (mounted) showSnack(context, l10n.errorGeneric('$e'));
+    }
+  }
+
   void _toggle(Student s) => setState(() {
         final m = _markOf(s.id);
         _marks[s.id] = m.copyWith(
@@ -275,6 +305,12 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
     final lockAt = existing?.lockAt ?? AttendanceSession.lockAtFor(_date, y.lockHours);
     final locked = (existing?.locked ?? false) || DateTime.now().toUtc().isAfter(lockAt);
     final readOnly = locked && !canOverride;
+    final pending = readOnly
+        ? {
+            for (final r in ref.watch(myEditRequestsProvider).value ?? const <EditRequest>[])
+              if (r.sessionId == sid && r.status == EditRequestStatus.pending) r.studentId,
+          }
+        : const <String>{};
 
     final controls = _Controls(
       date: _date,
@@ -334,7 +370,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                 m.formatShortDate(lockAt.toLocal()),
                 m.formatTimeOfDay(TimeOfDay.fromDateTime(lockAt.toLocal())),
               ),
-            if (!readOnly) l10n.recordTapHint,
+            if (!readOnly) l10n.recordTapHint else if (existing != null) l10n.recordRequestHint,
           ].join('\n'),
           style: theme.textTheme.bodySmall,
         ),
@@ -380,11 +416,15 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                         visualDensity: VisualDensity.compact,
                         leading: Icon(StatusPalette.iconForStatus(mark.status), color: color),
                         title: Text(s.fullName),
-                        subtitle: Text(
-                          mark.note.isEmpty ? bidiIsolate(s.universityId) : '${bidiIsolate(s.universityId)} · ${mark.note}',
-                        ),
+                        subtitle: Text([
+                          bidiIsolate(s.universityId),
+                          if (mark.note.isNotEmpty) mark.note,
+                          if (pending.contains(s.id)) l10n.editRequestPending,
+                        ].join(' · ')),
                         trailing: Text(l10n.attendance(mark.status), style: TextStyle(color: color)),
-                        onTap: readOnly ? null : () => _toggle(s),
+                        onTap: readOnly
+                            ? (existing == null || pending.contains(s.id) ? null : () => _requestEdit(a, sid, s))
+                            : () => _toggle(s),
                         onLongPress: readOnly ? null : () => _editMark(s),
                       );
                     },
@@ -486,6 +526,76 @@ class _Controls extends StatelessWidget {
       child: Row(
         children: [
           for (final chip in chips) Padding(padding: const EdgeInsetsDirectional.only(end: 8), child: chip),
+        ],
+      ),
+    );
+  }
+}
+
+/// Requested status and reason for a change to a locked lecture.
+class _EditRequestSheet extends StatefulWidget {
+  const _EditRequestSheet({required this.student, required this.current});
+
+  final Student student;
+  final AttendanceStatus current;
+
+  @override
+  State<_EditRequestSheet> createState() => _EditRequestSheetState();
+}
+
+class _EditRequestSheetState extends State<_EditRequestSheet> {
+  late AttendanceStatus _status =
+      widget.current == AttendanceStatus.present ? AttendanceStatus.absent : AttendanceStatus.present;
+  final _reason = TextEditingController();
+
+  @override
+  void dispose() {
+    _reason.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final palette = StatusPalette.of(context);
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16, 0, 16, 16 + MediaQuery.viewInsetsOf(context).bottom),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(l10n.editRequestTitle, style: Theme.of(context).textTheme.titleMedium),
+          Text('${widget.student.fullName} · ${l10n.editRequestNow(l10n.attendance(widget.current))}',
+              style: Theme.of(context).textTheme.bodySmall),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final s in AttendanceStatus.values)
+                if (s != widget.current)
+                  ChoiceChip(
+                    key: Key('request.${s.name}'),
+                    avatar: Icon(StatusPalette.iconForStatus(s), color: palette.forStatus(s), size: 18),
+                    label: Text(l10n.attendance(s)),
+                    selected: _status == s,
+                    onSelected: (_) => setState(() => _status = s),
+                  ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            key: const Key('request.reason'),
+            controller: _reason,
+            decoration: InputDecoration(labelText: l10n.editRequestReason),
+            maxLength: 300,
+            onChanged: (_) => setState(() {}),
+          ),
+          FilledButton(
+            key: const Key('request.send'),
+            onPressed: _reason.text.trim().isEmpty ? null : () => Navigator.pop(context, (_status, _reason.text.trim())),
+            child: Text(l10n.editRequestSend),
+          ),
         ],
       ),
     );

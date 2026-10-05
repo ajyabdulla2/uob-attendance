@@ -12,11 +12,13 @@ import '../../features/auth/presentation/no_access_screen.dart';
 import '../../features/auth/presentation/splash_screen.dart';
 import '../../features/auth/presentation/verify_email_screen.dart';
 import '../../features/data_fix/presentation/data_fix_screen.dart';
+import '../../features/edit_requests/presentation/edit_requests_screen.dart';
 import '../../features/home/presentation/app_shell.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/import/presentation/import_screen.dart';
 import '../../features/leaves/presentation/leaves_screen.dart';
 import '../../features/settings/presentation/profile_screen.dart';
+import '../../features/stats/presentation/stage_dashboard_screen.dart';
 import '../../features/users/presentation/accounts_screen.dart';
 import '../../features/warnings/presentation/warnings_screen.dart';
 import '../firebase/doc_ids.dart';
@@ -37,6 +39,8 @@ abstract final class Routes {
   static const yearSettings = '/year-settings';
   static const leaves = '/leaves';
   static const warnings = '/warnings';
+  static const editRequests = '/edit-requests';
+  static const stageDashboard = '/stage-dashboard';
 
   /// Record screen of a class, optionally on a given lecture.
   static String recordFor(String assignmentId, {DateTime? date, int? lectureNo}) => Uri(path: record, queryParameters: {
@@ -69,6 +73,8 @@ String? redirectFor(AuthStatus status, String location) {
         _ when location.startsWith(Routes.yearSettings) && !permissions.canEditYear => Routes.home,
         _ when location.startsWith(Routes.leaves) && !permissions.canManageLeaves => Routes.home,
         _ when location.startsWith(Routes.warnings) && !permissions.canViewWarnings => Routes.home,
+        _ when location.startsWith(Routes.editRequests) && !permissions.canReviewEditRequests => Routes.home,
+        _ when location.startsWith(Routes.stageDashboard) && !permissions.canViewStageDashboard => Routes.home,
         _ => null,
       },
   };
@@ -104,6 +110,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.yearSettings, builder: (_, _) => const YearSettingsScreen()),
       GoRoute(path: Routes.leaves, builder: (_, _) => const LeavesScreen()),
       GoRoute(path: Routes.warnings, builder: (_, _) => const WarningsScreen()),
+      GoRoute(path: Routes.editRequests, builder: (_, _) => const EditRequestsScreen()),
+      GoRoute(path: Routes.stageDashboard, builder: (_, _) => const StageDashboardScreen()),
       GoRoute(
         path: Routes.register,
         builder: (_, s) => RegisterScreen(assignmentId: s.uri.queryParameters['a'] ?? ''),

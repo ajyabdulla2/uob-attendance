@@ -220,9 +220,27 @@ void main() {
     expect(find.byKey(const Key('record.locked')), findsOneWidget);
     expect(find.byKey(const Key('record.save')), findsNothing);
     expect(find.text('غائب 1'), findsOneWidget);
-    await tester.tap(studentTile(students[0]));
+
+    // Tapping no longer toggles: it asks the stage manager for a change.
+    await tester.tap(studentTile(students[2]));
+    await tester.pumpAndSettle();
+    expect(find.text('طلب تعديل'), findsOneWidget);
+    expect(find.byKey(const Key('request.absent')), findsNothing, reason: 'already absent');
+    expect(tester.widget<FilledButton>(find.byKey(const Key('request.send'))).onPressed, isNull,
+        reason: 'a reason is required');
+    await tester.enterText(find.byKey(const Key('request.reason')), 'حضر متأخراً بعد التسجيل');
     await tester.pump();
-    expect(find.text('غائب 1'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('request.send')));
+    await tester.pumpAndSettle();
+    expect(find.text('غائب 1'), findsOneWidget, reason: 'nothing changes until approved');
+    final request = (await fs.collection('editRequests').get()).docs.single.data();
+    expect(request['sessionId'], session.id);
+    expect(request['studentId'], '1003');
+    expect(request['requestedStatus'], 'present');
+    expect(request['currentStatus'], 'absent');
+    expect(request['status'], 'pending');
+    expect(request['requestedBy'], teacherEmail);
+    expect(find.textContaining('طلب تعديل بانتظار الموافقة'), findsOneWidget);
 
     await unmountApp(tester);
   });

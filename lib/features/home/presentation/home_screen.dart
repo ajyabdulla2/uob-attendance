@@ -55,6 +55,22 @@ class HomeScreen extends ConsumerWidget {
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => context.go(Routes.assignments),
                     ),
+                  if (perms.canViewStageDashboard)
+                    ListTile(
+                      key: const Key('home.dashboard'),
+                      leading: const Icon(Icons.dashboard_outlined),
+                      title: Text(l10n.dashAction),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => context.push(Routes.stageDashboard),
+                    ),
+                  if (perms.canReviewEditRequests)
+                    ListTile(
+                      key: const Key('home.requests'),
+                      leading: const Icon(Icons.edit_calendar),
+                      title: Text(l10n.editRequestsAction),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => context.push(Routes.editRequests),
+                    ),
                   if (perms.canViewWarnings)
                     ListTile(
                       key: const Key('home.warnings'),

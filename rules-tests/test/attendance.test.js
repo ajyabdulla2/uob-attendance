@@ -262,3 +262,55 @@ describe('edit requests after locking', () => {
     await assertFails(updateDoc(doc(as(env, SM3), 'editRequests', 'r1'), { status: 'rejected', decidedBy: SM3 }));
   });
 });
+
+describe('edit requests: the app\'s writes', () => {
+  it('teacher files; the stage manager approves in one batch (record, counts, stats, request, audit)', async () => {
+    const t = as(env, T1);
+    await assertSucceeds(setDoc(doc(t, 'editRequests', 'app1'), {
+      sessionId: LOCKED_SID, studentId: '1001', stageId: '3-morning', requestedStatus: 'present',
+      reason: 'كان حاضراً', requestedBy: T1, currentStatus: 'absent', status: 'pending',
+      decidedBy: null, decisionNote: '', departmentId: 'cs', createdAt: serverTimestamp(),
+    }));
+    await assertSucceeds(getDocs(query(collection(t, 'editRequests'), where('requestedBy', '==', T1))));
+    await assertFails(getDocs(query(collection(t, 'editRequests'), where('stageId', '==', '3-morning'),
+      where('status', '==', 'pending'))));
+
+    const sm = as(env, SM3);
+    await assertSucceeds(getDocs(query(collection(sm, 'editRequests'), where('stageId', '==', '3-morning'),
+      where('status', '==', 'pending'))));
+    const approve = (who) => {
+      const fs = as(env, who);
+      const b = writeBatch(fs);
+      b.set(doc(fs, 'sessions', LOCKED_SID, 'records', '1001'),
+        { studentId: '1001', status: 'present', updatedBy: who, updatedAt: serverTimestamp() }, { merge: true });
+      b.update(doc(fs, 'sessions', LOCKED_SID),
+        { counts: { present: 1, absent: 0, late: 0, excused: 0 }, updatedAt: serverTimestamp(), updatedBy: who });
+      b.set(doc(fs, 'stats', `${COURSE}__1001`), {
+        courseId: COURSE, studentId: '1001', stageId: '3-morning', lastSessionId: LOCKED_SID,
+        bySession: { [LOCKED_SID]: 'present' }, updatedAt: serverTimestamp(), departmentId: 'cs',
+      }, { merge: true });
+      b.update(doc(fs, 'editRequests', 'app1'), {
+        status: 'approved', decidedBy: who, decidedAt: serverTimestamp(), decisionNote: '', updatedAt: serverTimestamp(),
+      });
+      b.set(doc(collection(fs, 'auditLog')), {
+        actor: who, action: 'record.update', targetPath: `sessions/${LOCKED_SID}/records/1001`, stageId: '3-morning',
+        before: { status: 'absent' }, after: { status: 'present' }, departmentId: 'cs', at: serverTimestamp(),
+      });
+      return b.commit();
+    };
+    await assertFails(approve(T1));
+    await assertSucceeds(approve(SM3));
+  });
+});
+
+describe('stage dashboard queries', () => {
+  it('a stage manager lists the stage\'s lectures of recent days; others cannot', async () => {
+    const keys = [0, -1, -2].map((d) => utcMidnight(d).toISOString().slice(0, 10).replaceAll('-', ''));
+    const q = (who, stageId) => getDocs(query(collection(as(env, who), 'sessions'),
+      where('stageId', '==', stageId), where('dateKey', 'in', keys)));
+    await assertSucceeds(q(SM3, '3-morning'));
+    await assertSucceeds(q(SUPER, '1-evening'));
+    await assertFails(q(SM3, '1-evening'));
+    await assertFails(q(T2, '3-morning'));
+  });
+});
