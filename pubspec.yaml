@@ -26,6 +26,7 @@ dependencies:
 
   # Import / export
   excel: ^4.0.6
+  archive: ^3.6.1 # repairs openpyxl workbooks before package:excel reads them
   csv: ^8.0.0
   file_picker: ^13.1.0
 

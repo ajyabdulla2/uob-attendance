@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:archive/archive.dart';
 import 'package:csv/csv.dart';
 import 'package:excel/excel.dart';
 
@@ -27,7 +28,7 @@ abstract final class SpreadsheetReader {
   static SheetTable readXlsx(Uint8List bytes) {
     final Excel book;
     try {
-      book = Excel.decodeBytes(bytes);
+      book = Excel.decodeBytes(repairForPackageExcel(bytes));
     } catch (e) {
       throw SpreadsheetException(FileProblem.corrupt, '$e');
     }
@@ -47,6 +48,49 @@ abstract final class SpreadsheetReader {
       if (table != null) return table;
     }
     throw const SpreadsheetException(FileProblem.empty);
+  }
+
+  static const _workbookRels = 'xl/_rels/workbook.xml.rels';
+  static final _absoluteTarget = RegExp('Target=(["\'])/xl/');
+  static final _emptyInlineString = RegExp('(<c\\b[^>]*\\bt=(["\'])inlineStr\\2[^>]*?)(?:/>|></c>)');
+
+  /// Repairs valid workbooks that package:excel cannot read. Files written by
+  /// Python's openpyxl (common with AI agents):
+  ///  * name their parts with absolute paths
+  ///    (`Target="/xl/worksheets/sheet1.xml"`), but package:excel prefixes
+  ///    `xl/` to every target and then cannot find the sheet;
+  ///  * write empty text cells as `<c t="inlineStr"></c>`, but package:excel
+  ///    expects a `<t>` element in every inline string.
+  /// Other workbooks are returned untouched.
+  static Uint8List repairForPackageExcel(Uint8List bytes) {
+    final Archive archive;
+    try {
+      archive = ZipDecoder().decodeBytes(bytes);
+    } catch (_) {
+      return bytes; // Let package:excel report the damage.
+    }
+    var changed = false;
+    final out = Archive();
+    for (final file in archive.files) {
+      final isRels = file.name == _workbookRels;
+      final isSheet = file.name.startsWith('xl/worksheets/') && file.name.endsWith('.xml');
+      if (!file.isFile || !(isRels || isSheet)) {
+        out.addFile(file);
+        continue;
+      }
+      final xml = utf8.decode(file.content as List<int>);
+      final fixed = isRels
+          ? xml.replaceAllMapped(_absoluteTarget, (m) => 'Target=${m[1]}')
+          : xml.replaceAllMapped(_emptyInlineString, (m) => '${m[1]}><is><t></t></is></c>');
+      if (fixed == xml) {
+        out.addFile(file);
+      } else {
+        changed = true;
+        final encoded = utf8.encode(fixed);
+        out.addFile(ArchiveFile(file.name, encoded.length, encoded));
+      }
+    }
+    return changed ? Uint8List.fromList(ZipEncoder().encode(out)!) : bytes;
   }
 
   /// Converts any cell value to the string a person would see.

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:excel/excel.dart';
@@ -51,6 +52,27 @@ void main() {
       expect(table.headers, ['الاسم الرباعي', 'الرقم الجامعي', 'الوحدات']);
       expect(table.rows[0], ['علي', '2026001', '3']);
       expect(table.rows[1], ['x', '12.5', 'true']);
+    });
+
+    // test/fixtures/openpyxl_teachers.xlsx: written by Python openpyxl 3.1.5
+    // (fake data) — absolute part names and empty inline-string cells, which
+    // package:excel cannot read on its own.
+    test('reads workbooks written by openpyxl (AI agents, Python scripts)', () {
+      final bytes = File('test/fixtures/openpyxl_teachers.xlsx').readAsBytesSync();
+      expect(() => Excel.decodeBytes(bytes), throwsA(anything), reason: 'package:excel alone still fails');
+
+      final table = SpreadsheetReader.read(bytes, 'openpyxl_teachers.xlsx');
+      expect(table.headers, ['الاسم', 'اللقب العلمي', 'البريد الجامعي', 'الهاتف']);
+      expect(table.rows, [
+        ['تدريسي تجريبي أول', 'مدرس', 'first.teacher@example.edu', ''],
+        ['تدريسي تجريبي ثان', '', 'second.teacher@example.edu', '07701234567'],
+      ]);
+      expect(parseTeachers(table, existing: const {}).rows.map((r) => r.action), everyElement(RowAction.create));
+    });
+
+    test('leaves ordinary workbooks byte-for-byte untouched', () {
+      final bytes = ImportTemplates.build(ImportKind.courses);
+      expect(identical(SpreadsheetReader.repairForPackageExcel(bytes), bytes), isTrue);
     });
 
     test('corrupt files are reported, not thrown raw', () {
