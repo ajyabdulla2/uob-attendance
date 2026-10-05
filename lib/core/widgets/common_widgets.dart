@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../l10n/l10n.dart';
 import '../theme/app_settings.dart';
 
+/// The department's round logo (transparent outside the circle).
+const deptLogoAsset = 'assets/images/dept_logo.png';
+
 /// University / college / department lines shown on entry screens.
 class UniversityHeader extends StatelessWidget {
   const UniversityHeader({super.key});
@@ -14,10 +17,12 @@ class UniversityHeader extends StatelessWidget {
     final theme = Theme.of(context);
     return Column(
       children: [
-        CircleAvatar(
-          radius: 36,
-          backgroundColor: theme.colorScheme.primaryContainer,
-          child: Icon(Icons.how_to_reg, size: 40, color: theme.colorScheme.onPrimaryContainer),
+        Image.asset(
+          deptLogoAsset,
+          key: const Key('header.logo'),
+          width: 112,
+          height: 112,
+          semanticLabel: l10n.departmentName,
         ),
         const SizedBox(height: 12),
         Text(l10n.appTitle,

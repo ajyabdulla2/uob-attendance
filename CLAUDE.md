@@ -47,6 +47,7 @@ source tool/cloud_setup.sh   # يثبّت Flutter 3.47.6 في /opt/flutter-sdk �
 | توليد الترجمة بعد تعديل ARB | `flutter gen-l10n` (الملفات المولَّدة مُلتزَمة) |
 | بناء الويب | `flutter build web --release` |
 | ملفات Drift للويب | `./tool/build_drift_web.sh` (يحتاج github.com — نفّذه على جهاز المطوّر) |
+| أيقونات التطبيق (Android/iOS/الويب) بعد تعديل التصميم | `./tool/build_icons.sh` (Chromium + ImageMagick، متوفران هنا) ثم التزم الملفات المولَّدة؛ المعاينة في `build/icon_preview.png` |
 | فحص سير عمل GitHub | `go install github.com/rhysd/actionlint/cmd/actionlint@latest && ~/go/bin/actionlint` |
 
 ---
@@ -135,6 +136,7 @@ tool/            سكربتات الإعداد والفحص
 - النصوص اللاتينية داخل جمل عربية (رموز المواد، البريد) تُغلَّف بـ `bidiIsolate()` وإلا انقلب ترتيبها.
 - في RTL استعمل `Icons.chevron_right` للتقدّم (ينعكس تلقائياً)، و`EdgeInsetsDirectional`/`AlignmentDirectional`. حقول البريد وكلمة المرور `textDirection: ltr`.
 - خط **Cairo** مضمَّن في `assets/fonts/cairo` (رخصة OFL) — لا تحميل وقت التشغيل.
+- **الهوية**: شعار القسم `assets/images/dept_logo.png` (دائري، شفاف خارج الدائرة) في رأس شاشتي الدخول والتحميل (`UniversityHeader`)، ويُستعمل لاحقاً في رؤوس التقارير. تصميم الأيقونة `assets/icon/app_icon.svg` (من القسم) يضمّن الشعار؛ `tool/build_icons.sh` يولّد منه: أيقونة Android التكيفية (المحتوى مصغّر إلى 60٪ داخل المنطقة الآمنة + خلفية التدرج)، وأيقونات iOS معتمة، وأيقونات الويب (عادية + maskable) و`favicon`.
 - الحالات بلون + رمز معاً (`StatusPalette`).
 
 ### محلياً (Drift)

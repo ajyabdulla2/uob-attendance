@@ -64,6 +64,11 @@ flutter:
   uses-material-design: true
   generate: true
 
+  # Department logo: entry screens now, report headers later. The launcher
+  # icon sources (assets/icon/) are not bundled — see tool/build_icons.sh.
+  assets:
+    - assets/images/dept_logo.png
+
   fonts:
     - family: Cairo
       fonts:

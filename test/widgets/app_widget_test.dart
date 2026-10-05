@@ -1,7 +1,9 @@
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:uob_attendance/core/widgets/common_widgets.dart';
 import 'package:uob_attendance/features/auth/domain/app_user.dart';
 import 'package:uob_attendance/features/import/application/import_controller.dart';
 import 'package:uob_attendance/features/import/data/import_templates.dart';
@@ -19,6 +21,9 @@ void main() {
       final context = tester.element(find.byKey(const Key('login.email')));
       expect(Directionality.of(context), TextDirection.rtl);
       expect(Theme.of(context).textTheme.bodyMedium?.fontFamily, 'Cairo');
+      expect(find.byKey(const Key('header.logo')), findsOneWidget);
+      // The logo is bundled (a missing asset only shows up at runtime).
+      expect((await rootBundle.load(deptLogoAsset)).lengthInBytes, greaterThan(10000));
     });
 
     testWidgets('validates fields and switches to activation mode', (tester) async {
