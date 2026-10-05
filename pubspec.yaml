@@ -68,6 +68,7 @@ flutter:
   # icon sources (assets/icon/) are not bundled — see tool/build_icons.sh.
   assets:
     - assets/images/dept_logo.png
+    - shorebird.yaml
 
   fonts:
     - family: Cairo

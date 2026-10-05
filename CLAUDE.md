@@ -199,7 +199,7 @@ tool/            سكربتات الإعداد والفحص
 | في Expo | المقابل هنا | الحالة |
 | --- | --- | --- |
 | EAS Build (بناء APK على خوادم سحابية) | **GitHub Actions** `.github/workflows/android.yml` على خوادم GitHub (فيها Android SDK) | ✅ جاهز |
-| EAS Update (تحديث JS بلا بناء جديد) | **Shorebird** (`shorebird.dev`) code push لكود Dart | 📝 موثّق، يحتاج حساباً (محجوب هنا) |
+| EAS Update (تحديث JS بلا بناء جديد) | **Shorebird** code push لكود Dart: `android.yml` يبني كل APK كإصدار Shorebird، و`patch.yml` يرسل الرقع | ✅ مفعّل (`shorebird.yaml`) |
 | رسالة «تحديث جديد جاهز» | `config/app` + `UpdateGate` (لافتة أو شاشة إلزامية مع رابط التنزيل) | ✅ جاهز |
 | EAS Submit | iOS: `flutter build ipa` على macOS (GitHub macOS runner أو Codemagic) ثم TestFlight | 📝 يحتاج حساب Apple (99$ سنوياً) |
 | Firebase Hosting (نسخة الحاسوب + صفحة الخصوصية) | `firebase.json` + `web/privacy.html` (تُخدَم في `/privacy.html`) | ✅ جاهز (الصفحة مسودة) |
@@ -234,13 +234,12 @@ tool/            سكربتات الإعداد والفحص
 - `setup-check.yml` (يدوي، أو push يمس ملفاته): `tool/check_setup.mjs` يتحقق دون كشف أي سر من الأسرار (يفتح المفتاح بكلمات المرور عبر `tool/CheckKeystore.java` كما يفعل Gradle)، ومن مشروع Firebase الحي: تفعيل Email/Password، وجود Firestore وإغلاقها للزوار، تطابق القواعد المنشورة مع `firestore.rules` (بحساب الخدمة)، صفحة الخصوصية، والبيانات الأولى إن سمحت الصلاحية. للقراءة فقط. التقرير في Job summary؛ وأنا أقرؤه بـ `get_job_logs`.
 - `workflow_dispatch` لا يظهر إلا بعد دمج الملف في الفرع الافتراضي.
 
-### Shorebird (عند اعتماده)
-1. `shorebird login` ثم `shorebird init` (يضيف `shorebird.yaml` بمعرّف التطبيق — يُلتزَم في المستودع، ليس سراً).
-2. تحقّق أن نسخة Flutter مدعومة: `shorebird flutter versions list` (وإلا استعمل `--flutter-version`).
-3. الإصدار الأساسي: `shorebird release android --artifact=apk` بدل `flutter build apk` (عدّل `android.yml` حينها، مع `SHOREBIRD_TOKEN` وإجراء `shorebirdtech/setup-shorebird`).
-4. التعديلات: `shorebird patch android` — جرّبها أولاً على `--track=staging` (مقابل قناة preview) ثم stable.
-- الرقعة تصل فقط للنسخ بنفس رقم الإصدار، ولا تغيّر كوداً أصلياً — القاعدة نفسها أعلاه. الخطة المجانية: 5,000 تثبيت رقعة شهرياً.
-- ترحيلات مخطط Drift كود Dart (قابلة للترقيع) لكن اختبرها جيداً؛ القاعدة المحلية تحمل بيانات غير مرفوعة.
+### Shorebird (مفعّل)
+- `shorebird.yaml` (مُلتزَم، ليس سراً): `app_id: 5465811d-d73f-4408-8795-e8d2d6c7cb1e`، و`auto_update` الافتراضي: الهاتف ينزّل الرقعة في الخلفية ويطبّقها عند الفتح التالي. مُدرج في `assets` في `pubspec.yaml`.
+- السر `SHOREBIRD_TOKEN` = **مفتاح API** من console.shorebird.dev (`shorebird login:ci` أُلغي). `shorebird init` يحتاج Android SDK (جهاز المطوّر بلا SDK) و`android/gradlew` المولَّد (مُهمَل في git) — نُفِّذ مرة على GitHub بعد `flutter build apk --config-only`.
+- **الإصدار**: `android.yml` عند وجود السر يبني بـ `shorebird release android --artifact=apk --flutter-version=… -- --build-number=N`، فكل APK إصدار Shorebird اسمه `X.Y.Z+N` (N = رقم التشغيل). بلا السر يبني Flutter عادياً مع تحذير (لا يستقبل رقعاً).
+- **الرقعة** (تغيير Dart فقط): `git tag patch/X.Y.Z+N && git push origin patch/X.Y.Z+N` → `patch.yml` ينفّذ `shorebird patch android --release-version=X.Y.Z+N`. الرقعة تصل فقط للهواتف التي عليها ذلك الإصدار بالضبط؛ لذلك ثبّتوا الجميع على آخر APK ثم رقّعوه. أي تغيير أصلي (حزمة فيها كود Android، `android/`، الأيقونة) يحتاج APK جديداً.
+- الخطة المجانية: 5,000 تثبيت رقعة شهرياً. ترحيلات Drift كود Dart (قابلة للترقيع) لكن اختبرها جيداً؛ القاعدة المحلية تحمل بيانات غير مرفوعة.
 
 ### `config/app` و`accessRequests` (إضافات على جدول SPEC)
 `config/app`: `latestVersion`، `minVersion` (نصوص `X.Y.Z`)، `androidUrl`، `iosUrl`، `notes`. يقرؤها كل حساب نشط، ويكتبها المدراء فقط. تُضبط حالياً من Firebase Console.

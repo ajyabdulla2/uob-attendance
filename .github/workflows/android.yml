@@ -10,6 +10,9 @@
 #   GOOGLE_SERVICES_JSON_B64    base64 of android/app/google-services.json (if flutterfire created it)
 #   ANDROID_KEYSTORE_B64        base64 of the upload keystore (.jks)
 #   ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
+#   SHOREBIRD_TOKEN             Shorebird API key: the APK is built as a
+#                               Shorebird release, so Dart-only changes can
+#                               later reach it as a patch (no reinstall)
 name: Android APK
 
 on:
@@ -40,6 +43,7 @@ jobs:
       contents: write # create the GitHub Release on tags
     env:
       IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
+      SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
     steps:
       - uses: actions/checkout@v6
 
@@ -106,9 +110,24 @@ jobs:
 
       - run: flutter pub get
 
+      - uses: shorebirdtech/setup-shorebird@v1
+        if: env.SHOREBIRD_TOKEN != ''
+        with:
+          cache: true
+
       # versionCode must grow with every APK, or Android refuses the update.
+      # With Shorebird the APK is registered as release X.Y.Z+N: patches
+      # (`shorebird patch android`) target exactly that release.
       - name: Build release APK
-        run: flutter build apk --release --build-number=${{ github.run_number }}
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          if [ -n "$SHOREBIRD_TOKEN" ]; then
+            shorebird release android --artifact=apk --flutter-version="$FLUTTER_VERSION" -- --build-number="$BUILD_NUMBER"
+          else
+            echo "::warning::No SHOREBIRD_TOKEN: plain Flutter build, which can never receive patches."
+            flutter build apk --release --build-number="$BUILD_NUMBER"
+          fi
 
       - name: Name the APK
         id: apk
