@@ -1685,4 +1685,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get warnDeleted => 'Decision deleted.';
+
+  @override
+  String get registerPercent => '%';
+
+  @override
+  String get registerPercentHelp =>
+      'The student\'s absence percentage in the whole course (theory and practical per the year settings), after leaves. Refresh online to update.';
 }

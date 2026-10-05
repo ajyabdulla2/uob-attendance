@@ -10,6 +10,7 @@ import '../../academic/domain/academic_year.dart';
 import '../../assignments/domain/assignment.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../courses/domain/practical_group.dart';
+import '../../stats/domain/absence_summary.dart';
 import '../../students/domain/student.dart';
 import '../data/attendance_store.dart';
 import '../data/outbox_uploader.dart';
@@ -90,6 +91,47 @@ final classMarksProvider =
     StreamProvider.autoDispose.family<Map<String, Map<String, AttendanceStatus>>, String>((ref, id) {
   final sessions = ref.watch(classSessionsProvider(id)).value ?? const <AttendanceSession>[];
   return ref.watch(attendanceStoreProvider).watchMarks([for (final s in sessions) s.id]);
+});
+
+/// Bumped after the register fetches the course's stats and leaves.
+class StandingCacheTick extends Notifier<int> {
+  @override
+  int build() => 0;
+  void bump() => state++;
+}
+
+final standingCacheTickProvider = NotifierProvider<StandingCacheTick, int>(StandingCacheTick.new);
+
+/// Each student's percentage in the class's course: the course's statuses
+/// as last fetched from the server, overridden by this phone's own marks
+/// for this class (fresher), with the stage's approved leaves and the
+/// year's settings. Empty until the year has been downloaded.
+final classStandingsProvider =
+    FutureProvider.autoDispose.family<Map<String, AbsenceSummary>, String>((ref, id) async {
+  ref.watch(standingCacheTickProvider);
+  final a = ref.watch(localClassProvider(id));
+  final marks = ref.watch(classMarksProvider(id)).value;
+  final students = ref.watch(classStudentsProvider(id)).value;
+  final year = await ref.watch(cachedYearProvider.future);
+  if (a == null || marks == null || students == null || year == null) return const {};
+  final sync = ref.watch(teacherDataSyncProvider);
+  final server = await sync.cachedCourseStats(a.courseId);
+  final leaves = await sync.cachedLeaves(a.stageId);
+  final course = (await ref.watch(appDatabaseProvider).coursesOfStage(a.stageId)).where((c) => c.id == a.courseId).firstOrNull;
+  if (course == null) return const {};
+  return {
+    for (final s in students)
+      s.id: AbsenceSummary.of(
+        bySession: {
+          ...?server[s.id],
+          for (final MapEntry(key: sid, value: byStudent) in marks.entries) sid: ?byStudent[s.id],
+        },
+        leaves: [for (final l in leaves) if (l.studentId == s.id) l],
+        units: course.units,
+        year: year,
+        type: year.combinedTheoryPractical ? null : a.type.name,
+      ),
+  };
 });
 
 /// Batches the server refused (kept on the phone until retried).

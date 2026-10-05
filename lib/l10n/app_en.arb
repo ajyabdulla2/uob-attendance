@@ -466,5 +466,7 @@
   "warnFinalized": "The decision is now a locked deanery decision.",
   "warnDeleteTitle": "Delete the department decision?",
   "warnDeleteBody": "The saved decision is deleted (the percentages themselves are unaffected).",
-  "warnDeleted": "Decision deleted."
+  "warnDeleted": "Decision deleted.",
+  "registerPercent": "%",
+  "registerPercentHelp": "The student's absence percentage in the whole course (theory and practical per the year settings), after leaves. Refresh online to update."
 }

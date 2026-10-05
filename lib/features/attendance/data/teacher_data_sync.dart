@@ -8,6 +8,8 @@ import '../../academic/domain/academic_year.dart';
 import '../../assignments/domain/assignment.dart';
 import '../../courses/domain/course.dart';
 import '../../courses/domain/practical_group.dart';
+import '../../leaves/domain/leave.dart';
+import '../../stats/domain/student_course_stat.dart';
 import '../../students/domain/student.dart';
 import '../domain/attendance_session.dart';
 import 'attendance_store.dart';
@@ -103,6 +105,62 @@ class TeacherDataSync {
       if (ok) stored++;
     }
     return stored;
+  }
+
+  static String statsKey(String courseId) => 'stats:$courseId';
+  static String leavesKey(String stageId) => 'leaves:$stageId';
+
+  /// For the register's percentages: the course's `stats` (every class of
+  /// the course, so theory and practical add up) and the stage's leaves,
+  /// cached on the phone for offline use.
+  Future<void> pullStanding(Assignment a) async {
+    final stats = await _fs
+        .collection(Col.stats)
+        .where('stageId', isEqualTo: a.stageId)
+        .where('courseId', isEqualTo: a.courseId)
+        .get(_server);
+    await _db.writeState(statsKey(a.courseId), jsonEncode({
+      for (final d in stats.docs)
+        StudentCourseStat.fromMap(d.id, d.data()).studentId: {
+          for (final e in StudentCourseStat.fromMap(d.id, d.data()).bySession.entries) e.key: e.value.name,
+        },
+    }));
+    final leaves = await _fs.collection(Col.leaves).where('stageId', isEqualTo: a.stageId).get(_server);
+    await _db.writeState(leavesKey(a.stageId), jsonEncode([
+      for (final d in leaves.docs)
+        if (Leave.fromMap(d.id, d.data()) case final l when l.isApproved)
+          {'id': l.id, 'studentId': l.studentId, 'type': l.type.name, 'from': l.from.toIso8601String(), 'to': l.to.toIso8601String(), 'approvedBy': l.approvedBy},
+    ]));
+  }
+
+  /// The cached course statuses: student → session → status.
+  Future<Map<String, Map<String, AttendanceStatus>>> cachedCourseStats(String courseId) async {
+    final raw = await _db.readState(statsKey(courseId));
+    if (raw == null) return const {};
+    return {
+      for (final MapEntry(:key, :value) in (jsonDecode(raw) as Map).cast<String, Object?>().entries)
+        key: {
+          for (final MapEntry(key: sid, value: status) in (value as Map).cast<String, Object?>().entries)
+            sid: AttendanceStatus.values.firstWhere((s) => s.name == status, orElse: () => AttendanceStatus.present),
+        },
+    };
+  }
+
+  Future<List<Leave>> cachedLeaves(String stageId) async {
+    final raw = await _db.readState(leavesKey(stageId));
+    if (raw == null) return const [];
+    return [
+      for (final m in (jsonDecode(raw) as List).cast<Map<String, Object?>>())
+        Leave(
+          id: m['id'] as String,
+          studentId: m['studentId'] as String,
+          stageId: stageId,
+          type: LeaveType.values.firstWhere((t) => t.name == m['type'], orElse: () => LeaveType.other),
+          from: DateTime.parse(m['from'] as String),
+          to: DateTime.parse(m['to'] as String),
+          approvedBy: m['approvedBy'] as String?,
+        ),
+    ];
   }
 
   /// Members of a practical group change when a manager moves students; one

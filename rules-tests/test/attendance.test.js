@@ -232,6 +232,14 @@ describe('download and register query shapes (teacher)', () => {
     await assertFails(getDocs(query(collection(as(env, T2), 'sessions'),
       where('courseId', '==', COURSE), where('type', '==', 'theory'), where('target', '==', 'all'))));
   });
+
+  it('register percentages: the course\'s stats and the stage\'s leaves', async () => {
+    const q = (who, stageId) => getDocs(query(collection(as(env, who), 'stats'),
+      where('stageId', '==', stageId), where('courseId', '==', COURSE)));
+    await assertSucceeds(q(T1, '3-morning'));
+    await assertFails(q(T2, '3-morning'));
+    await assertSucceeds(getDocs(query(collection(as(env, T1), 'leaves'), where('stageId', '==', '3-morning'))));
+  });
 });
 
 describe('edit requests after locking', () => {

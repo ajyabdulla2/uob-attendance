@@ -265,6 +265,28 @@ void main() {
       expect(await TeacherDataSync(db, fs).pullClassSessions(theory, store), 0, reason: 'unchanged since last pull');
     });
 
+    test('the register caches the course\'s stats and the stage\'s approved leaves for percentages', () async {
+      final sid = AttendanceStore.sessionIdFor(theory, day, 1);
+      await fs.doc('stats/${course}__1').set({
+        'courseId': course, 'studentId': '1', 'stageId': '3-morning', 'bySession': {sid: 'absent'},
+      });
+      await fs.doc('stats/OTHER__1').set({'courseId': 'OTHER', 'studentId': '1', 'stageId': '3-morning', 'bySession': {}});
+      await fs.doc('leaves/l1').set({
+        'studentId': '1', 'stageId': '3-morning', 'type': 'sick', 'approvedBy': 'sm@uob.iq',
+        'from': Timestamp.fromDate(DateTime.utc(2026, 10, 1)), 'to': Timestamp.fromDate(DateTime.utc(2026, 10, 2)),
+      });
+      await fs.doc('leaves/l2').set({
+        'studentId': '2', 'stageId': '3-morning', 'type': 'sick',
+        'from': Timestamp.fromDate(DateTime.utc(2026, 10, 1)), 'to': Timestamp.fromDate(DateTime.utc(2026, 10, 2)),
+      });
+      final sync = TeacherDataSync(db, fs);
+      await sync.pullStanding(theory);
+      expect(await sync.cachedCourseStats(course), {'1': {sid: AttendanceStatus.absent}});
+      final leaves = await sync.cachedLeaves('3-morning');
+      expect(leaves.single.studentId, '1', reason: 'only approved leaves');
+      expect(leaves.single.days, 2);
+    });
+
     test('opening a practical class refreshes its group members (moved by a manager)', () async {
       final sync = TeacherDataSync(db, fs);
       await sync.refresh(t1);

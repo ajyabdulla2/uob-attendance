@@ -135,6 +135,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(Key('register.session.$sid')), findsOneWidget);
     expect(find.text(students[1].fullName), findsOneWidget);
+    // 3 units × 15 weeks = 45 lectures: the one absence is 2.2% (the late
+    // student stays at 0%); fetched stats/leaves are merged with this phone.
+    expect(find.text('2.2%'), findsOneWidget);
+    expect(find.text('0.0%'), findsNWidgets(2));
 
     await unmountApp(tester);
   });

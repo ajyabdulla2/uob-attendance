@@ -2899,6 +2899,18 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'حُذف القرار.'**
   String get warnDeleted;
+
+  /// No description provided for @registerPercent.
+  ///
+  /// In ar, this message translates to:
+  /// **'النسبة'**
+  String get registerPercent;
+
+  /// No description provided for @registerPercentHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسبة غياب الطالب في المادة كلها (النظري والعملي حسب إعدادات السنة)، بعد احتساب الإجازات. تُحدَّث بزر التحديث عند الاتصال.'**
+  String get registerPercentHelp;
 }
 
 class _AppLocalizationsDelegate

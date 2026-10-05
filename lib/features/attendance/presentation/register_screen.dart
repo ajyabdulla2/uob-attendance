@@ -9,6 +9,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../../assignments/domain/assignment.dart';
+import '../../stats/domain/absence_summary.dart';
+import '../../stats/domain/student_course_stat.dart';
 import '../../students/domain/student.dart';
 import '../application/attendance_providers.dart';
 import '../domain/attendance_session.dart';
@@ -32,10 +34,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final l10n = context.l10n;
     setState(() => _pulling = true);
     try {
-      final stored = await ref
-          .read(teacherDataSyncProvider)
-          .pullClassSessions(a, ref.read(attendanceStoreProvider))
-          .timeout(const Duration(seconds: 30));
+      final sync = ref.read(teacherDataSyncProvider);
+      final stored = await sync.pullClassSessions(a, ref.read(attendanceStoreProvider)).timeout(const Duration(seconds: 30));
+      await sync.pullStanding(a).timeout(const Duration(seconds: 30));
+      ref.read(standingCacheTickProvider.notifier).bump();
       if (!quiet && mounted) showSnack(context, l10n.registerPulled(stored));
     } on Object {
       if (mounted) showSnack(context, l10n.registerOffline);
@@ -79,6 +81,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         students: students.value!,
         sessions: sessions.value!,
         marks: marks.value!,
+        standings: ref.watch(classStandingsProvider(widget.assignmentId)).value ?? const {},
       );
     }
 
@@ -128,8 +131,10 @@ class _RegisterTable extends StatelessWidget {
     required this.students,
     required this.sessions,
     required this.marks,
+    required this.standings,
   });
 
+  final Map<String, AbsenceSummary> standings;
   final Assignment assignment;
   final List<Student> students;
   final List<AttendanceSession> sessions;
@@ -159,6 +164,10 @@ class _RegisterTable extends StatelessWidget {
             columns: [
               DataColumn(label: Text(l10n.registerStudent)),
               DataColumn(label: Text(l10n.registerAbsences), numeric: true),
+              DataColumn(
+                label: Tooltip(message: l10n.registerPercentHelp, child: Text(l10n.registerPercent)),
+                numeric: true,
+              ),
               for (final s in sessions)
                 DataColumn(
                   label: Tooltip(
@@ -185,6 +194,7 @@ class _RegisterTable extends StatelessWidget {
                     child: Text(st.fullName, overflow: TextOverflow.ellipsis),
                   )),
                   DataCell(Text('${absences(st.id)}')),
+                  DataCell(_PercentCell(key: Key('register.percent.${st.id}'), summary: standings[st.id])),
                   for (final s in sessions)
                     DataCell(switch (marks[s.id]?[st.id]) {
                       final status? => Tooltip(
@@ -197,6 +207,41 @@ class _RegisterTable extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// The student's percentage in the course, coloured by level, with ⚠ when
+/// one more absence reaches the next level.
+class _PercentCell extends StatelessWidget {
+  const _PercentCell({super.key, required this.summary});
+
+  final AbsenceSummary? summary;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = summary;
+    if (s == null || s.planned == 0) return const Text('–');
+    final l10n = context.l10n;
+    final color = StatusPalette.of(context).forLevel(s.level);
+    final next = s.nextLevel;
+    final edge = next != null && s.untilNext == 1;
+    return Tooltip(
+      message: [
+        l10n.warnAbsences(s.absences, s.planned, s.percent.toStringAsFixed(1)),
+        if (s.level != WarningLevel.none) l10n.warningLevel(s.level),
+        if (edge) l10n.warnOneMore(l10n.warningLevel(next)),
+      ].join('\n'),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (edge) Icon(Icons.warning_amber, size: 16, color: StatusPalette.of(context).forLevel(next)),
+          Text(
+            '${s.percent.toStringAsFixed(1)}%',
+            style: TextStyle(color: color, fontWeight: s.level == WarningLevel.none ? null : FontWeight.bold),
+          ),
+        ],
       ),
     );
   }

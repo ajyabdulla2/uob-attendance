@@ -1672,4 +1672,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get warnDeleted => 'حُذف القرار.';
+
+  @override
+  String get registerPercent => 'النسبة';
+
+  @override
+  String get registerPercentHelp =>
+      'نسبة غياب الطالب في المادة كلها (النظري والعملي حسب إعدادات السنة)، بعد احتساب الإجازات. تُحدَّث بزر التحديث عند الاتصال.';
 }
