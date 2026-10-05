@@ -67,6 +67,9 @@ final class Permissions {
   /// which only the super admin may do.
   bool get canRenameTeachers => isSuperAdmin;
 
+  /// Deleting account docs: the super admin only (rules), never their own.
+  bool canDeleteAccount(AppUser target) => isSuperAdmin && target.id != user.id;
+
   // ------------------------------------------------------------- backup --
   bool get canBackup => isAdmin;
   bool get canRestore => isSuperAdmin;

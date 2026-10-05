@@ -4,7 +4,7 @@
 import { describe, it, before, beforeEach, after } from 'node:test';
 import { assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
 import {
-  arrayRemove, deleteDoc, doc, getDoc, serverTimestamp, setDoc, writeBatch,
+  arrayRemove, collection, deleteDoc, doc, getDoc, getDocs, limit, query, serverTimestamp, setDoc, where, writeBatch,
 } from 'firebase/firestore';
 import {
   createEnv, seed, as, sessionData, student, users,
@@ -168,6 +168,28 @@ describe('changing a teacher\'s e-mail', () => {
 
   it('a deputy admin cannot delete accounts, so cannot finish an e-mail change', async () => {
     await assertFails(deleteDoc(doc(as(env, DEPUTY), 'users', T1)));
+  });
+});
+
+describe('deleting a teacher account (wrong e-mail)', () => {
+  it('the super admin finds lectures by e-mail and deletes the account with its links', async () => {
+    const db = as(env, SUPER);
+    await assertSucceeds(getDocs(query(collection(db, 'sessions'), where('openedBy', '==', T1), limit(1))));
+    await assertSucceeds(getDocs(query(collection(db, 'users'), where('roles', 'array-contains', 'teacher'))));
+    const b = writeBatch(db);
+    b.delete(doc(db, 'assignments', THEORY_T1));
+    b.delete(doc(db, 'assignments', PRACTICAL_T1));
+    b.delete(doc(db, 'users', T1));
+    b.set(...audit(db, SUPER, 'users.delete'));
+    await assertSucceeds(b.commit());
+  });
+
+  it('a deputy admin cannot (account docs are the super admin\'s)', async () => {
+    const db = as(env, DEPUTY);
+    const b = writeBatch(db);
+    b.delete(doc(db, 'assignments', THEORY_T1));
+    b.delete(doc(db, 'users', T1));
+    await assertFails(b.commit());
   });
 });
 

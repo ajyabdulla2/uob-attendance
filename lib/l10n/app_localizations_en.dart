@@ -1278,4 +1278,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String fixCountKept(int n) {
     return 'Kept (has history): $n';
   }
+
+  @override
+  String get accountDelete => 'Delete account';
+
+  @override
+  String accountDeleteBody(String email, int count) {
+    return 'The account $email and its class links ($count) will be deleted. This cannot be undone. Its owner can then activate with their correct e-mail and send a join request.';
+  }
+
+  @override
+  String get accountDeleted => 'Account deleted.';
+
+  @override
+  String get fixDeleteTeachers => 'Teachers';
+
+  @override
+  String get fixDeleteTeachersHelp =>
+      'Deletes plain teacher accounts that never recorded a lecture, with their class links (e.g. imported with wrong e-mails). Accounts with lectures stay: suspend them or change their e-mail.';
+
+  @override
+  String get fixOnlyTeacherHint =>
+      'Leave empty for every teacher who never recorded a lecture';
+
+  @override
+  String get fixOnlyEmail => 'One e-mail only (optional)';
+
+  @override
+  String get fixProblemHasHistory =>
+      'This account recorded lectures, so it is kept to protect the register. Suspend it instead, or change its e-mail under Data fixes.';
 }

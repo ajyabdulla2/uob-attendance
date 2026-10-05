@@ -86,6 +86,7 @@ extension DomainLabels on AppLocalizations {
         FixProblem.targetExists => fixProblemTargetExists(name ?? ''),
         FixProblem.ownAccount => fixProblemOwnAccount,
         FixProblem.nothingToDelete => fixProblemNothing,
+        FixProblem.hasHistory => fixProblemHasHistory,
       };
 
   String fixCount(FixCount c, int n) => switch (c) {

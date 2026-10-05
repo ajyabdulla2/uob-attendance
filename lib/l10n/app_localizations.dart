@@ -2233,6 +2233,54 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'يبقى لأن له تاريخاً: {n}'**
   String fixCountKept(int n);
+
+  /// No description provided for @accountDelete.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف الحساب'**
+  String get accountDelete;
+
+  /// No description provided for @accountDeleteBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'سيُحذف الحساب {email} مع إسناداته ({count}). لا يمكن التراجع. يستطيع صاحبه بعدها تفعيل حسابه ببريده الصحيح وإرسال طلب انضمام.'**
+  String accountDeleteBody(String email, int count);
+
+  /// No description provided for @accountDeleted.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُذف الحساب.'**
+  String get accountDeleted;
+
+  /// No description provided for @fixDeleteTeachers.
+  ///
+  /// In ar, this message translates to:
+  /// **'تدريسيون'**
+  String get fixDeleteTeachers;
+
+  /// No description provided for @fixDeleteTeachersHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُحذف حساب التدريسي (بلا صلاحية إدارية) الذي لم يسجّل أي محاضرة، مع إسناداته، كحسابات استُوردت ببريد خاطئ. من سجّل محاضرات يبقى: أوقف حسابه أو غيّر بريده.'**
+  String get fixDeleteTeachersHelp;
+
+  /// No description provided for @fixOnlyTeacherHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اتركه فارغاً لكل التدريسيين الذين لم يسجّلوا أي محاضرة'**
+  String get fixOnlyTeacherHint;
+
+  /// No description provided for @fixOnlyEmail.
+  ///
+  /// In ar, this message translates to:
+  /// **'بريد واحد فقط (اختياري)'**
+  String get fixOnlyEmail;
+
+  /// No description provided for @fixProblemHasHistory.
+  ///
+  /// In ar, this message translates to:
+  /// **'سجّل هذا الحساب محاضرات، فلا يُحذف حفاظاً على السجل. أوقف الحساب بدلاً من ذلك، أو غيّر بريده من «تصحيح البيانات».'**
+  String get fixProblemHasHistory;
 }
 
 class _AppLocalizationsDelegate

@@ -11,7 +11,7 @@ import '../domain/fix_plan.dart';
 
 enum _Tool { rename, delete }
 
-enum _DeleteKind { students, courses }
+enum _DeleteKind { students, courses, teachers }
 
 /// تصحيح البيانات (admins): change a university ID / course code / teacher
 /// e-mail, or delete what a wrong import created. Always preview first.
@@ -65,6 +65,7 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
         _Tool.delete => switch (_deleteKind) {
             _DeleteKind.students => await repo.planStudentDeletion(_stage.id, onlyId: _only.text, actor: actor),
             _DeleteKind.courses => await repo.planCourseDeletion(_stage.id, onlyCode: _only.text, actor: actor),
+            _DeleteKind.teachers => await repo.planTeacherDeletion(onlyEmail: _only.text, actor: actor),
           },
       };
       if (mounted) setState(() => _plan = plan);
@@ -123,8 +124,10 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
     final perms = ref.watch(permissionsProvider);
     final kinds = [FixKind.student, FixKind.course, if (perms.canRenameTeachers) FixKind.teacher];
     final kind = kinds.contains(_kind) ? _kind : FixKind.student;
-    final needsStage = _tool == _Tool.delete || kind == FixKind.course;
-    final ltr = _tool == _Tool.rename && kind == FixKind.teacher;
+    final deleteKinds = [_DeleteKind.students, _DeleteKind.courses, if (perms.canRenameTeachers) _DeleteKind.teachers];
+    final deleteKind = deleteKinds.contains(_deleteKind) ? _deleteKind : _DeleteKind.students;
+    final needsStage = _tool == _Tool.delete ? deleteKind != _DeleteKind.teachers : kind == FixKind.course;
+    final ltr = _tool == _Tool.rename ? kind == FixKind.teacher : deleteKind == _DeleteKind.teachers;
     final plan = _plan;
 
     return Scaffold(
@@ -168,11 +171,19 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
                 )
               else
                 SegmentedButton<_DeleteKind>(
+                  key: const Key('fix.deleteKind'),
                   segments: [
-                    ButtonSegment(value: _DeleteKind.students, label: Text(l10n.fixDeleteStudents)),
-                    ButtonSegment(value: _DeleteKind.courses, label: Text(l10n.fixDeleteCourses)),
+                    for (final k in deleteKinds)
+                      ButtonSegment(
+                        value: k,
+                        label: Text(switch (k) {
+                          _DeleteKind.students => l10n.fixDeleteStudents,
+                          _DeleteKind.courses => l10n.fixDeleteCourses,
+                          _DeleteKind.teachers => l10n.fixDeleteTeachers,
+                        }),
+                      ),
                   ],
-                  selected: {_deleteKind},
+                  selected: {deleteKind},
                   onSelectionChanged: _busy ? null : (s) => _reset(() => _deleteKind = s.first),
                 ),
               const SizedBox(height: 16),
@@ -214,11 +225,15 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
                   key: const Key('fix.only'),
                   controller: _only,
                   enabled: !_busy,
-                  decoration: InputDecoration(labelText: l10n.fixOnlyOne, hintText: l10n.fixOnlyOneHint),
+                  textDirection: ltr ? TextDirection.ltr : null,
+                  keyboardType: ltr ? TextInputType.emailAddress : null,
+                  decoration: ltr
+                      ? InputDecoration(labelText: l10n.fixOnlyEmail, hintText: l10n.fixOnlyTeacherHint)
+                      : InputDecoration(labelText: l10n.fixOnlyOne, hintText: l10n.fixOnlyOneHint),
                   onChanged: (_) => _reset(() {}),
                 ),
                 const SizedBox(height: 8),
-                Text(l10n.fixDeleteHelp, style: theme.textTheme.bodySmall),
+                Text(ltr ? l10n.fixDeleteTeachersHelp : l10n.fixDeleteHelp, style: theme.textTheme.bodySmall),
               ],
               const SizedBox(height: 4),
               Text(l10n.fixPhonesNote, style: theme.textTheme.bodySmall),

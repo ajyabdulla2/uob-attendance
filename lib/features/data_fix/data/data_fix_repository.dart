@@ -410,6 +410,65 @@ class DataFixRepository {
 
   // ------------------------------------------------------------ teachers --
 
+  /// Deletes a teacher account (or, without [onlyEmail], every plain
+  /// teacher account) that never recorded a lecture, with its class links —
+  /// e.g. accounts imported with wrong e-mails. Accounts with history keep
+  /// it intact: suspend them instead. Super admin only (rules).
+  Future<FixPlan> planTeacherDeletion({String? onlyEmail, required String actor}) async {
+    final me = DocIds.user(actor);
+    final candidates = <String>[];
+    final single = (onlyEmail ?? '').trim().isNotEmpty;
+    if (single) {
+      final email = ValueParsers.email(onlyEmail!);
+      if (email == null) return FixPlan.refused(FixProblem.invalidId);
+      if (email == me) return FixPlan.refused(FixProblem.ownAccount);
+      if (!(await _fs.collection(Col.users).doc(email).get()).exists) return FixPlan.refused(FixProblem.notFound);
+      candidates.add(email);
+    } else {
+      final teachers = await _fs.collection(Col.users).where('roles', arrayContains: 'teacher').get();
+      candidates.addAll([
+        for (final d in teachers.docs)
+          if (d.id != me && Fs.strings(d.data()['roles']).every((r) => r == 'teacher')) d.id,
+      ]);
+    }
+
+    final recorded = await Future.wait([
+      for (final email in candidates)
+        Future.wait([
+          _fs.collection(Col.sessions).where('openedBy', isEqualTo: email).limit(1).get(),
+          _fs.collection(Col.sessions).where('updatedBy', isEqualTo: email).limit(1).get(),
+        ]).then((r) => r.any((q) => q.docs.isNotEmpty)),
+    ]);
+    final deletable = [for (var i = 0; i < candidates.length; i++) if (!recorded[i]) candidates[i]];
+    final kept = candidates.length - deletable.length;
+    if (deletable.isEmpty) {
+      return single
+          ? FixPlan.refused(FixProblem.hasHistory)
+          : FixPlan(problems: const [FixProblem.nothingToDelete], counts: {FixCount.kept: kept});
+    }
+
+    final links = await Future.wait([
+      for (final email in deletable) _fs.collection(Col.assignments).where('teacherId', isEqualTo: email).get(),
+    ]);
+    final linkItems = [
+      for (final q in links)
+        for (final d in q.docs) [FixWrite.delete(d.reference.path)],
+    ];
+    return FixPlan(
+      counts: {FixCount.users: deletable.length, FixCount.assignments: linkItems.length, FixCount.kept: kept},
+      phases: [
+        [
+          ...linkItems,
+          for (final email in deletable) [FixWrite.delete('${Col.users}/$email')],
+          [
+            _audit(actor, 'users.delete', Col.users,
+                before: {'count': deletable.length, 'ids': deletable.take(100).toList()}),
+          ],
+        ],
+      ],
+    );
+  }
+
   /// Moves an account and its classes to another e-mail (super admin).
   /// History keeps the old e-mail in `openedBy` / `updatedBy`: that is who
   /// signed in at the time.

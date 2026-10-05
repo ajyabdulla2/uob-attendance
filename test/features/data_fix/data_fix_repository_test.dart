@@ -272,6 +272,59 @@ void main() {
     });
   });
 
+  group('deleting teacher accounts', () {
+    const wrong1 = 'wrong1@uobasrah.edu.iq';
+    const wrong2 = 'wrong2@uobasrah.edu.iq';
+    const active = 'active@uobasrah.edu.iq';
+    const manager = 'manager@uobasrah.edu.iq';
+
+    Future<void> seed() async {
+      await fs.doc('users/$admin').set(const AppUser(email: admin, name: 'المدير', roles: {UserRole.superAdmin, UserRole.teacher}).toMap());
+      for (final e in [wrong1, wrong2, active]) {
+        await fs.doc('users/$e').set(AppUser(email: e, name: e, teachingStages: const ['1-morning']).toMap());
+      }
+      await fs.doc('users/$manager').set(const AppUser(
+        email: manager,
+        name: 'مسؤول',
+        roles: {UserRole.stageManager, UserRole.teacher},
+        stageScopes: ['1-morning'],
+      ).toMap());
+      for (final e in [wrong1, active]) {
+        final a = Assignment.theory(teacherId: e, courseId: course.id, stageId: stage.id);
+        await fs.doc('assignments/${a.id}').set(a.toMap());
+      }
+      final recorded = Assignment.theory(teacherId: active, courseId: course.id, stageId: stage.id);
+      await fs.doc('sessions/x').set({...sessionOf(recorded).toMap(), 'openedBy': active, 'updatedBy': active});
+    }
+
+    test('without an e-mail: plain teachers who never recorded, with their links', () async {
+      await seed();
+      final plan = await repo.planTeacherDeletion(actor: admin);
+      expect(plan.counts, {FixCount.users: 2, FixCount.assignments: 1, FixCount.kept: 1});
+      await repo.apply(plan);
+      expect(await data(fs, 'users/$wrong1'), isNull);
+      expect(await data(fs, 'users/$wrong2'), isNull);
+      expect(await data(fs, 'assignments/${course.id}__theory__all__$wrong1'), isNull);
+      // Kept: recorded lectures, a stage manager, the admin.
+      expect(await data(fs, 'users/$active'), isNotNull);
+      expect(await data(fs, 'assignments/${course.id}__theory__all__$active'), isNotNull);
+      expect(await data(fs, 'users/$manager'), isNotNull);
+      expect(await data(fs, 'users/$admin'), isNotNull);
+      expect(await audit(fs), [containsPair('action', 'users.delete')]);
+    });
+
+    test('one e-mail: refused when it recorded lectures, for oneself, or when missing', () async {
+      await seed();
+      final one = await repo.planTeacherDeletion(onlyEmail: ' Wrong1@UOBasrah.edu.iq ', actor: admin);
+      expect(one.counts, {FixCount.users: 1, FixCount.assignments: 1, FixCount.kept: 0});
+      expect((await repo.planTeacherDeletion(onlyEmail: active, actor: admin)).problems, [FixProblem.hasHistory]);
+      expect((await repo.planTeacherDeletion(onlyEmail: admin, actor: admin)).problems, [FixProblem.ownAccount]);
+      expect((await repo.planTeacherDeletion(onlyEmail: 'no@x.iq', actor: admin)).problems, [FixProblem.notFound]);
+      // A stage manager or admin can be removed one by one (super admin).
+      expect((await repo.planTeacherDeletion(onlyEmail: manager, actor: admin)).problems, isEmpty);
+    });
+  });
+
   group('undo a wrong import', () {
     test('deletes only students without attendance, stats or leaves', () async {
       for (final id in ['1001', '1002', '1003', '1004']) {

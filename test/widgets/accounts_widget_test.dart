@@ -148,4 +148,35 @@ void main() {
     );
     expect(find.text('الحسابات'), findsNothing);
   });
+
+  testWidgets('the super admin deletes an account imported with a wrong e-mail', (tester) async {
+    const wrong = 'wrong.teacher@uobasrah.edu.iq';
+    final env = await pumpApp(tester, user: MockUser(email: adminEmail, isEmailVerified: true), profile: admin);
+    await env.db.doc('users/$wrong').set(const AppUser(email: wrong, name: 'تدريسي خطأ').toMap());
+    await env.db.doc('assignments/CS101_1-morning__theory__all__$wrong').set({
+      'teacherId': wrong, 'courseId': 'CS101_1-morning', 'stageId': '1-morning', 'type': 'theory', 'target': 'all',
+    });
+    await tester.tap(find.text('الحسابات'));
+    await tester.pumpAndSettle();
+
+    // No delete for one's own account.
+    await tester.tap(find.byKey(const Key('accounts.user.$adminEmail')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('account.delete')), findsNothing);
+    await tester.tap(find.text('إلغاء'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('accounts.user.$wrong')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('account.delete')));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('مع إسناداته (1)'), findsOneWidget);
+    await tester.tap(find.descendant(of: find.byType(AlertDialog), matching: find.byType(FilledButton)));
+    await tester.pumpAndSettle();
+
+    expect(find.text('حُذف الحساب.'), findsOneWidget);
+    expect((await env.db.doc('users/$wrong').get()).exists, isFalse);
+    expect((await env.db.collection('assignments').get()).docs, isEmpty);
+    expect(find.byKey(const Key('accounts.user.$wrong')), findsNothing);
+  });
 }

@@ -1272,4 +1272,33 @@ class AppLocalizationsAr extends AppLocalizations {
   String fixCountKept(int n) {
     return 'يبقى لأن له تاريخاً: $n';
   }
+
+  @override
+  String get accountDelete => 'حذف الحساب';
+
+  @override
+  String accountDeleteBody(String email, int count) {
+    return 'سيُحذف الحساب $email مع إسناداته ($count). لا يمكن التراجع. يستطيع صاحبه بعدها تفعيل حسابه ببريده الصحيح وإرسال طلب انضمام.';
+  }
+
+  @override
+  String get accountDeleted => 'حُذف الحساب.';
+
+  @override
+  String get fixDeleteTeachers => 'تدريسيون';
+
+  @override
+  String get fixDeleteTeachersHelp =>
+      'يُحذف حساب التدريسي (بلا صلاحية إدارية) الذي لم يسجّل أي محاضرة، مع إسناداته، كحسابات استُوردت ببريد خاطئ. من سجّل محاضرات يبقى: أوقف حسابه أو غيّر بريده.';
+
+  @override
+  String get fixOnlyTeacherHint =>
+      'اتركه فارغاً لكل التدريسيين الذين لم يسجّلوا أي محاضرة';
+
+  @override
+  String get fixOnlyEmail => 'بريد واحد فقط (اختياري)';
+
+  @override
+  String get fixProblemHasHistory =>
+      'سجّل هذا الحساب محاضرات، فلا يُحذف حفاظاً على السجل. أوقف الحساب بدلاً من ذلك، أو غيّر بريده من «تصحيح البيانات».';
 }

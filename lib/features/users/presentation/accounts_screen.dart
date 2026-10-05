@@ -9,6 +9,8 @@ import '../../../l10n/l10n.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../auth/domain/app_user.dart';
 import '../../auth/domain/permissions.dart';
+import '../../data_fix/application/data_fix_providers.dart';
+import '../../data_fix/domain/fix_plan.dart';
 import '../application/users_providers.dart';
 import '../data/accounts_repository.dart';
 import '../domain/access_request.dart';
@@ -53,9 +55,43 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
   }
 
   Future<void> _edit(AppUser before) async {
-    final after = await showAccountEditor(context, mode: AccountEditorMode.edit, initial: before);
+    final perms = ref.read(permissionsProvider);
+    final after = await showAccountEditor(
+      context,
+      mode: AccountEditorMode.edit,
+      initial: before,
+      onDelete: perms.canDeleteAccount(before) ? () => _delete(before) : null,
+    );
     if (after == null || !mounted) return;
     await _save(() => ref.read(accountsRepositoryProvider).update(before, after, actor: _actor), context.l10n.accountsSaved);
+  }
+
+  /// Removes an account that never recorded a lecture (e.g. imported with a
+  /// wrong e-mail), with its class links.
+  Future<void> _delete(AppUser user) async {
+    final l10n = context.l10n;
+    final repo = ref.read(dataFixRepositoryProvider);
+    try {
+      final plan = await repo.planTeacherDeletion(onlyEmail: user.id, actor: _actor);
+      if (!mounted) return;
+      if (plan.problems.isNotEmpty) {
+        showSnack(context, l10n.fixProblem(plan.problems.first, plan.mergeInto));
+        return;
+      }
+      final ok = await confirmDialog(
+        context,
+        title: l10n.accountDelete,
+        body: l10n.accountDeleteBody(bidiIsolate(user.id), plan.counts[FixCount.assignments] ?? 0),
+        confirmLabel: l10n.accountDelete,
+        destructive: true,
+      );
+      if (!ok || !mounted) return;
+      await _save(() => repo.apply(plan), l10n.accountDeleted);
+    } on FirebaseException catch (e) {
+      if (mounted) {
+        showSnack(context, e.code == 'permission-denied' ? l10n.permissionDenied : l10n.errorGeneric(e.message ?? e.code));
+      }
+    }
   }
 
   Future<void> _approve(AccessRequest request) async {
@@ -256,18 +292,28 @@ class _AccountTile extends StatelessWidget {
 enum AccountEditorMode { create, approve, edit }
 
 /// Shows the account form; returns the normalized account, or null when
-/// cancelled.
-Future<AppUser?> showAccountEditor(BuildContext context, {required AccountEditorMode mode, AppUser? initial}) =>
+/// cancelled. [onDelete] adds «حذف الحساب» (the dialog closes first).
+Future<AppUser?> showAccountEditor(
+  BuildContext context, {
+  required AccountEditorMode mode,
+  AppUser? initial,
+  VoidCallback? onDelete,
+}) =>
     showDialog<AppUser>(
       context: context,
-      builder: (_) => _AccountEditorDialog(mode: mode, initial: initial ?? const AppUser(email: '', name: '')),
+      builder: (_) => _AccountEditorDialog(
+        mode: mode,
+        initial: initial ?? const AppUser(email: '', name: ''),
+        onDelete: onDelete,
+      ),
     );
 
 class _AccountEditorDialog extends ConsumerStatefulWidget {
-  const _AccountEditorDialog({required this.mode, required this.initial});
+  const _AccountEditorDialog({required this.mode, required this.initial, this.onDelete});
 
   final AccountEditorMode mode;
   final AppUser initial;
+  final VoidCallback? onDelete;
 
   @override
   ConsumerState<_AccountEditorDialog> createState() => _AccountEditorDialogState();
@@ -428,6 +474,17 @@ class _AccountEditorDialogState extends ConsumerState<_AccountEditorDialog> {
         ),
       ),
       actions: [
+        if (widget.onDelete != null)
+          TextButton.icon(
+            key: const Key('account.delete'),
+            style: TextButton.styleFrom(foregroundColor: theme.colorScheme.error),
+            icon: const Icon(Icons.delete_outline),
+            label: Text(l10n.accountDelete),
+            onPressed: () {
+              Navigator.pop(context);
+              widget.onDelete!();
+            },
+          ),
         TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.cancel)),
         FilledButton(
           key: const Key('account.save'),

@@ -17,6 +17,9 @@ enum FixProblem {
 
   /// Deletion: everything selected has attendance history.
   nothingToDelete,
+
+  /// Deleting one account that recorded lectures (suspend it instead).
+  hasHistory,
 }
 
 /// Counters of the preview («سيُنقل: …»).

@@ -355,5 +355,13 @@
   "fixCountRecords": "Attendance records: {n}",
   "fixCountStats": "Absence stats: {n}",
   "fixCountLeaves": "Leaves: {n}",
-  "fixCountKept": "Kept (has history): {n}"
+  "fixCountKept": "Kept (has history): {n}",
+  "accountDelete": "Delete account",
+  "accountDeleteBody": "The account {email} and its class links ({count}) will be deleted. This cannot be undone. Its owner can then activate with their correct e-mail and send a join request.",
+  "accountDeleted": "Account deleted.",
+  "fixDeleteTeachers": "Teachers",
+  "fixDeleteTeachersHelp": "Deletes plain teacher accounts that never recorded a lecture, with their class links (e.g. imported with wrong e-mails). Accounts with lectures stay: suspend them or change their e-mail.",
+  "fixOnlyTeacherHint": "Leave empty for every teacher who never recorded a lecture",
+  "fixOnlyEmail": "One e-mail only (optional)",
+  "fixProblemHasHistory": "This account recorded lectures, so it is kept to protect the register. Suspend it instead, or change its e-mail under Data fixes."
 }
