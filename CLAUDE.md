@@ -87,6 +87,7 @@ tool/            سكربتات الإعداد والفحص
 - خدمتان فقط: **Authentication (بريد/كلمة مرور)** و**Cloud Firestore**. ممنوع Cloud Functions و Cloud Storage.
 - **لا مفاتيح في المستودع**: `lib/firebase_options.dart`، `google-services.json`، `GoogleService-Info.plist`، `.firebaserc` كلها في `.gitignore`. `tool/ensure_firebase_options.sh` يكتب ملفاً مؤقتاً يرمي خطأ، فيظهر `ConfigErrorApp` بدل الانهيار.
 - مشروع المحاكي والاختبارات: `demo-uob-attendance`.
+- مشروع الإنتاج: **`basrah-researches`** — اسم قديم لمشروع لم يُستعمل (بلغ الحساب حدّ عدد المشاريع)، وهو مخصّص لهذا التطبيق وحده. المعرّف لا يتغيّر، فنسخة الويب على `basrah-researches.web.app`.
 
 ### الحسابات والصلاحيات
 - وثيقة الحساب `users/{email}` — **المعرّف هو البريد بأحرف صغيرة**. القواعد تقرأها بـ `get(/users/$(request.auth.token.email.lower()))`.

@@ -44,7 +44,11 @@
    base64 -w0 upload-keystore.jks          # macOS: base64 -i upload-keystore.jks
    ```
 2. أضف الأسرار في GitHub ← Settings ← Secrets and variables ← Actions:
-   `ANDROID_KEYSTORE_B64` و`ANDROID_KEYSTORE_PASSWORD` و`ANDROID_KEY_ALIAS` و`ANDROID_KEY_PASSWORD` و`FIREBASE_OPTIONS_DART_B64` (ناتج `base64 -w0 lib/firebase_options.dart`)، و`GOOGLE_SERVICES_JSON_B64` إن أنشأ flutterfire الملف.
+   `ANDROID_KEYSTORE_B64` و`ANDROID_KEYSTORE_PASSWORD` و`ANDROID_KEY_ALIAS` و`ANDROID_KEY_PASSWORD` (في ملفات PKCS12 يساوي كلمة مرور الملف) و`FIREBASE_OPTIONS_DART_B64` (ناتج `base64 -w0 lib/firebase_options.dart`)، و`GOOGLE_SERVICES_JSON_B64` إن أنشأ flutterfire الملف.
+   على Windows (PowerShell) يُنسخ ناتج base64 لأي ملف مباشرة:
+   ```powershell
+   [Convert]::ToBase64String([IO.File]::ReadAllBytes("lib\firebase_options.dart")) | Set-Clipboard
+   ```
 3. لكل إصدار: ارفع `version` في `pubspec.yaml`، ثم:
    ```bash
    git tag v1.1.0 && git push origin v1.1.0
