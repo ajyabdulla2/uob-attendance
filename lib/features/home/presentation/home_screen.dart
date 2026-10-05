@@ -1,19 +1,18 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/database/database_provider.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../../academic/application/academic_providers.dart';
 import '../../assignments/application/assignments_providers.dart';
 import '../../assignments/domain/assignment.dart';
+import '../../attendance/application/attendance_providers.dart';
+import '../../attendance/presentation/sync_widgets.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../auth/domain/app_user.dart';
 import '../../users/application/users_providers.dart';
-import '../../../core/firebase/doc_ids.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -29,7 +28,7 @@ class HomeScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         children: [
           // The local queue lives on phones; the web panel works online.
-          if (!kIsWeb) const _PendingUploadsBanner(),
+          if (ref.watch(localFirstProvider)) const SyncStatusCard(),
           _WelcomeCard(user: user),
           const SizedBox(height: 12),
           const _ActiveYearLine(),
@@ -210,54 +209,53 @@ class _MyCourses extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
+    final local = ref.watch(localFirstProvider);
     return AsyncBody<List<Assignment>>(
-      value: ref.watch(myAssignmentsProvider),
+      // Phones list the downloaded classes (works offline); the web panel
+      // reads them online and only shows them.
+      value: local ? ref.watch(localClassesProvider) : ref.watch(myAssignmentsProvider),
       data: (items) {
         if (items.isEmpty) {
-          return Card(child: ListTile(leading: const Icon(Icons.info_outline), title: Text(l10n.homeNoCourses)));
+          final downloading = local && ref.watch(syncControllerProvider.select((s) => s.running));
+          return Card(
+            child: ListTile(
+              leading: downloading
+                  ? const SizedBox.square(dimension: 24, child: CircularProgressIndicator(strokeWidth: 3))
+                  : const Icon(Icons.info_outline),
+              title: Text(downloading ? l10n.homeDownloading : l10n.homeNoCourses),
+            ),
+          );
         }
-        final sorted = [...items]..sort((a, b) => a.courseId.compareTo(b.courseId));
+        final sorted = [...items]..sort((a, b) => a.id.compareTo(b.id));
         return Card(
           child: Column(
             children: [
               for (final a in sorted)
                 ListTile(
+                  key: Key('home.class.${a.id}'),
                   leading: Icon(a.type == AssignmentType.theory ? Icons.menu_book : Icons.computer),
                   title: Text(a.courseName.isEmpty ? a.courseId : a.courseName),
-                  subtitle: Text([
-                    l10n.stageId(a.stageId),
-                    a.type == AssignmentType.theory ? l10n.theoryLabel : l10n.practicalLabel,
-                    if (a.type == AssignmentType.practical) l10n.groupLabel(a.target),
-                    if (a.type == AssignmentType.theory)
-                      a.target == DocIds.allSections ? l10n.allSections : l10n.sectionLabel(a.target),
-                  ].join(' · ')),
+                  subtitle: Text(l10n.classLabel(a)),
+                  onTap: local ? () => context.push(Routes.recordFor(a.id)) : null,
+                  trailing: local
+                      ? IconButton(
+                          key: Key('home.register.${a.id}'),
+                          tooltip: l10n.registerAction,
+                          icon: const Icon(Icons.table_chart_outlined),
+                          onPressed: () => context.push(Routes.registerFor(a.id)),
+                        )
+                      : null,
                 ),
-              ListTile(
-                dense: true,
-                leading: const Icon(Icons.schedule),
-                title: Text(l10n.homeAttendanceSoon),
-              ),
+              if (!local)
+                ListTile(
+                  dense: true,
+                  leading: const Icon(Icons.phone_android),
+                  title: Text(l10n.homeRecordOnPhone),
+                ),
             ],
           ),
         );
       },
-    );
-  }
-}
-
-class _PendingUploadsBanner extends ConsumerWidget {
-  const _PendingUploadsBanner();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final count = ref.watch(pendingUploadsProvider).value ?? 0;
-    if (count == 0) return const SizedBox.shrink();
-    return Card(
-      color: Theme.of(context).colorScheme.secondaryContainer,
-      child: ListTile(
-        leading: const Icon(Icons.cloud_upload_outlined),
-        title: Text(context.l10n.pendingUploads(count)),
-      ),
     );
   }
 }

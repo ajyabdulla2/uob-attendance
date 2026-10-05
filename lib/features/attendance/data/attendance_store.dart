@@ -27,6 +27,18 @@ class AttendanceStore {
         lectureNo: lectureNo,
       );
 
+  /// Session a queued batch belongs to (batch IDs are `sessionId#micros`).
+  static String sessionOfBatch(String batchId) => batchId.split('#').first;
+
+  /// Gives up on a batch the server refused: drops it and — unless other
+  /// saves of that lecture are still queued — the local copy of the
+  /// lecture, so the register shows the server's version after a refresh.
+  Future<void> discardRejected(String batchId) => _db.transaction(() async {
+        await _db.deleteBatch(batchId);
+        final sid = sessionOfBatch(batchId);
+        if (!await _db.hasPendingWritesFor(sid)) await _db.deleteLocalSession(sid);
+      });
+
   /// Marks this device last saved for [sessionId] (empty for a new lecture).
   Future<Map<String, Mark>> marksOf(String sessionId) async => {
         for (final r in (await _db.recordsOfSession(sessionId)).values)

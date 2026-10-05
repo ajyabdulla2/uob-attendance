@@ -1,6 +1,9 @@
 import 'package:flutter/widgets.dart';
 
 import '../core/domain/stage_ref.dart';
+import '../core/firebase/doc_ids.dart';
+import '../features/assignments/domain/assignment.dart';
+import '../features/attendance/domain/attendance_session.dart';
 import '../features/auth/data/auth_repository.dart';
 import '../features/auth/domain/app_user.dart';
 import '../features/import/domain/import_models.dart';
@@ -55,6 +58,25 @@ extension DomainLabels on AppLocalizations {
         StudentStatus.withdrawn => statusWithdrawn,
         StudentStatus.transferredIn => statusTransferredIn,
       };
+
+  String attendance(AttendanceStatus s) => switch (s) {
+        AttendanceStatus.present => attPresent,
+        AttendanceStatus.absent => attAbsent,
+        AttendanceStatus.late => attLate,
+        AttendanceStatus.excused => attExcused,
+      };
+
+  /// «المرحلة الثالثة صباحي · نظري · الشعبة أ» for a teaching assignment.
+  String classLabel(Assignment a) => [
+        stageId(a.stageId),
+        if (a.type == AssignmentType.theory) ...[
+          theoryLabel,
+          a.target == DocIds.allSections ? allSections : sectionLabel(a.target),
+        ] else ...[
+          practicalLabel,
+          groupLabel(a.target),
+        ],
+      ].join(' · ');
 
   String authFailure(AuthException e) => switch (e.failure) {
         AuthFailure.invalidCredentials => authInvalidCredentials,

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/assignments/presentation/assignments_screen.dart';
+import '../../features/attendance/presentation/record_screen.dart';
+import '../../features/attendance/presentation/register_screen.dart';
 import '../../features/auth/application/auth_providers.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/no_access_screen.dart';
@@ -13,6 +15,7 @@ import '../../features/home/presentation/home_screen.dart';
 import '../../features/import/presentation/import_screen.dart';
 import '../../features/settings/presentation/profile_screen.dart';
 import '../../features/users/presentation/accounts_screen.dart';
+import '../firebase/doc_ids.dart';
 
 abstract final class Routes {
   static const splash = '/splash';
@@ -24,6 +27,17 @@ abstract final class Routes {
   static const assignments = '/assignments';
   static const accounts = '/accounts';
   static const profile = '/profile';
+  static const record = '/record';
+  static const register = '/register';
+
+  /// Record screen of a class, optionally on a given lecture.
+  static String recordFor(String assignmentId, {DateTime? date, int? lectureNo}) => Uri(path: record, queryParameters: {
+        'a': assignmentId,
+        if (date != null) 'd': DocIds.dateKey(date),
+        if (lectureNo != null) 'n': '$lectureNo',
+      }).toString();
+
+  static String registerFor(String assignmentId) => Uri(path: register, queryParameters: {'a': assignmentId}).toString();
 
   static const _gates = {splash, login, verifyEmail, noAccess};
 }
@@ -65,6 +79,19 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.login, builder: (_, _) => const LoginScreen()),
       GoRoute(path: Routes.verifyEmail, builder: (_, _) => const VerifyEmailScreen()),
       GoRoute(path: Routes.noAccess, builder: (_, _) => const NoAccessScreen()),
+      // Full-screen pages pushed above the shell (back button, no nav bar).
+      GoRoute(
+        path: Routes.record,
+        builder: (_, s) => RecordScreen(
+          assignmentId: s.uri.queryParameters['a'] ?? '',
+          date: DocIds.parseDateKey(s.uri.queryParameters['d'] ?? ''),
+          lectureNo: int.tryParse(s.uri.queryParameters['n'] ?? ''),
+        ),
+      ),
+      GoRoute(
+        path: Routes.register,
+        builder: (_, s) => RegisterScreen(assignmentId: s.uri.queryParameters['a'] ?? ''),
+      ),
       ShellRoute(
         builder: (context, state, child) => AppShell(location: state.matchedLocation, child: child),
         routes: [

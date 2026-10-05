@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/router/app_router.dart';
 import '../../../l10n/l10n.dart';
 import '../../app_update/presentation/update_gate.dart';
+import '../../attendance/presentation/sync_widgets.dart';
 import '../../auth/application/auth_providers.dart';
 
 class _Destination {
@@ -64,14 +65,14 @@ class AppShell extends ConsumerWidget {
               ],
             ),
             const VerticalDivider(width: 1),
-            Expanded(child: UpdateGate(child: child)),
+            Expanded(child: SyncLifecycle(child: UpdateGate(child: child))),
           ],
         ),
       );
     }
 
     return Scaffold(
-      body: UpdateGate(child: child),
+      body: SyncLifecycle(child: UpdateGate(child: child)),
       bottomNavigationBar: NavigationBar(
         selectedIndex: index,
         onDestinationSelected: go,

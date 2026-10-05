@@ -52,6 +52,17 @@ abstract final class DocIds {
     return '${date.year.toString().padLeft(4, '0')}${two(date.month)}${two(date.day)}';
   }
 
+  /// Inverse of [dateKey] (UTC midnight); null when malformed.
+  static DateTime? parseDateKey(String key) {
+    if (!RegExp(r'^\d{8}$').hasMatch(key)) return null;
+    final date = DateTime.utc(
+      int.parse(key.substring(0, 4)),
+      int.parse(key.substring(4, 6)),
+      int.parse(key.substring(6)),
+    );
+    return dateKey(date) == key ? date : null;
+  }
+
   /// Digits only (Arabic-Indic digits converted); keeps other characters but
   /// strips whitespace and replaces `/` which Firestore IDs cannot contain.
   static String normalizeUniversityId(String raw) {

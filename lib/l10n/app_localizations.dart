@@ -632,12 +632,6 @@ abstract class AppLocalizations {
   /// **'لم تُسند إليك مواد بعد.'**
   String get homeNoCourses;
 
-  /// No description provided for @homeAttendanceSoon.
-  ///
-  /// In ar, this message translates to:
-  /// **'تسجيل الحضور يأتي في المرحلة الثانية من التطبيق.'**
-  String get homeAttendanceSoon;
-
   /// No description provided for @homeSetupTitle.
   ///
   /// In ar, this message translates to:
@@ -1699,6 +1693,288 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'أُلغي الطلب.'**
   String get joinCancelled;
+
+  /// No description provided for @attPresent.
+  ///
+  /// In ar, this message translates to:
+  /// **'حاضر'**
+  String get attPresent;
+
+  /// No description provided for @attAbsent.
+  ///
+  /// In ar, this message translates to:
+  /// **'غائب'**
+  String get attAbsent;
+
+  /// No description provided for @attLate.
+  ///
+  /// In ar, this message translates to:
+  /// **'متأخر'**
+  String get attLate;
+
+  /// No description provided for @attExcused.
+  ///
+  /// In ar, this message translates to:
+  /// **'مُجاز'**
+  String get attExcused;
+
+  /// No description provided for @recordAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'تسجيل الحضور'**
+  String get recordAction;
+
+  /// No description provided for @registerAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'سجل الحضور'**
+  String get registerAction;
+
+  /// No description provided for @homeRecordOnPhone.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُسجَّل الحضور من تطبيق الهاتف (يعمل دون اتصال).'**
+  String get homeRecordOnPhone;
+
+  /// No description provided for @homeDownloading.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارٍ تنزيل موادك وطلبتك…'**
+  String get homeDownloading;
+
+  /// No description provided for @recordDate.
+  ///
+  /// In ar, this message translates to:
+  /// **'التاريخ'**
+  String get recordDate;
+
+  /// No description provided for @recordLectureN.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحاضرة {n}'**
+  String recordLectureN(int n);
+
+  /// No description provided for @recordNewLecture.
+  ///
+  /// In ar, this message translates to:
+  /// **'محاضرة جديدة'**
+  String get recordNewLecture;
+
+  /// No description provided for @recordSearch.
+  ///
+  /// In ar, this message translates to:
+  /// **'بحث بالاسم أو الرقم الجامعي'**
+  String get recordSearch;
+
+  /// No description provided for @recordTapHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اضغط على الطالب للتبديل بين حاضر وغائب، واضغط مطوّلاً لاختيار «متأخر» أو «مُجاز» أو كتابة ملاحظة.'**
+  String get recordTapHint;
+
+  /// No description provided for @recordNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملاحظة'**
+  String get recordNote;
+
+  /// No description provided for @recordSave.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظ الحضور'**
+  String get recordSave;
+
+  /// No description provided for @recordSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُفظ على الهاتف، ويُرفع تلقائياً عند توفّر الاتصال.'**
+  String get recordSaved;
+
+  /// No description provided for @recordNothingChanged.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا تغييرات منذ آخر حفظ.'**
+  String get recordNothingChanged;
+
+  /// No description provided for @recordLocked.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهت مهلة التعديل لهذه المحاضرة؛ أي تعديل الآن يكون عبر مسؤول المرحلة.'**
+  String get recordLocked;
+
+  /// No description provided for @recordLockedOverride.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحاضرة مقفلة للتدريسي، ويمكنك تعديلها بصفتك مسؤولاً.'**
+  String get recordLockedOverride;
+
+  /// No description provided for @recordLocksAt.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُقفل التعديل {date} {time}'**
+  String recordLocksAt(String date, String time);
+
+  /// No description provided for @recordFuture.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن تسجيل حضور يوم لم يأتِ بعد.'**
+  String get recordFuture;
+
+  /// No description provided for @recordNoStudents.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد طلبة لهذه المادة على الهاتف. اضغط «مزامنة الآن» بعد أن تضيفهم الإدارة.'**
+  String get recordNoStudents;
+
+  /// No description provided for @recordNeedSync.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تُنزَّل بيانات السنة الدراسية بعد. اتصل بالإنترنت واضغط «مزامنة الآن».'**
+  String get recordNeedSync;
+
+  /// No description provided for @recordClassMissing.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه المادة ليست ضمن موادك على هذا الهاتف.'**
+  String get recordClassMissing;
+
+  /// No description provided for @recordDiscardTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تجاهل التغييرات؟'**
+  String get recordDiscardTitle;
+
+  /// No description provided for @recordDiscardBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تُحفَظ تغييراتك على هذه المحاضرة.'**
+  String get recordDiscardBody;
+
+  /// No description provided for @recordDiscard.
+  ///
+  /// In ar, this message translates to:
+  /// **'تجاهل'**
+  String get recordDiscard;
+
+  /// No description provided for @registerTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'سجل الحضور'**
+  String get registerTitle;
+
+  /// No description provided for @registerEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد محاضرات مسجّلة بعد.'**
+  String get registerEmpty;
+
+  /// No description provided for @registerStudent.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطالب'**
+  String get registerStudent;
+
+  /// No description provided for @registerAbsences.
+  ///
+  /// In ar, this message translates to:
+  /// **'الغياب'**
+  String get registerAbsences;
+
+  /// No description provided for @registerRefresh.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحديث من الخادم'**
+  String get registerRefresh;
+
+  /// No description provided for @registerPulled.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُدِّث السجل ({count} محاضرة جديدة أو معدّلة).'**
+  String registerPulled(int count);
+
+  /// No description provided for @registerOffline.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر الاتصال بالخادم؛ يُعرض ما على الهاتف.'**
+  String get registerOffline;
+
+  /// No description provided for @registerOpenLecture.
+  ///
+  /// In ar, this message translates to:
+  /// **'فتح المحاضرة'**
+  String get registerOpenLecture;
+
+  /// No description provided for @syncNow.
+  ///
+  /// In ar, this message translates to:
+  /// **'مزامنة الآن'**
+  String get syncNow;
+
+  /// No description provided for @syncAllUploaded.
+  ///
+  /// In ar, this message translates to:
+  /// **'كل السجلات مرفوعة'**
+  String get syncAllUploaded;
+
+  /// No description provided for @syncRunning.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارٍ المزامنة…'**
+  String get syncRunning;
+
+  /// No description provided for @syncOffline.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد اتصال؛ السجلات محفوظة على الهاتف وتُرفع لاحقاً.'**
+  String get syncOffline;
+
+  /// No description provided for @syncLast.
+  ///
+  /// In ar, this message translates to:
+  /// **'آخر رفع {time}'**
+  String syncLast(String time);
+
+  /// No description provided for @syncNever.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تتم المزامنة بعد'**
+  String get syncNever;
+
+  /// No description provided for @syncStale.
+  ///
+  /// In ar, this message translates to:
+  /// **'توجد سجلات لم تُرفع منذ أكثر من 24 ساعة. اتصل بالإنترنت لرفعها.'**
+  String get syncStale;
+
+  /// No description provided for @syncRejected.
+  ///
+  /// In ar, this message translates to:
+  /// **'رفض الخادم {count} عملية حفظ'**
+  String syncRejected(int count);
+
+  /// No description provided for @syncRejectedBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'غالباً لأن مهلة التعديل انتهت قبل الرفع أو تغيّر إسنادك. أعد المحاولة، أو احذفها من الهاتف واطلب التعديل من مسؤول المرحلة.'**
+  String get syncRejectedBody;
+
+  /// No description provided for @syncDiscard.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف من الهاتف'**
+  String get syncDiscard;
+
+  /// No description provided for @syncDiscardBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستُحذف هذه التعديلات من الهاتف، وتُنزَّل نسخة الخادم عند تحديث السجل.'**
+  String get syncDiscardBody;
+
+  /// No description provided for @syncProblem.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّرت المزامنة ({code})'**
+  String syncProblem(String code);
 }
 
 class _AppLocalizationsDelegate

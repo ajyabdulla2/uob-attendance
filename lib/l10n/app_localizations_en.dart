@@ -301,9 +301,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeNoCourses => 'No courses assigned to you yet.';
 
   @override
-  String get homeAttendanceSoon => 'Attendance recording arrives in phase 2.';
-
-  @override
   String get homeSetupTitle => 'Initial setup';
 
   @override
@@ -950,4 +947,170 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get joinCancelled => 'Request cancelled.';
+
+  @override
+  String get attPresent => 'Present';
+
+  @override
+  String get attAbsent => 'Absent';
+
+  @override
+  String get attLate => 'Late';
+
+  @override
+  String get attExcused => 'Excused';
+
+  @override
+  String get recordAction => 'Take attendance';
+
+  @override
+  String get registerAction => 'Register';
+
+  @override
+  String get homeRecordOnPhone =>
+      'Attendance is recorded in the phone app (works offline).';
+
+  @override
+  String get homeDownloading => 'Downloading your courses and students…';
+
+  @override
+  String get recordDate => 'Date';
+
+  @override
+  String recordLectureN(int n) {
+    return 'Lecture $n';
+  }
+
+  @override
+  String get recordNewLecture => 'New lecture';
+
+  @override
+  String get recordSearch => 'Search by name or ID';
+
+  @override
+  String get recordTapHint =>
+      'Tap a student to switch present/absent; long-press for late, excused or a note.';
+
+  @override
+  String get recordNote => 'Note';
+
+  @override
+  String get recordSave => 'Save attendance';
+
+  @override
+  String get recordSaved =>
+      'Saved on this phone; it uploads automatically when online.';
+
+  @override
+  String get recordNothingChanged => 'No changes since the last save.';
+
+  @override
+  String get recordLocked =>
+      'Editing time for this lecture is over; changes now go through the stage manager.';
+
+  @override
+  String get recordLockedOverride =>
+      'Locked for teachers; you can still edit it as a manager.';
+
+  @override
+  String recordLocksAt(String date, String time) {
+    return 'Editing locks $date $time';
+  }
+
+  @override
+  String get recordFuture => 'You cannot record a day that has not come yet.';
+
+  @override
+  String get recordNoStudents =>
+      'No students for this class on this phone. Press \"Sync now\" once the department adds them.';
+
+  @override
+  String get recordNeedSync =>
+      'The academic year has not been downloaded yet. Connect and press \"Sync now\".';
+
+  @override
+  String get recordClassMissing =>
+      'This class is not among your courses on this phone.';
+
+  @override
+  String get recordDiscardTitle => 'Discard changes?';
+
+  @override
+  String get recordDiscardBody => 'Your changes to this lecture are not saved.';
+
+  @override
+  String get recordDiscard => 'Discard';
+
+  @override
+  String get registerTitle => 'Attendance register';
+
+  @override
+  String get registerEmpty => 'No lectures recorded yet.';
+
+  @override
+  String get registerStudent => 'Student';
+
+  @override
+  String get registerAbsences => 'Absences';
+
+  @override
+  String get registerRefresh => 'Refresh from server';
+
+  @override
+  String registerPulled(int count) {
+    return 'Register updated ($count new or changed lectures).';
+  }
+
+  @override
+  String get registerOffline =>
+      'Could not reach the server; showing what is on this phone.';
+
+  @override
+  String get registerOpenLecture => 'Open lecture';
+
+  @override
+  String get syncNow => 'Sync now';
+
+  @override
+  String get syncAllUploaded => 'Everything is uploaded';
+
+  @override
+  String get syncRunning => 'Syncing…';
+
+  @override
+  String get syncOffline =>
+      'Offline; records are kept on the phone and upload later.';
+
+  @override
+  String syncLast(String time) {
+    return 'Last upload $time';
+  }
+
+  @override
+  String get syncNever => 'Not synced yet';
+
+  @override
+  String get syncStale =>
+      'Some records have not been uploaded for over 24 hours. Connect to upload them.';
+
+  @override
+  String syncRejected(int count) {
+    return 'The server refused $count save(s)';
+  }
+
+  @override
+  String get syncRejectedBody =>
+      'Usually the lecture locked before the upload or your assignment changed. Retry, or remove it from the phone and ask the stage manager.';
+
+  @override
+  String get syncDiscard => 'Remove from phone';
+
+  @override
+  String get syncDiscardBody =>
+      'These changes are removed from the phone; the server copy is downloaded when the register is refreshed.';
+
+  @override
+  String syncProblem(String code) {
+    return 'Sync failed ($code)';
+  }
 }

@@ -446,6 +446,17 @@ class AppDatabase extends _$AppDatabase {
         updates: {outboxEntries},
       );
 
+  /// Removes every queued row of [batchId] (the user gave up on it).
+  Future<void> deleteBatch(String batchId) =>
+      (delete(outboxEntries)..where((t) => t.batchId.equals(batchId))).go();
+
+  /// Removes the local copy of a session (the next download restores the
+  /// server's version).
+  Future<void> deleteLocalSession(String sessionId) => transaction(() async {
+        await (delete(localRecords)..where((t) => t.sessionId.equals(sessionId))).go();
+        await (delete(localSessions)..where((t) => t.id.equals(sessionId))).go();
+      });
+
   /// Rejected batches: one entry per batch with its first path and error.
   Stream<List<OutboxEntry>> watchRejected() =>
       (select(outboxEntries)

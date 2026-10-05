@@ -148,7 +148,6 @@
   "homeStageScopes": "المراحل المسندة إليك",
   "homeMyCourses": "موادي",
   "homeNoCourses": "لم تُسند إليك مواد بعد.",
-  "homeAttendanceSoon": "تسجيل الحضور يأتي في المرحلة الثانية من التطبيق.",
   "homeSetupTitle": "تهيئة البيانات الأساسية",
   "homeSetupBody": "لم تُنشأ المراحل الثمان أو السنة الدراسية النشطة بعد.",
   "homeSetupAction": "تهيئة الآن",
@@ -680,5 +679,97 @@
     }
   },
   "joinCancel": "إلغاء الطلب",
-  "joinCancelled": "أُلغي الطلب."
+  "joinCancelled": "أُلغي الطلب.",
+  "attPresent": "حاضر",
+  "attAbsent": "غائب",
+  "attLate": "متأخر",
+  "attExcused": "مُجاز",
+  "recordAction": "تسجيل الحضور",
+  "registerAction": "سجل الحضور",
+  "homeRecordOnPhone": "يُسجَّل الحضور من تطبيق الهاتف (يعمل دون اتصال).",
+  "homeDownloading": "جارٍ تنزيل موادك وطلبتك…",
+  "recordDate": "التاريخ",
+  "recordLectureN": "المحاضرة {n}",
+  "@recordLectureN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNewLecture": "محاضرة جديدة",
+  "recordSearch": "بحث بالاسم أو الرقم الجامعي",
+  "recordTapHint": "اضغط على الطالب للتبديل بين حاضر وغائب، واضغط مطوّلاً لاختيار «متأخر» أو «مُجاز» أو كتابة ملاحظة.",
+  "recordNote": "ملاحظة",
+  "recordSave": "حفظ الحضور",
+  "recordSaved": "حُفظ على الهاتف، ويُرفع تلقائياً عند توفّر الاتصال.",
+  "recordNothingChanged": "لا تغييرات منذ آخر حفظ.",
+  "recordLocked": "انتهت مهلة التعديل لهذه المحاضرة؛ أي تعديل الآن يكون عبر مسؤول المرحلة.",
+  "recordLockedOverride": "المحاضرة مقفلة للتدريسي، ويمكنك تعديلها بصفتك مسؤولاً.",
+  "recordLocksAt": "يُقفل التعديل {date} {time}",
+  "@recordLocksAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "recordFuture": "لا يمكن تسجيل حضور يوم لم يأتِ بعد.",
+  "recordNoStudents": "لا يوجد طلبة لهذه المادة على الهاتف. اضغط «مزامنة الآن» بعد أن تضيفهم الإدارة.",
+  "recordNeedSync": "لم تُنزَّل بيانات السنة الدراسية بعد. اتصل بالإنترنت واضغط «مزامنة الآن».",
+  "recordClassMissing": "هذه المادة ليست ضمن موادك على هذا الهاتف.",
+  "recordDiscardTitle": "تجاهل التغييرات؟",
+  "recordDiscardBody": "لم تُحفَظ تغييراتك على هذه المحاضرة.",
+  "recordDiscard": "تجاهل",
+  "registerTitle": "سجل الحضور",
+  "registerEmpty": "لا توجد محاضرات مسجّلة بعد.",
+  "registerStudent": "الطالب",
+  "registerAbsences": "الغياب",
+  "registerRefresh": "تحديث من الخادم",
+  "registerPulled": "حُدِّث السجل ({count} محاضرة جديدة أو معدّلة).",
+  "@registerPulled": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "registerOffline": "تعذّر الاتصال بالخادم؛ يُعرض ما على الهاتف.",
+  "registerOpenLecture": "فتح المحاضرة",
+  "syncNow": "مزامنة الآن",
+  "syncAllUploaded": "كل السجلات مرفوعة",
+  "syncRunning": "جارٍ المزامنة…",
+  "syncOffline": "لا يوجد اتصال؛ السجلات محفوظة على الهاتف وتُرفع لاحقاً.",
+  "syncLast": "آخر رفع {time}",
+  "@syncLast": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "syncNever": "لم تتم المزامنة بعد",
+  "syncStale": "توجد سجلات لم تُرفع منذ أكثر من 24 ساعة. اتصل بالإنترنت لرفعها.",
+  "syncRejected": "رفض الخادم {count} عملية حفظ",
+  "@syncRejected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncRejectedBody": "غالباً لأن مهلة التعديل انتهت قبل الرفع أو تغيّر إسنادك. أعد المحاولة، أو احذفها من الهاتف واطلب التعديل من مسؤول المرحلة.",
+  "syncDiscard": "حذف من الهاتف",
+  "syncDiscardBody": "ستُحذف هذه التعديلات من الهاتف، وتُنزَّل نسخة الخادم عند تحديث السجل.",
+  "syncProblem": "تعذّرت المزامنة ({code})",
+  "@syncProblem": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  }
 }

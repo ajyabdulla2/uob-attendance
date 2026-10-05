@@ -300,10 +300,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeNoCourses => 'لم تُسند إليك مواد بعد.';
 
   @override
-  String get homeAttendanceSoon =>
-      'تسجيل الحضور يأتي في المرحلة الثانية من التطبيق.';
-
-  @override
   String get homeSetupTitle => 'تهيئة البيانات الأساسية';
 
   @override
@@ -948,4 +944,168 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get joinCancelled => 'أُلغي الطلب.';
+
+  @override
+  String get attPresent => 'حاضر';
+
+  @override
+  String get attAbsent => 'غائب';
+
+  @override
+  String get attLate => 'متأخر';
+
+  @override
+  String get attExcused => 'مُجاز';
+
+  @override
+  String get recordAction => 'تسجيل الحضور';
+
+  @override
+  String get registerAction => 'سجل الحضور';
+
+  @override
+  String get homeRecordOnPhone =>
+      'يُسجَّل الحضور من تطبيق الهاتف (يعمل دون اتصال).';
+
+  @override
+  String get homeDownloading => 'جارٍ تنزيل موادك وطلبتك…';
+
+  @override
+  String get recordDate => 'التاريخ';
+
+  @override
+  String recordLectureN(int n) {
+    return 'المحاضرة $n';
+  }
+
+  @override
+  String get recordNewLecture => 'محاضرة جديدة';
+
+  @override
+  String get recordSearch => 'بحث بالاسم أو الرقم الجامعي';
+
+  @override
+  String get recordTapHint =>
+      'اضغط على الطالب للتبديل بين حاضر وغائب، واضغط مطوّلاً لاختيار «متأخر» أو «مُجاز» أو كتابة ملاحظة.';
+
+  @override
+  String get recordNote => 'ملاحظة';
+
+  @override
+  String get recordSave => 'حفظ الحضور';
+
+  @override
+  String get recordSaved =>
+      'حُفظ على الهاتف، ويُرفع تلقائياً عند توفّر الاتصال.';
+
+  @override
+  String get recordNothingChanged => 'لا تغييرات منذ آخر حفظ.';
+
+  @override
+  String get recordLocked =>
+      'انتهت مهلة التعديل لهذه المحاضرة؛ أي تعديل الآن يكون عبر مسؤول المرحلة.';
+
+  @override
+  String get recordLockedOverride =>
+      'المحاضرة مقفلة للتدريسي، ويمكنك تعديلها بصفتك مسؤولاً.';
+
+  @override
+  String recordLocksAt(String date, String time) {
+    return 'يُقفل التعديل $date $time';
+  }
+
+  @override
+  String get recordFuture => 'لا يمكن تسجيل حضور يوم لم يأتِ بعد.';
+
+  @override
+  String get recordNoStudents =>
+      'لا يوجد طلبة لهذه المادة على الهاتف. اضغط «مزامنة الآن» بعد أن تضيفهم الإدارة.';
+
+  @override
+  String get recordNeedSync =>
+      'لم تُنزَّل بيانات السنة الدراسية بعد. اتصل بالإنترنت واضغط «مزامنة الآن».';
+
+  @override
+  String get recordClassMissing => 'هذه المادة ليست ضمن موادك على هذا الهاتف.';
+
+  @override
+  String get recordDiscardTitle => 'تجاهل التغييرات؟';
+
+  @override
+  String get recordDiscardBody => 'لم تُحفَظ تغييراتك على هذه المحاضرة.';
+
+  @override
+  String get recordDiscard => 'تجاهل';
+
+  @override
+  String get registerTitle => 'سجل الحضور';
+
+  @override
+  String get registerEmpty => 'لا توجد محاضرات مسجّلة بعد.';
+
+  @override
+  String get registerStudent => 'الطالب';
+
+  @override
+  String get registerAbsences => 'الغياب';
+
+  @override
+  String get registerRefresh => 'تحديث من الخادم';
+
+  @override
+  String registerPulled(int count) {
+    return 'حُدِّث السجل ($count محاضرة جديدة أو معدّلة).';
+  }
+
+  @override
+  String get registerOffline => 'تعذّر الاتصال بالخادم؛ يُعرض ما على الهاتف.';
+
+  @override
+  String get registerOpenLecture => 'فتح المحاضرة';
+
+  @override
+  String get syncNow => 'مزامنة الآن';
+
+  @override
+  String get syncAllUploaded => 'كل السجلات مرفوعة';
+
+  @override
+  String get syncRunning => 'جارٍ المزامنة…';
+
+  @override
+  String get syncOffline =>
+      'لا يوجد اتصال؛ السجلات محفوظة على الهاتف وتُرفع لاحقاً.';
+
+  @override
+  String syncLast(String time) {
+    return 'آخر رفع $time';
+  }
+
+  @override
+  String get syncNever => 'لم تتم المزامنة بعد';
+
+  @override
+  String get syncStale =>
+      'توجد سجلات لم تُرفع منذ أكثر من 24 ساعة. اتصل بالإنترنت لرفعها.';
+
+  @override
+  String syncRejected(int count) {
+    return 'رفض الخادم $count عملية حفظ';
+  }
+
+  @override
+  String get syncRejectedBody =>
+      'غالباً لأن مهلة التعديل انتهت قبل الرفع أو تغيّر إسنادك. أعد المحاولة، أو احذفها من الهاتف واطلب التعديل من مسؤول المرحلة.';
+
+  @override
+  String get syncDiscard => 'حذف من الهاتف';
+
+  @override
+  String get syncDiscardBody =>
+      'ستُحذف هذه التعديلات من الهاتف، وتُنزَّل نسخة الخادم عند تحديث السجل.';
+
+  @override
+  String syncProblem(String code) {
+    return 'تعذّرت المزامنة ($code)';
+  }
 }
