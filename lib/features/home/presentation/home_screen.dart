@@ -55,6 +55,14 @@ class HomeScreen extends ConsumerWidget {
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => context.go(Routes.assignments),
                     ),
+                  if (perms.canFixData)
+                    ListTile(
+                      key: const Key('home.dataFix'),
+                      leading: const Icon(Icons.build_outlined),
+                      title: Text(l10n.homeDataFixAction),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => context.push(Routes.dataFix),
+                    ),
                 ],
               ),
             ),

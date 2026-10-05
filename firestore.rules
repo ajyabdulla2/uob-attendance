@@ -302,10 +302,23 @@ service cloud.firestore {
         && d.openedBy == myEmail();
     }
 
+    // Assigned to the class named in a session ID (courseId__type__target__…).
+    function isAssignedToSessionId(sid) {
+      let p = sid.split('__');
+      return p.size() == 5
+        && isActive()
+        && exists(docPath('assignments', assignmentId(p[0], p[1], p[2], myEmail())));
+    }
+
     match /sessions/{sid} {
       allow read: if isAdmin()
                   || inStageScope(resource.data.stageId)
                   || isAssignedToSession(resource.data);
+
+      // Before the first upload of a lecture the app asks the server whether
+      // it exists yet (create it, or only update counts). A missing doc has
+      // no data to check, so the class comes from the ID.
+      allow get: if resource == null && isAssignedToSessionId(sid);
 
       allow create: if validSession(sid)
                     && (canManageStage(request.resource.data.stageId) || teacherCanOpen());

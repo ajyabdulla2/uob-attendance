@@ -453,9 +453,12 @@ class AppDatabase extends _$AppDatabase {
   /// Removes the local copy of a session (the next download restores the
   /// server's version).
   Future<void> deleteLocalSession(String sessionId) => transaction(() async {
-        await (delete(localRecords)..where((t) => t.sessionId.equals(sessionId))).go();
+        await deleteRecordsOfSession(sessionId);
         await (delete(localSessions)..where((t) => t.id.equals(sessionId))).go();
       });
+
+  Future<void> deleteRecordsOfSession(String sessionId) =>
+      (delete(localRecords)..where((t) => t.sessionId.equals(sessionId))).go();
 
   /// Rejected batches: one entry per batch with its first path and error.
   Stream<List<OutboxEntry>> watchRejected() =>

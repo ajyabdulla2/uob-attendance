@@ -1113,4 +1113,169 @@ class AppLocalizationsEn extends AppLocalizations {
   String syncProblem(String code) {
     return 'Sync failed ($code)';
   }
+
+  @override
+  String get homeDataFixAction => 'Fix IDs and undo wrong imports';
+
+  @override
+  String get fixTitle => 'Data fixes';
+
+  @override
+  String get fixRenameTab => 'Change an ID';
+
+  @override
+  String get fixDeleteTab => 'Undo a wrong import';
+
+  @override
+  String get fixKindStudent => 'University ID';
+
+  @override
+  String get fixKindCourse => 'Course code';
+
+  @override
+  String get fixKindTeacher => 'Teacher e-mail';
+
+  @override
+  String get fixStage => 'Stage';
+
+  @override
+  String get fixOldId => 'Current ID';
+
+  @override
+  String get fixNewId => 'New ID';
+
+  @override
+  String get fixRenameHelp =>
+      'Everything linked to the ID (attendance, stats, groups, assignments, leaves) moves to the new ID, then the old one is removed. If the new ID already exists with the same name (a duplicate import), they are merged.';
+
+  @override
+  String get fixTeacherHelp =>
+      'The account and its classes move to the new e-mail; the teacher then activates it with that e-mail. Past attendance keeps the old e-mail as who recorded it.';
+
+  @override
+  String get fixDeleteStudents => 'Students';
+
+  @override
+  String get fixDeleteCourses => 'Courses';
+
+  @override
+  String get fixOnlyOne => 'One ID only (optional)';
+
+  @override
+  String get fixOnlyOneHint => 'Leave empty for the whole stage';
+
+  @override
+  String get fixDeleteHelp =>
+      'Only items without history are deleted: students with no attendance or leave, and courses never taught (with their groups and links). Everything with history stays.';
+
+  @override
+  String get fixPhonesNote =>
+      'Teachers\' phones update on their next sync. Best done before recording starts, or when phones have nothing waiting to upload.';
+
+  @override
+  String get fixPreview => 'Preview';
+
+  @override
+  String get fixApply => 'Apply';
+
+  @override
+  String get fixWillMove => 'Will move';
+
+  @override
+  String get fixWillDelete => 'Will delete';
+
+  @override
+  String get fixConfirmTitle => 'Apply this fix?';
+
+  @override
+  String get fixConfirmBody =>
+      'This cannot be undone automatically and is recorded in the audit log.';
+
+  @override
+  String fixDone(int count) {
+    return 'Done ($count writes).';
+  }
+
+  @override
+  String fixInterrupted(String code) {
+    return 'Stopped ($code). Preview and apply again to finish from where it stopped.';
+  }
+
+  @override
+  String fixMerge(String name) {
+    return 'The new ID exists as \"$name\" and will be merged into it.';
+  }
+
+  @override
+  String get fixProblemInvalidId => 'Invalid ID.';
+
+  @override
+  String get fixProblemSameId => 'Both IDs are the same.';
+
+  @override
+  String get fixProblemNotFound =>
+      'The current ID does not exist (or is not in this stage).';
+
+  @override
+  String fixProblemTargetExists(String name) {
+    return 'The new ID belongs to another record: \"$name\". If it is a duplicate, delete it first under \"Undo a wrong import\".';
+  }
+
+  @override
+  String get fixProblemOwnAccount =>
+      'You cannot change your own account\'s e-mail.';
+
+  @override
+  String get fixProblemNothing =>
+      'Nothing to delete: everything selected has attendance history.';
+
+  @override
+  String fixCountStudents(int n) {
+    return 'Students: $n';
+  }
+
+  @override
+  String fixCountCourses(int n) {
+    return 'Courses: $n';
+  }
+
+  @override
+  String fixCountUsers(int n) {
+    return 'Accounts: $n';
+  }
+
+  @override
+  String fixCountGroups(int n) {
+    return 'Practical groups: $n';
+  }
+
+  @override
+  String fixCountAssignments(int n) {
+    return 'Assignments: $n';
+  }
+
+  @override
+  String fixCountSessions(int n) {
+    return 'Lectures: $n';
+  }
+
+  @override
+  String fixCountRecords(int n) {
+    return 'Attendance records: $n';
+  }
+
+  @override
+  String fixCountStats(int n) {
+    return 'Absence stats: $n';
+  }
+
+  @override
+  String fixCountLeaves(int n) {
+    return 'Leaves: $n';
+  }
+
+  @override
+  String fixCountKept(int n) {
+    return 'Kept (has history): $n';
+  }
 }

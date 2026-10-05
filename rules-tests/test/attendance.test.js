@@ -216,6 +216,14 @@ describe('download and register query shapes (teacher)', () => {
     await assertSucceeds(getDoc(doc(db, 'courses', COURSE)));
   });
 
+  it('the uploader may check whether a lecture exists yet (get of a missing session)', async () => {
+    const sid = sessionId(COURSE, 'theory', 'all', utcMidnight(0), 7);
+    const snap = await assertSucceeds(getDoc(doc(as(env, T1), 'sessions', sid)));
+    if (snap.exists()) throw new Error('expected a missing session');
+    await assertSucceeds(getDoc(doc(as(env, T1), 'sessions', OPEN_SID)));
+    await assertFails(getDoc(doc(as(env, T2), 'sessions', sid)));
+  });
+
   it('sessions of one assigned class and their records', async () => {
     const db = as(env, T1);
     await assertSucceeds(getDocs(query(collection(db, 'sessions'),

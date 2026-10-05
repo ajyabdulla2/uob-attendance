@@ -771,5 +771,146 @@
         "type": "String"
       }
     }
+  },
+  "homeDataFixAction": "تصحيح المعرّفات وحذف الاستيراد الخاطئ",
+  "fixTitle": "تصحيح البيانات",
+  "fixRenameTab": "تغيير معرّف",
+  "fixDeleteTab": "حذف استيراد خاطئ",
+  "fixKindStudent": "رقم جامعي",
+  "fixKindCourse": "رمز مادة",
+  "fixKindTeacher": "بريد تدريسي",
+  "fixStage": "المرحلة",
+  "fixOldId": "المعرّف الحالي",
+  "fixNewId": "المعرّف الجديد",
+  "fixRenameHelp": "يُنقل كل ما يرتبط بالمعرّف إلى المعرّف الجديد (الحضور والإحصائيات والمجموعات والإسنادات والإجازات) ثم يُحذف القديم. إن كان المعرّف الجديد موجوداً بالاسم نفسه (استيراد مكرر) يُدمج فيه.",
+  "fixTeacherHelp": "يُنقل الحساب وإسناداته إلى البريد الجديد، ثم يفعّل التدريسي حسابه بالبريد الجديد. يبقى البريد القديم في سجل الحضور السابق لأنه من سجّل حينها.",
+  "fixDeleteStudents": "طلبة",
+  "fixDeleteCourses": "مواد",
+  "fixOnlyOne": "معرّف واحد فقط (اختياري)",
+  "fixOnlyOneHint": "اتركه فارغاً لكل ما في المرحلة",
+  "fixDeleteHelp": "يُحذف فقط ما ليس له تاريخ: الطالب الذي لم يُسجَّل له حضور ولا إجازة، والمادة التي لم تُفتح لها محاضرة (مع مجموعاتها وإسناداتها). ما له تاريخ يبقى.",
+  "fixPhonesNote": "تتحدّث هواتف التدريسيين في المزامنة التالية. الأفضل التنفيذ قبل بدء التسجيل أو حين لا تكون على الهواتف سجلات غير مرفوعة.",
+  "fixPreview": "معاينة",
+  "fixApply": "تنفيذ",
+  "fixWillMove": "سيُنقل",
+  "fixWillDelete": "سيُحذف",
+  "fixConfirmTitle": "تنفيذ التصحيح؟",
+  "fixConfirmBody": "لا يمكن التراجع تلقائياً عن هذا التصحيح، ويُسجَّل في سجل التدقيق.",
+  "fixDone": "اكتمل التصحيح ({count} عملية كتابة).",
+  "@fixDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fixInterrupted": "توقّف التنفيذ ({code}). أعد المعاينة ثم التنفيذ لإكماله من حيث توقّف.",
+  "@fixInterrupted": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "fixMerge": "المعرّف الجديد موجود باسم «{name}» وسيُدمج فيه.",
+  "@fixMerge": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fixProblemInvalidId": "المعرّف غير صالح.",
+  "fixProblemSameId": "المعرّفان متطابقان.",
+  "fixProblemNotFound": "المعرّف الحالي غير موجود (أو ليس في هذه المرحلة).",
+  "fixProblemTargetExists": "المعرّف الجديد مستعمل لسجل آخر: «{name}». إن كان مكرراً فاحذفه أولاً من «حذف استيراد خاطئ».",
+  "@fixProblemTargetExists": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fixProblemOwnAccount": "لا يمكنك تغيير بريد حسابك أنت.",
+  "fixProblemNothing": "لا يوجد ما يُحذف: كل ما اخترته له تاريخ حضور.",
+  "fixCountStudents": "الطلبة: {n}",
+  "@fixCountStudents": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountCourses": "المواد: {n}",
+  "@fixCountCourses": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountUsers": "الحسابات: {n}",
+  "@fixCountUsers": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountGroups": "مجموعات العملي: {n}",
+  "@fixCountGroups": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountAssignments": "الإسنادات: {n}",
+  "@fixCountAssignments": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountSessions": "المحاضرات: {n}",
+  "@fixCountSessions": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountRecords": "سجلات الحضور: {n}",
+  "@fixCountRecords": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountStats": "إحصائيات الغياب: {n}",
+  "@fixCountStats": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountLeaves": "الإجازات: {n}",
+  "@fixCountLeaves": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountKept": "يبقى لأن له تاريخاً: {n}",
+  "@fixCountKept": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   }
 }

@@ -64,8 +64,14 @@ class TeacherDataSync {
     final groupIds = {for (final a in assignments) if (a.groupId != null) a.groupId!};
     final groups = <PracticalGroup>[];
     for (final id in groupIds) {
-      final snap = await _fs.collection(Col.groups).doc(id).get(_server);
-      if (snap.exists) groups.add(PracticalGroup.fromMap(snap.id, snap.data()!));
+      try {
+        final snap = await _fs.collection(Col.groups).doc(id).get(_server);
+        if (snap.exists) groups.add(PracticalGroup.fromMap(snap.id, snap.data()!));
+      } on FirebaseException catch (e) {
+        // A deleted group reads as permission-denied (the rules check its
+        // stage); skip it rather than fail the whole download.
+        if (e.code != 'permission-denied' && e.code != 'not-found') rethrow;
+      }
     }
     await _db.upsertGroups(groups);
 

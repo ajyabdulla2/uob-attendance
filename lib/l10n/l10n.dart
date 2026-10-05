@@ -6,6 +6,7 @@ import '../features/assignments/domain/assignment.dart';
 import '../features/attendance/domain/attendance_session.dart';
 import '../features/auth/data/auth_repository.dart';
 import '../features/auth/domain/app_user.dart';
+import '../features/data_fix/domain/fix_plan.dart';
 import '../features/import/domain/import_models.dart';
 import '../features/students/domain/student.dart';
 import 'app_localizations.dart';
@@ -77,6 +78,28 @@ extension DomainLabels on AppLocalizations {
           groupLabel(a.target),
         ],
       ].join(' · ');
+
+  String fixProblem(FixProblem p, String? name) => switch (p) {
+        FixProblem.invalidId => fixProblemInvalidId,
+        FixProblem.sameId => fixProblemSameId,
+        FixProblem.notFound => fixProblemNotFound,
+        FixProblem.targetExists => fixProblemTargetExists(name ?? ''),
+        FixProblem.ownAccount => fixProblemOwnAccount,
+        FixProblem.nothingToDelete => fixProblemNothing,
+      };
+
+  String fixCount(FixCount c, int n) => switch (c) {
+        FixCount.students => fixCountStudents(n),
+        FixCount.courses => fixCountCourses(n),
+        FixCount.users => fixCountUsers(n),
+        FixCount.groups => fixCountGroups(n),
+        FixCount.assignments => fixCountAssignments(n),
+        FixCount.sessions => fixCountSessions(n),
+        FixCount.records => fixCountRecords(n),
+        FixCount.stats => fixCountStats(n),
+        FixCount.leaves => fixCountLeaves(n),
+        FixCount.kept => fixCountKept(n),
+      };
 
   String authFailure(AuthException e) => switch (e.failure) {
         AuthFailure.invalidCredentials => authInvalidCredentials,

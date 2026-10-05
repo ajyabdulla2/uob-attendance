@@ -10,6 +10,7 @@ import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/no_access_screen.dart';
 import '../../features/auth/presentation/splash_screen.dart';
 import '../../features/auth/presentation/verify_email_screen.dart';
+import '../../features/data_fix/presentation/data_fix_screen.dart';
 import '../../features/home/presentation/app_shell.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/import/presentation/import_screen.dart';
@@ -29,6 +30,7 @@ abstract final class Routes {
   static const profile = '/profile';
   static const record = '/record';
   static const register = '/register';
+  static const dataFix = '/data-fix';
 
   /// Record screen of a class, optionally on a given lecture.
   static String recordFor(String assignmentId, {DateTime? date, int? lectureNo}) => Uri(path: record, queryParameters: {
@@ -57,6 +59,7 @@ String? redirectFor(AuthStatus status, String location) {
         _ when location.startsWith(Routes.import) && !permissions.canImportAnything => Routes.home,
         _ when location.startsWith(Routes.assignments) && !permissions.canManageAssignments => Routes.home,
         _ when location.startsWith(Routes.accounts) && !permissions.canManageAccounts => Routes.home,
+        _ when location.startsWith(Routes.dataFix) && !permissions.canFixData => Routes.home,
         _ => null,
       },
   };
@@ -88,6 +91,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           lectureNo: int.tryParse(s.uri.queryParameters['n'] ?? ''),
         ),
       ),
+      GoRoute(path: Routes.dataFix, builder: (_, _) => const DataFixScreen()),
       GoRoute(
         path: Routes.register,
         builder: (_, s) => RegisterScreen(assignmentId: s.uri.queryParameters['a'] ?? ''),

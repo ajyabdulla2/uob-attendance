@@ -59,6 +59,14 @@ final class Permissions {
   /// cannot lock themselves (or the department) out by mistake.
   bool canChangeAccessOf(AppUser target) => canEditAccount(target) && target.id != user.id;
 
+  // ---------------------------------------------------------- data fixes --
+  /// Changing IDs and undoing imports deletes documents: admins only.
+  bool get canFixData => isAdmin;
+
+  /// Moving an account to another e-mail deletes the old account doc,
+  /// which only the super admin may do.
+  bool get canRenameTeachers => isSuperAdmin;
+
   // ------------------------------------------------------------- backup --
   bool get canBackup => isAdmin;
   bool get canRestore => isSuperAdmin;

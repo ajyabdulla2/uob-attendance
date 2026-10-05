@@ -1108,4 +1108,168 @@ class AppLocalizationsAr extends AppLocalizations {
   String syncProblem(String code) {
     return 'تعذّرت المزامنة ($code)';
   }
+
+  @override
+  String get homeDataFixAction => 'تصحيح المعرّفات وحذف الاستيراد الخاطئ';
+
+  @override
+  String get fixTitle => 'تصحيح البيانات';
+
+  @override
+  String get fixRenameTab => 'تغيير معرّف';
+
+  @override
+  String get fixDeleteTab => 'حذف استيراد خاطئ';
+
+  @override
+  String get fixKindStudent => 'رقم جامعي';
+
+  @override
+  String get fixKindCourse => 'رمز مادة';
+
+  @override
+  String get fixKindTeacher => 'بريد تدريسي';
+
+  @override
+  String get fixStage => 'المرحلة';
+
+  @override
+  String get fixOldId => 'المعرّف الحالي';
+
+  @override
+  String get fixNewId => 'المعرّف الجديد';
+
+  @override
+  String get fixRenameHelp =>
+      'يُنقل كل ما يرتبط بالمعرّف إلى المعرّف الجديد (الحضور والإحصائيات والمجموعات والإسنادات والإجازات) ثم يُحذف القديم. إن كان المعرّف الجديد موجوداً بالاسم نفسه (استيراد مكرر) يُدمج فيه.';
+
+  @override
+  String get fixTeacherHelp =>
+      'يُنقل الحساب وإسناداته إلى البريد الجديد، ثم يفعّل التدريسي حسابه بالبريد الجديد. يبقى البريد القديم في سجل الحضور السابق لأنه من سجّل حينها.';
+
+  @override
+  String get fixDeleteStudents => 'طلبة';
+
+  @override
+  String get fixDeleteCourses => 'مواد';
+
+  @override
+  String get fixOnlyOne => 'معرّف واحد فقط (اختياري)';
+
+  @override
+  String get fixOnlyOneHint => 'اتركه فارغاً لكل ما في المرحلة';
+
+  @override
+  String get fixDeleteHelp =>
+      'يُحذف فقط ما ليس له تاريخ: الطالب الذي لم يُسجَّل له حضور ولا إجازة، والمادة التي لم تُفتح لها محاضرة (مع مجموعاتها وإسناداتها). ما له تاريخ يبقى.';
+
+  @override
+  String get fixPhonesNote =>
+      'تتحدّث هواتف التدريسيين في المزامنة التالية. الأفضل التنفيذ قبل بدء التسجيل أو حين لا تكون على الهواتف سجلات غير مرفوعة.';
+
+  @override
+  String get fixPreview => 'معاينة';
+
+  @override
+  String get fixApply => 'تنفيذ';
+
+  @override
+  String get fixWillMove => 'سيُنقل';
+
+  @override
+  String get fixWillDelete => 'سيُحذف';
+
+  @override
+  String get fixConfirmTitle => 'تنفيذ التصحيح؟';
+
+  @override
+  String get fixConfirmBody =>
+      'لا يمكن التراجع تلقائياً عن هذا التصحيح، ويُسجَّل في سجل التدقيق.';
+
+  @override
+  String fixDone(int count) {
+    return 'اكتمل التصحيح ($count عملية كتابة).';
+  }
+
+  @override
+  String fixInterrupted(String code) {
+    return 'توقّف التنفيذ ($code). أعد المعاينة ثم التنفيذ لإكماله من حيث توقّف.';
+  }
+
+  @override
+  String fixMerge(String name) {
+    return 'المعرّف الجديد موجود باسم «$name» وسيُدمج فيه.';
+  }
+
+  @override
+  String get fixProblemInvalidId => 'المعرّف غير صالح.';
+
+  @override
+  String get fixProblemSameId => 'المعرّفان متطابقان.';
+
+  @override
+  String get fixProblemNotFound =>
+      'المعرّف الحالي غير موجود (أو ليس في هذه المرحلة).';
+
+  @override
+  String fixProblemTargetExists(String name) {
+    return 'المعرّف الجديد مستعمل لسجل آخر: «$name». إن كان مكرراً فاحذفه أولاً من «حذف استيراد خاطئ».';
+  }
+
+  @override
+  String get fixProblemOwnAccount => 'لا يمكنك تغيير بريد حسابك أنت.';
+
+  @override
+  String get fixProblemNothing =>
+      'لا يوجد ما يُحذف: كل ما اخترته له تاريخ حضور.';
+
+  @override
+  String fixCountStudents(int n) {
+    return 'الطلبة: $n';
+  }
+
+  @override
+  String fixCountCourses(int n) {
+    return 'المواد: $n';
+  }
+
+  @override
+  String fixCountUsers(int n) {
+    return 'الحسابات: $n';
+  }
+
+  @override
+  String fixCountGroups(int n) {
+    return 'مجموعات العملي: $n';
+  }
+
+  @override
+  String fixCountAssignments(int n) {
+    return 'الإسنادات: $n';
+  }
+
+  @override
+  String fixCountSessions(int n) {
+    return 'المحاضرات: $n';
+  }
+
+  @override
+  String fixCountRecords(int n) {
+    return 'سجلات الحضور: $n';
+  }
+
+  @override
+  String fixCountStats(int n) {
+    return 'إحصائيات الغياب: $n';
+  }
+
+  @override
+  String fixCountLeaves(int n) {
+    return 'الإجازات: $n';
+  }
+
+  @override
+  String fixCountKept(int n) {
+    return 'يبقى لأن له تاريخاً: $n';
+  }
 }

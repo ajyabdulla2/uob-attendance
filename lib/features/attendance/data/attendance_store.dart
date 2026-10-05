@@ -119,11 +119,14 @@ class AttendanceStore {
     return plan;
   }
 
-  /// Stores a session downloaded from the server with all its records,
-  /// unless this device still has unsent changes for it (those are newer).
+  /// Stores a session downloaded from the server with all its records —
+  /// replacing the local ones (a student renamed by the department leaves
+  /// no stale row) — unless this device still has unsent changes for it
+  /// (those are newer).
   Future<bool> storeDownloaded(AttendanceSession s, List<AttendanceRecord> records) async {
     if (await _db.hasPendingWritesFor(s.id)) return false;
     await _db.transaction(() async {
+      await _db.deleteRecordsOfSession(s.id);
       await _db.upsertSession(_toRow(s, savedAt: s.updatedAt, deviceCreatedAt: s.deviceCreatedAt));
       await _db.upsertRecords([
         for (final r in records)

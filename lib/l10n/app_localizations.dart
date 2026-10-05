@@ -1975,6 +1975,264 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تعذّرت المزامنة ({code})'**
   String syncProblem(String code);
+
+  /// No description provided for @homeDataFixAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'تصحيح المعرّفات وحذف الاستيراد الخاطئ'**
+  String get homeDataFixAction;
+
+  /// No description provided for @fixTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تصحيح البيانات'**
+  String get fixTitle;
+
+  /// No description provided for @fixRenameTab.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغيير معرّف'**
+  String get fixRenameTab;
+
+  /// No description provided for @fixDeleteTab.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف استيراد خاطئ'**
+  String get fixDeleteTab;
+
+  /// No description provided for @fixKindStudent.
+  ///
+  /// In ar, this message translates to:
+  /// **'رقم جامعي'**
+  String get fixKindStudent;
+
+  /// No description provided for @fixKindCourse.
+  ///
+  /// In ar, this message translates to:
+  /// **'رمز مادة'**
+  String get fixKindCourse;
+
+  /// No description provided for @fixKindTeacher.
+  ///
+  /// In ar, this message translates to:
+  /// **'بريد تدريسي'**
+  String get fixKindTeacher;
+
+  /// No description provided for @fixStage.
+  ///
+  /// In ar, this message translates to:
+  /// **'المرحلة'**
+  String get fixStage;
+
+  /// No description provided for @fixOldId.
+  ///
+  /// In ar, this message translates to:
+  /// **'المعرّف الحالي'**
+  String get fixOldId;
+
+  /// No description provided for @fixNewId.
+  ///
+  /// In ar, this message translates to:
+  /// **'المعرّف الجديد'**
+  String get fixNewId;
+
+  /// No description provided for @fixRenameHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُنقل كل ما يرتبط بالمعرّف إلى المعرّف الجديد (الحضور والإحصائيات والمجموعات والإسنادات والإجازات) ثم يُحذف القديم. إن كان المعرّف الجديد موجوداً بالاسم نفسه (استيراد مكرر) يُدمج فيه.'**
+  String get fixRenameHelp;
+
+  /// No description provided for @fixTeacherHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُنقل الحساب وإسناداته إلى البريد الجديد، ثم يفعّل التدريسي حسابه بالبريد الجديد. يبقى البريد القديم في سجل الحضور السابق لأنه من سجّل حينها.'**
+  String get fixTeacherHelp;
+
+  /// No description provided for @fixDeleteStudents.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبة'**
+  String get fixDeleteStudents;
+
+  /// No description provided for @fixDeleteCourses.
+  ///
+  /// In ar, this message translates to:
+  /// **'مواد'**
+  String get fixDeleteCourses;
+
+  /// No description provided for @fixOnlyOne.
+  ///
+  /// In ar, this message translates to:
+  /// **'معرّف واحد فقط (اختياري)'**
+  String get fixOnlyOne;
+
+  /// No description provided for @fixOnlyOneHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اتركه فارغاً لكل ما في المرحلة'**
+  String get fixOnlyOneHint;
+
+  /// No description provided for @fixDeleteHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُحذف فقط ما ليس له تاريخ: الطالب الذي لم يُسجَّل له حضور ولا إجازة، والمادة التي لم تُفتح لها محاضرة (مع مجموعاتها وإسناداتها). ما له تاريخ يبقى.'**
+  String get fixDeleteHelp;
+
+  /// No description provided for @fixPhonesNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'تتحدّث هواتف التدريسيين في المزامنة التالية. الأفضل التنفيذ قبل بدء التسجيل أو حين لا تكون على الهواتف سجلات غير مرفوعة.'**
+  String get fixPhonesNote;
+
+  /// No description provided for @fixPreview.
+  ///
+  /// In ar, this message translates to:
+  /// **'معاينة'**
+  String get fixPreview;
+
+  /// No description provided for @fixApply.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنفيذ'**
+  String get fixApply;
+
+  /// No description provided for @fixWillMove.
+  ///
+  /// In ar, this message translates to:
+  /// **'سيُنقل'**
+  String get fixWillMove;
+
+  /// No description provided for @fixWillDelete.
+  ///
+  /// In ar, this message translates to:
+  /// **'سيُحذف'**
+  String get fixWillDelete;
+
+  /// No description provided for @fixConfirmTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنفيذ التصحيح؟'**
+  String get fixConfirmTitle;
+
+  /// No description provided for @fixConfirmBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن التراجع تلقائياً عن هذا التصحيح، ويُسجَّل في سجل التدقيق.'**
+  String get fixConfirmBody;
+
+  /// No description provided for @fixDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتمل التصحيح ({count} عملية كتابة).'**
+  String fixDone(int count);
+
+  /// No description provided for @fixInterrupted.
+  ///
+  /// In ar, this message translates to:
+  /// **'توقّف التنفيذ ({code}). أعد المعاينة ثم التنفيذ لإكماله من حيث توقّف.'**
+  String fixInterrupted(String code);
+
+  /// No description provided for @fixMerge.
+  ///
+  /// In ar, this message translates to:
+  /// **'المعرّف الجديد موجود باسم «{name}» وسيُدمج فيه.'**
+  String fixMerge(String name);
+
+  /// No description provided for @fixProblemInvalidId.
+  ///
+  /// In ar, this message translates to:
+  /// **'المعرّف غير صالح.'**
+  String get fixProblemInvalidId;
+
+  /// No description provided for @fixProblemSameId.
+  ///
+  /// In ar, this message translates to:
+  /// **'المعرّفان متطابقان.'**
+  String get fixProblemSameId;
+
+  /// No description provided for @fixProblemNotFound.
+  ///
+  /// In ar, this message translates to:
+  /// **'المعرّف الحالي غير موجود (أو ليس في هذه المرحلة).'**
+  String get fixProblemNotFound;
+
+  /// No description provided for @fixProblemTargetExists.
+  ///
+  /// In ar, this message translates to:
+  /// **'المعرّف الجديد مستعمل لسجل آخر: «{name}». إن كان مكرراً فاحذفه أولاً من «حذف استيراد خاطئ».'**
+  String fixProblemTargetExists(String name);
+
+  /// No description provided for @fixProblemOwnAccount.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكنك تغيير بريد حسابك أنت.'**
+  String get fixProblemOwnAccount;
+
+  /// No description provided for @fixProblemNothing.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد ما يُحذف: كل ما اخترته له تاريخ حضور.'**
+  String get fixProblemNothing;
+
+  /// No description provided for @fixCountStudents.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطلبة: {n}'**
+  String fixCountStudents(int n);
+
+  /// No description provided for @fixCountCourses.
+  ///
+  /// In ar, this message translates to:
+  /// **'المواد: {n}'**
+  String fixCountCourses(int n);
+
+  /// No description provided for @fixCountUsers.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحسابات: {n}'**
+  String fixCountUsers(int n);
+
+  /// No description provided for @fixCountGroups.
+  ///
+  /// In ar, this message translates to:
+  /// **'مجموعات العملي: {n}'**
+  String fixCountGroups(int n);
+
+  /// No description provided for @fixCountAssignments.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإسنادات: {n}'**
+  String fixCountAssignments(int n);
+
+  /// No description provided for @fixCountSessions.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحاضرات: {n}'**
+  String fixCountSessions(int n);
+
+  /// No description provided for @fixCountRecords.
+  ///
+  /// In ar, this message translates to:
+  /// **'سجلات الحضور: {n}'**
+  String fixCountRecords(int n);
+
+  /// No description provided for @fixCountStats.
+  ///
+  /// In ar, this message translates to:
+  /// **'إحصائيات الغياب: {n}'**
+  String fixCountStats(int n);
+
+  /// No description provided for @fixCountLeaves.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإجازات: {n}'**
+  String fixCountLeaves(int n);
+
+  /// No description provided for @fixCountKept.
+  ///
+  /// In ar, this message translates to:
+  /// **'يبقى لأن له تاريخاً: {n}'**
+  String fixCountKept(int n);
 }
 
 class _AppLocalizationsDelegate

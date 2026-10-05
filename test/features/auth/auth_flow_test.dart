@@ -126,6 +126,11 @@ void main() {
       expect(redirectFor(teacher, Routes.accounts), Routes.home);
       expect(redirectFor(manager, Routes.accounts), Routes.home);
       expect(redirectFor(SignedIn(user({UserRole.deputyAdmin})), Routes.accounts), isNull);
+      // Data fixes: admins only.
+      expect(redirectFor(manager, Routes.dataFix), Routes.home);
+      expect(redirectFor(SignedIn(user({UserRole.deputyAdmin})), Routes.dataFix), isNull);
+      // Recording: every signed-in account (their own classes).
+      expect(redirectFor(teacher, Routes.recordFor('a')), isNull);
     });
   });
 }
