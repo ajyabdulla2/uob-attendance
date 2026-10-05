@@ -12,6 +12,7 @@ import '../../features/home/presentation/app_shell.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/import/presentation/import_screen.dart';
 import '../../features/settings/presentation/profile_screen.dart';
+import '../../features/users/presentation/accounts_screen.dart';
 
 abstract final class Routes {
   static const splash = '/splash';
@@ -21,6 +22,7 @@ abstract final class Routes {
   static const home = '/home';
   static const import = '/import';
   static const assignments = '/assignments';
+  static const accounts = '/accounts';
   static const profile = '/profile';
 
   static const _gates = {splash, login, verifyEmail, noAccess};
@@ -40,6 +42,7 @@ String? redirectFor(AuthStatus status, String location) {
         _ when Routes._gates.contains(location) => Routes.home,
         _ when location.startsWith(Routes.import) && !permissions.canImportAnything => Routes.home,
         _ when location.startsWith(Routes.assignments) && !permissions.canManageAssignments => Routes.home,
+        _ when location.startsWith(Routes.accounts) && !permissions.canManageAccounts => Routes.home,
         _ => null,
       },
   };
@@ -68,6 +71,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(path: Routes.home, pageBuilder: (_, s) => page(s, const HomeScreen())),
           GoRoute(path: Routes.import, pageBuilder: (_, s) => page(s, const ImportScreen())),
           GoRoute(path: Routes.assignments, pageBuilder: (_, s) => page(s, const AssignmentsScreen())),
+          GoRoute(path: Routes.accounts, pageBuilder: (_, s) => page(s, const AccountsScreen())),
           GoRoute(path: Routes.profile, pageBuilder: (_, s) => page(s, const ProfileScreen())),
         ],
       ),

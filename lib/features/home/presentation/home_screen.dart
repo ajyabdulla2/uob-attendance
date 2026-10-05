@@ -12,6 +12,7 @@ import '../../assignments/application/assignments_providers.dart';
 import '../../assignments/domain/assignment.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../auth/domain/app_user.dart';
+import '../../users/application/users_providers.dart';
 import '../../../core/firebase/doc_ids.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -33,6 +34,7 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(height: 12),
           const _ActiveYearLine(),
           if (perms.isAdmin) const _SetupCard(),
+          if (perms.canManageAccounts) const _AccessRequestsCard(),
           if (perms.canImportAnything || perms.canManageAssignments) ...[
             const SizedBox(height: 12),
             Text(l10n.homeQuickActions, style: Theme.of(context).textTheme.titleMedium),
@@ -176,6 +178,27 @@ class _SetupCardState extends ConsumerState<_SetupCard> {
           onPressed: _busy ? null : _initialize,
           child: Text(l10n.homeSetupAction),
         ),
+      ),
+    );
+  }
+}
+
+/// Admins: join requests waiting for approval (hidden when none).
+class _AccessRequestsCard extends ConsumerWidget {
+  const _AccessRequestsCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(accessRequestsProvider).value?.length ?? 0;
+    if (count == 0) return const SizedBox.shrink();
+    return Card(
+      key: const Key('home.accessRequests'),
+      color: Theme.of(context).colorScheme.tertiaryContainer,
+      child: ListTile(
+        leading: const Icon(Icons.how_to_reg),
+        title: Text(context.l10n.homeAccessRequests(count)),
+        trailing: const Icon(Icons.chevron_right), // mirrors in RTL
+        onTap: () => context.go(Routes.accounts),
       ),
     );
   }

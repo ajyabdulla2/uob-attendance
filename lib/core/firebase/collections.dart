@@ -15,6 +15,9 @@ abstract final class Col {
   static const editRequests = 'editRequests';
   static const auditLog = 'auditLog';
 
+  /// Join requests from verified but unprovisioned e-mails (doc ID = e-mail).
+  static const accessRequests = 'accessRequests';
+
   /// App-wide settings (`config/app`: published versions + download links).
   static const config = 'config';
 }

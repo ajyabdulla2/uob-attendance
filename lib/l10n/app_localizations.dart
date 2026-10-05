@@ -413,7 +413,7 @@ abstract class AppLocalizations {
   /// No description provided for @notProvisionedBody.
   ///
   /// In ar, this message translates to:
-  /// **'البريد {email} غير مسجَّل في النظام. اطلب من إدارة القسم إضافتك ثم أعد المحاولة.'**
+  /// **'البريد {email} غير مسجَّل في النظام بعد. أرسل طلب انضمام أدناه، أو اطلب من إدارة القسم إضافتك.'**
   String notProvisionedBody(String email);
 
   /// No description provided for @suspendedTitle.
@@ -1459,6 +1459,246 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تعذّر فتح الرابط: {url}'**
   String updateOpenFailed(String url);
+
+  /// No description provided for @navAccounts.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحسابات'**
+  String get navAccounts;
+
+  /// No description provided for @accountsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحسابات والصلاحيات'**
+  String get accountsTitle;
+
+  /// No description provided for @accountsAdd.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة حساب'**
+  String get accountsAdd;
+
+  /// No description provided for @accountsAddHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'بعد الإضافة يفعّل صاحب البريد حسابه من «أول مرة؟ فعّل حسابك».'**
+  String get accountsAddHint;
+
+  /// No description provided for @accountsSearch.
+  ///
+  /// In ar, this message translates to:
+  /// **'بحث بالاسم أو البريد'**
+  String get accountsSearch;
+
+  /// No description provided for @accountsEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد حسابات مطابقة.'**
+  String get accountsEmpty;
+
+  /// No description provided for @accountsSuspended.
+  ///
+  /// In ar, this message translates to:
+  /// **'موقوف'**
+  String get accountsSuspended;
+
+  /// No description provided for @accountsLocked.
+  ///
+  /// In ar, this message translates to:
+  /// **'حساب مدير؛ يعدّله المدير العام فقط.'**
+  String get accountsLocked;
+
+  /// No description provided for @accountsRequestsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبات الانضمام ({count})'**
+  String accountsRequestsTitle(int count);
+
+  /// No description provided for @accountsRequestedOn.
+  ///
+  /// In ar, this message translates to:
+  /// **'طُلب في {date}'**
+  String accountsRequestedOn(String date);
+
+  /// No description provided for @accountsApprove.
+  ///
+  /// In ar, this message translates to:
+  /// **'قبول'**
+  String get accountsApprove;
+
+  /// No description provided for @accountsReject.
+  ///
+  /// In ar, this message translates to:
+  /// **'رفض'**
+  String get accountsReject;
+
+  /// No description provided for @accountsRejectTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'رفض الطلب'**
+  String get accountsRejectTitle;
+
+  /// No description provided for @accountsRejectBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'رفض طلب {email}؟ يستطيع صاحبه إرسال طلب جديد.'**
+  String accountsRejectBody(String email);
+
+  /// No description provided for @accountsApproved.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُضيف {name}، ويدخل الآن تلقائياً.'**
+  String accountsApproved(String name);
+
+  /// No description provided for @accountsRejected.
+  ///
+  /// In ar, this message translates to:
+  /// **'رُفض الطلب.'**
+  String get accountsRejected;
+
+  /// No description provided for @accountsCreated.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُضيف {email}. أخبر صاحبه أن يفعّل حسابه من التطبيق.'**
+  String accountsCreated(String email);
+
+  /// No description provided for @accountsSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُفظ الحساب.'**
+  String get accountsSaved;
+
+  /// No description provided for @accountsExists.
+  ///
+  /// In ar, this message translates to:
+  /// **'يوجد حساب بهذا البريد؛ عدّله من القائمة.'**
+  String get accountsExists;
+
+  /// No description provided for @accountEditNew.
+  ///
+  /// In ar, this message translates to:
+  /// **'حساب جديد'**
+  String get accountEditNew;
+
+  /// No description provided for @accountEditApprove.
+  ///
+  /// In ar, this message translates to:
+  /// **'قبول طلب الانضمام'**
+  String get accountEditApprove;
+
+  /// No description provided for @accountEditTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعديل الحساب'**
+  String get accountEditTitle;
+
+  /// No description provided for @accountRoles.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصلاحيات'**
+  String get accountRoles;
+
+  /// No description provided for @accountStageScopes.
+  ///
+  /// In ar, this message translates to:
+  /// **'المراحل التي يديرها'**
+  String get accountStageScopes;
+
+  /// No description provided for @accountActive.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحساب فعّال'**
+  String get accountActive;
+
+  /// No description provided for @accountActiveHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحساب الموقوف لا يصل إلى أي بيانات.'**
+  String get accountActiveHint;
+
+  /// No description provided for @accountSelfLocked.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكنك تغيير صلاحياتك أو إيقاف حسابك بنفسك.'**
+  String get accountSelfLocked;
+
+  /// No description provided for @accountIssueRole.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر صلاحية واحدة على الأقل.'**
+  String get accountIssueRole;
+
+  /// No description provided for @accountIssueStage.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر مرحلة واحدة على الأقل لمسؤول المرحلة.'**
+  String get accountIssueStage;
+
+  /// No description provided for @homeAccessRequests.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبات انضمام بانتظار موافقتك: {count}'**
+  String homeAccessRequests(int count);
+
+  /// No description provided for @joinTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلب الانضمام'**
+  String get joinTitle;
+
+  /// No description provided for @joinBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'أرسل طلباً إلى إدارة القسم، وستدخل تلقائياً بعد الموافقة.'**
+  String get joinBody;
+
+  /// No description provided for @joinName.
+  ///
+  /// In ar, this message translates to:
+  /// **'اسمك الكامل'**
+  String get joinName;
+
+  /// No description provided for @joinNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملاحظة للإدارة (اختياري)'**
+  String get joinNote;
+
+  /// No description provided for @joinNoteHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'مثل اللقب العلمي أو المرحلة التي تدرّسها'**
+  String get joinNoteHint;
+
+  /// No description provided for @joinSubmit.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال طلب الانضمام'**
+  String get joinSubmit;
+
+  /// No description provided for @joinSent.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُرسل طلبك.'**
+  String get joinSent;
+
+  /// No description provided for @joinPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبك مُرسَل منذ {date} وبانتظار موافقة الإدارة. ستدخل تلقائياً بعد الموافقة.'**
+  String joinPending(String date);
+
+  /// No description provided for @joinCancel.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء الطلب'**
+  String get joinCancel;
+
+  /// No description provided for @joinCancelled.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُلغي الطلب.'**
+  String get joinCancelled;
 }
 
 class _AppLocalizationsDelegate

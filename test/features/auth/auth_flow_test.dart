@@ -122,6 +122,10 @@ void main() {
       expect(redirectFor(teacher, Routes.assignments), Routes.home);
       expect(redirectFor(manager, Routes.import), isNull);
       expect(redirectFor(manager, Routes.assignments), isNull);
+      // Accounts: admins only (stage managers neither).
+      expect(redirectFor(teacher, Routes.accounts), Routes.home);
+      expect(redirectFor(manager, Routes.accounts), Routes.home);
+      expect(redirectFor(SignedIn(user({UserRole.deputyAdmin})), Routes.accounts), isNull);
     });
   });
 }

@@ -35,6 +35,8 @@ class AppShell extends ConsumerWidget {
         _Destination(Routes.import, Icons.upload_file_outlined, Icons.upload_file, l10n.navImport),
       if (perms.canManageAssignments)
         _Destination(Routes.assignments, Icons.link_outlined, Icons.link, l10n.navAssignments),
+      if (perms.canManageAccounts)
+        _Destination(Routes.accounts, Icons.manage_accounts_outlined, Icons.manage_accounts, l10n.navAccounts),
       _Destination(Routes.profile, Icons.person_outline, Icons.person, l10n.navProfile),
     ];
     final index = destinations.indexWhere((d) => location.startsWith(d.route)).clamp(0, destinations.length - 1);

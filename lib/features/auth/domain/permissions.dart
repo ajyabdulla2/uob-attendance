@@ -55,6 +55,10 @@ final class Permissions {
     return !target.hasRole(UserRole.superAdmin) && !target.hasRole(UserRole.deputyAdmin);
   }
 
+  /// Roles and status of one's own account stay out of reach, so an admin
+  /// cannot lock themselves (or the department) out by mistake.
+  bool canChangeAccessOf(AppUser target) => canEditAccount(target) && target.id != user.id;
+
   // ------------------------------------------------------------- backup --
   bool get canBackup => isAdmin;
   bool get canRestore => isSuperAdmin;

@@ -179,7 +179,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String notProvisionedBody(String email) {
-    return 'البريد $email غير مسجَّل في النظام. اطلب من إدارة القسم إضافتك ثم أعد المحاولة.';
+    return 'البريد $email غير مسجَّل في النظام بعد. أرسل طلب انضمام أدناه، أو اطلب من إدارة القسم إضافتك.';
   }
 
   @override
@@ -811,4 +811,141 @@ class AppLocalizationsAr extends AppLocalizations {
   String updateOpenFailed(String url) {
     return 'تعذّر فتح الرابط: $url';
   }
+
+  @override
+  String get navAccounts => 'الحسابات';
+
+  @override
+  String get accountsTitle => 'الحسابات والصلاحيات';
+
+  @override
+  String get accountsAdd => 'إضافة حساب';
+
+  @override
+  String get accountsAddHint =>
+      'بعد الإضافة يفعّل صاحب البريد حسابه من «أول مرة؟ فعّل حسابك».';
+
+  @override
+  String get accountsSearch => 'بحث بالاسم أو البريد';
+
+  @override
+  String get accountsEmpty => 'لا توجد حسابات مطابقة.';
+
+  @override
+  String get accountsSuspended => 'موقوف';
+
+  @override
+  String get accountsLocked => 'حساب مدير؛ يعدّله المدير العام فقط.';
+
+  @override
+  String accountsRequestsTitle(int count) {
+    return 'طلبات الانضمام ($count)';
+  }
+
+  @override
+  String accountsRequestedOn(String date) {
+    return 'طُلب في $date';
+  }
+
+  @override
+  String get accountsApprove => 'قبول';
+
+  @override
+  String get accountsReject => 'رفض';
+
+  @override
+  String get accountsRejectTitle => 'رفض الطلب';
+
+  @override
+  String accountsRejectBody(String email) {
+    return 'رفض طلب $email؟ يستطيع صاحبه إرسال طلب جديد.';
+  }
+
+  @override
+  String accountsApproved(String name) {
+    return 'أُضيف $name، ويدخل الآن تلقائياً.';
+  }
+
+  @override
+  String get accountsRejected => 'رُفض الطلب.';
+
+  @override
+  String accountsCreated(String email) {
+    return 'أُضيف $email. أخبر صاحبه أن يفعّل حسابه من التطبيق.';
+  }
+
+  @override
+  String get accountsSaved => 'حُفظ الحساب.';
+
+  @override
+  String get accountsExists => 'يوجد حساب بهذا البريد؛ عدّله من القائمة.';
+
+  @override
+  String get accountEditNew => 'حساب جديد';
+
+  @override
+  String get accountEditApprove => 'قبول طلب الانضمام';
+
+  @override
+  String get accountEditTitle => 'تعديل الحساب';
+
+  @override
+  String get accountRoles => 'الصلاحيات';
+
+  @override
+  String get accountStageScopes => 'المراحل التي يديرها';
+
+  @override
+  String get accountActive => 'الحساب فعّال';
+
+  @override
+  String get accountActiveHint => 'الحساب الموقوف لا يصل إلى أي بيانات.';
+
+  @override
+  String get accountSelfLocked =>
+      'لا يمكنك تغيير صلاحياتك أو إيقاف حسابك بنفسك.';
+
+  @override
+  String get accountIssueRole => 'اختر صلاحية واحدة على الأقل.';
+
+  @override
+  String get accountIssueStage => 'اختر مرحلة واحدة على الأقل لمسؤول المرحلة.';
+
+  @override
+  String homeAccessRequests(int count) {
+    return 'طلبات انضمام بانتظار موافقتك: $count';
+  }
+
+  @override
+  String get joinTitle => 'طلب الانضمام';
+
+  @override
+  String get joinBody =>
+      'أرسل طلباً إلى إدارة القسم، وستدخل تلقائياً بعد الموافقة.';
+
+  @override
+  String get joinName => 'اسمك الكامل';
+
+  @override
+  String get joinNote => 'ملاحظة للإدارة (اختياري)';
+
+  @override
+  String get joinNoteHint => 'مثل اللقب العلمي أو المرحلة التي تدرّسها';
+
+  @override
+  String get joinSubmit => 'إرسال طلب الانضمام';
+
+  @override
+  String get joinSent => 'أُرسل طلبك.';
+
+  @override
+  String joinPending(String date) {
+    return 'طلبك مُرسَل منذ $date وبانتظار موافقة الإدارة. ستدخل تلقائياً بعد الموافقة.';
+  }
+
+  @override
+  String get joinCancel => 'إلغاء الطلب';
+
+  @override
+  String get joinCancelled => 'أُلغي الطلب.';
 }

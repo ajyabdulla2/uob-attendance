@@ -180,7 +180,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String notProvisionedBody(String email) {
-    return '$email is not registered. Ask the department to add you, then retry.';
+    return '$email is not registered yet. Send a join request below, or ask the department to add you.';
   }
 
   @override
@@ -811,4 +811,143 @@ class AppLocalizationsEn extends AppLocalizations {
   String updateOpenFailed(String url) {
     return 'Could not open the link: $url';
   }
+
+  @override
+  String get navAccounts => 'Accounts';
+
+  @override
+  String get accountsTitle => 'Accounts and permissions';
+
+  @override
+  String get accountsAdd => 'Add account';
+
+  @override
+  String get accountsAddHint =>
+      'After adding, the owner of the e-mail activates it from “First time? Activate your account”.';
+
+  @override
+  String get accountsSearch => 'Search by name or e-mail';
+
+  @override
+  String get accountsEmpty => 'No matching accounts.';
+
+  @override
+  String get accountsSuspended => 'Suspended';
+
+  @override
+  String get accountsLocked => 'Admin account; only the super admin edits it.';
+
+  @override
+  String accountsRequestsTitle(int count) {
+    return 'Join requests ($count)';
+  }
+
+  @override
+  String accountsRequestedOn(String date) {
+    return 'Requested $date';
+  }
+
+  @override
+  String get accountsApprove => 'Approve';
+
+  @override
+  String get accountsReject => 'Reject';
+
+  @override
+  String get accountsRejectTitle => 'Reject request';
+
+  @override
+  String accountsRejectBody(String email) {
+    return 'Reject the request from $email? They can send a new one.';
+  }
+
+  @override
+  String accountsApproved(String name) {
+    return '$name was added and is signed in automatically.';
+  }
+
+  @override
+  String get accountsRejected => 'Request rejected.';
+
+  @override
+  String accountsCreated(String email) {
+    return '$email was added. Ask them to activate the account in the app.';
+  }
+
+  @override
+  String get accountsSaved => 'Account saved.';
+
+  @override
+  String get accountsExists =>
+      'An account with this e-mail exists; edit it from the list.';
+
+  @override
+  String get accountEditNew => 'New account';
+
+  @override
+  String get accountEditApprove => 'Approve join request';
+
+  @override
+  String get accountEditTitle => 'Edit account';
+
+  @override
+  String get accountRoles => 'Permissions';
+
+  @override
+  String get accountStageScopes => 'Stages they manage';
+
+  @override
+  String get accountActive => 'Account active';
+
+  @override
+  String get accountActiveHint => 'A suspended account cannot reach any data.';
+
+  @override
+  String get accountSelfLocked =>
+      'You cannot change your own permissions or suspend yourself.';
+
+  @override
+  String get accountIssueRole => 'Choose at least one permission.';
+
+  @override
+  String get accountIssueStage =>
+      'Choose at least one stage for a stage manager.';
+
+  @override
+  String homeAccessRequests(int count) {
+    return 'Join requests awaiting your approval: $count';
+  }
+
+  @override
+  String get joinTitle => 'Join request';
+
+  @override
+  String get joinBody =>
+      'Send a request to the department; you get in automatically once it is approved.';
+
+  @override
+  String get joinName => 'Your full name';
+
+  @override
+  String get joinNote => 'Note for the admins (optional)';
+
+  @override
+  String get joinNoteHint => 'e.g. academic title or the stage you teach';
+
+  @override
+  String get joinSubmit => 'Send join request';
+
+  @override
+  String get joinSent => 'Your request was sent.';
+
+  @override
+  String joinPending(String date) {
+    return 'Your request was sent $date and awaits approval. You get in automatically once approved.';
+  }
+
+  @override
+  String get joinCancel => 'Cancel request';
+
+  @override
+  String get joinCancelled => 'Request cancelled.';
 }

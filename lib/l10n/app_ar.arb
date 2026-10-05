@@ -73,7 +73,7 @@
   "verifySent": "أُرسل رابط جديد.",
   "verifyNotYet": "لم يُؤكَّد البريد بعد. تحقق من مجلد الرسائل غير المرغوب فيها.",
   "notProvisionedTitle": "الحساب غير مضاف",
-  "notProvisionedBody": "البريد {email} غير مسجَّل في النظام. اطلب من إدارة القسم إضافتك ثم أعد المحاولة.",
+  "notProvisionedBody": "البريد {email} غير مسجَّل في النظام بعد. أرسل طلب انضمام أدناه، أو اطلب من إدارة القسم إضافتك.",
   "@notProvisionedBody": {
     "placeholders": {
       "email": {
@@ -591,5 +591,94 @@
         "type": "String"
       }
     }
-  }
+  },
+  "navAccounts": "الحسابات",
+  "accountsTitle": "الحسابات والصلاحيات",
+  "accountsAdd": "إضافة حساب",
+  "accountsAddHint": "بعد الإضافة يفعّل صاحب البريد حسابه من «أول مرة؟ فعّل حسابك».",
+  "accountsSearch": "بحث بالاسم أو البريد",
+  "accountsEmpty": "لا توجد حسابات مطابقة.",
+  "accountsSuspended": "موقوف",
+  "accountsLocked": "حساب مدير؛ يعدّله المدير العام فقط.",
+  "accountsRequestsTitle": "طلبات الانضمام ({count})",
+  "@accountsRequestsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "accountsRequestedOn": "طُلب في {date}",
+  "@accountsRequestedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "accountsApprove": "قبول",
+  "accountsReject": "رفض",
+  "accountsRejectTitle": "رفض الطلب",
+  "accountsRejectBody": "رفض طلب {email}؟ يستطيع صاحبه إرسال طلب جديد.",
+  "@accountsRejectBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "accountsApproved": "أُضيف {name}، ويدخل الآن تلقائياً.",
+  "@accountsApproved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "accountsRejected": "رُفض الطلب.",
+  "accountsCreated": "أُضيف {email}. أخبر صاحبه أن يفعّل حسابه من التطبيق.",
+  "@accountsCreated": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "accountsSaved": "حُفظ الحساب.",
+  "accountsExists": "يوجد حساب بهذا البريد؛ عدّله من القائمة.",
+  "accountEditNew": "حساب جديد",
+  "accountEditApprove": "قبول طلب الانضمام",
+  "accountEditTitle": "تعديل الحساب",
+  "accountRoles": "الصلاحيات",
+  "accountStageScopes": "المراحل التي يديرها",
+  "accountActive": "الحساب فعّال",
+  "accountActiveHint": "الحساب الموقوف لا يصل إلى أي بيانات.",
+  "accountSelfLocked": "لا يمكنك تغيير صلاحياتك أو إيقاف حسابك بنفسك.",
+  "accountIssueRole": "اختر صلاحية واحدة على الأقل.",
+  "accountIssueStage": "اختر مرحلة واحدة على الأقل لمسؤول المرحلة.",
+  "homeAccessRequests": "طلبات انضمام بانتظار موافقتك: {count}",
+  "@homeAccessRequests": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "joinTitle": "طلب الانضمام",
+  "joinBody": "أرسل طلباً إلى إدارة القسم، وستدخل تلقائياً بعد الموافقة.",
+  "joinName": "اسمك الكامل",
+  "joinNote": "ملاحظة للإدارة (اختياري)",
+  "joinNoteHint": "مثل اللقب العلمي أو المرحلة التي تدرّسها",
+  "joinSubmit": "إرسال طلب الانضمام",
+  "joinSent": "أُرسل طلبك.",
+  "joinPending": "طلبك مُرسَل منذ {date} وبانتظار موافقة الإدارة. ستدخل تلقائياً بعد الموافقة.",
+  "@joinPending": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "joinCancel": "إلغاء الطلب",
+  "joinCancelled": "أُلغي الطلب."
 }
