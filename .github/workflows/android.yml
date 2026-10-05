@@ -118,11 +118,14 @@ jobs:
           cp build/app/outputs/flutter-apk/app-release.apk "$name"
           echo "name=$name" >> "$GITHUB_OUTPUT"
 
+      # A re-run keeps the run number, hence the artifact name: replace the
+      # earlier attempt's APK instead of failing with a name conflict.
       - uses: actions/upload-artifact@v6
         with:
           name: ${{ steps.apk.outputs.name }}
           path: ${{ steps.apk.outputs.name }}
           retention-days: 30
+          overwrite: true
 
       - name: GitHub Release
         if: env.IS_RELEASE == 'true'
