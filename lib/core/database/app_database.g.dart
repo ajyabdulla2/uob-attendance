@@ -1900,6 +1900,1328 @@ class LocalAssignmentsCompanion extends UpdateCompanion<LocalAssignmentRow> {
   }
 }
 
+class $LocalSessionsTable extends LocalSessions
+    with TableInfo<$LocalSessionsTable, LocalSessionRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LocalSessionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _courseIdMeta = const VerificationMeta(
+    'courseId',
+  );
+  @override
+  late final GeneratedColumn<String> courseId = GeneratedColumn<String>(
+    'course_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stageIdMeta = const VerificationMeta(
+    'stageId',
+  );
+  @override
+  late final GeneratedColumn<String> stageId = GeneratedColumn<String>(
+    'stage_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _yearIdMeta = const VerificationMeta('yearId');
+  @override
+  late final GeneratedColumn<String> yearId = GeneratedColumn<String>(
+    'year_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetMeta = const VerificationMeta('target');
+  @override
+  late final GeneratedColumn<String> target = GeneratedColumn<String>(
+    'target',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _groupIdMeta = const VerificationMeta(
+    'groupId',
+  );
+  @override
+  late final GeneratedColumn<String> groupId = GeneratedColumn<String>(
+    'group_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dateKeyMeta = const VerificationMeta(
+    'dateKey',
+  );
+  @override
+  late final GeneratedColumn<String> dateKey = GeneratedColumn<String>(
+    'date_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lectureNoMeta = const VerificationMeta(
+    'lectureNo',
+  );
+  @override
+  late final GeneratedColumn<int> lectureNo = GeneratedColumn<int>(
+    'lecture_no',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _openedByMeta = const VerificationMeta(
+    'openedBy',
+  );
+  @override
+  late final GeneratedColumn<String> openedBy = GeneratedColumn<String>(
+    'opened_by',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lockAtMeta = const VerificationMeta('lockAt');
+  @override
+  late final GeneratedColumn<DateTime> lockAt = GeneratedColumn<DateTime>(
+    'lock_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lockedMeta = const VerificationMeta('locked');
+  @override
+  late final GeneratedColumn<bool> locked = GeneratedColumn<bool>(
+    'locked',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("locked" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _countsJsonMeta = const VerificationMeta(
+    'countsJson',
+  );
+  @override
+  late final GeneratedColumn<String> countsJson = GeneratedColumn<String>(
+    'counts_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('{}'),
+  );
+  static const VerificationMeta _deviceCreatedAtMeta = const VerificationMeta(
+    'deviceCreatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deviceCreatedAt =
+      GeneratedColumn<DateTime>(
+        'device_created_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _savedAtMeta = const VerificationMeta(
+    'savedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> savedAt = GeneratedColumn<DateTime>(
+    'saved_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    courseId,
+    stageId,
+    yearId,
+    type,
+    target,
+    groupId,
+    dateKey,
+    date,
+    lectureNo,
+    openedBy,
+    lockAt,
+    locked,
+    countsJson,
+    deviceCreatedAt,
+    savedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'local_sessions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LocalSessionRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('course_id')) {
+      context.handle(
+        _courseIdMeta,
+        courseId.isAcceptableOrUnknown(data['course_id']!, _courseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_courseIdMeta);
+    }
+    if (data.containsKey('stage_id')) {
+      context.handle(
+        _stageIdMeta,
+        stageId.isAcceptableOrUnknown(data['stage_id']!, _stageIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_stageIdMeta);
+    }
+    if (data.containsKey('year_id')) {
+      context.handle(
+        _yearIdMeta,
+        yearId.isAcceptableOrUnknown(data['year_id']!, _yearIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_yearIdMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('target')) {
+      context.handle(
+        _targetMeta,
+        target.isAcceptableOrUnknown(data['target']!, _targetMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_targetMeta);
+    }
+    if (data.containsKey('group_id')) {
+      context.handle(
+        _groupIdMeta,
+        groupId.isAcceptableOrUnknown(data['group_id']!, _groupIdMeta),
+      );
+    }
+    if (data.containsKey('date_key')) {
+      context.handle(
+        _dateKeyMeta,
+        dateKey.isAcceptableOrUnknown(data['date_key']!, _dateKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateKeyMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('lecture_no')) {
+      context.handle(
+        _lectureNoMeta,
+        lectureNo.isAcceptableOrUnknown(data['lecture_no']!, _lectureNoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lectureNoMeta);
+    }
+    if (data.containsKey('opened_by')) {
+      context.handle(
+        _openedByMeta,
+        openedBy.isAcceptableOrUnknown(data['opened_by']!, _openedByMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_openedByMeta);
+    }
+    if (data.containsKey('lock_at')) {
+      context.handle(
+        _lockAtMeta,
+        lockAt.isAcceptableOrUnknown(data['lock_at']!, _lockAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lockAtMeta);
+    }
+    if (data.containsKey('locked')) {
+      context.handle(
+        _lockedMeta,
+        locked.isAcceptableOrUnknown(data['locked']!, _lockedMeta),
+      );
+    }
+    if (data.containsKey('counts_json')) {
+      context.handle(
+        _countsJsonMeta,
+        countsJson.isAcceptableOrUnknown(data['counts_json']!, _countsJsonMeta),
+      );
+    }
+    if (data.containsKey('device_created_at')) {
+      context.handle(
+        _deviceCreatedAtMeta,
+        deviceCreatedAt.isAcceptableOrUnknown(
+          data['device_created_at']!,
+          _deviceCreatedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('saved_at')) {
+      context.handle(
+        _savedAtMeta,
+        savedAt.isAcceptableOrUnknown(data['saved_at']!, _savedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LocalSessionRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalSessionRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      courseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}course_id'],
+      )!,
+      stageId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}stage_id'],
+      )!,
+      yearId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}year_id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      target: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target'],
+      )!,
+      groupId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}group_id'],
+      ),
+      dateKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}date_key'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+      lectureNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}lecture_no'],
+      )!,
+      openedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}opened_by'],
+      )!,
+      lockAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}lock_at'],
+      )!,
+      locked: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}locked'],
+      )!,
+      countsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}counts_json'],
+      )!,
+      deviceCreatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}device_created_at'],
+      ),
+      savedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}saved_at'],
+      ),
+    );
+  }
+
+  @override
+  $LocalSessionsTable createAlias(String alias) {
+    return $LocalSessionsTable(attachedDatabase, alias);
+  }
+}
+
+class LocalSessionRow extends DataClass implements Insertable<LocalSessionRow> {
+  final String id;
+  final String courseId;
+  final String stageId;
+  final String yearId;
+  final String type;
+  final String target;
+  final String? groupId;
+  final String dateKey;
+  final DateTime date;
+  final int lectureNo;
+  final String openedBy;
+  final DateTime lockAt;
+  final bool locked;
+  final String countsJson;
+  final DateTime? deviceCreatedAt;
+
+  /// Last change on this device (device clock).
+  final DateTime? savedAt;
+  const LocalSessionRow({
+    required this.id,
+    required this.courseId,
+    required this.stageId,
+    required this.yearId,
+    required this.type,
+    required this.target,
+    this.groupId,
+    required this.dateKey,
+    required this.date,
+    required this.lectureNo,
+    required this.openedBy,
+    required this.lockAt,
+    required this.locked,
+    required this.countsJson,
+    this.deviceCreatedAt,
+    this.savedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['course_id'] = Variable<String>(courseId);
+    map['stage_id'] = Variable<String>(stageId);
+    map['year_id'] = Variable<String>(yearId);
+    map['type'] = Variable<String>(type);
+    map['target'] = Variable<String>(target);
+    if (!nullToAbsent || groupId != null) {
+      map['group_id'] = Variable<String>(groupId);
+    }
+    map['date_key'] = Variable<String>(dateKey);
+    map['date'] = Variable<DateTime>(date);
+    map['lecture_no'] = Variable<int>(lectureNo);
+    map['opened_by'] = Variable<String>(openedBy);
+    map['lock_at'] = Variable<DateTime>(lockAt);
+    map['locked'] = Variable<bool>(locked);
+    map['counts_json'] = Variable<String>(countsJson);
+    if (!nullToAbsent || deviceCreatedAt != null) {
+      map['device_created_at'] = Variable<DateTime>(deviceCreatedAt);
+    }
+    if (!nullToAbsent || savedAt != null) {
+      map['saved_at'] = Variable<DateTime>(savedAt);
+    }
+    return map;
+  }
+
+  LocalSessionsCompanion toCompanion(bool nullToAbsent) {
+    return LocalSessionsCompanion(
+      id: Value(id),
+      courseId: Value(courseId),
+      stageId: Value(stageId),
+      yearId: Value(yearId),
+      type: Value(type),
+      target: Value(target),
+      groupId: groupId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(groupId),
+      dateKey: Value(dateKey),
+      date: Value(date),
+      lectureNo: Value(lectureNo),
+      openedBy: Value(openedBy),
+      lockAt: Value(lockAt),
+      locked: Value(locked),
+      countsJson: Value(countsJson),
+      deviceCreatedAt: deviceCreatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deviceCreatedAt),
+      savedAt: savedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(savedAt),
+    );
+  }
+
+  factory LocalSessionRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalSessionRow(
+      id: serializer.fromJson<String>(json['id']),
+      courseId: serializer.fromJson<String>(json['courseId']),
+      stageId: serializer.fromJson<String>(json['stageId']),
+      yearId: serializer.fromJson<String>(json['yearId']),
+      type: serializer.fromJson<String>(json['type']),
+      target: serializer.fromJson<String>(json['target']),
+      groupId: serializer.fromJson<String?>(json['groupId']),
+      dateKey: serializer.fromJson<String>(json['dateKey']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      lectureNo: serializer.fromJson<int>(json['lectureNo']),
+      openedBy: serializer.fromJson<String>(json['openedBy']),
+      lockAt: serializer.fromJson<DateTime>(json['lockAt']),
+      locked: serializer.fromJson<bool>(json['locked']),
+      countsJson: serializer.fromJson<String>(json['countsJson']),
+      deviceCreatedAt: serializer.fromJson<DateTime?>(json['deviceCreatedAt']),
+      savedAt: serializer.fromJson<DateTime?>(json['savedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'courseId': serializer.toJson<String>(courseId),
+      'stageId': serializer.toJson<String>(stageId),
+      'yearId': serializer.toJson<String>(yearId),
+      'type': serializer.toJson<String>(type),
+      'target': serializer.toJson<String>(target),
+      'groupId': serializer.toJson<String?>(groupId),
+      'dateKey': serializer.toJson<String>(dateKey),
+      'date': serializer.toJson<DateTime>(date),
+      'lectureNo': serializer.toJson<int>(lectureNo),
+      'openedBy': serializer.toJson<String>(openedBy),
+      'lockAt': serializer.toJson<DateTime>(lockAt),
+      'locked': serializer.toJson<bool>(locked),
+      'countsJson': serializer.toJson<String>(countsJson),
+      'deviceCreatedAt': serializer.toJson<DateTime?>(deviceCreatedAt),
+      'savedAt': serializer.toJson<DateTime?>(savedAt),
+    };
+  }
+
+  LocalSessionRow copyWith({
+    String? id,
+    String? courseId,
+    String? stageId,
+    String? yearId,
+    String? type,
+    String? target,
+    Value<String?> groupId = const Value.absent(),
+    String? dateKey,
+    DateTime? date,
+    int? lectureNo,
+    String? openedBy,
+    DateTime? lockAt,
+    bool? locked,
+    String? countsJson,
+    Value<DateTime?> deviceCreatedAt = const Value.absent(),
+    Value<DateTime?> savedAt = const Value.absent(),
+  }) => LocalSessionRow(
+    id: id ?? this.id,
+    courseId: courseId ?? this.courseId,
+    stageId: stageId ?? this.stageId,
+    yearId: yearId ?? this.yearId,
+    type: type ?? this.type,
+    target: target ?? this.target,
+    groupId: groupId.present ? groupId.value : this.groupId,
+    dateKey: dateKey ?? this.dateKey,
+    date: date ?? this.date,
+    lectureNo: lectureNo ?? this.lectureNo,
+    openedBy: openedBy ?? this.openedBy,
+    lockAt: lockAt ?? this.lockAt,
+    locked: locked ?? this.locked,
+    countsJson: countsJson ?? this.countsJson,
+    deviceCreatedAt: deviceCreatedAt.present
+        ? deviceCreatedAt.value
+        : this.deviceCreatedAt,
+    savedAt: savedAt.present ? savedAt.value : this.savedAt,
+  );
+  LocalSessionRow copyWithCompanion(LocalSessionsCompanion data) {
+    return LocalSessionRow(
+      id: data.id.present ? data.id.value : this.id,
+      courseId: data.courseId.present ? data.courseId.value : this.courseId,
+      stageId: data.stageId.present ? data.stageId.value : this.stageId,
+      yearId: data.yearId.present ? data.yearId.value : this.yearId,
+      type: data.type.present ? data.type.value : this.type,
+      target: data.target.present ? data.target.value : this.target,
+      groupId: data.groupId.present ? data.groupId.value : this.groupId,
+      dateKey: data.dateKey.present ? data.dateKey.value : this.dateKey,
+      date: data.date.present ? data.date.value : this.date,
+      lectureNo: data.lectureNo.present ? data.lectureNo.value : this.lectureNo,
+      openedBy: data.openedBy.present ? data.openedBy.value : this.openedBy,
+      lockAt: data.lockAt.present ? data.lockAt.value : this.lockAt,
+      locked: data.locked.present ? data.locked.value : this.locked,
+      countsJson: data.countsJson.present
+          ? data.countsJson.value
+          : this.countsJson,
+      deviceCreatedAt: data.deviceCreatedAt.present
+          ? data.deviceCreatedAt.value
+          : this.deviceCreatedAt,
+      savedAt: data.savedAt.present ? data.savedAt.value : this.savedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalSessionRow(')
+          ..write('id: $id, ')
+          ..write('courseId: $courseId, ')
+          ..write('stageId: $stageId, ')
+          ..write('yearId: $yearId, ')
+          ..write('type: $type, ')
+          ..write('target: $target, ')
+          ..write('groupId: $groupId, ')
+          ..write('dateKey: $dateKey, ')
+          ..write('date: $date, ')
+          ..write('lectureNo: $lectureNo, ')
+          ..write('openedBy: $openedBy, ')
+          ..write('lockAt: $lockAt, ')
+          ..write('locked: $locked, ')
+          ..write('countsJson: $countsJson, ')
+          ..write('deviceCreatedAt: $deviceCreatedAt, ')
+          ..write('savedAt: $savedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    courseId,
+    stageId,
+    yearId,
+    type,
+    target,
+    groupId,
+    dateKey,
+    date,
+    lectureNo,
+    openedBy,
+    lockAt,
+    locked,
+    countsJson,
+    deviceCreatedAt,
+    savedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalSessionRow &&
+          other.id == this.id &&
+          other.courseId == this.courseId &&
+          other.stageId == this.stageId &&
+          other.yearId == this.yearId &&
+          other.type == this.type &&
+          other.target == this.target &&
+          other.groupId == this.groupId &&
+          other.dateKey == this.dateKey &&
+          other.date == this.date &&
+          other.lectureNo == this.lectureNo &&
+          other.openedBy == this.openedBy &&
+          other.lockAt == this.lockAt &&
+          other.locked == this.locked &&
+          other.countsJson == this.countsJson &&
+          other.deviceCreatedAt == this.deviceCreatedAt &&
+          other.savedAt == this.savedAt);
+}
+
+class LocalSessionsCompanion extends UpdateCompanion<LocalSessionRow> {
+  final Value<String> id;
+  final Value<String> courseId;
+  final Value<String> stageId;
+  final Value<String> yearId;
+  final Value<String> type;
+  final Value<String> target;
+  final Value<String?> groupId;
+  final Value<String> dateKey;
+  final Value<DateTime> date;
+  final Value<int> lectureNo;
+  final Value<String> openedBy;
+  final Value<DateTime> lockAt;
+  final Value<bool> locked;
+  final Value<String> countsJson;
+  final Value<DateTime?> deviceCreatedAt;
+  final Value<DateTime?> savedAt;
+  final Value<int> rowid;
+  const LocalSessionsCompanion({
+    this.id = const Value.absent(),
+    this.courseId = const Value.absent(),
+    this.stageId = const Value.absent(),
+    this.yearId = const Value.absent(),
+    this.type = const Value.absent(),
+    this.target = const Value.absent(),
+    this.groupId = const Value.absent(),
+    this.dateKey = const Value.absent(),
+    this.date = const Value.absent(),
+    this.lectureNo = const Value.absent(),
+    this.openedBy = const Value.absent(),
+    this.lockAt = const Value.absent(),
+    this.locked = const Value.absent(),
+    this.countsJson = const Value.absent(),
+    this.deviceCreatedAt = const Value.absent(),
+    this.savedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LocalSessionsCompanion.insert({
+    required String id,
+    required String courseId,
+    required String stageId,
+    required String yearId,
+    required String type,
+    required String target,
+    this.groupId = const Value.absent(),
+    required String dateKey,
+    required DateTime date,
+    required int lectureNo,
+    required String openedBy,
+    required DateTime lockAt,
+    this.locked = const Value.absent(),
+    this.countsJson = const Value.absent(),
+    this.deviceCreatedAt = const Value.absent(),
+    this.savedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       courseId = Value(courseId),
+       stageId = Value(stageId),
+       yearId = Value(yearId),
+       type = Value(type),
+       target = Value(target),
+       dateKey = Value(dateKey),
+       date = Value(date),
+       lectureNo = Value(lectureNo),
+       openedBy = Value(openedBy),
+       lockAt = Value(lockAt);
+  static Insertable<LocalSessionRow> custom({
+    Expression<String>? id,
+    Expression<String>? courseId,
+    Expression<String>? stageId,
+    Expression<String>? yearId,
+    Expression<String>? type,
+    Expression<String>? target,
+    Expression<String>? groupId,
+    Expression<String>? dateKey,
+    Expression<DateTime>? date,
+    Expression<int>? lectureNo,
+    Expression<String>? openedBy,
+    Expression<DateTime>? lockAt,
+    Expression<bool>? locked,
+    Expression<String>? countsJson,
+    Expression<DateTime>? deviceCreatedAt,
+    Expression<DateTime>? savedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (courseId != null) 'course_id': courseId,
+      if (stageId != null) 'stage_id': stageId,
+      if (yearId != null) 'year_id': yearId,
+      if (type != null) 'type': type,
+      if (target != null) 'target': target,
+      if (groupId != null) 'group_id': groupId,
+      if (dateKey != null) 'date_key': dateKey,
+      if (date != null) 'date': date,
+      if (lectureNo != null) 'lecture_no': lectureNo,
+      if (openedBy != null) 'opened_by': openedBy,
+      if (lockAt != null) 'lock_at': lockAt,
+      if (locked != null) 'locked': locked,
+      if (countsJson != null) 'counts_json': countsJson,
+      if (deviceCreatedAt != null) 'device_created_at': deviceCreatedAt,
+      if (savedAt != null) 'saved_at': savedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LocalSessionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? courseId,
+    Value<String>? stageId,
+    Value<String>? yearId,
+    Value<String>? type,
+    Value<String>? target,
+    Value<String?>? groupId,
+    Value<String>? dateKey,
+    Value<DateTime>? date,
+    Value<int>? lectureNo,
+    Value<String>? openedBy,
+    Value<DateTime>? lockAt,
+    Value<bool>? locked,
+    Value<String>? countsJson,
+    Value<DateTime?>? deviceCreatedAt,
+    Value<DateTime?>? savedAt,
+    Value<int>? rowid,
+  }) {
+    return LocalSessionsCompanion(
+      id: id ?? this.id,
+      courseId: courseId ?? this.courseId,
+      stageId: stageId ?? this.stageId,
+      yearId: yearId ?? this.yearId,
+      type: type ?? this.type,
+      target: target ?? this.target,
+      groupId: groupId ?? this.groupId,
+      dateKey: dateKey ?? this.dateKey,
+      date: date ?? this.date,
+      lectureNo: lectureNo ?? this.lectureNo,
+      openedBy: openedBy ?? this.openedBy,
+      lockAt: lockAt ?? this.lockAt,
+      locked: locked ?? this.locked,
+      countsJson: countsJson ?? this.countsJson,
+      deviceCreatedAt: deviceCreatedAt ?? this.deviceCreatedAt,
+      savedAt: savedAt ?? this.savedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (courseId.present) {
+      map['course_id'] = Variable<String>(courseId.value);
+    }
+    if (stageId.present) {
+      map['stage_id'] = Variable<String>(stageId.value);
+    }
+    if (yearId.present) {
+      map['year_id'] = Variable<String>(yearId.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (target.present) {
+      map['target'] = Variable<String>(target.value);
+    }
+    if (groupId.present) {
+      map['group_id'] = Variable<String>(groupId.value);
+    }
+    if (dateKey.present) {
+      map['date_key'] = Variable<String>(dateKey.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (lectureNo.present) {
+      map['lecture_no'] = Variable<int>(lectureNo.value);
+    }
+    if (openedBy.present) {
+      map['opened_by'] = Variable<String>(openedBy.value);
+    }
+    if (lockAt.present) {
+      map['lock_at'] = Variable<DateTime>(lockAt.value);
+    }
+    if (locked.present) {
+      map['locked'] = Variable<bool>(locked.value);
+    }
+    if (countsJson.present) {
+      map['counts_json'] = Variable<String>(countsJson.value);
+    }
+    if (deviceCreatedAt.present) {
+      map['device_created_at'] = Variable<DateTime>(deviceCreatedAt.value);
+    }
+    if (savedAt.present) {
+      map['saved_at'] = Variable<DateTime>(savedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalSessionsCompanion(')
+          ..write('id: $id, ')
+          ..write('courseId: $courseId, ')
+          ..write('stageId: $stageId, ')
+          ..write('yearId: $yearId, ')
+          ..write('type: $type, ')
+          ..write('target: $target, ')
+          ..write('groupId: $groupId, ')
+          ..write('dateKey: $dateKey, ')
+          ..write('date: $date, ')
+          ..write('lectureNo: $lectureNo, ')
+          ..write('openedBy: $openedBy, ')
+          ..write('lockAt: $lockAt, ')
+          ..write('locked: $locked, ')
+          ..write('countsJson: $countsJson, ')
+          ..write('deviceCreatedAt: $deviceCreatedAt, ')
+          ..write('savedAt: $savedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $LocalRecordsTable extends LocalRecords
+    with TableInfo<$LocalRecordsTable, LocalRecordRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LocalRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _sessionIdMeta = const VerificationMeta(
+    'sessionId',
+  );
+  @override
+  late final GeneratedColumn<String> sessionId = GeneratedColumn<String>(
+    'session_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _studentIdMeta = const VerificationMeta(
+    'studentId',
+  );
+  @override
+  late final GeneratedColumn<String> studentId = GeneratedColumn<String>(
+    'student_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _updatedByMeta = const VerificationMeta(
+    'updatedBy',
+  );
+  @override
+  late final GeneratedColumn<String> updatedBy = GeneratedColumn<String>(
+    'updated_by',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deviceUpdatedAtMeta = const VerificationMeta(
+    'deviceUpdatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deviceUpdatedAt =
+      GeneratedColumn<DateTime>(
+        'device_updated_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    sessionId,
+    studentId,
+    status,
+    note,
+    updatedBy,
+    deviceUpdatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'local_records';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LocalRecordRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('session_id')) {
+      context.handle(
+        _sessionIdMeta,
+        sessionId.isAcceptableOrUnknown(data['session_id']!, _sessionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sessionIdMeta);
+    }
+    if (data.containsKey('student_id')) {
+      context.handle(
+        _studentIdMeta,
+        studentId.isAcceptableOrUnknown(data['student_id']!, _studentIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_studentIdMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(
+        _updatedByMeta,
+        updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedByMeta);
+    }
+    if (data.containsKey('device_updated_at')) {
+      context.handle(
+        _deviceUpdatedAtMeta,
+        deviceUpdatedAt.isAcceptableOrUnknown(
+          data['device_updated_at']!,
+          _deviceUpdatedAtMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {sessionId, studentId};
+  @override
+  LocalRecordRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalRecordRow(
+      sessionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}session_id'],
+      )!,
+      studentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}student_id'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      )!,
+      updatedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}updated_by'],
+      )!,
+      deviceUpdatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}device_updated_at'],
+      ),
+    );
+  }
+
+  @override
+  $LocalRecordsTable createAlias(String alias) {
+    return $LocalRecordsTable(attachedDatabase, alias);
+  }
+}
+
+class LocalRecordRow extends DataClass implements Insertable<LocalRecordRow> {
+  final String sessionId;
+  final String studentId;
+  final String status;
+  final String note;
+  final String updatedBy;
+  final DateTime? deviceUpdatedAt;
+  const LocalRecordRow({
+    required this.sessionId,
+    required this.studentId,
+    required this.status,
+    required this.note,
+    required this.updatedBy,
+    this.deviceUpdatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['session_id'] = Variable<String>(sessionId);
+    map['student_id'] = Variable<String>(studentId);
+    map['status'] = Variable<String>(status);
+    map['note'] = Variable<String>(note);
+    map['updated_by'] = Variable<String>(updatedBy);
+    if (!nullToAbsent || deviceUpdatedAt != null) {
+      map['device_updated_at'] = Variable<DateTime>(deviceUpdatedAt);
+    }
+    return map;
+  }
+
+  LocalRecordsCompanion toCompanion(bool nullToAbsent) {
+    return LocalRecordsCompanion(
+      sessionId: Value(sessionId),
+      studentId: Value(studentId),
+      status: Value(status),
+      note: Value(note),
+      updatedBy: Value(updatedBy),
+      deviceUpdatedAt: deviceUpdatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deviceUpdatedAt),
+    );
+  }
+
+  factory LocalRecordRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalRecordRow(
+      sessionId: serializer.fromJson<String>(json['sessionId']),
+      studentId: serializer.fromJson<String>(json['studentId']),
+      status: serializer.fromJson<String>(json['status']),
+      note: serializer.fromJson<String>(json['note']),
+      updatedBy: serializer.fromJson<String>(json['updatedBy']),
+      deviceUpdatedAt: serializer.fromJson<DateTime?>(json['deviceUpdatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'sessionId': serializer.toJson<String>(sessionId),
+      'studentId': serializer.toJson<String>(studentId),
+      'status': serializer.toJson<String>(status),
+      'note': serializer.toJson<String>(note),
+      'updatedBy': serializer.toJson<String>(updatedBy),
+      'deviceUpdatedAt': serializer.toJson<DateTime?>(deviceUpdatedAt),
+    };
+  }
+
+  LocalRecordRow copyWith({
+    String? sessionId,
+    String? studentId,
+    String? status,
+    String? note,
+    String? updatedBy,
+    Value<DateTime?> deviceUpdatedAt = const Value.absent(),
+  }) => LocalRecordRow(
+    sessionId: sessionId ?? this.sessionId,
+    studentId: studentId ?? this.studentId,
+    status: status ?? this.status,
+    note: note ?? this.note,
+    updatedBy: updatedBy ?? this.updatedBy,
+    deviceUpdatedAt: deviceUpdatedAt.present
+        ? deviceUpdatedAt.value
+        : this.deviceUpdatedAt,
+  );
+  LocalRecordRow copyWithCompanion(LocalRecordsCompanion data) {
+    return LocalRecordRow(
+      sessionId: data.sessionId.present ? data.sessionId.value : this.sessionId,
+      studentId: data.studentId.present ? data.studentId.value : this.studentId,
+      status: data.status.present ? data.status.value : this.status,
+      note: data.note.present ? data.note.value : this.note,
+      updatedBy: data.updatedBy.present ? data.updatedBy.value : this.updatedBy,
+      deviceUpdatedAt: data.deviceUpdatedAt.present
+          ? data.deviceUpdatedAt.value
+          : this.deviceUpdatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalRecordRow(')
+          ..write('sessionId: $sessionId, ')
+          ..write('studentId: $studentId, ')
+          ..write('status: $status, ')
+          ..write('note: $note, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('deviceUpdatedAt: $deviceUpdatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    sessionId,
+    studentId,
+    status,
+    note,
+    updatedBy,
+    deviceUpdatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalRecordRow &&
+          other.sessionId == this.sessionId &&
+          other.studentId == this.studentId &&
+          other.status == this.status &&
+          other.note == this.note &&
+          other.updatedBy == this.updatedBy &&
+          other.deviceUpdatedAt == this.deviceUpdatedAt);
+}
+
+class LocalRecordsCompanion extends UpdateCompanion<LocalRecordRow> {
+  final Value<String> sessionId;
+  final Value<String> studentId;
+  final Value<String> status;
+  final Value<String> note;
+  final Value<String> updatedBy;
+  final Value<DateTime?> deviceUpdatedAt;
+  final Value<int> rowid;
+  const LocalRecordsCompanion({
+    this.sessionId = const Value.absent(),
+    this.studentId = const Value.absent(),
+    this.status = const Value.absent(),
+    this.note = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.deviceUpdatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LocalRecordsCompanion.insert({
+    required String sessionId,
+    required String studentId,
+    required String status,
+    this.note = const Value.absent(),
+    required String updatedBy,
+    this.deviceUpdatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : sessionId = Value(sessionId),
+       studentId = Value(studentId),
+       status = Value(status),
+       updatedBy = Value(updatedBy);
+  static Insertable<LocalRecordRow> custom({
+    Expression<String>? sessionId,
+    Expression<String>? studentId,
+    Expression<String>? status,
+    Expression<String>? note,
+    Expression<String>? updatedBy,
+    Expression<DateTime>? deviceUpdatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (sessionId != null) 'session_id': sessionId,
+      if (studentId != null) 'student_id': studentId,
+      if (status != null) 'status': status,
+      if (note != null) 'note': note,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (deviceUpdatedAt != null) 'device_updated_at': deviceUpdatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LocalRecordsCompanion copyWith({
+    Value<String>? sessionId,
+    Value<String>? studentId,
+    Value<String>? status,
+    Value<String>? note,
+    Value<String>? updatedBy,
+    Value<DateTime?>? deviceUpdatedAt,
+    Value<int>? rowid,
+  }) {
+    return LocalRecordsCompanion(
+      sessionId: sessionId ?? this.sessionId,
+      studentId: studentId ?? this.studentId,
+      status: status ?? this.status,
+      note: note ?? this.note,
+      updatedBy: updatedBy ?? this.updatedBy,
+      deviceUpdatedAt: deviceUpdatedAt ?? this.deviceUpdatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (sessionId.present) {
+      map['session_id'] = Variable<String>(sessionId.value);
+    }
+    if (studentId.present) {
+      map['student_id'] = Variable<String>(studentId.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<String>(updatedBy.value);
+    }
+    if (deviceUpdatedAt.present) {
+      map['device_updated_at'] = Variable<DateTime>(deviceUpdatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalRecordsCompanion(')
+          ..write('sessionId: $sessionId, ')
+          ..write('studentId: $studentId, ')
+          ..write('status: $status, ')
+          ..write('note: $note, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('deviceUpdatedAt: $deviceUpdatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $OutboxEntriesTable extends OutboxEntries
     with TableInfo<$OutboxEntriesTable, OutboxEntry> {
   @override
@@ -1994,6 +3316,19 @@ class $OutboxEntriesTable extends OutboxEntries
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _failedMeta = const VerificationMeta('failed');
+  @override
+  late final GeneratedColumn<bool> failed = GeneratedColumn<bool>(
+    'failed',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("failed" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -2004,6 +3339,7 @@ class $OutboxEntriesTable extends OutboxEntries
     createdAt,
     attempts,
     lastError,
+    failed,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2065,6 +3401,12 @@ class $OutboxEntriesTable extends OutboxEntries
         lastError.isAcceptableOrUnknown(data['last_error']!, _lastErrorMeta),
       );
     }
+    if (data.containsKey('failed')) {
+      context.handle(
+        _failedMeta,
+        failed.isAcceptableOrUnknown(data['failed']!, _failedMeta),
+      );
+    }
     return context;
   }
 
@@ -2108,6 +3450,10 @@ class $OutboxEntriesTable extends OutboxEntries
         DriftSqlType.string,
         data['${effectivePrefix}last_error'],
       ),
+      failed: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}failed'],
+      )!,
     );
   }
 
@@ -2129,6 +3475,10 @@ class OutboxEntry extends DataClass implements Insertable<OutboxEntry> {
   final DateTime createdAt;
   final int attempts;
   final String? lastError;
+
+  /// Rejected by the server (e.g. the session locked before the upload):
+  /// kept, shown to the user, skipped until they retry.
+  final bool failed;
   const OutboxEntry({
     required this.id,
     required this.batchId,
@@ -2138,6 +3488,7 @@ class OutboxEntry extends DataClass implements Insertable<OutboxEntry> {
     required this.createdAt,
     required this.attempts,
     this.lastError,
+    required this.failed,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2154,6 +3505,7 @@ class OutboxEntry extends DataClass implements Insertable<OutboxEntry> {
     if (!nullToAbsent || lastError != null) {
       map['last_error'] = Variable<String>(lastError);
     }
+    map['failed'] = Variable<bool>(failed);
     return map;
   }
 
@@ -2169,6 +3521,7 @@ class OutboxEntry extends DataClass implements Insertable<OutboxEntry> {
       lastError: lastError == null && nullToAbsent
           ? const Value.absent()
           : Value(lastError),
+      failed: Value(failed),
     );
   }
 
@@ -2188,6 +3541,7 @@ class OutboxEntry extends DataClass implements Insertable<OutboxEntry> {
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       attempts: serializer.fromJson<int>(json['attempts']),
       lastError: serializer.fromJson<String?>(json['lastError']),
+      failed: serializer.fromJson<bool>(json['failed']),
     );
   }
   @override
@@ -2204,6 +3558,7 @@ class OutboxEntry extends DataClass implements Insertable<OutboxEntry> {
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'attempts': serializer.toJson<int>(attempts),
       'lastError': serializer.toJson<String?>(lastError),
+      'failed': serializer.toJson<bool>(failed),
     };
   }
 
@@ -2216,6 +3571,7 @@ class OutboxEntry extends DataClass implements Insertable<OutboxEntry> {
     DateTime? createdAt,
     int? attempts,
     Value<String?> lastError = const Value.absent(),
+    bool? failed,
   }) => OutboxEntry(
     id: id ?? this.id,
     batchId: batchId ?? this.batchId,
@@ -2225,6 +3581,7 @@ class OutboxEntry extends DataClass implements Insertable<OutboxEntry> {
     createdAt: createdAt ?? this.createdAt,
     attempts: attempts ?? this.attempts,
     lastError: lastError.present ? lastError.value : this.lastError,
+    failed: failed ?? this.failed,
   );
   OutboxEntry copyWithCompanion(OutboxEntriesCompanion data) {
     return OutboxEntry(
@@ -2238,6 +3595,7 @@ class OutboxEntry extends DataClass implements Insertable<OutboxEntry> {
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       attempts: data.attempts.present ? data.attempts.value : this.attempts,
       lastError: data.lastError.present ? data.lastError.value : this.lastError,
+      failed: data.failed.present ? data.failed.value : this.failed,
     );
   }
 
@@ -2251,7 +3609,8 @@ class OutboxEntry extends DataClass implements Insertable<OutboxEntry> {
           ..write('payloadJson: $payloadJson, ')
           ..write('createdAt: $createdAt, ')
           ..write('attempts: $attempts, ')
-          ..write('lastError: $lastError')
+          ..write('lastError: $lastError, ')
+          ..write('failed: $failed')
           ..write(')'))
         .toString();
   }
@@ -2266,6 +3625,7 @@ class OutboxEntry extends DataClass implements Insertable<OutboxEntry> {
     createdAt,
     attempts,
     lastError,
+    failed,
   );
   @override
   bool operator ==(Object other) =>
@@ -2278,7 +3638,8 @@ class OutboxEntry extends DataClass implements Insertable<OutboxEntry> {
           other.payloadJson == this.payloadJson &&
           other.createdAt == this.createdAt &&
           other.attempts == this.attempts &&
-          other.lastError == this.lastError);
+          other.lastError == this.lastError &&
+          other.failed == this.failed);
 }
 
 class OutboxEntriesCompanion extends UpdateCompanion<OutboxEntry> {
@@ -2290,6 +3651,7 @@ class OutboxEntriesCompanion extends UpdateCompanion<OutboxEntry> {
   final Value<DateTime> createdAt;
   final Value<int> attempts;
   final Value<String?> lastError;
+  final Value<bool> failed;
   const OutboxEntriesCompanion({
     this.id = const Value.absent(),
     this.batchId = const Value.absent(),
@@ -2299,6 +3661,7 @@ class OutboxEntriesCompanion extends UpdateCompanion<OutboxEntry> {
     this.createdAt = const Value.absent(),
     this.attempts = const Value.absent(),
     this.lastError = const Value.absent(),
+    this.failed = const Value.absent(),
   });
   OutboxEntriesCompanion.insert({
     this.id = const Value.absent(),
@@ -2309,6 +3672,7 @@ class OutboxEntriesCompanion extends UpdateCompanion<OutboxEntry> {
     required DateTime createdAt,
     this.attempts = const Value.absent(),
     this.lastError = const Value.absent(),
+    this.failed = const Value.absent(),
   }) : batchId = Value(batchId),
        op = Value(op),
        path = Value(path),
@@ -2322,6 +3686,7 @@ class OutboxEntriesCompanion extends UpdateCompanion<OutboxEntry> {
     Expression<DateTime>? createdAt,
     Expression<int>? attempts,
     Expression<String>? lastError,
+    Expression<bool>? failed,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2332,6 +3697,7 @@ class OutboxEntriesCompanion extends UpdateCompanion<OutboxEntry> {
       if (createdAt != null) 'created_at': createdAt,
       if (attempts != null) 'attempts': attempts,
       if (lastError != null) 'last_error': lastError,
+      if (failed != null) 'failed': failed,
     });
   }
 
@@ -2344,6 +3710,7 @@ class OutboxEntriesCompanion extends UpdateCompanion<OutboxEntry> {
     Value<DateTime>? createdAt,
     Value<int>? attempts,
     Value<String?>? lastError,
+    Value<bool>? failed,
   }) {
     return OutboxEntriesCompanion(
       id: id ?? this.id,
@@ -2354,6 +3721,7 @@ class OutboxEntriesCompanion extends UpdateCompanion<OutboxEntry> {
       createdAt: createdAt ?? this.createdAt,
       attempts: attempts ?? this.attempts,
       lastError: lastError ?? this.lastError,
+      failed: failed ?? this.failed,
     );
   }
 
@@ -2386,6 +3754,9 @@ class OutboxEntriesCompanion extends UpdateCompanion<OutboxEntry> {
     if (lastError.present) {
       map['last_error'] = Variable<String>(lastError.value);
     }
+    if (failed.present) {
+      map['failed'] = Variable<bool>(failed.value);
+    }
     return map;
   }
 
@@ -2399,7 +3770,8 @@ class OutboxEntriesCompanion extends UpdateCompanion<OutboxEntry> {
           ..write('payloadJson: $payloadJson, ')
           ..write('createdAt: $createdAt, ')
           ..write('attempts: $attempts, ')
-          ..write('lastError: $lastError')
+          ..write('lastError: $lastError, ')
+          ..write('failed: $failed')
           ..write(')'))
         .toString();
   }
@@ -2622,6 +3994,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $LocalAssignmentsTable localAssignments = $LocalAssignmentsTable(
     this,
   );
+  late final $LocalSessionsTable localSessions = $LocalSessionsTable(this);
+  late final $LocalRecordsTable localRecords = $LocalRecordsTable(this);
   late final $OutboxEntriesTable outboxEntries = $OutboxEntriesTable(this);
   late final $SyncStatesTable syncStates = $SyncStatesTable(this);
   @override
@@ -2633,6 +4007,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     localCourses,
     localGroups,
     localAssignments,
+    localSessions,
+    localRecords,
     outboxEntries,
     syncStates,
   ];
@@ -3667,6 +5043,658 @@ typedef $$LocalAssignmentsTableProcessedTableManager =
       LocalAssignmentRow,
       PrefetchHooks Function()
     >;
+typedef $$LocalSessionsTableCreateCompanionBuilder =
+    LocalSessionsCompanion Function({
+      required String id,
+      required String courseId,
+      required String stageId,
+      required String yearId,
+      required String type,
+      required String target,
+      Value<String?> groupId,
+      required String dateKey,
+      required DateTime date,
+      required int lectureNo,
+      required String openedBy,
+      required DateTime lockAt,
+      Value<bool> locked,
+      Value<String> countsJson,
+      Value<DateTime?> deviceCreatedAt,
+      Value<DateTime?> savedAt,
+      Value<int> rowid,
+    });
+typedef $$LocalSessionsTableUpdateCompanionBuilder =
+    LocalSessionsCompanion Function({
+      Value<String> id,
+      Value<String> courseId,
+      Value<String> stageId,
+      Value<String> yearId,
+      Value<String> type,
+      Value<String> target,
+      Value<String?> groupId,
+      Value<String> dateKey,
+      Value<DateTime> date,
+      Value<int> lectureNo,
+      Value<String> openedBy,
+      Value<DateTime> lockAt,
+      Value<bool> locked,
+      Value<String> countsJson,
+      Value<DateTime?> deviceCreatedAt,
+      Value<DateTime?> savedAt,
+      Value<int> rowid,
+    });
+
+class $$LocalSessionsTableFilterComposer
+    extends Composer<_$AppDatabase, $LocalSessionsTable> {
+  $$LocalSessionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get courseId => $composableBuilder(
+    column: $table.courseId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get stageId => $composableBuilder(
+    column: $table.stageId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get yearId => $composableBuilder(
+    column: $table.yearId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get target => $composableBuilder(
+    column: $table.target,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get groupId => $composableBuilder(
+    column: $table.groupId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dateKey => $composableBuilder(
+    column: $table.dateKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lectureNo => $composableBuilder(
+    column: $table.lectureNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get openedBy => $composableBuilder(
+    column: $table.openedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lockAt => $composableBuilder(
+    column: $table.lockAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get locked => $composableBuilder(
+    column: $table.locked,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get countsJson => $composableBuilder(
+    column: $table.countsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deviceCreatedAt => $composableBuilder(
+    column: $table.deviceCreatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get savedAt => $composableBuilder(
+    column: $table.savedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LocalSessionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $LocalSessionsTable> {
+  $$LocalSessionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get courseId => $composableBuilder(
+    column: $table.courseId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get stageId => $composableBuilder(
+    column: $table.stageId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get yearId => $composableBuilder(
+    column: $table.yearId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get target => $composableBuilder(
+    column: $table.target,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get groupId => $composableBuilder(
+    column: $table.groupId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dateKey => $composableBuilder(
+    column: $table.dateKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lectureNo => $composableBuilder(
+    column: $table.lectureNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get openedBy => $composableBuilder(
+    column: $table.openedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lockAt => $composableBuilder(
+    column: $table.lockAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get locked => $composableBuilder(
+    column: $table.locked,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get countsJson => $composableBuilder(
+    column: $table.countsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deviceCreatedAt => $composableBuilder(
+    column: $table.deviceCreatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get savedAt => $composableBuilder(
+    column: $table.savedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LocalSessionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LocalSessionsTable> {
+  $$LocalSessionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get courseId =>
+      $composableBuilder(column: $table.courseId, builder: (column) => column);
+
+  GeneratedColumn<String> get stageId =>
+      $composableBuilder(column: $table.stageId, builder: (column) => column);
+
+  GeneratedColumn<String> get yearId =>
+      $composableBuilder(column: $table.yearId, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get target =>
+      $composableBuilder(column: $table.target, builder: (column) => column);
+
+  GeneratedColumn<String> get groupId =>
+      $composableBuilder(column: $table.groupId, builder: (column) => column);
+
+  GeneratedColumn<String> get dateKey =>
+      $composableBuilder(column: $table.dateKey, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<int> get lectureNo =>
+      $composableBuilder(column: $table.lectureNo, builder: (column) => column);
+
+  GeneratedColumn<String> get openedBy =>
+      $composableBuilder(column: $table.openedBy, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lockAt =>
+      $composableBuilder(column: $table.lockAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get locked =>
+      $composableBuilder(column: $table.locked, builder: (column) => column);
+
+  GeneratedColumn<String> get countsJson => $composableBuilder(
+    column: $table.countsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get deviceCreatedAt => $composableBuilder(
+    column: $table.deviceCreatedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get savedAt =>
+      $composableBuilder(column: $table.savedAt, builder: (column) => column);
+}
+
+class $$LocalSessionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LocalSessionsTable,
+          LocalSessionRow,
+          $$LocalSessionsTableFilterComposer,
+          $$LocalSessionsTableOrderingComposer,
+          $$LocalSessionsTableAnnotationComposer,
+          $$LocalSessionsTableCreateCompanionBuilder,
+          $$LocalSessionsTableUpdateCompanionBuilder,
+          (
+            LocalSessionRow,
+            BaseReferences<_$AppDatabase, $LocalSessionsTable, LocalSessionRow>,
+          ),
+          LocalSessionRow,
+          PrefetchHooks Function()
+        > {
+  $$LocalSessionsTableTableManager(_$AppDatabase db, $LocalSessionsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LocalSessionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LocalSessionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LocalSessionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> courseId = const Value.absent(),
+                Value<String> stageId = const Value.absent(),
+                Value<String> yearId = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<String> target = const Value.absent(),
+                Value<String?> groupId = const Value.absent(),
+                Value<String> dateKey = const Value.absent(),
+                Value<DateTime> date = const Value.absent(),
+                Value<int> lectureNo = const Value.absent(),
+                Value<String> openedBy = const Value.absent(),
+                Value<DateTime> lockAt = const Value.absent(),
+                Value<bool> locked = const Value.absent(),
+                Value<String> countsJson = const Value.absent(),
+                Value<DateTime?> deviceCreatedAt = const Value.absent(),
+                Value<DateTime?> savedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LocalSessionsCompanion(
+                id: id,
+                courseId: courseId,
+                stageId: stageId,
+                yearId: yearId,
+                type: type,
+                target: target,
+                groupId: groupId,
+                dateKey: dateKey,
+                date: date,
+                lectureNo: lectureNo,
+                openedBy: openedBy,
+                lockAt: lockAt,
+                locked: locked,
+                countsJson: countsJson,
+                deviceCreatedAt: deviceCreatedAt,
+                savedAt: savedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String courseId,
+                required String stageId,
+                required String yearId,
+                required String type,
+                required String target,
+                Value<String?> groupId = const Value.absent(),
+                required String dateKey,
+                required DateTime date,
+                required int lectureNo,
+                required String openedBy,
+                required DateTime lockAt,
+                Value<bool> locked = const Value.absent(),
+                Value<String> countsJson = const Value.absent(),
+                Value<DateTime?> deviceCreatedAt = const Value.absent(),
+                Value<DateTime?> savedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LocalSessionsCompanion.insert(
+                id: id,
+                courseId: courseId,
+                stageId: stageId,
+                yearId: yearId,
+                type: type,
+                target: target,
+                groupId: groupId,
+                dateKey: dateKey,
+                date: date,
+                lectureNo: lectureNo,
+                openedBy: openedBy,
+                lockAt: lockAt,
+                locked: locked,
+                countsJson: countsJson,
+                deviceCreatedAt: deviceCreatedAt,
+                savedAt: savedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$LocalSessionsTable, LocalSessionRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $LocalSessionsTable,
+                    LocalSessionRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LocalSessionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LocalSessionsTable,
+      LocalSessionRow,
+      $$LocalSessionsTableFilterComposer,
+      $$LocalSessionsTableOrderingComposer,
+      $$LocalSessionsTableAnnotationComposer,
+      $$LocalSessionsTableCreateCompanionBuilder,
+      $$LocalSessionsTableUpdateCompanionBuilder,
+      (
+        LocalSessionRow,
+        BaseReferences<_$AppDatabase, $LocalSessionsTable, LocalSessionRow>,
+      ),
+      LocalSessionRow,
+      PrefetchHooks Function()
+    >;
+typedef $$LocalRecordsTableCreateCompanionBuilder =
+    LocalRecordsCompanion Function({
+      required String sessionId,
+      required String studentId,
+      required String status,
+      Value<String> note,
+      required String updatedBy,
+      Value<DateTime?> deviceUpdatedAt,
+      Value<int> rowid,
+    });
+typedef $$LocalRecordsTableUpdateCompanionBuilder =
+    LocalRecordsCompanion Function({
+      Value<String> sessionId,
+      Value<String> studentId,
+      Value<String> status,
+      Value<String> note,
+      Value<String> updatedBy,
+      Value<DateTime?> deviceUpdatedAt,
+      Value<int> rowid,
+    });
+
+class $$LocalRecordsTableFilterComposer
+    extends Composer<_$AppDatabase, $LocalRecordsTable> {
+  $$LocalRecordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get sessionId => $composableBuilder(
+    column: $table.sessionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get studentId => $composableBuilder(
+    column: $table.studentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deviceUpdatedAt => $composableBuilder(
+    column: $table.deviceUpdatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LocalRecordsTableOrderingComposer
+    extends Composer<_$AppDatabase, $LocalRecordsTable> {
+  $$LocalRecordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get sessionId => $composableBuilder(
+    column: $table.sessionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get studentId => $composableBuilder(
+    column: $table.studentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deviceUpdatedAt => $composableBuilder(
+    column: $table.deviceUpdatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LocalRecordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LocalRecordsTable> {
+  $$LocalRecordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get sessionId =>
+      $composableBuilder(column: $table.sessionId, builder: (column) => column);
+
+  GeneratedColumn<String> get studentId =>
+      $composableBuilder(column: $table.studentId, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<String> get updatedBy =>
+      $composableBuilder(column: $table.updatedBy, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deviceUpdatedAt => $composableBuilder(
+    column: $table.deviceUpdatedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$LocalRecordsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LocalRecordsTable,
+          LocalRecordRow,
+          $$LocalRecordsTableFilterComposer,
+          $$LocalRecordsTableOrderingComposer,
+          $$LocalRecordsTableAnnotationComposer,
+          $$LocalRecordsTableCreateCompanionBuilder,
+          $$LocalRecordsTableUpdateCompanionBuilder,
+          (
+            LocalRecordRow,
+            BaseReferences<_$AppDatabase, $LocalRecordsTable, LocalRecordRow>,
+          ),
+          LocalRecordRow,
+          PrefetchHooks Function()
+        > {
+  $$LocalRecordsTableTableManager(_$AppDatabase db, $LocalRecordsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LocalRecordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LocalRecordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LocalRecordsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> sessionId = const Value.absent(),
+                Value<String> studentId = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<String> updatedBy = const Value.absent(),
+                Value<DateTime?> deviceUpdatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LocalRecordsCompanion(
+                sessionId: sessionId,
+                studentId: studentId,
+                status: status,
+                note: note,
+                updatedBy: updatedBy,
+                deviceUpdatedAt: deviceUpdatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String sessionId,
+                required String studentId,
+                required String status,
+                Value<String> note = const Value.absent(),
+                required String updatedBy,
+                Value<DateTime?> deviceUpdatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LocalRecordsCompanion.insert(
+                sessionId: sessionId,
+                studentId: studentId,
+                status: status,
+                note: note,
+                updatedBy: updatedBy,
+                deviceUpdatedAt: deviceUpdatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$LocalRecordsTable, LocalRecordRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $LocalRecordsTable,
+                    LocalRecordRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LocalRecordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LocalRecordsTable,
+      LocalRecordRow,
+      $$LocalRecordsTableFilterComposer,
+      $$LocalRecordsTableOrderingComposer,
+      $$LocalRecordsTableAnnotationComposer,
+      $$LocalRecordsTableCreateCompanionBuilder,
+      $$LocalRecordsTableUpdateCompanionBuilder,
+      (
+        LocalRecordRow,
+        BaseReferences<_$AppDatabase, $LocalRecordsTable, LocalRecordRow>,
+      ),
+      LocalRecordRow,
+      PrefetchHooks Function()
+    >;
 typedef $$OutboxEntriesTableCreateCompanionBuilder =
     OutboxEntriesCompanion Function({
       Value<int> id,
@@ -3677,6 +5705,7 @@ typedef $$OutboxEntriesTableCreateCompanionBuilder =
       required DateTime createdAt,
       Value<int> attempts,
       Value<String?> lastError,
+      Value<bool> failed,
     });
 typedef $$OutboxEntriesTableUpdateCompanionBuilder =
     OutboxEntriesCompanion Function({
@@ -3688,6 +5717,7 @@ typedef $$OutboxEntriesTableUpdateCompanionBuilder =
       Value<DateTime> createdAt,
       Value<int> attempts,
       Value<String?> lastError,
+      Value<bool> failed,
     });
 
 class $$OutboxEntriesTableFilterComposer
@@ -3737,6 +5767,11 @@ class $$OutboxEntriesTableFilterComposer
 
   ColumnFilters<String> get lastError => $composableBuilder(
     column: $table.lastError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get failed => $composableBuilder(
+    column: $table.failed,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -3789,6 +5824,11 @@ class $$OutboxEntriesTableOrderingComposer
     column: $table.lastError,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get failed => $composableBuilder(
+    column: $table.failed,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$OutboxEntriesTableAnnotationComposer
@@ -3825,6 +5865,9 @@ class $$OutboxEntriesTableAnnotationComposer
 
   GeneratedColumn<String> get lastError =>
       $composableBuilder(column: $table.lastError, builder: (column) => column);
+
+  GeneratedColumn<bool> get failed =>
+      $composableBuilder(column: $table.failed, builder: (column) => column);
 }
 
 class $$OutboxEntriesTableTableManager
@@ -3866,6 +5909,7 @@ class $$OutboxEntriesTableTableManager
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> attempts = const Value.absent(),
                 Value<String?> lastError = const Value.absent(),
+                Value<bool> failed = const Value.absent(),
               }) => OutboxEntriesCompanion(
                 id: id,
                 batchId: batchId,
@@ -3875,6 +5919,7 @@ class $$OutboxEntriesTableTableManager
                 createdAt: createdAt,
                 attempts: attempts,
                 lastError: lastError,
+                failed: failed,
               ),
           createCompanionCallback:
               ({
@@ -3886,6 +5931,7 @@ class $$OutboxEntriesTableTableManager
                 required DateTime createdAt,
                 Value<int> attempts = const Value.absent(),
                 Value<String?> lastError = const Value.absent(),
+                Value<bool> failed = const Value.absent(),
               }) => OutboxEntriesCompanion.insert(
                 id: id,
                 batchId: batchId,
@@ -3895,6 +5941,7 @@ class $$OutboxEntriesTableTableManager
                 createdAt: createdAt,
                 attempts: attempts,
                 lastError: lastError,
+                failed: failed,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -4087,6 +6134,10 @@ class $AppDatabaseManager {
       $$LocalGroupsTableTableManager(_db, _db.localGroups);
   $$LocalAssignmentsTableTableManager get localAssignments =>
       $$LocalAssignmentsTableTableManager(_db, _db.localAssignments);
+  $$LocalSessionsTableTableManager get localSessions =>
+      $$LocalSessionsTableTableManager(_db, _db.localSessions);
+  $$LocalRecordsTableTableManager get localRecords =>
+      $$LocalRecordsTableTableManager(_db, _db.localRecords);
   $$OutboxEntriesTableTableManager get outboxEntries =>
       $$OutboxEntriesTableTableManager(_db, _db.outboxEntries);
   $$SyncStatesTableTableManager get syncStates =>

@@ -15,8 +15,9 @@ part 'app_database.g.dart';
 //
 // SPEC «العمل دون اتصال»: everything a teacher needs is mirrored locally, and
 // every write goes to an explicit upload queue (outbox) before Firestore, so
-// nothing is lost if the app is closed offline. Phase 1 provides the schema,
-// the cache mirrors and the outbox API; the sync engine comes in phase 2.
+// nothing is lost if the app is closed offline. Sessions and records the
+// teacher saved live here too (the register works offline); the outbox
+// uploader sends them to Firestore when online.
 // =============================================================================
 
 /// Mirror of `students` for the stages the user can see.
@@ -80,8 +81,51 @@ class LocalAssignments extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-/// Kinds of queued Firestore writes.
-enum OutboxOp { set, merge, delete }
+/// Attendance sessions known on this device (saved here or downloaded).
+@DataClassName('LocalSessionRow')
+class LocalSessions extends Table {
+  TextColumn get id => text()();
+  TextColumn get courseId => text()();
+  TextColumn get stageId => text()();
+  TextColumn get yearId => text()();
+  TextColumn get type => text()();
+  TextColumn get target => text()();
+  TextColumn get groupId => text().nullable()();
+  TextColumn get dateKey => text()();
+  DateTimeColumn get date => dateTime()();
+  IntColumn get lectureNo => integer()();
+  TextColumn get openedBy => text()();
+  DateTimeColumn get lockAt => dateTime()();
+  BoolColumn get locked => boolean().withDefault(const Constant(false))();
+  TextColumn get countsJson => text().withDefault(const Constant('{}'))();
+  DateTimeColumn get deviceCreatedAt => dateTime().nullable()();
+
+  /// Last change on this device (device clock).
+  DateTimeColumn get savedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// One row per student and session.
+@DataClassName('LocalRecordRow')
+class LocalRecords extends Table {
+  TextColumn get sessionId => text()();
+  TextColumn get studentId => text()();
+  TextColumn get status => text()();
+  TextColumn get note => text().withDefault(const Constant(''))();
+  TextColumn get updatedBy => text()();
+  DateTimeColumn get deviceUpdatedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {sessionId, studentId};
+}
+
+/// Kinds of queued Firestore writes. [createOrUpdate] carries
+/// `{create: {...}, update: {...}}`: the uploader creates the document when
+/// it does not exist yet, otherwise applies only `update` (an attendance
+/// session another device already opened).
+enum OutboxOp { set, merge, delete, createOrUpdate }
 
 /// Upload queue («طابور رفع»). Each row is one document write; rows sharing a
 /// [batchId] must be committed together (e.g. session + records + stats).
@@ -95,6 +139,10 @@ class OutboxEntries extends Table {
   DateTimeColumn get createdAt => dateTime()();
   IntColumn get attempts => integer().withDefault(const Constant(0))();
   TextColumn get lastError => text().nullable()();
+
+  /// Rejected by the server (e.g. the session locked before the upload):
+  /// kept, shown to the user, skipped until they retry.
+  BoolColumn get failed => boolean().withDefault(const Constant(false))();
 }
 
 /// Small key/value store for sync bookkeeping (last sync times…).
@@ -108,13 +156,36 @@ class SyncStates extends Table {
 }
 
 @DriftDatabase(
-  tables: [LocalStudents, LocalCourses, LocalGroups, LocalAssignments, OutboxEntries, SyncStates],
+  tables: [
+    LocalStudents,
+    LocalCourses,
+    LocalGroups,
+    LocalAssignments,
+    LocalSessions,
+    LocalRecords,
+    OutboxEntries,
+    SyncStates,
+  ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
+  /// v2: sessions/records tables and `outbox_entries.failed`.
+  /// Schema snapshots for migration tests live in drift_schemas/.
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (m) => m.createAll(),
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            await m.createTable(localSessions);
+            await m.createTable(localRecords);
+            await m.addColumn(outboxEntries, outboxEntries.failed);
+          }
+        },
+      );
 
   static QueryExecutor _openConnection() => driftDatabase(
         name: 'uob_attendance',
@@ -261,6 +332,49 @@ class AppDatabase extends _$AppDatabase {
                   }),
               ]);
 
+  // ---------------------------------------------------- sessions/records --
+
+  Future<void> upsertSession(LocalSessionsCompanion row) =>
+      into(localSessions).insertOnConflictUpdate(row);
+
+  Future<void> upsertRecords(Iterable<LocalRecordsCompanion> rows) =>
+      batch((b) => b.insertAllOnConflictUpdate(localRecords, rows.toList()));
+
+  Future<LocalSessionRow?> sessionById(String id) =>
+      (select(localSessions)..where((t) => t.id.equals(id))).getSingleOrNull();
+
+  /// Sessions of one class (course + type + target), oldest first.
+  Stream<List<LocalSessionRow>> watchSessionsOfClass(String courseId, String type, String target) =>
+      (select(localSessions)
+            ..where((t) => t.courseId.equals(courseId) & t.type.equals(type) & t.target.equals(target))
+            ..orderBy([(t) => OrderingTerm.asc(t.dateKey), (t) => OrderingTerm.asc(t.lectureNo)]))
+          .watch();
+
+  Future<Map<String, LocalRecordRow>> recordsOfSession(String sessionId) async => {
+        for (final r in await (select(localRecords)..where((t) => t.sessionId.equals(sessionId))).get())
+          r.studentId: r,
+      };
+
+  /// Records of several sessions (the register), keyed by session then student.
+  Stream<Map<String, Map<String, LocalRecordRow>>> watchRecordsOfSessions(List<String> sessionIds) =>
+      (select(localRecords)..where((t) => t.sessionId.isIn(sessionIds))).watch().map((rows) {
+        final out = <String, Map<String, LocalRecordRow>>{};
+        for (final r in rows) {
+          (out[r.sessionId] ??= {})[r.studentId] = r;
+        }
+        return out;
+      });
+
+  /// Whether queued writes still touch [sessionId] (then the local copy is
+  /// newer than the server's and must not be overwritten by a download).
+  Future<bool> hasPendingWritesFor(String sessionId) async {
+    final row = await (select(outboxEntries)
+          ..where((t) => t.path.equals('sessions/$sessionId') | t.path.like('sessions/$sessionId/%'))
+          ..limit(1))
+        .getSingleOrNull();
+    return row != null;
+  }
+
   // -------------------------------------------------------------- outbox --
 
   /// Queues writes that must be uploaded together; returns their row IDs.
@@ -289,9 +403,11 @@ class AppDatabase extends _$AppDatabase {
     return (selectOnly(outboxEntries)..addColumns([count])).map((r) => r.read(count) ?? 0).watchSingle();
   }
 
-  /// Oldest pending batch (all its rows), or empty when the queue is empty.
+  /// Oldest pending batch (all its rows) that the server has not rejected,
+  /// or empty when there is nothing to upload.
   Future<List<OutboxEntry>> nextBatch() async {
     final first = await (select(outboxEntries)
+          ..where((t) => t.failed.equals(false))
           ..orderBy([(t) => OrderingTerm.asc(t.id)])
           ..limit(1))
         .getSingleOrNull();
@@ -306,12 +422,40 @@ class AppDatabase extends _$AppDatabase {
   Future<void> completeBatch(String batchId) =>
       (delete(outboxEntries)..where((t) => t.batchId.equals(batchId))).go();
 
-  /// Records a failed upload attempt (the batch stays queued).
+  /// Removes some uploaded rows of a batch that is sent in several chunks.
+  Future<void> completeRows(Iterable<int> ids) =>
+      (delete(outboxEntries)..where((t) => t.id.isIn(ids.toList()))).go();
+
+  /// Records a transient upload failure (the batch stays queued).
   Future<void> failBatch(String batchId, String error) => customUpdate(
         'UPDATE outbox_entries SET attempts = attempts + 1, last_error = ? WHERE batch_id = ?',
         variables: [Variable.withString(error), Variable.withString(batchId)],
         updates: {outboxEntries},
       );
+
+  /// The server refused the batch: keep it, but stop retrying automatically.
+  Future<void> rejectBatch(String batchId, String error) => customUpdate(
+        'UPDATE outbox_entries SET attempts = attempts + 1, last_error = ?, failed = 1 WHERE batch_id = ?',
+        variables: [Variable.withString(error), Variable.withString(batchId)],
+        updates: {outboxEntries},
+      );
+
+  /// Puts rejected batches back in the queue (user pressed «إعادة المحاولة»).
+  Future<void> retryRejected() => customUpdate(
+        'UPDATE outbox_entries SET failed = 0',
+        updates: {outboxEntries},
+      );
+
+  /// Rejected batches: one entry per batch with its first path and error.
+  Stream<List<OutboxEntry>> watchRejected() =>
+      (select(outboxEntries)
+            ..where((t) => t.failed.equals(true))
+            ..orderBy([(t) => OrderingTerm.asc(t.id)]))
+          .watch()
+          .map((rows) {
+        final seen = <String>{};
+        return [for (final r in rows) if (seen.add(r.batchId)) r];
+      });
 
   /// Oldest queued write time — for the «not uploaded for 24 h» warning.
   Future<DateTime?> oldestPendingAt() async {

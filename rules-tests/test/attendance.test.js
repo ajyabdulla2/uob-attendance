@@ -2,7 +2,7 @@
 import { describe, it, before, beforeEach, after } from 'node:test';
 import { assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
 import {
-  doc, getDoc, increment, serverTimestamp, setDoc, updateDoc, writeBatch, Timestamp,
+  collection, doc, getDoc, getDocs, increment, query, serverTimestamp, setDoc, updateDoc, where, writeBatch, Timestamp,
 } from 'firebase/firestore';
 import {
   createEnv, seed, as, sessionData, sessionId, utcMidnight, lockAtFor, HOUR,
@@ -124,27 +124,105 @@ describe('records and locking', () => {
   });
 });
 
-describe('stats counters (batch + increment)', () => {
-  const stat = (sid, delta) => ({
+describe('stats (status per session, idempotent)', () => {
+  // The exact payload AttendanceUploader sends (set with merge).
+  const stat = (sid, status, extra = {}) => ({
     courseId: COURSE, studentId: '1001', stageId: '3-morning', lastSessionId: sid,
-    absences: increment(delta), updatedAt: serverTimestamp(),
+    bySession: { [sid]: status }, updatedAt: serverTimestamp(), departmentId: 'cs', ...extra,
   });
+  const statRef = (db, id = `${COURSE}__1001`) => doc(db, 'stats', id);
 
-  it('assigned teacher updates counters with records of an open session', async () => {
+  it('assigned teacher sets the entry of an open session, together with the record; repeating is harmless', async () => {
     const db = as(env, T1);
-    const batch = writeBatch(db);
-    batch.set(doc(db, 'sessions', OPEN_SID, 'records', '1001'), record('1001', 'absent', T1));
-    batch.set(doc(db, 'stats', `${COURSE}__1001`), stat(OPEN_SID, 1), { merge: true });
-    await assertSucceeds(batch.commit());
+    for (let i = 0; i < 2; i++) {
+      const batch = writeBatch(db);
+      batch.set(doc(db, 'sessions', OPEN_SID, 'records', '1001'), record('1001', 'absent', T1));
+      batch.set(statRef(db), stat(OPEN_SID, 'absent'), { merge: true });
+      await assertSucceeds(batch.commit());
+    }
+    await assertSucceeds(setDoc(statRef(db), stat(OPEN_SID, 'present'), { merge: true }));
   });
 
-  it('cannot update counters through a locked session or another teacher', async () => {
-    await assertFails(setDoc(doc(as(env, T1), 'stats', `${COURSE}__1001`), stat(LOCKED_SID, 1), { merge: true }));
-    await assertFails(setDoc(doc(as(env, T2), 'stats', `${COURSE}__1001`), stat(OPEN_SID, 1), { merge: true }));
+  it('cannot write through a locked session or as another teacher', async () => {
+    await assertFails(setDoc(statRef(as(env, T1)), stat(LOCKED_SID, 'absent'), { merge: true }));
+    await assertFails(setDoc(statRef(as(env, T2)), stat(OPEN_SID, 'absent'), { merge: true }));
+  });
+
+  it('cannot touch another session\'s entry, forge counters, or use an unknown status', async () => {
+    const db = as(env, T1);
+    await assertFails(setDoc(statRef(db),
+      stat(OPEN_SID, 'absent', { bySession: { [OPEN_SID]: 'absent', [LOCKED_SID]: 'present' } }), { merge: true }));
+    await assertFails(setDoc(statRef(db), stat(OPEN_SID, 'absent', { absences: increment(5) }), { merge: true }));
+    await assertFails(setDoc(statRef(db), stat(OPEN_SID, 'sleeping'), { merge: true }));
   });
 
   it('stat id must match course and student', async () => {
-    await assertFails(setDoc(doc(as(env, T1), 'stats', `${COURSE}__2002`), stat(OPEN_SID, 1), { merge: true }));
+    await assertFails(setDoc(statRef(as(env, T1), `${COURSE}__2002`), stat(OPEN_SID, 'absent'), { merge: true }));
+  });
+
+  it('stage manager may rewrite any entry (recalculation)', async () => {
+    await assertSucceeds(setDoc(statRef(as(env, SM3)),
+      stat(OPEN_SID, 'absent', { bySession: { [OPEN_SID]: 'absent', [LOCKED_SID]: 'late' } }), { merge: true }));
+  });
+});
+
+describe('app save batches (AttendanceUploader payloads)', () => {
+  const recordOf = (studentId, status) => ({
+    studentId, status, note: '', updatedBy: T1, updatedAt: serverTimestamp(),
+    deviceUpdatedAt: Timestamp.now(),
+  });
+
+  it('first save: create session (counts, device time) + every record + stats of non-present students', async () => {
+    const db = as(env, T1);
+    const sid = sessionId(COURSE, 'theory', 'all', utcMidnight(0), 3);
+    const batch = writeBatch(db);
+    batch.set(doc(db, 'sessions', sid), {
+      ...sessionData({ lectureNo: 3, updatedAt: serverTimestamp() }),
+      counts: { present: 0, absent: 1, late: 0, excused: 0 },
+      deviceCreatedAt: Timestamp.now(), departmentId: 'cs',
+    });
+    batch.set(doc(db, 'sessions', sid, 'records', '1001'), recordOf('1001', 'absent'), { merge: true });
+    batch.set(doc(db, 'stats', `${COURSE}__1001`), {
+      courseId: COURSE, studentId: '1001', stageId: '3-morning', lastSessionId: sid,
+      bySession: { [sid]: 'absent' }, updatedAt: serverTimestamp(), departmentId: 'cs',
+    }, { merge: true });
+    await assertSucceeds(batch.commit());
+  });
+
+  it('later save of an existing open session: counts/updatedBy only + changed records', async () => {
+    const db = as(env, T1);
+    const batch = writeBatch(db);
+    batch.update(doc(db, 'sessions', OPEN_SID), {
+      counts: { present: 1, absent: 0, late: 0, excused: 0 }, updatedAt: serverTimestamp(), updatedBy: T1,
+    });
+    batch.set(doc(db, 'sessions', OPEN_SID, 'records', '1001'), recordOf('1001', 'present'), { merge: true });
+    await assertSucceeds(batch.commit());
+  });
+
+  it('a teacher cannot overwrite the identity of a session someone else opened', async () => {
+    const db = as(env, T1);
+    await assertFails(setDoc(doc(db, 'sessions', OPEN_SID),
+      { ...sessionData({ openedBy: T1, updatedAt: serverTimestamp() }), deviceCreatedAt: Timestamp.now() }, { merge: true }));
+  });
+});
+
+describe('download and register query shapes (teacher)', () => {
+  it('own assignments, students of a taught stage, the active year', async () => {
+    const db = as(env, T1);
+    await assertSucceeds(getDocs(query(collection(db, 'assignments'), where('teacherId', '==', T1))));
+    await assertSucceeds(getDocs(query(collection(db, 'students'), where('stageId', '==', '3-morning'))));
+    await assertFails(getDocs(query(collection(db, 'students'), where('stageId', '==', '1-evening'))));
+    await assertSucceeds(getDoc(doc(db, 'groups', `${COURSE}__A`)));
+    await assertSucceeds(getDoc(doc(db, 'courses', COURSE)));
+  });
+
+  it('sessions of one assigned class and their records', async () => {
+    const db = as(env, T1);
+    await assertSucceeds(getDocs(query(collection(db, 'sessions'),
+      where('courseId', '==', COURSE), where('type', '==', 'theory'), where('target', '==', 'all'))));
+    await assertSucceeds(getDocs(collection(db, 'sessions', OPEN_SID, 'records')));
+    await assertFails(getDocs(query(collection(as(env, T2), 'sessions'),
+      where('courseId', '==', COURSE), where('type', '==', 'theory'), where('target', '==', 'all'))));
   });
 });
 

@@ -345,16 +345,26 @@ service cloud.firestore {
     }
 
     // =============================================================== stats ==
-    // Counter docs updated in the same batch as attendance records
-    // (SPEC: «batch مع increment»). `lastSessionId` proves the writer's right.
+    // One doc per student × course, written in the same batch as the
+    // attendance records (SPEC: one read per student and course for the
+    // warnings). Instead of `increment` counters it keeps the student's
+    // status per session in `bySession` — idempotent, so an upload retried
+    // by the outbox (or replayed by the SDK) never counts an absence twice.
+    // A teacher may only set the entry of the session named in
+    // `lastSessionId`, which proves their right to write.
     function teacherStatWrite(statId) {
       let d = request.resource.data;
       let s = getAfter(sessionPath(d.lastSessionId)).data;
+      let before = resource == null ? {} : resource.data;
       return statId == d.courseId + '__' + d.studentId
         && s.courseId == d.courseId
         && s.stageId == d.stageId
         && isAssignedToSession(s)
-        && !isLockedSession(s);
+        && !isLockedSession(s)
+        && d.diff(before).affectedKeys().hasOnly(
+             ['courseId', 'studentId', 'stageId', 'lastSessionId', 'bySession', 'updatedAt', 'departmentId'])
+        && d.get('bySession', {}).diff(before.get('bySession', {})).affectedKeys().hasOnly([d.lastSessionId])
+        && d.get('bySession', {}).get(d.lastSessionId, 'present') in ['present', 'absent', 'late', 'excused'];
     }
 
     match /stats/{statId} {
