@@ -173,6 +173,27 @@ void main() {
       expect(removed, {'t@uob.iq'});
       expect((await db.doc('assignments/${onC.id}').get()).exists, isFalse);
     });
+
+    test('moveStudents leaves sizes uneven; addGroup takes the next free letter', () async {
+      final repo = CoursesRepository(db);
+      final course = Course(code: 'CS3', name: 'م', stage: const StageRef(3, Shift.morning), semester: 1, units: 2, hasPractical: true);
+      final students = [for (var i = 0; i < 4; i++) Student(universityId: '$i', fullName: 'طالب $i', stage: course.stage)];
+      await repo.distributeGroups(course: course, students: students, groupCount: 2, actor: actor);
+      var groups = await repo.watchGroups(courseId: course.id, stageId: course.stageId).first;
+      final fromA = groups.first.studentIds.first;
+
+      await repo.moveStudents(groups: groups, studentIds: {fromA, 'new'}, toGroup: 'B', actor: 'sm@uob.iq');
+      groups = await repo.watchGroups(courseId: course.id, stageId: course.stageId).first;
+      expect(groups.map((g) => g.studentIds.length), [1, 4]);
+      expect(groups.last.studentIds, containsAll([fromA, 'new']));
+      expect(groups.first.studentIds, isNot(contains(fromA)));
+      expect((await data(db, 'groups/${groups.last.id}'))['updatedBy'], 'sm@uob.iq');
+
+      expect(await repo.addGroup(course: course, groups: groups, actor: actor), 'C');
+      groups = await repo.watchGroups(courseId: course.id, stageId: course.stageId).first;
+      expect(groups.map((g) => g.name), ['A', 'B', 'C']);
+      expect(groups.last.studentIds, isEmpty);
+    });
   });
 
   group('AcademicRepository', () {

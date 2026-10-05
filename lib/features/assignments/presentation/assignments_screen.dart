@@ -11,6 +11,7 @@ import '../../auth/domain/app_user.dart';
 import '../../courses/application/courses_providers.dart';
 import '../../courses/domain/course.dart';
 import '../../courses/domain/practical_group.dart';
+import '../../courses/presentation/group_members_screen.dart';
 import '../../students/application/students_providers.dart';
 import '../../users/application/users_providers.dart';
 import '../application/assignments_providers.dart';
@@ -183,6 +184,7 @@ class _PracticalSection extends ConsumerWidget {
                               if (a.type == AssignmentType.practical && a.target == g.name) _AssignmentChip(assignment: a),
                           ],
                         ),
+                        onTap: () => _editMembers(context),
                         trailing: IconButton(
                           tooltip: l10n.assignmentsAssignGroup(l10n.groupLabel(g.name)),
                           icon: const Icon(Icons.person_add_alt),
@@ -192,17 +194,30 @@ class _PracticalSection extends ConsumerWidget {
                   ],
                 ),
         ),
-        Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: TextButton.icon(
-            icon: const Icon(Icons.groups),
-            label: Text(l10n.assignmentsCreateGroups),
-            onPressed: () => _distribute(context, ref, groups.value?.length ?? 0),
-          ),
+        Wrap(
+          spacing: 8,
+          children: [
+            TextButton.icon(
+              icon: const Icon(Icons.groups),
+              label: Text(l10n.assignmentsCreateGroups),
+              onPressed: () => _distribute(context, ref, groups.value?.length ?? 0),
+            ),
+            if (groups.value?.isNotEmpty ?? false)
+              TextButton.icon(
+                key: Key('assignments.members.${course.id}'),
+                icon: const Icon(Icons.swap_horiz),
+                label: Text(l10n.groupsEditAction),
+                onPressed: () => _editMembers(context),
+              ),
+          ],
         ),
       ],
     );
   }
+
+  void _editMembers(BuildContext context) => Navigator.of(context).push(
+        MaterialPageRoute<void>(builder: (_) => GroupMembersScreen(course: course)),
+      );
 
   Future<void> _assignGroup(BuildContext context, WidgetRef ref, PracticalGroup group) async {
     final picked = await showDialog<({AppUser teacher, String? section})>(
@@ -234,6 +249,7 @@ class _PracticalSection extends ConsumerWidget {
       context: context,
       builder: (_) => _DistributeDialog(
         initial: currentCount > 0 ? currentCount : 2,
+        redistributing: currentCount > 0,
         studentCount: attending,
         stageLabel: l10n.stageId(course.stageId),
       ),
@@ -411,9 +427,15 @@ class _AssignDialogState extends ConsumerState<_AssignDialog> {
 }
 
 class _DistributeDialog extends StatefulWidget {
-  const _DistributeDialog({required this.initial, required this.studentCount, required this.stageLabel});
+  const _DistributeDialog({
+    required this.initial,
+    required this.redistributing,
+    required this.studentCount,
+    required this.stageLabel,
+  });
 
   final int initial;
+  final bool redistributing;
   final int studentCount;
   final String stageLabel;
 
@@ -433,6 +455,13 @@ class _DistributeDialogState extends State<_DistributeDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(l10n.assignmentsDistributeBody(widget.studentCount, widget.stageLabel)),
+          if (widget.redistributing) ...[
+            const SizedBox(height: 8),
+            Text(
+              l10n.assignmentsRedistributeWarning,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ],
           const SizedBox(height: 16),
           Text(l10n.assignmentsGroupCount),
           Row(

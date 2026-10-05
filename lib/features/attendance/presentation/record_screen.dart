@@ -309,76 +309,75 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
     final theme = Theme.of(context);
     final m = MaterialLocalizations.of(context);
 
+    // The student list gets the screen: day/lecture stay on one line above
+    // it, the lock time, search and hint scroll away with the list, and the
+    // counters share the bottom bar with the save button.
+    final header = <Widget>[
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+        child: TextField(
+          key: const Key('record.search'),
+          decoration: InputDecoration(
+            isDense: true,
+            prefixIcon: const Icon(Icons.search),
+            hintText: l10n.recordSearch,
+          ),
+          onChanged: (v) => setState(() => _query = v),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+        child: Text(
+          [
+            if (!locked)
+              l10n.recordLocksAt(
+                m.formatShortDate(lockAt.toLocal()),
+                m.formatTimeOfDay(TimeOfDay.fromDateTime(lockAt.toLocal())),
+              ),
+            if (!readOnly) l10n.recordTapHint,
+          ].join('\n'),
+          style: theme.textTheme.bodySmall,
+        ),
+      ),
+    ];
+
     return scaffold(
       Column(
         children: [
           controls,
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: locked
-                ? Card(
-                    key: const Key('record.locked'),
-                    color: theme.colorScheme.errorContainer,
-                    child: ListTile(
-                      dense: true,
-                      leading: const Icon(Icons.lock_clock),
-                      title: Text(canOverride ? l10n.recordLockedOverride : l10n.recordLocked),
-                    ),
-                  )
-                : Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: Text(
-                      l10n.recordLocksAt(
-                        m.formatShortDate(lockAt.toLocal()),
-                        m.formatTimeOfDay(TimeOfDay.fromDateTime(lockAt.toLocal())),
+          if (locked)
+            Material(
+              key: const Key('record.locked'),
+              color: theme.colorScheme.errorContainer,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                child: Row(
+                  children: [
+                    Icon(Icons.lock_clock, size: 18, color: theme.colorScheme.onErrorContainer),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        canOverride ? l10n.recordLockedOverride : l10n.recordLocked,
+                        style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onErrorContainer),
                       ),
-                      style: theme.textTheme.bodySmall,
                     ),
-                  ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: [
-                for (final s in AttendanceStatus.values)
-                  Chip(
-                    key: Key('record.count.${s.name}'),
-                    avatar: Icon(StatusPalette.iconForStatus(s), color: palette.forStatus(s), size: 18),
-                    label: Text('${l10n.attendance(s)} ${counts[s]}'),
-                  ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-            child: TextField(
-              key: const Key('record.search'),
-              decoration: InputDecoration(
-                isDense: true,
-                prefixIcon: const Icon(Icons.search),
-                hintText: l10n.recordSearch,
+                  ],
+                ),
               ),
-              onChanged: (v) => setState(() => _query = v),
-            ),
-          ),
-          if (!readOnly)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(l10n.recordTapHint, style: theme.textTheme.bodySmall),
             ),
           Expanded(
             child: !loaded
                 ? const Center(child: CircularProgressIndicator())
                 : ListView.builder(
-                    itemCount: shown.length,
+                    itemCount: header.length + shown.length,
                     itemBuilder: (context, i) {
-                      final s = shown[i];
+                      if (i < header.length) return header[i];
+                      final s = shown[i - header.length];
                       final mark = _markOf(s.id);
                       final color = palette.forStatus(mark.status);
                       return ListTile(
                         key: Key('record.student.${s.id}'),
+                        visualDensity: VisualDensity.compact,
                         leading: Icon(StatusPalette.iconForStatus(mark.status), color: color),
                         title: Text(s.fullName),
                         subtitle: Text(
@@ -393,12 +392,34 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
           ),
         ],
       ),
-      bottom: readOnly
-          ? null
-          : SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                child: FilledButton.icon(
+      bottom: Material(
+        elevation: 3,
+        color: theme.colorScheme.surfaceContainer,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+          child: Row(
+            children: [
+              Expanded(
+                child: Wrap(
+                  spacing: 10,
+                  runSpacing: 2,
+                  children: [
+                    for (final st in AttendanceStatus.values)
+                      Row(
+                        key: Key('record.count.${st.name}'),
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(StatusPalette.iconForStatus(st), color: palette.forStatus(st), size: 16),
+                          const SizedBox(width: 2),
+                          Text('${l10n.attendance(st)} ${counts[st]}', style: theme.textTheme.bodySmall),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+              if (!readOnly) ...[
+                const SizedBox(width: 8),
+                FilledButton.icon(
                   key: const Key('record.save'),
                   icon: _saving
                       ? const SizedBox.square(dimension: 20, child: CircularProgressIndicator(strokeWidth: 2))
@@ -406,8 +427,11 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                   label: Text(l10n.recordSave),
                   onPressed: _saving || !loaded ? null : () => _save(a, y, list, lectureNo, canOverride),
                 ),
-              ),
-            ),
+              ],
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -433,33 +457,35 @@ class _Controls extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final m = MaterialLocalizations.of(context);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        crossAxisAlignment: WrapCrossAlignment.center,
+    final chips = <Widget>[
+      ActionChip(
+        key: const Key('record.date'),
+        avatar: const Icon(Icons.calendar_today, size: 18),
+        label: Text('${l10n.recordDate}: ${m.formatMediumDate(date)}'),
+        onPressed: onPickDate,
+      ),
+      for (final n in lectures)
+        ChoiceChip(
+          key: Key('record.lecture.$n'),
+          label: Text(l10n.recordLectureN(n)),
+          selected: n == selected,
+          onSelected: (_) => onPickLecture(n),
+        ),
+      ChoiceChip(
+        key: const Key('record.newLecture'),
+        avatar: const Icon(Icons.add, size: 18),
+        label: Text(lectures.isEmpty ? l10n.recordLectureN(nextNo) : l10n.recordNewLecture),
+        selected: !lectures.contains(selected),
+        onSelected: (_) => onPickLecture(lectures.contains(selected) ? nextNo : selected),
+      ),
+    ];
+    // One line that scrolls sideways when a day has many lectures.
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 4),
+      child: Row(
         children: [
-          ActionChip(
-            key: const Key('record.date'),
-            avatar: const Icon(Icons.calendar_today, size: 18),
-            label: Text('${l10n.recordDate}: ${m.formatMediumDate(date)}'),
-            onPressed: onPickDate,
-          ),
-          for (final n in lectures)
-            ChoiceChip(
-              key: Key('record.lecture.$n'),
-              label: Text(l10n.recordLectureN(n)),
-              selected: n == selected,
-              onSelected: (_) => onPickLecture(n),
-            ),
-          ChoiceChip(
-            key: const Key('record.newLecture'),
-            avatar: const Icon(Icons.add, size: 18),
-            label: Text(lectures.isEmpty ? l10n.recordLectureN(nextNo) : l10n.recordNewLecture),
-            selected: !lectures.contains(selected),
-            onSelected: (_) => onPickLecture(lectures.contains(selected) ? nextNo : selected),
-          ),
+          for (final chip in chips) Padding(padding: const EdgeInsetsDirectional.only(end: 8), child: chip),
         ],
       ),
     );

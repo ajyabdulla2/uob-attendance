@@ -264,5 +264,14 @@ void main() {
       expect((await store.marksOf(sid))['1'], const Mark(AttendanceStatus.excused));
       expect(await TeacherDataSync(db, fs).pullClassSessions(theory, store), 0, reason: 'unchanged since last pull');
     });
+
+    test('opening a practical class refreshes its group members (moved by a manager)', () async {
+      final sync = TeacherDataSync(db, fs);
+      await sync.refresh(t1);
+      await fs.doc('groups/${course}__A').update({'studentIds': ['1', '2']});
+      final practical = Assignment.practical(teacherId: t1, courseId: course, stageId: '3-morning', groupName: 'A');
+      await sync.pullClassSessions(practical, AttendanceStore(db));
+      expect((await db.groupById('${course}__A'))!.studentIds, ['1', '2']);
+    });
   });
 }

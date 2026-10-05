@@ -2,7 +2,7 @@
 import { describe, it, before, beforeEach, after } from 'node:test';
 import { assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
 import {
-  arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, limit, query, serverTimestamp, setDoc, updateDoc,
+  arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, limit, query, serverTimestamp, setDoc, updateDoc,
   where, writeBatch,
 } from 'firebase/firestore';
 import {
@@ -114,6 +114,24 @@ describe('practical groups', () => {
     await assertSucceeds(getDoc(doc(as(env, T1), 'groups', GROUP_A)));
     await assertFails(getDoc(doc(as(env, T2), 'groups', GROUP_A)));
     await assertFails(updateDoc(doc(as(env, T1), 'groups', GROUP_A), { studentIds: [] }));
+  });
+
+  it('stage manager moves a student between groups in one batch (sizes may differ)', async () => {
+    const db = as(env, SM3);
+    await assertSucceeds(setDoc(doc(db, 'groups', `${COURSE}__B`), group(COURSE, '3-morning', 'B')));
+    const move = (who) => {
+      const fs = as(env, who);
+      const b = writeBatch(fs);
+      const stamp = { updatedAt: serverTimestamp(), updatedBy: who };
+      b.update(doc(fs, 'groups', GROUP_A), { studentIds: arrayRemove('1001'), ...stamp });
+      b.update(doc(fs, 'groups', `${COURSE}__B`), { studentIds: arrayUnion('1001'), ...stamp });
+      return b.commit();
+    };
+    await assertFails(move(T1));
+    await assertFails(move(T2));
+    await assertSucceeds(move(SM3));
+    const b = await getDoc(doc(db, 'groups', `${COURSE}__B`));
+    if (JSON.stringify(b.data().studentIds) !== '["1001"]') throw new Error('not moved');
   });
 });
 

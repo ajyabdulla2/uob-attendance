@@ -81,6 +81,7 @@ class TeacherDataSync {
   /// Pulls the server's sessions of one class into the local register
   /// (records only for sessions that are new here or changed since).
   Future<int> pullClassSessions(Assignment a, AttendanceStore store) async {
+    await _pullGroup(a);
     final snaps = await _fs
         .collection(Col.sessions)
         .where('courseId', isEqualTo: a.courseId)
@@ -102,5 +103,18 @@ class TeacherDataSync {
       if (ok) stored++;
     }
     return stored;
+  }
+
+  /// Members of a practical group change when a manager moves students; one
+  /// read when the class opens keeps the list current between full downloads.
+  Future<void> _pullGroup(Assignment a) async {
+    final id = a.groupId;
+    if (id == null) return;
+    try {
+      final snap = await _fs.collection(Col.groups).doc(id).get(_server);
+      if (snap.exists) await _db.upsertGroups([PracticalGroup.fromMap(snap.id, snap.data()!)]);
+    } on FirebaseException catch (e) {
+      if (e.code != 'permission-denied' && e.code != 'not-found') rethrow;
+    }
   }
 }

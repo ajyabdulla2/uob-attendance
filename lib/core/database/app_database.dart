@@ -282,16 +282,18 @@ class AppDatabase extends _$AppDatabase {
             )),
       ));
 
-  Future<PracticalGroup?> groupById(String id) async {
-    final r = await (select(localGroups)..where((t) => t.id.equals(id))).getSingleOrNull();
-    if (r == null) return null;
-    return PracticalGroup(
-      courseId: r.courseId,
-      stageId: r.stageId,
-      name: r.name,
-      studentIds: (jsonDecode(r.studentIdsJson) as List).cast<String>(),
-    );
-  }
+  Future<PracticalGroup?> groupById(String id) => watchGroupById(id).first;
+
+  /// Follows one group (its members change when a manager moves students).
+  Stream<PracticalGroup?> watchGroupById(String id) =>
+      (select(localGroups)..where((t) => t.id.equals(id))).watchSingleOrNull().map((r) => r == null
+          ? null
+          : PracticalGroup(
+              courseId: r.courseId,
+              stageId: r.stageId,
+              name: r.name,
+              studentIds: (jsonDecode(r.studentIdsJson) as List).cast<String>(),
+            ));
 
   // --------------------------------------------------------- assignments --
 

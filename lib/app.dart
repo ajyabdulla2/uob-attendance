@@ -23,6 +23,12 @@ class AttendanceApp extends ConsumerWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       routerConfig: ref.watch(routerProvider),
+      // Android 15+ draws apps edge to edge: keep every page, sheet and
+      // bottom button above the system navigation bar.
+      builder: (context, child) => ColoredBox(
+        color: Theme.of(context).colorScheme.surface,
+        child: SafeArea(top: false, child: child ?? const SizedBox.shrink()),
+      ),
     );
   }
 }

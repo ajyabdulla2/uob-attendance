@@ -104,14 +104,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resetPasswordBody =>
-      'Enter your e-mail and we will send you a link to set a new password.';
+      'Enter your e-mail and we will send you a link to set a new password. The link reaches only an e-mail that was activated before; if your account is new or the department changed your e-mail, press «Cancel», then «First time? Activate».';
 
   @override
   String get sendLink => 'Send link';
 
   @override
   String get passwordResetSent =>
-      'If the e-mail is registered, you will receive a reset message.';
+      'If the e-mail is activated, a message arrives within minutes (check Spam too). Nothing came? Activate it with «First time? Activate».';
 
   @override
   String get validationRequired => 'This field is required';
@@ -127,7 +127,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationPasswordMatch => 'Passwords do not match';
 
   @override
-  String get authInvalidCredentials => 'Wrong e-mail or password.';
+  String get authInvalidCredentials =>
+      'Wrong e-mail or password, or this e-mail is not activated yet (use «First time? Activate»).';
 
   @override
   String get authInvalidEmail => 'Invalid e-mail address.';
@@ -1320,5 +1321,55 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get accountEmailChanged => 'E-mail changed.';
+  String get accountEmailChanged =>
+      'E-mail changed. Tell its owner to activate with the new e-mail («First time? Activate») — «Forgot password» does not work for an e-mail never activated.';
+
+  @override
+  String get groupsEditAction => 'Edit group members';
+
+  @override
+  String get groupsEditTitle => 'Group members';
+
+  @override
+  String get groupsHelp =>
+      'Select one or more students, then «Move to…». Groups may differ in size. Attendance already recorded stays with the old group\'s lectures.';
+
+  @override
+  String groupsUnassigned(int count) {
+    return 'No group · students: $count';
+  }
+
+  @override
+  String groupsSelected(int count) {
+    return 'Selected: $count';
+  }
+
+  @override
+  String get groupsMoveTo => 'Move to…';
+
+  @override
+  String groupsMoveTitle(int count) {
+    return 'Move $count student(s) to';
+  }
+
+  @override
+  String groupsMoved(int count, String group) {
+    return 'Moved $count to $group.';
+  }
+
+  @override
+  String get groupsAdd => 'Add a group';
+
+  @override
+  String groupsAdded(String group) {
+    return '$group added; move students into it.';
+  }
+
+  @override
+  String get groupsNone =>
+      'No groups yet. Create them first with «Create / redistribute groups».';
+
+  @override
+  String get assignmentsRedistributeWarning =>
+      'Note: redistributing undoes any manual moves between groups.';
 }

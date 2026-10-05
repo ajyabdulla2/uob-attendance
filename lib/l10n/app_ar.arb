@@ -37,14 +37,14 @@
   "haveAccount": "لديك حساب مفعَّل؟ سجّل الدخول",
   "activateHint": "يفعّل التدريسي حسابه بالبريد الذي أضافته إدارة القسم، ثم يؤكّده من الرسالة المرسلة إلى بريده.",
   "resetPasswordTitle": "استعادة كلمة المرور",
-  "resetPasswordBody": "أدخل بريدك وسنرسل إليك رابطاً لتعيين كلمة مرور جديدة.",
+  "resetPasswordBody": "أدخل بريدك وسنرسل إليك رابطاً لتعيين كلمة مرور جديدة. الرابط يصل فقط لبريد فُعِّل من قبل؛ إن كان حسابك جديداً أو غيّرت الإدارة بريدك فاضغط «إلغاء» ثم «أول مرة؟ فعّل حسابك».",
   "sendLink": "إرسال الرابط",
-  "passwordResetSent": "إن كان البريد مسجلاً فستصلك رسالة لاستعادة كلمة المرور.",
+  "passwordResetSent": "إن كان البريد مفعَّلاً فستصلك رسالة خلال دقائق (تفقّد مجلد Spam أيضاً). لم تصل؟ فعّل حسابك من «أول مرة؟ فعّل حسابك».",
   "validationRequired": "هذا الحقل مطلوب",
   "validationEmail": "صيغة البريد غير صحيحة",
   "validationPasswordLength": "كلمة المرور 8 أحرف على الأقل",
   "validationPasswordMatch": "كلمتا المرور غير متطابقتين",
-  "authInvalidCredentials": "البريد أو كلمة المرور غير صحيحة.",
+  "authInvalidCredentials": "البريد أو كلمة المرور غير صحيحة، أو لم يُفعَّل هذا البريد بعد (فعّله من «أول مرة؟ فعّل حسابك»).",
   "authInvalidEmail": "صيغة البريد غير صحيحة.",
   "authEmailInUse": "هذا البريد مفعَّل مسبقاً. سجّل الدخول أو استعد كلمة المرور.",
   "authWeakPassword": "كلمة المرور ضعيفة؛ اختر كلمة أطول.",
@@ -947,5 +947,55 @@
       }
     }
   },
-  "accountEmailChanged": "تغيّر البريد."
+  "accountEmailChanged": "تغيّر البريد. أخبر صاحبه أن يفعّل حسابه بالبريد الجديد من «أول مرة؟ فعّل حسابك» — «نسيت كلمة المرور» لا يعمل لبريد لم يُفعَّل.",
+  "groupsEditAction": "تعديل أعضاء المجاميع",
+  "groupsEditTitle": "أعضاء المجاميع",
+  "groupsHelp": "حدّد طالباً أو أكثر ثم «نقل إلى…». لا يُشترط تساوي أعداد المجاميع. الحضور المسجَّل سابقاً يبقى في محاضرات مجموعته القديمة.",
+  "groupsUnassigned": "بلا مجموعة · عدد الطلبة: {count}",
+  "@groupsUnassigned": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "groupsSelected": "المحدَّدون: {count}",
+  "@groupsSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "groupsMoveTo": "نقل إلى…",
+  "groupsMoveTitle": "نقل {count} طالب إلى",
+  "@groupsMoveTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "groupsMoved": "نُقل {count} إلى {group}.",
+  "@groupsMoved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "groupsAdd": "إضافة مجموعة",
+  "groupsAdded": "أُضيفت {group}؛ انقل إليها الطلبة.",
+  "@groupsAdded": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "groupsNone": "لا مجاميع بعد. أنشئها أولاً من «إنشاء / إعادة توزيع المجاميع».",
+  "assignmentsRedistributeWarning": "تنبيه: إعادة التوزيع تلغي أي نقل يدوي سابق بين المجاميع."
 }

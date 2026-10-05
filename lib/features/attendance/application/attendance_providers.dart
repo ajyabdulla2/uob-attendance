@@ -9,6 +9,7 @@ import '../../../core/firebase/firebase_providers.dart';
 import '../../academic/domain/academic_year.dart';
 import '../../assignments/domain/assignment.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../courses/domain/practical_group.dart';
 import '../../students/domain/student.dart';
 import '../data/attendance_store.dart';
 import '../data/outbox_uploader.dart';
@@ -48,6 +49,11 @@ final cachedYearProvider = FutureProvider.autoDispose<AcademicYear?>((ref) {
   return ref.watch(teacherDataSyncProvider).cachedYear();
 });
 
+/// A practical group as cached on the phone (refreshed when a class opens).
+final localGroupProvider = StreamProvider.autoDispose.family<PracticalGroup?, String>(
+  (ref, id) => ref.watch(appDatabaseProvider).watchGroupById(id),
+);
+
 /// Students who attend a class, in register order: the whole stage, one
 /// section, or one practical group.
 final classStudentsProvider = StreamProvider.autoDispose.family<List<Student>, String>((ref, id) async* {
@@ -57,7 +63,12 @@ final classStudentsProvider = StreamProvider.autoDispose.family<List<Student>, S
     return;
   }
   final db = ref.watch(appDatabaseProvider);
-  final group = a.groupId == null ? null : await db.groupById(a.groupId!);
+  PracticalGroup? group;
+  if (a.groupId != null) {
+    final g = ref.watch(localGroupProvider(a.groupId!));
+    if (!g.hasValue) return;
+    group = g.value;
+  }
   yield* db.watchStudentsOfStage(a.stageId, attendingOnly: true).map((students) => [
         for (final s in students)
           if (switch (a.type) {

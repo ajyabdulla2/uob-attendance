@@ -104,14 +104,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get resetPasswordBody =>
-      'أدخل بريدك وسنرسل إليك رابطاً لتعيين كلمة مرور جديدة.';
+      'أدخل بريدك وسنرسل إليك رابطاً لتعيين كلمة مرور جديدة. الرابط يصل فقط لبريد فُعِّل من قبل؛ إن كان حسابك جديداً أو غيّرت الإدارة بريدك فاضغط «إلغاء» ثم «أول مرة؟ فعّل حسابك».';
 
   @override
   String get sendLink => 'إرسال الرابط';
 
   @override
   String get passwordResetSent =>
-      'إن كان البريد مسجلاً فستصلك رسالة لاستعادة كلمة المرور.';
+      'إن كان البريد مفعَّلاً فستصلك رسالة خلال دقائق (تفقّد مجلد Spam أيضاً). لم تصل؟ فعّل حسابك من «أول مرة؟ فعّل حسابك».';
 
   @override
   String get validationRequired => 'هذا الحقل مطلوب';
@@ -126,7 +126,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get validationPasswordMatch => 'كلمتا المرور غير متطابقتين';
 
   @override
-  String get authInvalidCredentials => 'البريد أو كلمة المرور غير صحيحة.';
+  String get authInvalidCredentials =>
+      'البريد أو كلمة المرور غير صحيحة، أو لم يُفعَّل هذا البريد بعد (فعّله من «أول مرة؟ فعّل حسابك»).';
 
   @override
   String get authInvalidEmail => 'صيغة البريد غير صحيحة.';
@@ -1314,5 +1315,55 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get accountEmailChanged => 'تغيّر البريد.';
+  String get accountEmailChanged =>
+      'تغيّر البريد. أخبر صاحبه أن يفعّل حسابه بالبريد الجديد من «أول مرة؟ فعّل حسابك» — «نسيت كلمة المرور» لا يعمل لبريد لم يُفعَّل.';
+
+  @override
+  String get groupsEditAction => 'تعديل أعضاء المجاميع';
+
+  @override
+  String get groupsEditTitle => 'أعضاء المجاميع';
+
+  @override
+  String get groupsHelp =>
+      'حدّد طالباً أو أكثر ثم «نقل إلى…». لا يُشترط تساوي أعداد المجاميع. الحضور المسجَّل سابقاً يبقى في محاضرات مجموعته القديمة.';
+
+  @override
+  String groupsUnassigned(int count) {
+    return 'بلا مجموعة · عدد الطلبة: $count';
+  }
+
+  @override
+  String groupsSelected(int count) {
+    return 'المحدَّدون: $count';
+  }
+
+  @override
+  String get groupsMoveTo => 'نقل إلى…';
+
+  @override
+  String groupsMoveTitle(int count) {
+    return 'نقل $count طالب إلى';
+  }
+
+  @override
+  String groupsMoved(int count, String group) {
+    return 'نُقل $count إلى $group.';
+  }
+
+  @override
+  String get groupsAdd => 'إضافة مجموعة';
+
+  @override
+  String groupsAdded(String group) {
+    return 'أُضيفت $group؛ انقل إليها الطلبة.';
+  }
+
+  @override
+  String get groupsNone =>
+      'لا مجاميع بعد. أنشئها أولاً من «إنشاء / إعادة توزيع المجاميع».';
+
+  @override
+  String get assignmentsRedistributeWarning =>
+      'تنبيه: إعادة التوزيع تلغي أي نقل يدوي سابق بين المجاميع.';
 }

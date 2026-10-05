@@ -206,7 +206,7 @@ void main() {
     await tester.tap(find.descendant(of: find.byType(AlertDialog), matching: find.byType(FilledButton)));
     await tester.pumpAndSettle();
 
-    expect(find.text('تغيّر البريد.'), findsOneWidget);
+    expect(find.textContaining('تغيّر البريد. أخبر صاحبه أن يفعّل حسابه'), findsOneWidget);
     expect((await env.db.doc('users/$wrong').get()).exists, isFalse);
     expect((await env.db.doc('users/$right').get()).data()!['email'], right);
     final links = await env.db.collection('assignments').get();

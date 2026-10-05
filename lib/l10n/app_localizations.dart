@@ -281,7 +281,7 @@ abstract class AppLocalizations {
   /// No description provided for @resetPasswordBody.
   ///
   /// In ar, this message translates to:
-  /// **'أدخل بريدك وسنرسل إليك رابطاً لتعيين كلمة مرور جديدة.'**
+  /// **'أدخل بريدك وسنرسل إليك رابطاً لتعيين كلمة مرور جديدة. الرابط يصل فقط لبريد فُعِّل من قبل؛ إن كان حسابك جديداً أو غيّرت الإدارة بريدك فاضغط «إلغاء» ثم «أول مرة؟ فعّل حسابك».'**
   String get resetPasswordBody;
 
   /// No description provided for @sendLink.
@@ -293,7 +293,7 @@ abstract class AppLocalizations {
   /// No description provided for @passwordResetSent.
   ///
   /// In ar, this message translates to:
-  /// **'إن كان البريد مسجلاً فستصلك رسالة لاستعادة كلمة المرور.'**
+  /// **'إن كان البريد مفعَّلاً فستصلك رسالة خلال دقائق (تفقّد مجلد Spam أيضاً). لم تصل؟ فعّل حسابك من «أول مرة؟ فعّل حسابك».'**
   String get passwordResetSent;
 
   /// No description provided for @validationRequired.
@@ -323,7 +323,7 @@ abstract class AppLocalizations {
   /// No description provided for @authInvalidCredentials.
   ///
   /// In ar, this message translates to:
-  /// **'البريد أو كلمة المرور غير صحيحة.'**
+  /// **'البريد أو كلمة المرور غير صحيحة، أو لم يُفعَّل هذا البريد بعد (فعّله من «أول مرة؟ فعّل حسابك»).'**
   String get authInvalidCredentials;
 
   /// No description provided for @authInvalidEmail.
@@ -2303,8 +2303,80 @@ abstract class AppLocalizations {
   /// No description provided for @accountEmailChanged.
   ///
   /// In ar, this message translates to:
-  /// **'تغيّر البريد.'**
+  /// **'تغيّر البريد. أخبر صاحبه أن يفعّل حسابه بالبريد الجديد من «أول مرة؟ فعّل حسابك» — «نسيت كلمة المرور» لا يعمل لبريد لم يُفعَّل.'**
   String get accountEmailChanged;
+
+  /// No description provided for @groupsEditAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعديل أعضاء المجاميع'**
+  String get groupsEditAction;
+
+  /// No description provided for @groupsEditTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أعضاء المجاميع'**
+  String get groupsEditTitle;
+
+  /// No description provided for @groupsHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'حدّد طالباً أو أكثر ثم «نقل إلى…». لا يُشترط تساوي أعداد المجاميع. الحضور المسجَّل سابقاً يبقى في محاضرات مجموعته القديمة.'**
+  String get groupsHelp;
+
+  /// No description provided for @groupsUnassigned.
+  ///
+  /// In ar, this message translates to:
+  /// **'بلا مجموعة · عدد الطلبة: {count}'**
+  String groupsUnassigned(int count);
+
+  /// No description provided for @groupsSelected.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحدَّدون: {count}'**
+  String groupsSelected(int count);
+
+  /// No description provided for @groupsMoveTo.
+  ///
+  /// In ar, this message translates to:
+  /// **'نقل إلى…'**
+  String get groupsMoveTo;
+
+  /// No description provided for @groupsMoveTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'نقل {count} طالب إلى'**
+  String groupsMoveTitle(int count);
+
+  /// No description provided for @groupsMoved.
+  ///
+  /// In ar, this message translates to:
+  /// **'نُقل {count} إلى {group}.'**
+  String groupsMoved(int count, String group);
+
+  /// No description provided for @groupsAdd.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة مجموعة'**
+  String get groupsAdd;
+
+  /// No description provided for @groupsAdded.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُضيفت {group}؛ انقل إليها الطلبة.'**
+  String groupsAdded(String group);
+
+  /// No description provided for @groupsNone.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا مجاميع بعد. أنشئها أولاً من «إنشاء / إعادة توزيع المجاميع».'**
+  String get groupsNone;
+
+  /// No description provided for @assignmentsRedistributeWarning.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنبيه: إعادة التوزيع تلغي أي نقل يدوي سابق بين المجاميع.'**
+  String get assignmentsRedistributeWarning;
 }
 
 class _AppLocalizationsDelegate
