@@ -8,6 +8,7 @@ import '../features/auth/data/auth_repository.dart';
 import '../features/auth/domain/app_user.dart';
 import '../features/data_fix/domain/fix_plan.dart';
 import '../features/import/domain/import_models.dart';
+import '../features/leaves/domain/leave.dart';
 import '../features/students/domain/student.dart';
 import 'app_localizations.dart';
 
@@ -78,6 +79,14 @@ extension DomainLabels on AppLocalizations {
           groupLabel(a.target),
         ],
       ].join(' · ');
+
+  String leaveType(LeaveType t) => switch (t) {
+        LeaveType.sick => leaveTypeSick,
+        LeaveType.official => leaveTypeOfficial,
+        LeaveType.emergency => leaveTypeEmergency,
+        LeaveType.officialParticipation => leaveTypeParticipation,
+        LeaveType.other => leaveTypeOther,
+      };
 
   String fixProblem(FixProblem p, String? name) => switch (p) {
         FixProblem.invalidId => fixProblemInvalidId,

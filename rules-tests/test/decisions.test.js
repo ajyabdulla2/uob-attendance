@@ -2,7 +2,8 @@
 import { describe, it, before, beforeEach, after } from 'node:test';
 import { assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
 import {
-  deleteDoc, doc, getDoc, serverTimestamp, setDoc, updateDoc, Timestamp,
+  collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, where, writeBatch,
+  Timestamp,
 } from 'firebase/firestore';
 import { createEnv, seed, as, utcMidnight, SUPER, DEPUTY, SM3, T1, T2 } from './helpers.js';
 
@@ -79,6 +80,28 @@ describe('leaves', () => {
     await assertSucceeds(getDoc(doc(as(env, T1), 'leaves', 'leave-1')));
     await assertFails(getDoc(doc(as(env, T2), 'leaves', 'leave-1')));
     await assertFails(setDoc(doc(as(env, T1), 'leaves', 'l8'), leave(null)));
+  });
+
+  it('the app\'s write: leave approved by the caller + audit entry in one batch; teachers query their stage', async () => {
+    const add = (who, stageId = '3-morning') => {
+      const fs = as(env, who);
+      const b = writeBatch(fs);
+      b.set(doc(fs, 'leaves', `new-${who}`), {
+        ...leave(who, { stageId }), note: '', departmentId: 'cs',
+        approvedAt: serverTimestamp(), updatedAt: serverTimestamp(), updatedBy: who,
+      });
+      b.set(doc(collection(fs, 'auditLog')), {
+        actor: who, action: 'leave.create', targetPath: `leaves/new-${who}`, stageId,
+        before: null, after: { studentId: '1001' }, departmentId: 'cs', at: serverTimestamp(),
+      });
+      return b.commit();
+    };
+    await assertSucceeds(add(SM3));
+    await assertSucceeds(add(DEPUTY, '1-evening'));
+    await assertFails(add(SM3, '1-evening'));
+    await assertFails(add(T1));
+    await assertSucceeds(getDocs(query(collection(as(env, T1), 'leaves'), where('stageId', '==', '3-morning'))));
+    await assertFails(getDocs(query(collection(as(env, T1), 'leaves'), where('stageId', '==', '1-evening'))));
   });
 });
 

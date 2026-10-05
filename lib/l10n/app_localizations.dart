@@ -2563,6 +2563,126 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'حُفظت إعدادات السنة.'**
   String get yearSaved;
+
+  /// No description provided for @leavesTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإجازات'**
+  String get leavesTitle;
+
+  /// No description provided for @leavesAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإجازات'**
+  String get leavesAction;
+
+  /// No description provided for @leavesHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإجازة المُدخلة هنا معتمدة: غياب الطالب في أيامها يُحسب «مُجاز» في كل مواده (حسب إعدادات السنة).'**
+  String get leavesHelp;
+
+  /// No description provided for @leavesEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا إجازات في هذه المرحلة.'**
+  String get leavesEmpty;
+
+  /// No description provided for @leaveAdd.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة إجازة'**
+  String get leaveAdd;
+
+  /// No description provided for @leaveStudent.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطالب (اسم أو رقم جامعي)'**
+  String get leaveStudent;
+
+  /// No description provided for @leaveTypeLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'نوع الإجازة'**
+  String get leaveTypeLabel;
+
+  /// No description provided for @leaveTypeSick.
+  ///
+  /// In ar, this message translates to:
+  /// **'مرضية'**
+  String get leaveTypeSick;
+
+  /// No description provided for @leaveTypeOfficial.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسمية'**
+  String get leaveTypeOfficial;
+
+  /// No description provided for @leaveTypeEmergency.
+  ///
+  /// In ar, this message translates to:
+  /// **'ظرف طارئ'**
+  String get leaveTypeEmergency;
+
+  /// No description provided for @leaveTypeParticipation.
+  ///
+  /// In ar, this message translates to:
+  /// **'مشاركة رسمية (نشاط أو وفد)'**
+  String get leaveTypeParticipation;
+
+  /// No description provided for @leaveTypeOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'أخرى'**
+  String get leaveTypeOther;
+
+  /// No description provided for @leavePickRange.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر الفترة (من – إلى)'**
+  String get leavePickRange;
+
+  /// No description provided for @leaveRange.
+  ///
+  /// In ar, this message translates to:
+  /// **'من {from} إلى {to}'**
+  String leaveRange(String from, String to);
+
+  /// No description provided for @leaveDays.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} يوم'**
+  String leaveDays(int count);
+
+  /// No description provided for @leaveRef.
+  ///
+  /// In ar, this message translates to:
+  /// **'رقم الكتاب أو التقرير الطبي'**
+  String get leaveRef;
+
+  /// No description provided for @leaveRefShown.
+  ///
+  /// In ar, this message translates to:
+  /// **'الكتاب: {ref}'**
+  String leaveRefShown(String ref);
+
+  /// No description provided for @leaveSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُفظت الإجازة.'**
+  String get leaveSaved;
+
+  /// No description provided for @leaveDeleteTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف الإجازة؟'**
+  String get leaveDeleteTitle;
+
+  /// No description provided for @leaveDeleteBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تُحذف إجازة {name}، فيعود غيابه في أيامها غياباً.'**
+  String leaveDeleteBody(String name);
 }
 
 class _AppLocalizationsDelegate

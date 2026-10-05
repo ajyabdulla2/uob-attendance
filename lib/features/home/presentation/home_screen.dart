@@ -55,6 +55,14 @@ class HomeScreen extends ConsumerWidget {
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => context.go(Routes.assignments),
                     ),
+                  if (perms.canManageLeaves)
+                    ListTile(
+                      key: const Key('home.leaves'),
+                      leading: const Icon(Icons.event_available),
+                      title: Text(l10n.leavesAction),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => context.push(Routes.leaves),
+                    ),
                   if (perms.canEditYear)
                     ListTile(
                       key: const Key('home.year'),

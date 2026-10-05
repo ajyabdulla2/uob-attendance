@@ -1052,5 +1052,56 @@
   "yearMaxLeaveHelp": "فارغ = بلا حد. ما زاد عليه من أيام الإجازة يُحسب غياباً.",
   "yearBadNumber": "رقم غير صالح",
   "yearInvalid": "تحقّق من القيم: العتبات تصاعدية (تنبيه < إنذار < فصل ≤ 100)، والأسابيع 1–30، والإقفال 1–720 ساعة.",
-  "yearSaved": "حُفظت إعدادات السنة."
+  "yearSaved": "حُفظت إعدادات السنة.",
+  "leavesTitle": "الإجازات",
+  "leavesAction": "الإجازات",
+  "leavesHelp": "الإجازة المُدخلة هنا معتمدة: غياب الطالب في أيامها يُحسب «مُجاز» في كل مواده (حسب إعدادات السنة).",
+  "leavesEmpty": "لا إجازات في هذه المرحلة.",
+  "leaveAdd": "إضافة إجازة",
+  "leaveStudent": "الطالب (اسم أو رقم جامعي)",
+  "leaveTypeLabel": "نوع الإجازة",
+  "leaveTypeSick": "مرضية",
+  "leaveTypeOfficial": "رسمية",
+  "leaveTypeEmergency": "ظرف طارئ",
+  "leaveTypeParticipation": "مشاركة رسمية (نشاط أو وفد)",
+  "leaveTypeOther": "أخرى",
+  "leavePickRange": "اختر الفترة (من – إلى)",
+  "leaveRange": "من {from} إلى {to}",
+  "@leaveRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "leaveDays": "{count} يوم",
+  "@leaveDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "leaveRef": "رقم الكتاب أو التقرير الطبي",
+  "leaveRefShown": "الكتاب: {ref}",
+  "@leaveRefShown": {
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "leaveSaved": "حُفظت الإجازة.",
+  "leaveDeleteTitle": "حذف الإجازة؟",
+  "leaveDeleteBody": "تُحذف إجازة {name}، فيعود غيابه في أيامها غياباً.",
+  "@leaveDeleteBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

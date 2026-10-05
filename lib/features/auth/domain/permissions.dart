@@ -63,6 +63,9 @@ final class Permissions {
   /// Thresholds, planned lectures, lock window and leave policy.
   bool get canEditYear => isAdmin;
 
+  // ------------------------------------------------------------- leaves --
+  bool get canManageLeaves => isAdmin || isStageManager;
+
   // ---------------------------------------------------------- data fixes --
   /// Changing IDs and undoing imports deletes documents: admins only.
   bool get canFixData => isAdmin;

@@ -1483,4 +1483,74 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get yearSaved => 'Year settings saved.';
+
+  @override
+  String get leavesTitle => 'Leaves';
+
+  @override
+  String get leavesAction => 'Leaves';
+
+  @override
+  String get leavesHelp =>
+      'A leave entered here is approved: the student\'s absences on its days count as «excused» in every course (per the year settings).';
+
+  @override
+  String get leavesEmpty => 'No leaves in this stage.';
+
+  @override
+  String get leaveAdd => 'Add a leave';
+
+  @override
+  String get leaveStudent => 'Student (name or university ID)';
+
+  @override
+  String get leaveTypeLabel => 'Leave type';
+
+  @override
+  String get leaveTypeSick => 'Sick';
+
+  @override
+  String get leaveTypeOfficial => 'Official';
+
+  @override
+  String get leaveTypeEmergency => 'Emergency';
+
+  @override
+  String get leaveTypeParticipation =>
+      'Official participation (activity or delegation)';
+
+  @override
+  String get leaveTypeOther => 'Other';
+
+  @override
+  String get leavePickRange => 'Pick the period (from – to)';
+
+  @override
+  String leaveRange(String from, String to) {
+    return 'From $from to $to';
+  }
+
+  @override
+  String leaveDays(int count) {
+    return '$count day(s)';
+  }
+
+  @override
+  String get leaveRef => 'Letter or medical report number';
+
+  @override
+  String leaveRefShown(String ref) {
+    return 'Ref: $ref';
+  }
+
+  @override
+  String get leaveSaved => 'Leave saved.';
+
+  @override
+  String get leaveDeleteTitle => 'Delete the leave?';
+
+  @override
+  String leaveDeleteBody(String name) {
+    return '$name\'s leave is deleted; their absences on its days count again.';
+  }
 }

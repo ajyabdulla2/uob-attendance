@@ -1474,4 +1474,73 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get yearSaved => 'حُفظت إعدادات السنة.';
+
+  @override
+  String get leavesTitle => 'الإجازات';
+
+  @override
+  String get leavesAction => 'الإجازات';
+
+  @override
+  String get leavesHelp =>
+      'الإجازة المُدخلة هنا معتمدة: غياب الطالب في أيامها يُحسب «مُجاز» في كل مواده (حسب إعدادات السنة).';
+
+  @override
+  String get leavesEmpty => 'لا إجازات في هذه المرحلة.';
+
+  @override
+  String get leaveAdd => 'إضافة إجازة';
+
+  @override
+  String get leaveStudent => 'الطالب (اسم أو رقم جامعي)';
+
+  @override
+  String get leaveTypeLabel => 'نوع الإجازة';
+
+  @override
+  String get leaveTypeSick => 'مرضية';
+
+  @override
+  String get leaveTypeOfficial => 'رسمية';
+
+  @override
+  String get leaveTypeEmergency => 'ظرف طارئ';
+
+  @override
+  String get leaveTypeParticipation => 'مشاركة رسمية (نشاط أو وفد)';
+
+  @override
+  String get leaveTypeOther => 'أخرى';
+
+  @override
+  String get leavePickRange => 'اختر الفترة (من – إلى)';
+
+  @override
+  String leaveRange(String from, String to) {
+    return 'من $from إلى $to';
+  }
+
+  @override
+  String leaveDays(int count) {
+    return '$count يوم';
+  }
+
+  @override
+  String get leaveRef => 'رقم الكتاب أو التقرير الطبي';
+
+  @override
+  String leaveRefShown(String ref) {
+    return 'الكتاب: $ref';
+  }
+
+  @override
+  String get leaveSaved => 'حُفظت الإجازة.';
+
+  @override
+  String get leaveDeleteTitle => 'حذف الإجازة؟';
+
+  @override
+  String leaveDeleteBody(String name) {
+    return 'تُحذف إجازة $name، فيعود غيابه في أيامها غياباً.';
+  }
 }
