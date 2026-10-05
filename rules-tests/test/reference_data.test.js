@@ -193,6 +193,22 @@ describe('stages and academic years', () => {
     await assertSucceeds(setDoc(doc(as(env, DEPUTY), 'stages', '4-evening'), { level: 4, shift: 'evening', sections: [] }));
     await assertFails(setDoc(doc(as(env, SUPER), 'stages', '9-night'), { level: 9 }));
   });
+
+  it('admins save year settings only within sane bounds (lockHours drives session locks)', async () => {
+    const y = doc(as(env, DEPUTY), 'academicYears', '2026-2027');
+    await assertSucceeds(updateDoc(y, {
+      lockHours: 72, weeksPerSemester: 16, semester: 2, lecturesPerUnitPerWeek: 0.5,
+      thresholds: { alert: 4, warning: 8, dismissal: 12.5 }, leavesCountAgainst: true, maxLeaveDays: 10,
+    }));
+    await assertFails(updateDoc(y, { lockHours: 0 }));
+    await assertFails(updateDoc(y, { lockHours: 48.5 }));
+    await assertFails(updateDoc(y, { lockHours: 2000 }));
+    await assertFails(updateDoc(y, { weeksPerSemester: 0 }));
+    await assertFails(updateDoc(y, { semester: 3 }));
+    await assertFails(updateDoc(y, { lecturesPerUnitPerWeek: 0 }));
+    await assertFails(updateDoc(y, { thresholds: { alert: 10, warning: 5, dismissal: 15 } }));
+    await assertFails(updateDoc(y, { thresholds: { alert: 5, warning: 10 } }));
+  });
 });
 
 // The exact query shapes the app issues (lib/features/*/data/*_repository.dart).

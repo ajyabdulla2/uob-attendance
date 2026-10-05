@@ -68,6 +68,44 @@ final class AcademicYear {
   final bool combinedTheoryPractical;
   final String departmentId;
 
+  /// Within what the security rules accept (they use [lockHours] to compute
+  /// every session's lock time).
+  bool get isValid =>
+      thresholds.isValid &&
+      (semester == 1 || semester == 2) &&
+      weeksPerSemester >= 1 &&
+      weeksPerSemester <= 30 &&
+      lecturesPerUnitPerWeek > 0 &&
+      lecturesPerUnitPerWeek <= 10 &&
+      lockHours >= 1 &&
+      lockHours <= 720 &&
+      (maxLeaveDays == null || maxLeaveDays! >= 0);
+
+  AcademicYear copyWith({
+    int? semester,
+    AbsenceThresholds? thresholds,
+    int? weeksPerSemester,
+    double? lecturesPerUnitPerWeek,
+    int? lockHours,
+    bool? leavesCountAgainst,
+    int? Function()? maxLeaveDays,
+    bool? combinedTheoryPractical,
+  }) =>
+      AcademicYear(
+        id: id,
+        semester: semester ?? this.semester,
+        active: active,
+        archived: archived,
+        thresholds: thresholds ?? this.thresholds,
+        weeksPerSemester: weeksPerSemester ?? this.weeksPerSemester,
+        lecturesPerUnitPerWeek: lecturesPerUnitPerWeek ?? this.lecturesPerUnitPerWeek,
+        lockHours: lockHours ?? this.lockHours,
+        leavesCountAgainst: leavesCountAgainst ?? this.leavesCountAgainst,
+        maxLeaveDays: maxLeaveDays == null ? this.maxLeaveDays : maxLeaveDays(),
+        combinedTheoryPractical: combinedTheoryPractical ?? this.combinedTheoryPractical,
+        departmentId: departmentId,
+      );
+
   /// Builds a default year ID for [now] (Iraqi academic years start in autumn).
   static String idFor(DateTime now) {
     final start = now.month >= 9 ? now.year : now.year - 1;

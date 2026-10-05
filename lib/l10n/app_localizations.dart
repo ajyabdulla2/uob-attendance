@@ -2377,6 +2377,192 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تنبيه: إعادة التوزيع تلغي أي نقل يدوي سابق بين المجاميع.'**
   String get assignmentsRedistributeWarning;
+
+  /// No description provided for @yearTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعدادات السنة الدراسية'**
+  String get yearTitle;
+
+  /// No description provided for @yearAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعدادات السنة والنسب'**
+  String get yearAction;
+
+  /// No description provided for @yearNone.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد سنة دراسية نشطة. أنشئها من «تهيئة النظام» في الرئيسية.'**
+  String get yearNone;
+
+  /// No description provided for @yearHeader.
+  ///
+  /// In ar, this message translates to:
+  /// **'السنة {year}'**
+  String yearHeader(String year);
+
+  /// No description provided for @yearHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه قرارات القسم التي تُحسب بها نسب الغياب. يمكن تعديلها في أي وقت، فتُعاد النسب كلها تلقائياً.'**
+  String get yearHelp;
+
+  /// No description provided for @yearSemesterN.
+  ///
+  /// In ar, this message translates to:
+  /// **'الفصل {n}'**
+  String yearSemesterN(int n);
+
+  /// No description provided for @yearThresholds.
+  ///
+  /// In ar, this message translates to:
+  /// **'عتبات الغياب (نسبة من محاضرات المادة)'**
+  String get yearThresholds;
+
+  /// No description provided for @levelAlert.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنبيه'**
+  String get levelAlert;
+
+  /// No description provided for @levelWarning.
+  ///
+  /// In ar, this message translates to:
+  /// **'إنذار'**
+  String get levelWarning;
+
+  /// No description provided for @levelDismissal.
+  ///
+  /// In ar, this message translates to:
+  /// **'فصل'**
+  String get levelDismissal;
+
+  /// No description provided for @yearPlanned.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدد محاضرات المادة في الفصل'**
+  String get yearPlanned;
+
+  /// No description provided for @yearWeeks.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدد أسابيع الفصل'**
+  String get yearWeeks;
+
+  /// No description provided for @yearPerUnit.
+  ///
+  /// In ar, this message translates to:
+  /// **'محاضرات أسبوعياً لكل وحدة'**
+  String get yearPerUnit;
+
+  /// No description provided for @yearPerUnitHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'مثلاً 1: مادة بثلاث وحدات = 3 محاضرات أسبوعياً. اكتب 0.5 إن كانت الوحدتان محاضرة واحدة.'**
+  String get yearPerUnitHelp;
+
+  /// No description provided for @yearExample.
+  ///
+  /// In ar, this message translates to:
+  /// **'مثال: مادة بثلاث وحدات = {count} محاضرة في الفصل، والغياب الواحد = {percent}٪.'**
+  String yearExample(int count, String percent);
+
+  /// No description provided for @yearCombined.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسبة واحدة للنظري والعملي معاً'**
+  String get yearCombined;
+
+  /// No description provided for @yearCombinedOn.
+  ///
+  /// In ar, this message translates to:
+  /// **'غيابات النظري والعملي تُجمع في نسبة المادة.'**
+  String get yearCombinedOn;
+
+  /// No description provided for @yearCombinedOff.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسبة للنظري وأخرى للعملي، وكل منهما من محاضرات المادة نفسها.'**
+  String get yearCombinedOff;
+
+  /// No description provided for @yearLock.
+  ///
+  /// In ar, this message translates to:
+  /// **'إقفال السجل'**
+  String get yearLock;
+
+  /// No description provided for @yearLockHours.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُقفل السجل بعد نهاية يوم المحاضرة بـ'**
+  String get yearLockHours;
+
+  /// No description provided for @yearHoursSuffix.
+  ///
+  /// In ar, this message translates to:
+  /// **'ساعة'**
+  String get yearHoursSuffix;
+
+  /// No description provided for @yearLockHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'بعدها لا يعدّل التدريسي المحاضرة إلا بطلب، ويعدّلها مسؤول المرحلة والمدير مباشرة.'**
+  String get yearLockHelp;
+
+  /// No description provided for @yearLeaves.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإجازات'**
+  String get yearLeaves;
+
+  /// No description provided for @yearLeavesCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإجازات تُحتسب ضمن الغياب'**
+  String get yearLeavesCount;
+
+  /// No description provided for @yearLeavesCountOn.
+  ///
+  /// In ar, this message translates to:
+  /// **'الغياب المُجاز (والمغطّى بإجازة) يدخل في النسبة.'**
+  String get yearLeavesCountOn;
+
+  /// No description provided for @yearLeavesCountOff.
+  ///
+  /// In ar, this message translates to:
+  /// **'الغياب المُجاز والمغطّى بإجازة معتمدة لا يدخل في النسبة.'**
+  String get yearLeavesCountOff;
+
+  /// No description provided for @yearMaxLeave.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحد الأعلى لأيام الإجازة المقبولة (اختياري)'**
+  String get yearMaxLeave;
+
+  /// No description provided for @yearMaxLeaveHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'فارغ = بلا حد. ما زاد عليه من أيام الإجازة يُحسب غياباً.'**
+  String get yearMaxLeaveHelp;
+
+  /// No description provided for @yearBadNumber.
+  ///
+  /// In ar, this message translates to:
+  /// **'رقم غير صالح'**
+  String get yearBadNumber;
+
+  /// No description provided for @yearInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحقّق من القيم: العتبات تصاعدية (تنبيه < إنذار < فصل ≤ 100)، والأسابيع 1–30، والإقفال 1–720 ساعة.'**
+  String get yearInvalid;
+
+  /// No description provided for @yearSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُفظت إعدادات السنة.'**
+  String get yearSaved;
 }
 
 class _AppLocalizationsDelegate

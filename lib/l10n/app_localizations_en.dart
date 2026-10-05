@@ -1372,4 +1372,115 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get assignmentsRedistributeWarning =>
       'Note: redistributing undoes any manual moves between groups.';
+
+  @override
+  String get yearTitle => 'Academic year settings';
+
+  @override
+  String get yearAction => 'Year & percentage settings';
+
+  @override
+  String get yearNone =>
+      'No active academic year. Create it from «Set up» on the home screen.';
+
+  @override
+  String yearHeader(String year) {
+    return 'Year $year';
+  }
+
+  @override
+  String get yearHelp =>
+      'These are the department\'s decisions behind absence percentages. Change them any time; every percentage follows.';
+
+  @override
+  String yearSemesterN(int n) {
+    return 'Semester $n';
+  }
+
+  @override
+  String get yearThresholds =>
+      'Absence thresholds (share of the course\'s lectures)';
+
+  @override
+  String get levelAlert => 'Alert';
+
+  @override
+  String get levelWarning => 'Warning';
+
+  @override
+  String get levelDismissal => 'Dismissal';
+
+  @override
+  String get yearPlanned => 'Lectures per course per semester';
+
+  @override
+  String get yearWeeks => 'Weeks per semester';
+
+  @override
+  String get yearPerUnit => 'Lectures per credit unit per week';
+
+  @override
+  String get yearPerUnitHelp =>
+      'E.g. 1: a 3-unit course = 3 lectures a week. Use 0.5 when two units make one lecture.';
+
+  @override
+  String yearExample(int count, String percent) {
+    return 'Example: a 3-unit course = $count lectures a semester; one absence = $percent%.';
+  }
+
+  @override
+  String get yearCombined => 'One percentage for theory and practical together';
+
+  @override
+  String get yearCombinedOn =>
+      'Theory and practical absences add up in the course\'s percentage.';
+
+  @override
+  String get yearCombinedOff =>
+      'Separate theory and practical percentages, each over the course\'s lectures.';
+
+  @override
+  String get yearLock => 'Locking the register';
+
+  @override
+  String get yearLockHours =>
+      'The register locks after the lecture day ends by';
+
+  @override
+  String get yearHoursSuffix => 'hours';
+
+  @override
+  String get yearLockHelp =>
+      'After that a teacher needs an edit request; stage managers and admins edit directly.';
+
+  @override
+  String get yearLeaves => 'Leaves';
+
+  @override
+  String get yearLeavesCount => 'Leaves count as absences';
+
+  @override
+  String get yearLeavesCountOn =>
+      'Excused absences (and those covered by a leave) count in the percentage.';
+
+  @override
+  String get yearLeavesCountOff =>
+      'Excused absences and those covered by an approved leave do not count.';
+
+  @override
+  String get yearMaxLeave => 'Maximum accepted leave days (optional)';
+
+  @override
+  String get yearMaxLeaveHelp =>
+      'Empty = no limit. Leave days beyond it count as absences.';
+
+  @override
+  String get yearBadNumber => 'Invalid number';
+
+  @override
+  String get yearInvalid =>
+      'Check the values: thresholds increase (alert < warning < dismissal ≤ 100), weeks 1–30, lock 1–720 hours.';
+
+  @override
+  String get yearSaved => 'Year settings saved.';
 }

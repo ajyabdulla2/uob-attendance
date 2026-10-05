@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/academic/presentation/year_settings_screen.dart';
 import '../../features/assignments/presentation/assignments_screen.dart';
 import '../../features/attendance/presentation/record_screen.dart';
 import '../../features/attendance/presentation/register_screen.dart';
@@ -31,6 +32,7 @@ abstract final class Routes {
   static const record = '/record';
   static const register = '/register';
   static const dataFix = '/data-fix';
+  static const yearSettings = '/year-settings';
 
   /// Record screen of a class, optionally on a given lecture.
   static String recordFor(String assignmentId, {DateTime? date, int? lectureNo}) => Uri(path: record, queryParameters: {
@@ -60,6 +62,7 @@ String? redirectFor(AuthStatus status, String location) {
         _ when location.startsWith(Routes.assignments) && !permissions.canManageAssignments => Routes.home,
         _ when location.startsWith(Routes.accounts) && !permissions.canManageAccounts => Routes.home,
         _ when location.startsWith(Routes.dataFix) && !permissions.canFixData => Routes.home,
+        _ when location.startsWith(Routes.yearSettings) && !permissions.canEditYear => Routes.home,
         _ => null,
       },
   };
@@ -92,6 +95,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(path: Routes.dataFix, builder: (_, _) => const DataFixScreen()),
+      GoRoute(path: Routes.yearSettings, builder: (_, _) => const YearSettingsScreen()),
       GoRoute(
         path: Routes.register,
         builder: (_, s) => RegisterScreen(assignmentId: s.uri.queryParameters['a'] ?? ''),

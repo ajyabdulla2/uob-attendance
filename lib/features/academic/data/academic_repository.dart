@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../core/domain/stage_ref.dart';
 import '../../../core/firebase/collections.dart';
+import '../../audit/domain/audit_entry.dart';
 import '../domain/academic_year.dart';
 import '../domain/stage.dart';
 
@@ -41,6 +42,33 @@ class AcademicRepository {
       missingStages: [for (final s in StageRef.all) if (!existing.contains(s.id)) s],
       hasActiveYear: active.docs.isNotEmpty,
     );
+  }
+
+  /// Saves the year's settings (thresholds, planned lectures, lock window,
+  /// leave policy) with an audit entry in the same batch.
+  Future<void> saveSettings(AcademicYear before, AcademicYear after, {required String actor}) {
+    Map<String, Object?> settings(AcademicYear y) => y.toMap()
+      ..remove('label')
+      ..remove('active')
+      ..remove('archived')
+      ..remove('departmentId');
+    final batch = _db.batch()
+      ..set(_years.doc(after.id), {
+        ...settings(after),
+        'updatedAt': FieldValue.serverTimestamp(),
+        'updatedBy': actor,
+      }, SetOptions(merge: true))
+      ..set(_db.collection(Col.auditLog).doc(), {
+        ...AuditEntry(
+          actor: actor,
+          action: 'year.update',
+          targetPath: '${Col.academicYears}/${after.id}',
+          before: settings(before),
+          after: settings(after),
+        ).toMap(),
+        'at': FieldValue.serverTimestamp(),
+      });
+    return batch.commit();
   }
 
   /// Creates the eight stages and an active academic year with the SPEC's

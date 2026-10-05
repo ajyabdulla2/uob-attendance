@@ -55,6 +55,14 @@ class HomeScreen extends ConsumerWidget {
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => context.go(Routes.assignments),
                     ),
+                  if (perms.canEditYear)
+                    ListTile(
+                      key: const Key('home.year'),
+                      leading: const Icon(Icons.tune),
+                      title: Text(l10n.yearAction),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => context.push(Routes.yearSettings),
+                    ),
                   if (perms.canFixData)
                     ListTile(
                       key: const Key('home.dataFix'),

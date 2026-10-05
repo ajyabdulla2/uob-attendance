@@ -59,6 +59,10 @@ final class Permissions {
   /// cannot lock themselves (or the department) out by mistake.
   bool canChangeAccessOf(AppUser target) => canEditAccount(target) && target.id != user.id;
 
+  // ----------------------------------------------------------- the year --
+  /// Thresholds, planned lectures, lock window and leave policy.
+  bool get canEditYear => isAdmin;
+
   // ---------------------------------------------------------- data fixes --
   /// Changing IDs and undoing imports deletes documents: admins only.
   bool get canFixData => isAdmin;

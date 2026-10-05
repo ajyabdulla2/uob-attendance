@@ -1366,4 +1366,112 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get assignmentsRedistributeWarning =>
       'تنبيه: إعادة التوزيع تلغي أي نقل يدوي سابق بين المجاميع.';
+
+  @override
+  String get yearTitle => 'إعدادات السنة الدراسية';
+
+  @override
+  String get yearAction => 'إعدادات السنة والنسب';
+
+  @override
+  String get yearNone =>
+      'لا توجد سنة دراسية نشطة. أنشئها من «تهيئة النظام» في الرئيسية.';
+
+  @override
+  String yearHeader(String year) {
+    return 'السنة $year';
+  }
+
+  @override
+  String get yearHelp =>
+      'هذه قرارات القسم التي تُحسب بها نسب الغياب. يمكن تعديلها في أي وقت، فتُعاد النسب كلها تلقائياً.';
+
+  @override
+  String yearSemesterN(int n) {
+    return 'الفصل $n';
+  }
+
+  @override
+  String get yearThresholds => 'عتبات الغياب (نسبة من محاضرات المادة)';
+
+  @override
+  String get levelAlert => 'تنبيه';
+
+  @override
+  String get levelWarning => 'إنذار';
+
+  @override
+  String get levelDismissal => 'فصل';
+
+  @override
+  String get yearPlanned => 'عدد محاضرات المادة في الفصل';
+
+  @override
+  String get yearWeeks => 'عدد أسابيع الفصل';
+
+  @override
+  String get yearPerUnit => 'محاضرات أسبوعياً لكل وحدة';
+
+  @override
+  String get yearPerUnitHelp =>
+      'مثلاً 1: مادة بثلاث وحدات = 3 محاضرات أسبوعياً. اكتب 0.5 إن كانت الوحدتان محاضرة واحدة.';
+
+  @override
+  String yearExample(int count, String percent) {
+    return 'مثال: مادة بثلاث وحدات = $count محاضرة في الفصل، والغياب الواحد = $percent٪.';
+  }
+
+  @override
+  String get yearCombined => 'نسبة واحدة للنظري والعملي معاً';
+
+  @override
+  String get yearCombinedOn => 'غيابات النظري والعملي تُجمع في نسبة المادة.';
+
+  @override
+  String get yearCombinedOff =>
+      'نسبة للنظري وأخرى للعملي، وكل منهما من محاضرات المادة نفسها.';
+
+  @override
+  String get yearLock => 'إقفال السجل';
+
+  @override
+  String get yearLockHours => 'يُقفل السجل بعد نهاية يوم المحاضرة بـ';
+
+  @override
+  String get yearHoursSuffix => 'ساعة';
+
+  @override
+  String get yearLockHelp =>
+      'بعدها لا يعدّل التدريسي المحاضرة إلا بطلب، ويعدّلها مسؤول المرحلة والمدير مباشرة.';
+
+  @override
+  String get yearLeaves => 'الإجازات';
+
+  @override
+  String get yearLeavesCount => 'الإجازات تُحتسب ضمن الغياب';
+
+  @override
+  String get yearLeavesCountOn =>
+      'الغياب المُجاز (والمغطّى بإجازة) يدخل في النسبة.';
+
+  @override
+  String get yearLeavesCountOff =>
+      'الغياب المُجاز والمغطّى بإجازة معتمدة لا يدخل في النسبة.';
+
+  @override
+  String get yearMaxLeave => 'الحد الأعلى لأيام الإجازة المقبولة (اختياري)';
+
+  @override
+  String get yearMaxLeaveHelp =>
+      'فارغ = بلا حد. ما زاد عليه من أيام الإجازة يُحسب غياباً.';
+
+  @override
+  String get yearBadNumber => 'رقم غير صالح';
+
+  @override
+  String get yearInvalid =>
+      'تحقّق من القيم: العتبات تصاعدية (تنبيه < إنذار < فصل ≤ 100)، والأسابيع 1–30، والإقفال 1–720 ساعة.';
+
+  @override
+  String get yearSaved => 'حُفظت إعدادات السنة.';
 }

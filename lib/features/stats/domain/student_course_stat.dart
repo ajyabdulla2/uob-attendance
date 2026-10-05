@@ -2,6 +2,7 @@ import '../../../core/config/app_config.dart';
 import '../../../core/firebase/doc_ids.dart';
 import '../../../core/firebase/firestore_converters.dart';
 import '../../academic/domain/academic_year.dart';
+import '../../attendance/domain/attendance_session.dart';
 
 /// None, تنبيه، إنذار، فصل.
 enum WarningLevel { none, alert, warning, dismissal }
@@ -48,7 +49,8 @@ abstract final class AbsenceMath {
   }
 }
 
-/// `stats/{courseId}__{studentId}` — counters updated in the same batch as
+/// `stats/{courseId}__{studentId}` — see `AbsenceSummary` for the maths;
+/// counters updated in the same batch as
 /// attendance records, so the warnings screen reads one doc per student
 /// and course instead of every record.
 final class StudentCourseStat {
@@ -62,6 +64,7 @@ final class StudentCourseStat {
     this.percent = 0,
     this.level = WarningLevel.none,
     this.lastSessionId,
+    this.bySession = const {},
     this.departmentId = AppConfig.departmentId,
   });
 
@@ -79,6 +82,10 @@ final class StudentCourseStat {
   /// Session whose save last touched the counters (rules use it to authorize
   /// teacher writes).
   final String? lastSessionId;
+
+  /// Status per lecture (`sessionId → status`) — the source of truth; the
+  /// counters above are not maintained (see [AbsenceSummary]).
+  final Map<String, AttendanceStatus> bySession;
   final String departmentId;
 
   String get id => DocIds.stat(courseId, studentId);
@@ -93,6 +100,10 @@ final class StudentCourseStat {
         percent: Fs.dbl(map['percent']),
         level: Fs.enumByName(WarningLevel.values, map['level'], WarningLevel.none),
         lastSessionId: Fs.strOrNull(map['lastSessionId']),
+        bySession: {
+          for (final MapEntry(:key, :value) in Fs.map(map['bySession']).entries)
+            key: Fs.enumByName(AttendanceStatus.values, value, AttendanceStatus.present),
+        },
         departmentId: Fs.str(map['departmentId'], AppConfig.departmentId),
       );
 
