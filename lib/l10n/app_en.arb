@@ -46,7 +46,7 @@
   "authNetwork": "No internet connection. The first sign-in needs a connection.",
   "authUnknown": "Could not complete the operation ({code}).",
   "verifyTitle": "Verify your e-mail",
-  "verifyBody": "We sent a verification link to {email}. Open it, then come back here.",
+  "verifyBody": "We sent a verification link to {email}. Open it, then come back here.\nNot there after two minutes? Look in your spam folder for a message from noreply.",
   "verifyDone": "I have verified",
   "verifyResend": "Resend link",
   "verifySent": "A new link was sent.",

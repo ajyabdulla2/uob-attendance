@@ -158,7 +158,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String verifyBody(String email) {
-    return 'أرسلنا رابط تأكيد إلى $email. افتح الرسالة واضغط الرابط، ثم عد إلى هنا.';
+    return 'أرسلنا رابط تأكيد إلى $email. افتح الرسالة واضغط الرابط، ثم عد إلى هنا.\nلم تصل خلال دقيقتين؟ ابحث في مجلد الرسائل غير المرغوب فيها (Spam) عن رسالة من noreply.';
   }
 
   @override

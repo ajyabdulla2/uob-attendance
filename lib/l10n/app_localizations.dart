@@ -377,7 +377,7 @@ abstract class AppLocalizations {
   /// No description provided for @verifyBody.
   ///
   /// In ar, this message translates to:
-  /// **'أرسلنا رابط تأكيد إلى {email}. افتح الرسالة واضغط الرابط، ثم عد إلى هنا.'**
+  /// **'أرسلنا رابط تأكيد إلى {email}. افتح الرسالة واضغط الرابط، ثم عد إلى هنا.\nلم تصل خلال دقيقتين؟ ابحث في مجلد الرسائل غير المرغوب فيها (Spam) عن رسالة من noreply.'**
   String verifyBody(String email);
 
   /// No description provided for @verifyDone.

@@ -160,7 +160,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String verifyBody(String email) {
-    return 'We sent a verification link to $email. Open it, then come back here.';
+    return 'We sent a verification link to $email. Open it, then come back here.\nNot there after two minutes? Look in your spam folder for a message from noreply.';
   }
 
   @override
