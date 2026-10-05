@@ -138,7 +138,15 @@ let apiKey = null;
       report(S1, 'GOOGLE_SERVICES_JSON_B64', 'fail', `لمشروع آخر (${json.project_info?.project_id})`);
     } else if (!packages.includes(appId)) {
       report(S1, 'GOOGLE_SERVICES_JSON_B64', 'warn', `لا يحوي الحزمة ${appId}`);
-    } else report(S1, 'GOOGLE_SERVICES_JSON_B64', 'ok');
+    } else report(S1, 'GOOGLE_SERVICES_JSON_B64', 'ok', `المشروع ${json.project_info?.project_id}`);
+
+    // Without the Dart options, still check the live project with the Android key.
+    const key = json?.client?.flatMap((c) => c.api_key ?? []).map((k) => k.current_key).find(Boolean);
+    mask(key);
+    if (!projectId && json?.project_info?.project_id && key) {
+      projectId = json.project_info.project_id;
+      apiKey = key;
+    }
   }
 }
 
@@ -148,9 +156,15 @@ const S2 = 'مفتاح توقيع Android';
 {
   const names = ['ANDROID_KEYSTORE_B64', 'ANDROID_KEYSTORE_PASSWORD', 'ANDROID_KEY_ALIAS', 'ANDROID_KEY_PASSWORD'];
   const missing = names.filter((n) => !(env[n] ?? '').trim());
+  // Only the key password missing: still verify the file, store password and
+  // alias with the store password (a PKCS12 key uses the same password).
+  const onlyKeyPassword = missing.length === 1 && missing[0] === 'ANDROID_KEY_PASSWORD';
   if (missing.length) {
-    report(S2, 'الأسرار', 'fail', `غير موجودة: ${missing.join('، ')}`);
-  } else {
+    report(S2, 'الأسرار', 'fail', `غير موجودة: ${missing.join('، ')}${onlyKeyPassword
+      ? ' — أضفه بقيمة ANDROID_KEYSTORE_PASSWORD نفسها إن لم تُدخل كلمة مختلفة للمفتاح' : ''}`);
+  }
+  if (!missing.length || onlyKeyPassword) {
+    const keyEnv = onlyKeyPassword ? { ...env, ANDROID_KEY_PASSWORD: env.ANDROID_KEYSTORE_PASSWORD } : env;
     const bytes = decodeB64(env.ANDROID_KEYSTORE_B64);
     if (!bytes?.length) {
       report(S2, 'ANDROID_KEYSTORE_B64', 'fail', 'ليس base64؛ استعمل base64 -w0 upload-keystore.jks');
@@ -160,7 +174,7 @@ const S2 = 'مفتاح توقيع Android';
       let out;
       try {
         const stdout = execFileSync('java', [join(root, 'tool/CheckKeystore.java'), file], {
-          encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'],
+          encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], env: keyEnv,
         });
         out = JSON.parse(stdout.trim().split('\n').pop());
       } catch (e) {
@@ -169,15 +183,18 @@ const S2 = 'مفتاح توقيع Android';
       const reasons = {
         store_password: 'ANDROID_KEYSTORE_PASSWORD لا يفتح الملف (أو الملف تالف)',
         alias: `ANDROID_KEY_ALIAS غير موجود في الملف؛ الموجود: ${out.aliases || '—'}`,
-        key_password: 'ANDROID_KEY_PASSWORD خطأ (في ملفات PKCS12 يساوي كلمة مرور الملف)',
+        key_password: onlyKeyPassword
+          ? 'للمفتاح كلمة مرور تختلف عن كلمة مرور الملف؛ ضعها في ANDROID_KEY_PASSWORD'
+          : 'ANDROID_KEY_PASSWORD خطأ (في ملفات PKCS12 يساوي كلمة مرور الملف)',
         not_private_key: 'الاسم المستعار لا يحوي مفتاحاً خاصاً',
         format: 'الملف ليس keystore؛ أعد base64 -w0 upload-keystore.jks',
         java: `تعذّر تشغيل Java: ${out.detail ?? ''}`,
       };
+      const item = onlyKeyPassword ? 'فتح المفتاح بكلمة مرور الملف' : 'فتح المفتاح بكلمات المرور';
       if (!out.ok) {
-        report(S2, 'فتح المفتاح بكلمات المرور', 'fail', reasons[out.error] ?? out.error);
+        report(S2, item, 'fail', reasons[out.error] ?? out.error);
       } else {
-        report(S2, 'فتح المفتاح بكلمات المرور', 'ok', `بصمة SHA-256: ${out.sha256}`);
+        report(S2, item, 'ok', `بصمة SHA-256: ${out.sha256}`);
         const until = new Date(out.notAfter);
         // Google Play requires validity beyond 22 Oct 2033.
         report(S2, 'مدة الصلاحية', until > new Date('2033-10-22') ? 'ok' : 'warn',
@@ -191,7 +208,7 @@ const S2 = 'مفتاح توقيع Android';
 
 const S3 = 'مشروع Firebase';
 if (!projectId || !apiKey) {
-  report(S3, 'الفحص المباشر', 'skip', 'يحتاج FIREBASE_OPTIONS_DART_B64 صالحاً');
+  report(S3, 'الفحص المباشر', 'skip', 'يحتاج FIREBASE_OPTIONS_DART_B64 أو GOOGLE_SERVICES_JSON_B64 صالحاً');
 } else {
   // Sign-in attempt for an address that cannot exist: tells whether the
   // Email/Password provider is enabled without creating anything.
