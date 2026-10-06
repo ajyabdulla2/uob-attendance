@@ -492,5 +492,14 @@
   "dashWeek": "Last 7 days: {count} lecture(s)",
   "dashIdle": "Classes with nothing recorded for 7 days: {count}",
   "dashIdleHelp": "May be a holiday or cancelled lectures; check with their teachers.",
-  "dashRequests": "Pending edit requests: {count}"
+  "dashRequests": "Pending edit requests: {count}",
+  "reportPrinted": "Printed {date}",
+  "reportPage": "Page {page} of {pages}",
+  "reportSignatureHint": "Name and signature",
+  "reportPdf": "PDF for printing and signing",
+  "reportPdfHelp": "With the department header and signature boxes",
+  "reportExcel": "Excel",
+  "reportExcelHelp": "An editable, sortable sheet",
+  "reportSaved": "File saved.",
+  "reportExport": "Export"
 }

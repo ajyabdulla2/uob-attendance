@@ -3055,6 +3055,60 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'طلبات تعديل معلّقة: {count}'**
   String dashRequests(int count);
+
+  /// No description provided for @reportPrinted.
+  ///
+  /// In ar, this message translates to:
+  /// **'طُبع في {date}'**
+  String reportPrinted(String date);
+
+  /// No description provided for @reportPage.
+  ///
+  /// In ar, this message translates to:
+  /// **'صفحة {page} من {pages}'**
+  String reportPage(int page, int pages);
+
+  /// No description provided for @reportSignatureHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاسم والتوقيع'**
+  String get reportSignatureHint;
+
+  /// No description provided for @reportPdf.
+  ///
+  /// In ar, this message translates to:
+  /// **'PDF للطباعة والتوقيع'**
+  String get reportPdf;
+
+  /// No description provided for @reportPdfHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'بترويسة القسم وأماكن التوقيع'**
+  String get reportPdfHelp;
+
+  /// No description provided for @reportExcel.
+  ///
+  /// In ar, this message translates to:
+  /// **'Excel'**
+  String get reportExcel;
+
+  /// No description provided for @reportExcelHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'جدول قابل للتعديل والفرز'**
+  String get reportExcelHelp;
+
+  /// No description provided for @reportSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُفظ الملف.'**
+  String get reportSaved;
+
+  /// No description provided for @reportExport.
+  ///
+  /// In ar, this message translates to:
+  /// **'تصدير'**
+  String get reportExport;
 }
 
 class _AppLocalizationsDelegate

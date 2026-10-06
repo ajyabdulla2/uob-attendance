@@ -1768,4 +1768,35 @@ class AppLocalizationsAr extends AppLocalizations {
   String dashRequests(int count) {
     return 'طلبات تعديل معلّقة: $count';
   }
+
+  @override
+  String reportPrinted(String date) {
+    return 'طُبع في $date';
+  }
+
+  @override
+  String reportPage(int page, int pages) {
+    return 'صفحة $page من $pages';
+  }
+
+  @override
+  String get reportSignatureHint => 'الاسم والتوقيع';
+
+  @override
+  String get reportPdf => 'PDF للطباعة والتوقيع';
+
+  @override
+  String get reportPdfHelp => 'بترويسة القسم وأماكن التوقيع';
+
+  @override
+  String get reportExcel => 'Excel';
+
+  @override
+  String get reportExcelHelp => 'جدول قابل للتعديل والفرز';
+
+  @override
+  String get reportSaved => 'حُفظ الملف.';
+
+  @override
+  String get reportExport => 'تصدير';
 }

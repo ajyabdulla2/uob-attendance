@@ -1781,4 +1781,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String dashRequests(int count) {
     return 'Pending edit requests: $count';
   }
+
+  @override
+  String reportPrinted(String date) {
+    return 'Printed $date';
+  }
+
+  @override
+  String reportPage(int page, int pages) {
+    return 'Page $page of $pages';
+  }
+
+  @override
+  String get reportSignatureHint => 'Name and signature';
+
+  @override
+  String get reportPdf => 'PDF for printing and signing';
+
+  @override
+  String get reportPdfHelp => 'With the department header and signature boxes';
+
+  @override
+  String get reportExcel => 'Excel';
+
+  @override
+  String get reportExcelHelp => 'An editable, sortable sheet';
+
+  @override
+  String get reportSaved => 'File saved.';
+
+  @override
+  String get reportExport => 'Export';
 }

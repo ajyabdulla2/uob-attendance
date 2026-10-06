@@ -1304,5 +1304,31 @@
         "type": "int"
       }
     }
-  }
+  },
+  "reportPrinted": "طُبع في {date}",
+  "@reportPrinted": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reportPage": "صفحة {page} من {pages}",
+  "@reportPage": {
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "pages": {
+        "type": "int"
+      }
+    }
+  },
+  "reportSignatureHint": "الاسم والتوقيع",
+  "reportPdf": "PDF للطباعة والتوقيع",
+  "reportPdfHelp": "بترويسة القسم وأماكن التوقيع",
+  "reportExcel": "Excel",
+  "reportExcelHelp": "جدول قابل للتعديل والفرز",
+  "reportSaved": "حُفظ الملف.",
+  "reportExport": "تصدير"
 }
