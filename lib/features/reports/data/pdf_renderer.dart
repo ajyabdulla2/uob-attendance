@@ -35,12 +35,23 @@ class PdfRenderer {
         ReportTone.muted => const PdfColor.fromInt(0xFFF2F2F2),
       };
 
-  Future<Uint8List> render(Report report, ReportBranding branding) async {
+  Future<Uint8List> render(Report report, ReportBranding branding) => renderAll([report], branding);
+
+  /// Several reports in one file, each starting on a new page (a batch of
+  /// warning letters).
+  Future<Uint8List> renderAll(List<Report> reports, ReportBranding branding) async {
     final doc = pw.Document(
-      title: report.title,
+      title: reports.first.title,
       author: branding.department,
       theme: pw.ThemeData.withFont(base: _regular, bold: _bold),
     );
+    for (final report in reports) {
+      _addReport(doc, report, branding);
+    }
+    return doc.save();
+  }
+
+  void _addReport(pw.Document doc, Report report, ReportBranding branding) {
     final format = report.orientation == ReportOrientation.landscape ? PdfPageFormat.a4.landscape : PdfPageFormat.a4;
     doc.addPage(pw.MultiPage(
       pageFormat: format,
@@ -96,7 +107,6 @@ class PdfRenderer {
         ],
       ],
     ));
-    return doc.save();
   }
 
   pw.Widget _header(ReportBranding b, pw.Context context) {

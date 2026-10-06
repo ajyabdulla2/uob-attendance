@@ -1450,5 +1450,69 @@
   "reportStudentAction": "ملخص الطالب (PDF)",
   "reportStatsAction": "إحصائية المرحلة",
   "reportListAction": "تصدير القائمة",
-  "reportRegisterAction": "تصدير السجل"
+  "reportRegisterAction": "تصدير السجل",
+  "letterWarningTitle": "إنذار بالغياب",
+  "letterDismissalTitle": "إشعار رسوب بسبب الغياب",
+  "letterNumberDate": "العدد: ................     التاريخ: ....../....../..........",
+  "letterTo": "إلى الطالب/ة: {name} — الرقم الجامعي {id} — {stage}",
+  "@letterTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "id": {
+        "type": "String"
+      },
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "letterWarningBody": "نظراً لبلوغ غيابك في مادة ({course}) نسبة {percent}٪ من محاضرات المادة المقررة في الفصل ({absences} غياب من {planned} محاضرة)، وهي نسبة تتجاوز حد الإنذار المعتمد في القسم ({warning}٪)، نوجّه إليك هذا الإنذار، ونلفت انتباهك إلى أن بلوغ نسبة {dismissal}٪ يعرّضك للرسوب في المادة بسبب الغياب وفق التعليمات النافذة.",
+  "@letterWarningBody": {
+    "placeholders": {
+      "course": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "String"
+      },
+      "absences": {
+        "type": "int"
+      },
+      "planned": {
+        "type": "int"
+      },
+      "warning": {
+        "type": "String"
+      },
+      "dismissal": {
+        "type": "String"
+      }
+    }
+  },
+  "letterWarningClosing": "يرجى الالتزام بالحضور ومراجعة مسؤول المرحلة عند وجود عذر مشروع.",
+  "letterDismissalBody": "نظراً لبلوغ غيابك في مادة ({course}) نسبة {percent}٪ من محاضرات المادة المقررة في الفصل ({absences} غياب من {planned} محاضرة)، وهي نسبة تبلغ حد الرسوب بسبب الغياب المعتمد في القسم ({dismissal}٪)، نشعرك بأنك تُعدّ راسباً في المادة بسبب الغياب وفق التعليمات النافذة.",
+  "@letterDismissalBody": {
+    "placeholders": {
+      "course": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "String"
+      },
+      "absences": {
+        "type": "int"
+      },
+      "planned": {
+        "type": "int"
+      },
+      "dismissal": {
+        "type": "String"
+      }
+    }
+  },
+  "letterDismissalClosing": "يُعدّ هذا الإشعار أولياً حتى صدور قرار العمادة.",
+  "letterAction": "كتاب إنذار (PDF)",
+  "letterBatchAction": "كتب الإنذار لكل القائمة (PDF)"
 }

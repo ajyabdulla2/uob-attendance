@@ -9,6 +9,7 @@ import '../../academic/application/academic_providers.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../reports/application/report_builders.dart';
 import '../../reports/application/report_exporter.dart';
+import '../../reports/domain/report.dart';
 import '../../stats/application/stats_providers.dart';
 import '../../stats/domain/standings.dart';
 import '../../stats/domain/student_course_stat.dart';
@@ -65,11 +66,36 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
               title: Text(l10n.reportStudentAction),
               onTap: () => Navigator.pop(context, 'summary'),
             ),
+            if (s.level == WarningLevel.warning || s.level == WarningLevel.dismissal)
+              ListTile(
+                key: const Key('student.letter'),
+                leading: const Icon(Icons.mail_outline),
+                title: Text(l10n.letterAction),
+                subtitle: Text(_courseText(l10n, s)),
+                onTap: () => Navigator.pop(context, 'letter'),
+              ),
           ],
         ),
       ),
     );
-    if (action != 'summary' || !mounted) return;
+    if (!mounted) return;
+    final year = ref.read(activeYearProvider).value;
+    if (action == 'letter' && year != null) {
+      await exportReport(
+        context,
+        ref,
+        year: year,
+        formats: const {ReportFormat.pdf},
+        build: (_) => ReportBuilders.warningLetter(
+          l10n,
+          standing: s,
+          stageLabel: l10n.stage(stage),
+          thresholds: year.thresholds,
+        ),
+      );
+      return;
+    }
+    if (action != 'summary') return;
     await exportReport(
       context,
       ref,
@@ -83,6 +109,11 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
       ),
     );
   }
+
+  static String _courseText(AppLocalizations l10n, Standing s) => [
+        s.course.name,
+        if (s.type != null) s.type == 'theory' ? l10n.theoryLabel : l10n.practicalLabel,
+      ].join(' · ');
 
   Future<void> _saveDecision(StageRef stage, WarningLevel level, List<Standing> rows) async {
     final l10n = context.l10n;
@@ -285,6 +316,38 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
                   ),
                 ),
               ),
+              if (level == WarningLevel.warning || level == WarningLevel.dismissal)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  child: OutlinedButton.icon(
+                    key: const Key('warn.letters'),
+                    icon: const Icon(Icons.mail_outline),
+                    label: Text(l10n.letterBatchAction),
+                    onPressed: () {
+                      final year = ref.read(activeYearProvider).value;
+                      if (year == null) return;
+                      exportPdfBatch(
+                        context,
+                        ref,
+                        year: year,
+                        fileName: Report(
+                          title: '',
+                          fileBase: '${l10n.warningLevel(level!)} ${l10n.stage(stage)}',
+                          tables: const [],
+                        ).fileName('pdf'),
+                        reports: [
+                          for (final s in rows)
+                            ReportBuilders.warningLetter(
+                              l10n,
+                              standing: s,
+                              stageLabel: l10n.stage(stage),
+                              thresholds: year.thresholds,
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
               if (level != null)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),

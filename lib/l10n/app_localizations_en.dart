@@ -1940,4 +1940,56 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportRegisterAction => 'Export the register';
+
+  @override
+  String get letterWarningTitle => 'Absence warning';
+
+  @override
+  String get letterDismissalTitle => 'Notice of failing by absence';
+
+  @override
+  String get letterNumberDate =>
+      'No.: ................     Date: ....../....../..........';
+
+  @override
+  String letterTo(String name, String id, String stage) {
+    return 'To the student: $name — university ID $id — $stage';
+  }
+
+  @override
+  String letterWarningBody(
+    String course,
+    String percent,
+    int absences,
+    int planned,
+    String warning,
+    String dismissal,
+  ) {
+    return 'Your absences in ($course) have reached $percent% of the course\'s planned lectures ($absences of $planned), beyond the department\'s warning threshold ($warning%). This is a formal warning: reaching $dismissal% means failing the course by absence under the regulations in force.';
+  }
+
+  @override
+  String get letterWarningClosing =>
+      'Please attend regularly and see the stage manager if you have a valid excuse.';
+
+  @override
+  String letterDismissalBody(
+    String course,
+    String percent,
+    int absences,
+    int planned,
+    String dismissal,
+  ) {
+    return 'Your absences in ($course) have reached $percent% of the course\'s planned lectures ($absences of $planned), the department\'s threshold for failing by absence ($dismissal%). You are therefore considered to have failed the course by absence under the regulations in force.';
+  }
+
+  @override
+  String get letterDismissalClosing =>
+      'This notice is provisional until the deanery\'s decision.';
+
+  @override
+  String get letterAction => 'Warning letter (PDF)';
+
+  @override
+  String get letterBatchAction => 'Letters for the whole list (PDF)';
 }

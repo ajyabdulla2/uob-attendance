@@ -1927,4 +1927,56 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reportRegisterAction => 'تصدير السجل';
+
+  @override
+  String get letterWarningTitle => 'إنذار بالغياب';
+
+  @override
+  String get letterDismissalTitle => 'إشعار رسوب بسبب الغياب';
+
+  @override
+  String get letterNumberDate =>
+      'العدد: ................     التاريخ: ....../....../..........';
+
+  @override
+  String letterTo(String name, String id, String stage) {
+    return 'إلى الطالب/ة: $name — الرقم الجامعي $id — $stage';
+  }
+
+  @override
+  String letterWarningBody(
+    String course,
+    String percent,
+    int absences,
+    int planned,
+    String warning,
+    String dismissal,
+  ) {
+    return 'نظراً لبلوغ غيابك في مادة ($course) نسبة $percent٪ من محاضرات المادة المقررة في الفصل ($absences غياب من $planned محاضرة)، وهي نسبة تتجاوز حد الإنذار المعتمد في القسم ($warning٪)، نوجّه إليك هذا الإنذار، ونلفت انتباهك إلى أن بلوغ نسبة $dismissal٪ يعرّضك للرسوب في المادة بسبب الغياب وفق التعليمات النافذة.';
+  }
+
+  @override
+  String get letterWarningClosing =>
+      'يرجى الالتزام بالحضور ومراجعة مسؤول المرحلة عند وجود عذر مشروع.';
+
+  @override
+  String letterDismissalBody(
+    String course,
+    String percent,
+    int absences,
+    int planned,
+    String dismissal,
+  ) {
+    return 'نظراً لبلوغ غيابك في مادة ($course) نسبة $percent٪ من محاضرات المادة المقررة في الفصل ($absences غياب من $planned محاضرة)، وهي نسبة تبلغ حد الرسوب بسبب الغياب المعتمد في القسم ($dismissal٪)، نشعرك بأنك تُعدّ راسباً في المادة بسبب الغياب وفق التعليمات النافذة.';
+  }
+
+  @override
+  String get letterDismissalClosing =>
+      'يُعدّ هذا الإشعار أولياً حتى صدور قرار العمادة.';
+
+  @override
+  String get letterAction => 'كتاب إنذار (PDF)';
+
+  @override
+  String get letterBatchAction => 'كتب الإنذار لكل القائمة (PDF)';
 }

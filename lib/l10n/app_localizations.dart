@@ -3319,6 +3319,79 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تصدير السجل'**
   String get reportRegisterAction;
+
+  /// No description provided for @letterWarningTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إنذار بالغياب'**
+  String get letterWarningTitle;
+
+  /// No description provided for @letterDismissalTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إشعار رسوب بسبب الغياب'**
+  String get letterDismissalTitle;
+
+  /// No description provided for @letterNumberDate.
+  ///
+  /// In ar, this message translates to:
+  /// **'العدد: ................     التاريخ: ....../....../..........'**
+  String get letterNumberDate;
+
+  /// No description provided for @letterTo.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلى الطالب/ة: {name} — الرقم الجامعي {id} — {stage}'**
+  String letterTo(String name, String id, String stage);
+
+  /// No description provided for @letterWarningBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'نظراً لبلوغ غيابك في مادة ({course}) نسبة {percent}٪ من محاضرات المادة المقررة في الفصل ({absences} غياب من {planned} محاضرة)، وهي نسبة تتجاوز حد الإنذار المعتمد في القسم ({warning}٪)، نوجّه إليك هذا الإنذار، ونلفت انتباهك إلى أن بلوغ نسبة {dismissal}٪ يعرّضك للرسوب في المادة بسبب الغياب وفق التعليمات النافذة.'**
+  String letterWarningBody(
+    String course,
+    String percent,
+    int absences,
+    int planned,
+    String warning,
+    String dismissal,
+  );
+
+  /// No description provided for @letterWarningClosing.
+  ///
+  /// In ar, this message translates to:
+  /// **'يرجى الالتزام بالحضور ومراجعة مسؤول المرحلة عند وجود عذر مشروع.'**
+  String get letterWarningClosing;
+
+  /// No description provided for @letterDismissalBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'نظراً لبلوغ غيابك في مادة ({course}) نسبة {percent}٪ من محاضرات المادة المقررة في الفصل ({absences} غياب من {planned} محاضرة)، وهي نسبة تبلغ حد الرسوب بسبب الغياب المعتمد في القسم ({dismissal}٪)، نشعرك بأنك تُعدّ راسباً في المادة بسبب الغياب وفق التعليمات النافذة.'**
+  String letterDismissalBody(
+    String course,
+    String percent,
+    int absences,
+    int planned,
+    String dismissal,
+  );
+
+  /// No description provided for @letterDismissalClosing.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُعدّ هذا الإشعار أولياً حتى صدور قرار العمادة.'**
+  String get letterDismissalClosing;
+
+  /// No description provided for @letterAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'كتاب إنذار (PDF)'**
+  String get letterAction;
+
+  /// No description provided for @letterBatchAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'كتب الإنذار لكل القائمة (PDF)'**
+  String get letterBatchAction;
 }
 
 class _AppLocalizationsDelegate

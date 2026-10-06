@@ -5,6 +5,7 @@ import '../../stats/domain/absence_summary.dart';
 import '../../stats/domain/standings.dart';
 import '../../stats/domain/student_course_stat.dart';
 import '../../students/domain/student.dart';
+import '../../academic/domain/academic_year.dart';
 import '../../warnings/domain/warning_list.dart';
 import '../domain/report.dart';
 import 'report_exporter.dart';
@@ -238,6 +239,36 @@ abstract final class ReportBuilders {
         ),
       ],
       notes: [l10n.reportStudentNote, l10n.reportPercentNote],
+      signatures: [l10n.reportSignStageManager, l10n.reportSignHead],
+    );
+  }
+
+  /// كتاب إنذار (or, at the dismissal level, notice of failing by absence)
+  /// for one student in one course. A default wording until the department
+  /// supplies its official form; the number and date are left to fill in.
+  static Report warningLetter(
+    AppLocalizations l10n, {
+    required Standing standing,
+    required String stageLabel,
+    required AbsenceThresholds thresholds,
+  }) {
+    final s = standing.summary;
+    final dismissal = standing.level == WarningLevel.dismissal;
+    final course = _courseLabel(l10n, standing.course.name, standing.type);
+    String pct(double v) => v == v.roundToDouble() ? '${v.round()}' : v.toStringAsFixed(1);
+    return Report(
+      title: dismissal ? l10n.letterDismissalTitle : l10n.letterWarningTitle,
+      fileBase: '${dismissal ? l10n.letterDismissalTitle : l10n.letterWarningTitle} ${standing.student.fullName} ${standing.course.code}',
+      meta: [l10n.letterNumberDate],
+      paragraphs: [
+        l10n.letterTo(standing.student.fullName, standing.student.universityId, stageLabel),
+        if (dismissal)
+          l10n.letterDismissalBody(course, percent(s.percent), s.absences, s.planned, pct(thresholds.dismissal))
+        else
+          l10n.letterWarningBody(course, percent(s.percent), s.absences, s.planned, pct(thresholds.warning), pct(thresholds.dismissal)),
+        dismissal ? l10n.letterDismissalClosing : l10n.letterWarningClosing,
+      ],
+      tables: const [],
       signatures: [l10n.reportSignStageManager, l10n.reportSignHead],
     );
   }

@@ -133,6 +133,29 @@ void main() {
     expect(stats.tables.last.rows.map((r) => r[1].text), ['طالب 1 محمد علي حسين'], reason: 'only students with absences');
   });
 
+  test('warning letter: wording from the year thresholds; dismissal notice at that level', () {
+    final letter = ReportBuilders.warningLetter(l10n,
+        standing: standingRows.first, stageLabel: l10n.stage(stage), thresholds: year.thresholds);
+    expect(letter.title, 'إشعار رسوب بسبب الغياب');
+    expect(letter.paragraphs[1], contains('20.0٪'));
+    expect(letter.paragraphs[1], contains('(15٪)'));
+    expect(letter.tables, isEmpty);
+
+    final warned = Standing(
+      student: students[1],
+      course: course,
+      summary: AbsenceSummary.of(
+        bySession: {sessions[0].id: AttendanceStatus.absent, sessions[1].id: AttendanceStatus.absent},
+        leaves: const [],
+        units: 1,
+        year: year,
+      ),
+    );
+    final w = ReportBuilders.warningLetter(l10n, standing: warned, stageLabel: l10n.stage(stage), thresholds: year.thresholds);
+    expect(w.title, 'إنذار بالغياب');
+    expect(w.paragraphs[1], allOf(contains('(10٪)'), contains('15٪')));
+  });
+
   test('renders the register and the summary as PDFs (preview with REPORT_PREVIEW)', () async {
     final renderer = PdfRenderer(
       regularFont: File('assets/fonts/cairo/Cairo-Regular.ttf').readAsBytesSync(),
@@ -141,8 +164,16 @@ void main() {
     );
     final bytes = await renderer.render(register(ReportFormat.pdf), branding);
     expect(String.fromCharCodes(bytes.take(5)), '%PDF-');
+    final letters = await renderer.renderAll([
+      for (final s in standingRows.take(2))
+        ReportBuilders.warningLetter(l10n, standing: s, stageLabel: l10n.stage(stage), thresholds: year.thresholds),
+    ], branding);
+    expect(String.fromCharCodes(letters.take(5)), '%PDF-');
     final out = Platform.environment['REPORT_PREVIEW'];
-    if (out != null) File(out).writeAsBytesSync(bytes);
+    if (out != null) {
+      File(out).writeAsBytesSync(bytes);
+      File(out.replaceAll('.pdf', '_letters.pdf')).writeAsBytesSync(letters);
+    }
   });
 }
 

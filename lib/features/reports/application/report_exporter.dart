@@ -34,6 +34,33 @@ ReportBranding brandingFor(AppLocalizations l10n, MaterialLocalizations m, Acade
       signatureHint: l10n.reportSignatureHint,
     );
 
+/// Saves several PDF reports as one file (one per page group).
+Future<void> exportPdfBatch(
+  BuildContext context,
+  WidgetRef ref, {
+  required List<Report> reports,
+  required String fileName,
+  required AcademicYear? year,
+}) async {
+  if (reports.isEmpty) return;
+  final l10n = context.l10n;
+  final m = MaterialLocalizations.of(context);
+  try {
+    final renderer = await ref.read(pdfRendererProvider.future);
+    final bytes = await renderer.renderAll(reports, brandingFor(l10n, m, year, DateTime.now()));
+    final saved = await FilePicker.saveFile(
+      fileName: fileName,
+      bytes: bytes,
+      mimeType: 'application/pdf',
+      type: FileType.custom,
+      allowedExtensions: const ['pdf'],
+    );
+    if (saved != null && context.mounted) showSnack(context, l10n.reportSaved);
+  } on Object catch (e) {
+    if (context.mounted) showSnack(context, l10n.errorGeneric('$e'));
+  }
+}
+
 /// Asks PDF or Excel, renders [build]'s report and lets the user save it
 /// (Android: the system «save as» dialog; web: a download).
 Future<void> exportReport(

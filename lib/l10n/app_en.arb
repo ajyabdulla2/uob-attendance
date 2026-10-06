@@ -536,5 +536,15 @@
   "reportStudentAction": "Student summary (PDF)",
   "reportStatsAction": "Stage statistics",
   "reportListAction": "Export the list",
-  "reportRegisterAction": "Export the register"
+  "reportRegisterAction": "Export the register",
+  "letterWarningTitle": "Absence warning",
+  "letterDismissalTitle": "Notice of failing by absence",
+  "letterNumberDate": "No.: ................     Date: ....../....../..........",
+  "letterTo": "To the student: {name} — university ID {id} — {stage}",
+  "letterWarningBody": "Your absences in ({course}) have reached {percent}% of the course's planned lectures ({absences} of {planned}), beyond the department's warning threshold ({warning}%). This is a formal warning: reaching {dismissal}% means failing the course by absence under the regulations in force.",
+  "letterWarningClosing": "Please attend regularly and see the stage manager if you have a valid excuse.",
+  "letterDismissalBody": "Your absences in ({course}) have reached {percent}% of the course's planned lectures ({absences} of {planned}), the department's threshold for failing by absence ({dismissal}%). You are therefore considered to have failed the course by absence under the regulations in force.",
+  "letterDismissalClosing": "This notice is provisional until the deanery's decision.",
+  "letterAction": "Warning letter (PDF)",
+  "letterBatchAction": "Letters for the whole list (PDF)"
 }
