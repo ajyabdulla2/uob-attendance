@@ -1330,5 +1330,125 @@
   "reportExcel": "Excel",
   "reportExcelHelp": "جدول قابل للتعديل والفرز",
   "reportSaved": "حُفظ الملف.",
-  "reportExport": "تصدير"
+  "reportExport": "تصدير",
+  "reportLetterPresent": "ح",
+  "reportLetterAbsent": "غ",
+  "reportLetterLate": "ت",
+  "reportLetterExcused": "م",
+  "reportRegisterSheet": "السجل",
+  "reportLecturesRange": "المحاضرات من {from} إلى {to}",
+  "@reportLecturesRange": {
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "reportRegisterTitle": "سجل حضور مادة {course}",
+  "@reportRegisterTitle": {
+    "placeholders": {
+      "course": {
+        "type": "String"
+      }
+    }
+  },
+  "reportLectureCount": "عدد المحاضرات المسجلة: {count}",
+  "@reportLectureCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportLegend": "ح = حاضر، غ = غائب، ت = متأخر، م = مُجاز، – = لم يُسجَّل.",
+  "reportPercentNote": "النسبة = الغيابات المحتسبة ÷ محاضرات المادة المقررة في الفصل × 100 حسب إعدادات السنة، وتشمل كل محاضرات المادة والإجازات المعتمدة.",
+  "reportSignTeacher": "التدريسي",
+  "reportSignStageManager": "مسؤول المرحلة",
+  "reportSignHead": "رئيس القسم",
+  "reportSignDean": "عميد الكلية",
+  "reportPlanned": "المقررة",
+  "reportListTitle": "قائمة {list} — {stage}",
+  "@reportListTitle": {
+    "placeholders": {
+      "list": {
+        "type": "String"
+      },
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "reportStudentCount": "عدد الطلبة: {count}",
+  "@reportStudentCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportDecisionTitle": "قرار {level} — {stage}",
+  "@reportDecisionTitle": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "reportStudentTitle": "ملخص غياب الطالب {name}",
+  "@reportStudentTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reportStudentSheet": "الملخص",
+  "reportExcused": "مُجاز",
+  "reportLevel": "المستوى",
+  "reportStudentNote": "تظهر المواد التي سُجّل للطالب فيها غياب أو تأخر أو إجازة.",
+  "reportStatsTitle": "إحصائية الغياب — {stage}",
+  "@reportStatsTitle": {
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "reportStatsSheet": "الإحصائية",
+  "reportStatsLevels": "تنبيه: {alert} · إنذار: {warning} · فصل: {dismissal}",
+  "@reportStatsLevels": {
+    "placeholders": {
+      "alert": {
+        "type": "int"
+      },
+      "warning": {
+        "type": "int"
+      },
+      "dismissal": {
+        "type": "int"
+      }
+    }
+  },
+  "reportStatsByCourse": "المواد حسب مجموع الغيابات",
+  "reportAbsentStudents": "طلبة متغيبون",
+  "reportTotalAbsences": "مجموع الغيابات",
+  "reportTopSheet": "الأعلى غياباً",
+  "reportTopStudents": "الطلبة الأعلى غياباً ({count})",
+  "@reportTopStudents": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportStudentAction": "ملخص الطالب (PDF)",
+  "reportStatsAction": "إحصائية المرحلة",
+  "reportListAction": "تصدير القائمة",
+  "reportRegisterAction": "تصدير السجل"
 }

@@ -3109,6 +3109,216 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تصدير'**
   String get reportExport;
+
+  /// No description provided for @reportLetterPresent.
+  ///
+  /// In ar, this message translates to:
+  /// **'ح'**
+  String get reportLetterPresent;
+
+  /// No description provided for @reportLetterAbsent.
+  ///
+  /// In ar, this message translates to:
+  /// **'غ'**
+  String get reportLetterAbsent;
+
+  /// No description provided for @reportLetterLate.
+  ///
+  /// In ar, this message translates to:
+  /// **'ت'**
+  String get reportLetterLate;
+
+  /// No description provided for @reportLetterExcused.
+  ///
+  /// In ar, this message translates to:
+  /// **'م'**
+  String get reportLetterExcused;
+
+  /// No description provided for @reportRegisterSheet.
+  ///
+  /// In ar, this message translates to:
+  /// **'السجل'**
+  String get reportRegisterSheet;
+
+  /// No description provided for @reportLecturesRange.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحاضرات من {from} إلى {to}'**
+  String reportLecturesRange(int from, int to);
+
+  /// No description provided for @reportRegisterTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'سجل حضور مادة {course}'**
+  String reportRegisterTitle(String course);
+
+  /// No description provided for @reportLectureCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدد المحاضرات المسجلة: {count}'**
+  String reportLectureCount(int count);
+
+  /// No description provided for @reportLegend.
+  ///
+  /// In ar, this message translates to:
+  /// **'ح = حاضر، غ = غائب، ت = متأخر، م = مُجاز، – = لم يُسجَّل.'**
+  String get reportLegend;
+
+  /// No description provided for @reportPercentNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'النسبة = الغيابات المحتسبة ÷ محاضرات المادة المقررة في الفصل × 100 حسب إعدادات السنة، وتشمل كل محاضرات المادة والإجازات المعتمدة.'**
+  String get reportPercentNote;
+
+  /// No description provided for @reportSignTeacher.
+  ///
+  /// In ar, this message translates to:
+  /// **'التدريسي'**
+  String get reportSignTeacher;
+
+  /// No description provided for @reportSignStageManager.
+  ///
+  /// In ar, this message translates to:
+  /// **'مسؤول المرحلة'**
+  String get reportSignStageManager;
+
+  /// No description provided for @reportSignHead.
+  ///
+  /// In ar, this message translates to:
+  /// **'رئيس القسم'**
+  String get reportSignHead;
+
+  /// No description provided for @reportSignDean.
+  ///
+  /// In ar, this message translates to:
+  /// **'عميد الكلية'**
+  String get reportSignDean;
+
+  /// No description provided for @reportPlanned.
+  ///
+  /// In ar, this message translates to:
+  /// **'المقررة'**
+  String get reportPlanned;
+
+  /// No description provided for @reportListTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'قائمة {list} — {stage}'**
+  String reportListTitle(String list, String stage);
+
+  /// No description provided for @reportStudentCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدد الطلبة: {count}'**
+  String reportStudentCount(int count);
+
+  /// No description provided for @reportDecisionTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'قرار {level} — {stage}'**
+  String reportDecisionTitle(String level, String stage);
+
+  /// No description provided for @reportStudentTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملخص غياب الطالب {name}'**
+  String reportStudentTitle(String name);
+
+  /// No description provided for @reportStudentSheet.
+  ///
+  /// In ar, this message translates to:
+  /// **'الملخص'**
+  String get reportStudentSheet;
+
+  /// No description provided for @reportExcused.
+  ///
+  /// In ar, this message translates to:
+  /// **'مُجاز'**
+  String get reportExcused;
+
+  /// No description provided for @reportLevel.
+  ///
+  /// In ar, this message translates to:
+  /// **'المستوى'**
+  String get reportLevel;
+
+  /// No description provided for @reportStudentNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'تظهر المواد التي سُجّل للطالب فيها غياب أو تأخر أو إجازة.'**
+  String get reportStudentNote;
+
+  /// No description provided for @reportStatsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إحصائية الغياب — {stage}'**
+  String reportStatsTitle(String stage);
+
+  /// No description provided for @reportStatsSheet.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإحصائية'**
+  String get reportStatsSheet;
+
+  /// No description provided for @reportStatsLevels.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنبيه: {alert} · إنذار: {warning} · فصل: {dismissal}'**
+  String reportStatsLevels(int alert, int warning, int dismissal);
+
+  /// No description provided for @reportStatsByCourse.
+  ///
+  /// In ar, this message translates to:
+  /// **'المواد حسب مجموع الغيابات'**
+  String get reportStatsByCourse;
+
+  /// No description provided for @reportAbsentStudents.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبة متغيبون'**
+  String get reportAbsentStudents;
+
+  /// No description provided for @reportTotalAbsences.
+  ///
+  /// In ar, this message translates to:
+  /// **'مجموع الغيابات'**
+  String get reportTotalAbsences;
+
+  /// No description provided for @reportTopSheet.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأعلى غياباً'**
+  String get reportTopSheet;
+
+  /// No description provided for @reportTopStudents.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطلبة الأعلى غياباً ({count})'**
+  String reportTopStudents(int count);
+
+  /// No description provided for @reportStudentAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملخص الطالب (PDF)'**
+  String get reportStudentAction;
+
+  /// No description provided for @reportStatsAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'إحصائية المرحلة'**
+  String get reportStatsAction;
+
+  /// No description provided for @reportListAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'تصدير القائمة'**
+  String get reportListAction;
+
+  /// No description provided for @reportRegisterAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'تصدير السجل'**
+  String get reportRegisterAction;
 }
 
 class _AppLocalizationsDelegate

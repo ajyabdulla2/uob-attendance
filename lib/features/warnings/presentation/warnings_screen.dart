@@ -5,7 +5,10 @@ import '../../../core/domain/stage_ref.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
+import '../../academic/application/academic_providers.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../reports/application/report_builders.dart';
+import '../../reports/application/report_exporter.dart';
 import '../../stats/application/stats_providers.dart';
 import '../../stats/domain/standings.dart';
 import '../../stats/domain/student_course_stat.dart';
@@ -45,6 +48,42 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
     return level == null ? s.summary.untilNext == 1 && s.level != WarningLevel.dismissal : s.level == level;
   }
 
+  /// A student's row: their summary over every course of the stage.
+  Future<void> _studentActions(StageRef stage, Standing s, List<Standing> all) async {
+    final l10n = context.l10n;
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(title: Text(s.student.fullName), subtitle: Text(bidiIsolate(s.student.universityId))),
+            ListTile(
+              key: const Key('student.summary'),
+              leading: const Icon(Icons.picture_as_pdf),
+              title: Text(l10n.reportStudentAction),
+              onTap: () => Navigator.pop(context, 'summary'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (action != 'summary' || !mounted) return;
+    await exportReport(
+      context,
+      ref,
+      year: ref.read(activeYearProvider).value,
+      formats: const {ReportFormat.pdf},
+      build: (_) => ReportBuilders.studentSummary(
+        l10n,
+        student: s.student,
+        stageLabel: l10n.stage(stage),
+        standings: [for (final x in all) if (x.student.id == s.student.id) x],
+      ),
+    );
+  }
+
   Future<void> _saveDecision(StageRef stage, WarningLevel level, List<Standing> rows) async {
     final l10n = context.l10n;
     final ok = await confirmDialog(
@@ -82,6 +121,24 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.warnTitle),
+          actions: [
+            if (stage != null)
+              IconButton(
+                key: const Key('warn.stats'),
+                tooltip: l10n.reportStatsAction,
+                icon: const Icon(Icons.bar_chart),
+                onPressed: () {
+                  final standings = ref.read(stageStandingsProvider(stage.id)).value;
+                  if (standings == null) return;
+                  exportReport(
+                    context,
+                    ref,
+                    year: ref.read(activeYearProvider).value,
+                    build: (_) => ReportBuilders.stageStatistics(l10n, stageLabel: l10n.stage(stage), standings: standings),
+                  );
+                },
+              ),
+          ],
           bottom: TabBar(tabs: [
             Tab(key: const Key('warn.tab.lists'), text: l10n.warnTabLists),
             Tab(key: const Key('warn.tab.decisions'), text: l10n.warnTabDecisions),
@@ -203,7 +260,31 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
                 child: MessageView(icon: Icons.verified, title: l10n.warnEmpty),
               )
             else ...[
-              for (final s in rows) _StandingTile(standing: s),
+              for (final s in rows)
+                _StandingTile(
+                  standing: s,
+                  onTap: () => _studentActions(stage, s, all),
+                ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                child: OutlinedButton.icon(
+                  key: const Key('warn.export'),
+                  icon: const Icon(Icons.file_download_outlined),
+                  label: Text(l10n.reportListAction),
+                  onPressed: () => exportReport(
+                    context,
+                    ref,
+                    year: ref.read(activeYearProvider).value,
+                    build: (_) => ReportBuilders.standingsList(
+                      l10n,
+                      stageLabel: l10n.stage(stage),
+                      listLabel: level == null ? l10n.warnEdge : l10n.warningLevel(level),
+                      courseName: courses.where((c) => c.id == _courseId).firstOrNull?.name,
+                      rows: rows,
+                    ),
+                  ),
+                ),
+              ),
               if (level != null)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
@@ -223,9 +304,10 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
 }
 
 class _StandingTile extends StatelessWidget {
-  const _StandingTile({required this.standing});
+  const _StandingTile({required this.standing, this.onTap});
 
   final Standing standing;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -252,6 +334,7 @@ class _StandingTile extends StatelessWidget {
         if (next != null && s.untilNext == 1) l10n.warnOneMore(l10n.warningLevel(next)),
       ].join('\n')),
       isThreeLine: true,
+      onTap: onTap,
     );
   }
 }
@@ -393,6 +476,26 @@ class _DecisionScreenState extends ConsumerState<DecisionScreen> {
           list.courseId == null ? l10n.warnAllCourses : (list.entries.firstOrNull?.courseName ?? list.courseId!),
           list.entries.length,
         )),
+        actions: [
+          IconButton(
+            key: const Key('decision.export'),
+            tooltip: l10n.reportExport,
+            icon: const Icon(Icons.file_download_outlined),
+            onPressed: () => exportReport(
+              context,
+              ref,
+              year: ref.read(activeYearProvider).value,
+              build: (_) => ReportBuilders.decision(
+                l10n,
+                list: list,
+                stageLabel: l10n.stageId(list.stageId),
+                dateText: list.isFinal
+                    ? (list.orderDate == null ? '' : m.formatMediumDate(list.orderDate!))
+                    : (list.createdAt == null ? '' : m.formatMediumDate(list.createdAt!.toLocal())),
+              ),
+            ),
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.only(bottom: 24),

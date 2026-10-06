@@ -1799,4 +1799,132 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reportExport => 'تصدير';
+
+  @override
+  String get reportLetterPresent => 'ح';
+
+  @override
+  String get reportLetterAbsent => 'غ';
+
+  @override
+  String get reportLetterLate => 'ت';
+
+  @override
+  String get reportLetterExcused => 'م';
+
+  @override
+  String get reportRegisterSheet => 'السجل';
+
+  @override
+  String reportLecturesRange(int from, int to) {
+    return 'المحاضرات من $from إلى $to';
+  }
+
+  @override
+  String reportRegisterTitle(String course) {
+    return 'سجل حضور مادة $course';
+  }
+
+  @override
+  String reportLectureCount(int count) {
+    return 'عدد المحاضرات المسجلة: $count';
+  }
+
+  @override
+  String get reportLegend =>
+      'ح = حاضر، غ = غائب، ت = متأخر، م = مُجاز، – = لم يُسجَّل.';
+
+  @override
+  String get reportPercentNote =>
+      'النسبة = الغيابات المحتسبة ÷ محاضرات المادة المقررة في الفصل × 100 حسب إعدادات السنة، وتشمل كل محاضرات المادة والإجازات المعتمدة.';
+
+  @override
+  String get reportSignTeacher => 'التدريسي';
+
+  @override
+  String get reportSignStageManager => 'مسؤول المرحلة';
+
+  @override
+  String get reportSignHead => 'رئيس القسم';
+
+  @override
+  String get reportSignDean => 'عميد الكلية';
+
+  @override
+  String get reportPlanned => 'المقررة';
+
+  @override
+  String reportListTitle(String list, String stage) {
+    return 'قائمة $list — $stage';
+  }
+
+  @override
+  String reportStudentCount(int count) {
+    return 'عدد الطلبة: $count';
+  }
+
+  @override
+  String reportDecisionTitle(String level, String stage) {
+    return 'قرار $level — $stage';
+  }
+
+  @override
+  String reportStudentTitle(String name) {
+    return 'ملخص غياب الطالب $name';
+  }
+
+  @override
+  String get reportStudentSheet => 'الملخص';
+
+  @override
+  String get reportExcused => 'مُجاز';
+
+  @override
+  String get reportLevel => 'المستوى';
+
+  @override
+  String get reportStudentNote =>
+      'تظهر المواد التي سُجّل للطالب فيها غياب أو تأخر أو إجازة.';
+
+  @override
+  String reportStatsTitle(String stage) {
+    return 'إحصائية الغياب — $stage';
+  }
+
+  @override
+  String get reportStatsSheet => 'الإحصائية';
+
+  @override
+  String reportStatsLevels(int alert, int warning, int dismissal) {
+    return 'تنبيه: $alert · إنذار: $warning · فصل: $dismissal';
+  }
+
+  @override
+  String get reportStatsByCourse => 'المواد حسب مجموع الغيابات';
+
+  @override
+  String get reportAbsentStudents => 'طلبة متغيبون';
+
+  @override
+  String get reportTotalAbsences => 'مجموع الغيابات';
+
+  @override
+  String get reportTopSheet => 'الأعلى غياباً';
+
+  @override
+  String reportTopStudents(int count) {
+    return 'الطلبة الأعلى غياباً ($count)';
+  }
+
+  @override
+  String get reportStudentAction => 'ملخص الطالب (PDF)';
+
+  @override
+  String get reportStatsAction => 'إحصائية المرحلة';
+
+  @override
+  String get reportListAction => 'تصدير القائمة';
+
+  @override
+  String get reportRegisterAction => 'تصدير السجل';
 }

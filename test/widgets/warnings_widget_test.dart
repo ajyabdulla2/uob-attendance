@@ -73,6 +73,20 @@ void main() {
 
     await tester.tap(find.byKey(const Key('warn.view.warning')));
     await tester.pumpAndSettle();
+
+    // Exports offer PDF or Excel; a student's row offers their summary.
+    await tester.tap(find.byKey(const Key('warn.export')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('export.pdf')), findsOneWidget);
+    expect(find.byKey(const Key('export.excel')), findsOneWidget);
+    await tester.tapAt(const Offset(10, 10));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(names[0]));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('student.summary')), findsOneWidget);
+    await tester.tapAt(const Offset(10, 10));
+    await tester.pumpAndSettle();
+
     await tester.tap(find.byKey(const Key('warn.save')));
     await tester.pumpAndSettle();
     await tester.tap(find.descendant(of: find.byType(AlertDialog), matching: find.byType(FilledButton)));

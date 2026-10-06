@@ -9,6 +9,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../../assignments/domain/assignment.dart';
+import '../../reports/application/report_builders.dart';
+import '../../reports/application/report_exporter.dart';
 import '../../stats/domain/absence_summary.dart';
 import '../../stats/domain/student_course_stat.dart';
 import '../../students/domain/student.dart';
@@ -89,6 +91,27 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       appBar: AppBar(
         title: Text(a == null ? l10n.registerTitle : (a.courseName.isEmpty ? a.courseId : a.courseName)),
         actions: [
+          if (a != null && students.hasValue && sessions.hasValue && (sessions.value?.isNotEmpty ?? false))
+            IconButton(
+              key: const Key('register.export'),
+              tooltip: l10n.reportRegisterAction,
+              icon: const Icon(Icons.file_download_outlined),
+              onPressed: () => exportReport(
+                context,
+                ref,
+                year: ref.read(cachedYearProvider).value,
+                build: (format) => ReportBuilders.classRegister(
+                  l10n,
+                  assignment: a,
+                  courseName: a.courseName.isEmpty ? a.courseId : a.courseName,
+                  students: students.value!,
+                  sessions: sessions.value!,
+                  marks: marks.value ?? const {},
+                  standings: ref.read(classStandingsProvider(widget.assignmentId)).value ?? const {},
+                  format: format,
+                ),
+              ),
+            ),
           if (a != null)
             IconButton(
               key: const Key('register.refresh'),

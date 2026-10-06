@@ -1812,4 +1812,132 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportExport => 'Export';
+
+  @override
+  String get reportLetterPresent => 'P';
+
+  @override
+  String get reportLetterAbsent => 'A';
+
+  @override
+  String get reportLetterLate => 'L';
+
+  @override
+  String get reportLetterExcused => 'E';
+
+  @override
+  String get reportRegisterSheet => 'Register';
+
+  @override
+  String reportLecturesRange(int from, int to) {
+    return 'Lectures $from to $to';
+  }
+
+  @override
+  String reportRegisterTitle(String course) {
+    return 'Attendance register: $course';
+  }
+
+  @override
+  String reportLectureCount(int count) {
+    return 'Lectures recorded: $count';
+  }
+
+  @override
+  String get reportLegend =>
+      'P = present, A = absent, L = late, E = excused, – = not recorded.';
+
+  @override
+  String get reportPercentNote =>
+      'Percentage = counted absences ÷ the course\'s planned lectures × 100 per the year settings, over all of the course\'s lectures and approved leaves.';
+
+  @override
+  String get reportSignTeacher => 'Teacher';
+
+  @override
+  String get reportSignStageManager => 'Stage manager';
+
+  @override
+  String get reportSignHead => 'Head of department';
+
+  @override
+  String get reportSignDean => 'Dean';
+
+  @override
+  String get reportPlanned => 'Planned';
+
+  @override
+  String reportListTitle(String list, String stage) {
+    return '$list list — $stage';
+  }
+
+  @override
+  String reportStudentCount(int count) {
+    return 'Students: $count';
+  }
+
+  @override
+  String reportDecisionTitle(String level, String stage) {
+    return '$level decision — $stage';
+  }
+
+  @override
+  String reportStudentTitle(String name) {
+    return 'Absence summary: $name';
+  }
+
+  @override
+  String get reportStudentSheet => 'Summary';
+
+  @override
+  String get reportExcused => 'Excused';
+
+  @override
+  String get reportLevel => 'Level';
+
+  @override
+  String get reportStudentNote =>
+      'Courses where the student has an absence, late or excused mark are listed.';
+
+  @override
+  String reportStatsTitle(String stage) {
+    return 'Absence statistics — $stage';
+  }
+
+  @override
+  String get reportStatsSheet => 'Statistics';
+
+  @override
+  String reportStatsLevels(int alert, int warning, int dismissal) {
+    return 'Alert: $alert · Warning: $warning · Dismissal: $dismissal';
+  }
+
+  @override
+  String get reportStatsByCourse => 'Courses by total absences';
+
+  @override
+  String get reportAbsentStudents => 'Absent students';
+
+  @override
+  String get reportTotalAbsences => 'Total absences';
+
+  @override
+  String get reportTopSheet => 'Most absent';
+
+  @override
+  String reportTopStudents(int count) {
+    return 'Most absent students ($count)';
+  }
+
+  @override
+  String get reportStudentAction => 'Student summary (PDF)';
+
+  @override
+  String get reportStatsAction => 'Stage statistics';
+
+  @override
+  String get reportListAction => 'Export the list';
+
+  @override
+  String get reportRegisterAction => 'Export the register';
 }
