@@ -3392,6 +3392,354 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'كتب الإنذار لكل القائمة (PDF)'**
   String get letterBatchAction;
+
+  /// No description provided for @backupAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'النسخ الاحتياطي'**
+  String get backupAction;
+
+  /// No description provided for @backupTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'النسخ الاحتياطي'**
+  String get backupTitle;
+
+  /// No description provided for @backupAdminsOnly.
+  ///
+  /// In ar, this message translates to:
+  /// **'النسخ الاحتياطي للمدراء فقط.'**
+  String get backupAdminsOnly;
+
+  /// No description provided for @backupNever.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تُحفظ نسخة احتياطية بعد.'**
+  String get backupNever;
+
+  /// No description provided for @backupLast.
+  ///
+  /// In ar, this message translates to:
+  /// **'آخر نسخة: {date} الساعة {time}'**
+  String backupLast(String date, String time);
+
+  /// No description provided for @backupLastDetail.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} وثيقة · {by}'**
+  String backupLastDetail(int count, String by);
+
+  /// No description provided for @backupAgo.
+  ///
+  /// In ar, this message translates to:
+  /// **'{days, plural, =0{آخر نسخة احتياطية اليوم} =1{آخر نسخة احتياطية قبل يوم} =2{آخر نسخة احتياطية قبل يومين} few{آخر نسخة احتياطية قبل {days} أيام} other{آخر نسخة احتياطية قبل {days} يوماً}}'**
+  String backupAgo(int days);
+
+  /// No description provided for @backupDue.
+  ///
+  /// In ar, this message translates to:
+  /// **'مرّ أكثر من أسبوع؛ احفظ نسخة جديدة.'**
+  String get backupDue;
+
+  /// No description provided for @backupCreateTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إنشاء نسخة احتياطية'**
+  String get backupCreateTitle;
+
+  /// No description provided for @backupCreateHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملف واحد مشفّر بكلمة مرور فيه كل بيانات القسم. احفظه خارج الهاتف (الحاسوب، Google Drive، البريد). لا يُفتح إلا بكلمة المرور.'**
+  String get backupCreateHelp;
+
+  /// No description provided for @backupCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'حساب حجم النسخة'**
+  String get backupCount;
+
+  /// No description provided for @backupEstimate.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} وثيقة (الحسابات، المواد، الطلبة، المحاضرات، الإحصائيات…)'**
+  String backupEstimate(int count);
+
+  /// No description provided for @backupWithRecords.
+  ///
+  /// In ar, this message translates to:
+  /// **'تضمين سجلات الحضور التفصيلية ({count})'**
+  String backupWithRecords(int count);
+
+  /// No description provided for @backupRecordsHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'كل سجل قراءة من حصة الخطة المجانية (50,000 قراءة يومياً). النسب لا تحتاجها فهي في الإحصائيات؛ إن كانت كثيرة فاحفظها في يوم هادئ.'**
+  String get backupRecordsHelp;
+
+  /// No description provided for @backupPassword.
+  ///
+  /// In ar, this message translates to:
+  /// **'كلمة مرور النسخة'**
+  String get backupPassword;
+
+  /// No description provided for @backupPasswordConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأكيد كلمة المرور'**
+  String get backupPasswordConfirm;
+
+  /// No description provided for @backupPasswordWarning.
+  ///
+  /// In ar, this message translates to:
+  /// **'إن نُسيت كلمة المرور فلا يمكن فتح النسخة أبداً.'**
+  String get backupPasswordWarning;
+
+  /// No description provided for @backupPasswordShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'كلمة المرور 8 أحرف على الأقل.'**
+  String get backupPasswordShort;
+
+  /// No description provided for @backupPasswordMismatch.
+  ///
+  /// In ar, this message translates to:
+  /// **'كلمتا المرور غير متطابقتين.'**
+  String get backupPasswordMismatch;
+
+  /// No description provided for @backupCreate.
+  ///
+  /// In ar, this message translates to:
+  /// **'إنشاء النسخة وحفظها'**
+  String get backupCreate;
+
+  /// No description provided for @backupReading.
+  ///
+  /// In ar, this message translates to:
+  /// **'قراءة {name}…'**
+  String backupReading(String name);
+
+  /// No description provided for @backupEncrypting.
+  ///
+  /// In ar, this message translates to:
+  /// **'تشفير الملف…'**
+  String get backupEncrypting;
+
+  /// No description provided for @backupSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُفظت النسخة ({count} وثيقة).'**
+  String backupSaved(int count);
+
+  /// No description provided for @backupCollection.
+  ///
+  /// In ar, this message translates to:
+  /// **'{name, select, academicYears{السنوات} stages{المراحل} users{الحسابات} courses{المواد} students{الطلبة} groups{المجاميع} assignments{الإسنادات} sessions{المحاضرات} leaves{الإجازات} stats{الإحصائيات} warningLists{القرارات} config{الإعدادات} editRequests{طلبات التعديل} accessRequests{طلبات الانضمام} auditLog{سجل التدقيق} records{سجلات الحضور} other{{name}}}'**
+  String backupCollection(String name);
+
+  /// No description provided for @backupRestoreTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاستعادة من نسخة'**
+  String get backupRestoreTitle;
+
+  /// No description provided for @backupRestoreHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'للمدير العام فقط. تعيد كل وثائق النسخة كما كانت وتكتب فوق الحالية، ولا تحذف ما أُضيف بعدها. طلبات التعديل والانضمام وسجل التدقيق لا تُستعاد. يمكن إعادة تشغيلها إن انقطعت.'**
+  String get backupRestoreHelp;
+
+  /// No description provided for @backupPickFile.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختيار ملف النسخة (.uobk)'**
+  String get backupPickFile;
+
+  /// No description provided for @backupOpen.
+  ///
+  /// In ar, this message translates to:
+  /// **'فتح الملف'**
+  String get backupOpen;
+
+  /// No description provided for @backupWrongPassword.
+  ///
+  /// In ar, this message translates to:
+  /// **'كلمة المرور خاطئة أو الملف تالف.'**
+  String get backupWrongPassword;
+
+  /// No description provided for @backupNotABackup.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا ليس ملف نسخة احتياطية لهذا البرنامج.'**
+  String get backupNotABackup;
+
+  /// No description provided for @backupFileInfo.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسخة {date} — {by}'**
+  String backupFileInfo(String date, String by);
+
+  /// No description provided for @backupRestore.
+  ///
+  /// In ar, this message translates to:
+  /// **'استعادة'**
+  String get backupRestore;
+
+  /// No description provided for @backupRestoreConfirmTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'استعادة النسخة؟'**
+  String get backupRestoreConfirmTitle;
+
+  /// No description provided for @backupRestoreConfirmBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستُستبدل البيانات الحالية بما في النسخة لكل وثيقة موجودة فيها، ولا يمكن التراجع. احفظ نسخة من الحالة الحالية أولاً إن لم تفعل.'**
+  String get backupRestoreConfirmBody;
+
+  /// No description provided for @backupRestoreTypeTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأكيد أخير'**
+  String get backupRestoreTypeTitle;
+
+  /// No description provided for @backupRestoreType.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب «{word}» للمتابعة'**
+  String backupRestoreType(String word);
+
+  /// No description provided for @backupRestoreWord.
+  ///
+  /// In ar, this message translates to:
+  /// **'استعادة'**
+  String get backupRestoreWord;
+
+  /// No description provided for @backupRestoreProgress.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدفعة {done} من {total}'**
+  String backupRestoreProgress(int done, int total);
+
+  /// No description provided for @backupRestored.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتملت الاستعادة ({count} كتابة).'**
+  String backupRestored(int count);
+
+  /// No description provided for @backupRestoreFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'توقفت الاستعادة: {error}. أعد تشغيلها لتكمل (قد تكون حصة الكتابة اليومية انتهت).'**
+  String backupRestoreFailed(String error);
+
+  /// No description provided for @auditOpen.
+  ///
+  /// In ar, this message translates to:
+  /// **'سجل التدقيق'**
+  String get auditOpen;
+
+  /// No description provided for @auditTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'سجل التدقيق'**
+  String get auditTitle;
+
+  /// No description provided for @auditAllStages.
+  ///
+  /// In ar, this message translates to:
+  /// **'كل القسم'**
+  String get auditAllStages;
+
+  /// No description provided for @auditEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد عمليات مسجلة.'**
+  String get auditEmpty;
+
+  /// No description provided for @auditMore.
+  ///
+  /// In ar, this message translates to:
+  /// **'عرض المزيد'**
+  String get auditMore;
+
+  /// No description provided for @auditEnd.
+  ///
+  /// In ar, this message translates to:
+  /// **'نهاية السجل'**
+  String get auditEnd;
+
+  /// No description provided for @auditBefore.
+  ///
+  /// In ar, this message translates to:
+  /// **'قبل'**
+  String get auditBefore;
+
+  /// No description provided for @auditAfter.
+  ///
+  /// In ar, this message translates to:
+  /// **'بعد'**
+  String get auditAfter;
+
+  /// No description provided for @auditActionLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'{action, select, record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} other{{action}}}'**
+  String auditActionLabel(String action);
+
+  /// No description provided for @deptAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'لوحة القسم'**
+  String get deptAction;
+
+  /// No description provided for @deptTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لوحة القسم'**
+  String get deptTitle;
+
+  /// No description provided for @deptActiveAccounts.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} حساب فعّال'**
+  String deptActiveAccounts(int count);
+
+  /// No description provided for @deptAccessRequests.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبات الانضمام المعلّقة: {count}'**
+  String deptAccessRequests(int count);
+
+  /// No description provided for @deptStageEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا بيانات بعد.'**
+  String get deptStageEmpty;
+
+  /// No description provided for @deptStudents.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} طالب'**
+  String deptStudents(int count);
+
+  /// No description provided for @deptCourses.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} مادة'**
+  String deptCourses(int count);
+
+  /// No description provided for @deptLecturesToday.
+  ///
+  /// In ar, this message translates to:
+  /// **'محاضرات اليوم: {count}'**
+  String deptLecturesToday(int count);
+
+  /// No description provided for @deptPendingRequests.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبات تعديل: {count}'**
+  String deptPendingRequests(int count);
 }
 
 class _AppLocalizationsDelegate

@@ -373,6 +373,13 @@ service cloud.firestore {
       }
     }
 
+    // Every attendance record at once (collection group), for the backup.
+    // Admins can read each session's records anyway; this only lets them do
+    // it in one paged query instead of one query per session.
+    match /{path=**}/records/{studentId} {
+      allow read: if isAdmin();
+    }
+
     // =============================================================== stats ==
     // One doc per student × course, written in the same batch as the
     // attendance records (SPEC: one read per student and course for the

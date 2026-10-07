@@ -1992,4 +1992,276 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get letterBatchAction => 'Letters for the whole list (PDF)';
+
+  @override
+  String get backupAction => 'Backup';
+
+  @override
+  String get backupTitle => 'Backup';
+
+  @override
+  String get backupAdminsOnly => 'Backups are for admins only.';
+
+  @override
+  String get backupNever => 'No backup saved yet.';
+
+  @override
+  String backupLast(String date, String time) {
+    return 'Last backup: $date at $time';
+  }
+
+  @override
+  String backupLastDetail(int count, String by) {
+    return '$count documents · $by';
+  }
+
+  @override
+  String backupAgo(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Last backup $days days ago',
+      one: 'Last backup a day ago',
+      zero: 'Last backup today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get backupDue => 'More than a week ago; save a new one.';
+
+  @override
+  String get backupCreateTitle => 'Create a backup';
+
+  @override
+  String get backupCreateHelp =>
+      'One password-encrypted file with all department data. Keep it off the phone (computer, Google Drive, e-mail). It opens only with the password.';
+
+  @override
+  String get backupCount => 'Calculate size';
+
+  @override
+  String backupEstimate(int count) {
+    return '$count documents (accounts, courses, students, lectures, statistics…)';
+  }
+
+  @override
+  String backupWithRecords(int count) {
+    return 'Include detailed attendance records ($count)';
+  }
+
+  @override
+  String get backupRecordsHelp =>
+      'Each record is one read of the free plan quota (50,000 a day). Percentages do not need them (they are in the statistics).';
+
+  @override
+  String get backupPassword => 'Backup password';
+
+  @override
+  String get backupPasswordConfirm => 'Confirm password';
+
+  @override
+  String get backupPasswordWarning =>
+      'If the password is lost the backup can never be opened.';
+
+  @override
+  String get backupPasswordShort => 'The password needs at least 8 characters.';
+
+  @override
+  String get backupPasswordMismatch => 'The passwords do not match.';
+
+  @override
+  String get backupCreate => 'Create and save';
+
+  @override
+  String backupReading(String name) {
+    return 'Reading $name…';
+  }
+
+  @override
+  String get backupEncrypting => 'Encrypting…';
+
+  @override
+  String backupSaved(int count) {
+    return 'Backup saved ($count documents).';
+  }
+
+  @override
+  String backupCollection(String name) {
+    String _temp0 = intl.Intl.selectLogic(name, {
+      'academicYears': 'Years',
+      'stages': 'Stages',
+      'users': 'Accounts',
+      'courses': 'Courses',
+      'students': 'Students',
+      'groups': 'Groups',
+      'assignments': 'Assignments',
+      'sessions': 'Lectures',
+      'leaves': 'Leaves',
+      'stats': 'Statistics',
+      'warningLists': 'Decisions',
+      'config': 'Settings',
+      'editRequests': 'Edit requests',
+      'accessRequests': 'Join requests',
+      'auditLog': 'Audit log',
+      'records': 'Attendance records',
+      'other': '$name',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get backupRestoreTitle => 'Restore from a backup';
+
+  @override
+  String get backupRestoreHelp =>
+      'Super admin only. Writes every document of the backup back over the current one; documents added later stay. Edit/join requests and the audit log are not restored. Can be run again if interrupted.';
+
+  @override
+  String get backupPickFile => 'Choose a backup file (.uobk)';
+
+  @override
+  String get backupOpen => 'Open file';
+
+  @override
+  String get backupWrongPassword => 'Wrong password or damaged file.';
+
+  @override
+  String get backupNotABackup => 'This is not a backup file of this app.';
+
+  @override
+  String backupFileInfo(String date, String by) {
+    return 'Backup of $date — $by';
+  }
+
+  @override
+  String get backupRestore => 'Restore';
+
+  @override
+  String get backupRestoreConfirmTitle => 'Restore this backup?';
+
+  @override
+  String get backupRestoreConfirmBody =>
+      'Current data is replaced by the backup for every document it contains. This cannot be undone. Save a backup of the current state first.';
+
+  @override
+  String get backupRestoreTypeTitle => 'Final confirmation';
+
+  @override
+  String backupRestoreType(String word) {
+    return 'Type “$word” to continue';
+  }
+
+  @override
+  String get backupRestoreWord => 'restore';
+
+  @override
+  String backupRestoreProgress(int done, int total) {
+    return 'Batch $done of $total';
+  }
+
+  @override
+  String backupRestored(int count) {
+    return 'Restore finished ($count writes).';
+  }
+
+  @override
+  String backupRestoreFailed(String error) {
+    return 'Restore stopped: $error. Run it again to finish (the daily write quota may be used up).';
+  }
+
+  @override
+  String get auditOpen => 'Audit log';
+
+  @override
+  String get auditTitle => 'Audit log';
+
+  @override
+  String get auditAllStages => 'Whole department';
+
+  @override
+  String get auditEmpty => 'Nothing logged.';
+
+  @override
+  String get auditMore => 'Show more';
+
+  @override
+  String get auditEnd => 'End of the log';
+
+  @override
+  String get auditBefore => 'Before';
+
+  @override
+  String get auditAfter => 'After';
+
+  @override
+  String auditActionLabel(String action) {
+    String _temp0 = intl.Intl.selectLogic(action, {
+      'record_update': 'Attendance changed',
+      'editRequest_reject': 'Edit request rejected',
+      'leave_create': 'Leave added',
+      'leave_delete': 'Leave deleted',
+      'warnings_create': 'Decision created',
+      'warnings_regenerate': 'Decision regenerated',
+      'warnings_delete': 'Decision deleted',
+      'warnings_finalize': 'Decision sent to the deanery',
+      'user_create': 'Account added',
+      'user_update': 'Account edited',
+      'user_approve': 'Join request approved',
+      'user_reject': 'Join request rejected',
+      'user_rename': 'Account e-mail changed',
+      'users_delete': 'Accounts deleted',
+      'student_rename': 'University ID changed',
+      'students_delete': 'Students deleted',
+      'course_rename': 'Course code changed',
+      'courses_delete': 'Courses deleted',
+      'import_students': 'Students imported',
+      'import_teachers': 'Teachers imported',
+      'import_courses': 'Courses imported',
+      'year_update': 'Year settings changed',
+      'backup_export': 'Backup saved',
+      'backup_restore': 'Backup restored',
+      'other': '$action',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get deptAction => 'Department dashboard';
+
+  @override
+  String get deptTitle => 'Department dashboard';
+
+  @override
+  String deptActiveAccounts(int count) {
+    return '$count active accounts';
+  }
+
+  @override
+  String deptAccessRequests(int count) {
+    return 'Pending join requests: $count';
+  }
+
+  @override
+  String get deptStageEmpty => 'No data yet.';
+
+  @override
+  String deptStudents(int count) {
+    return '$count students';
+  }
+
+  @override
+  String deptCourses(int count) {
+    return '$count courses';
+  }
+
+  @override
+  String deptLecturesToday(int count) {
+    return 'Lectures today: $count';
+  }
+
+  @override
+  String deptPendingRequests(int count) {
+    return 'Edit requests: $count';
+  }
 }

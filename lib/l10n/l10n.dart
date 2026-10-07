@@ -48,6 +48,13 @@ extension DomainLabels on AppLocalizations {
 
   String stage(StageRef s) => stageLabel(level(s.level), shift(s.shift));
 
+  /// Audit log action (`record.update` …); unknown codes are shown as is.
+  String auditAction(String code) {
+    final key = code.replaceAll('.', '_');
+    final label = auditActionLabel(key);
+    return label == key ? code : label;
+  }
+
   /// Stage label from an ID such as `3-morning` (falls back to the ID).
   String stageId(String id) {
     final ref = StageRef.tryParse(id);

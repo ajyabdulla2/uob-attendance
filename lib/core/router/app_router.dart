@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/academic/presentation/year_settings_screen.dart';
 import '../../features/assignments/presentation/assignments_screen.dart';
+import '../../features/audit/presentation/audit_log_screen.dart';
 import '../../features/attendance/presentation/record_screen.dart';
 import '../../features/attendance/presentation/register_screen.dart';
 import '../../features/auth/application/auth_providers.dart';
@@ -11,7 +12,9 @@ import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/no_access_screen.dart';
 import '../../features/auth/presentation/splash_screen.dart';
 import '../../features/auth/presentation/verify_email_screen.dart';
+import '../../features/backup/presentation/backup_screen.dart';
 import '../../features/data_fix/presentation/data_fix_screen.dart';
+import '../../features/department/presentation/department_dashboard_screen.dart';
 import '../../features/edit_requests/presentation/edit_requests_screen.dart';
 import '../../features/home/presentation/app_shell.dart';
 import '../../features/home/presentation/home_screen.dart';
@@ -41,6 +44,9 @@ abstract final class Routes {
   static const warnings = '/warnings';
   static const editRequests = '/edit-requests';
   static const stageDashboard = '/stage-dashboard';
+  static const departmentDashboard = '/department';
+  static const backup = '/backup';
+  static const auditLog = '/audit-log';
 
   /// Record screen of a class, optionally on a given lecture.
   static String recordFor(String assignmentId, {DateTime? date, int? lectureNo}) => Uri(path: record, queryParameters: {
@@ -112,6 +118,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.warnings, builder: (_, _) => const WarningsScreen()),
       GoRoute(path: Routes.editRequests, builder: (_, _) => const EditRequestsScreen()),
       GoRoute(path: Routes.stageDashboard, builder: (_, _) => const StageDashboardScreen()),
+      GoRoute(path: Routes.departmentDashboard, builder: (_, _) => const DepartmentDashboardScreen()),
+      GoRoute(path: Routes.backup, builder: (_, _) => const BackupScreen()),
+      GoRoute(path: Routes.auditLog, builder: (_, _) => const AuditLogScreen()),
       GoRoute(
         path: Routes.register,
         builder: (_, s) => RegisterScreen(assignmentId: s.uri.queryParameters['a'] ?? ''),

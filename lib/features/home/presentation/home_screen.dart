@@ -12,6 +12,7 @@ import '../../attendance/application/attendance_providers.dart';
 import '../../attendance/presentation/sync_widgets.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../auth/domain/app_user.dart';
+import '../../department/presentation/department_dashboard_screen.dart';
 import '../../users/application/users_providers.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -33,6 +34,7 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(height: 12),
           const _ActiveYearLine(),
           if (perms.isAdmin) const _SetupCard(),
+          if (perms.canBackup) const BackupReminderCard(),
           if (perms.canManageAccounts) const _AccessRequestsCard(),
           if (perms.canImportAnything || perms.canManageAssignments) ...[
             const SizedBox(height: 12),
@@ -54,6 +56,14 @@ class HomeScreen extends ConsumerWidget {
                       title: Text(l10n.homeAssignAction),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => context.go(Routes.assignments),
+                    ),
+                  if (perms.canViewDepartmentDashboard)
+                    ListTile(
+                      key: const Key('home.department'),
+                      leading: const Icon(Icons.apartment),
+                      title: Text(l10n.deptAction),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => context.push(Routes.departmentDashboard),
                     ),
                   if (perms.canViewStageDashboard)
                     ListTile(
@@ -94,6 +104,22 @@ class HomeScreen extends ConsumerWidget {
                       title: Text(l10n.yearAction),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => context.push(Routes.yearSettings),
+                    ),
+                  if (perms.canViewAuditLog)
+                    ListTile(
+                      key: const Key('home.audit'),
+                      leading: const Icon(Icons.manage_search),
+                      title: Text(l10n.auditOpen),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => context.push(Routes.auditLog),
+                    ),
+                  if (perms.canBackup)
+                    ListTile(
+                      key: const Key('home.backup'),
+                      leading: const Icon(Icons.backup_outlined),
+                      title: Text(l10n.backupAction),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => context.push(Routes.backup),
                     ),
                   if (perms.canFixData)
                     ListTile(

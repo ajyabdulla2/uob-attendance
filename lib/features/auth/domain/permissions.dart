@@ -86,6 +86,10 @@ final class Permissions {
   bool get canBackup => isAdmin;
   bool get canRestore => isSuperAdmin;
 
+  // ------------------------------------------------ audit / dashboards --
+  bool get canViewAuditLog => isAdmin || isStageManager;
+  bool get canViewDepartmentDashboard => isAdmin;
+
   // ---------------------------------------------------- decision lists --
   bool get canFinalizeDeaneryDecision => isAdmin;
 }

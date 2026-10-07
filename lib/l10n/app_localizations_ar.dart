@@ -1979,4 +1979,278 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get letterBatchAction => 'كتب الإنذار لكل القائمة (PDF)';
+
+  @override
+  String get backupAction => 'النسخ الاحتياطي';
+
+  @override
+  String get backupTitle => 'النسخ الاحتياطي';
+
+  @override
+  String get backupAdminsOnly => 'النسخ الاحتياطي للمدراء فقط.';
+
+  @override
+  String get backupNever => 'لم تُحفظ نسخة احتياطية بعد.';
+
+  @override
+  String backupLast(String date, String time) {
+    return 'آخر نسخة: $date الساعة $time';
+  }
+
+  @override
+  String backupLastDetail(int count, String by) {
+    return '$count وثيقة · $by';
+  }
+
+  @override
+  String backupAgo(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'آخر نسخة احتياطية قبل $days يوماً',
+      few: 'آخر نسخة احتياطية قبل $days أيام',
+      two: 'آخر نسخة احتياطية قبل يومين',
+      one: 'آخر نسخة احتياطية قبل يوم',
+      zero: 'آخر نسخة احتياطية اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get backupDue => 'مرّ أكثر من أسبوع؛ احفظ نسخة جديدة.';
+
+  @override
+  String get backupCreateTitle => 'إنشاء نسخة احتياطية';
+
+  @override
+  String get backupCreateHelp =>
+      'ملف واحد مشفّر بكلمة مرور فيه كل بيانات القسم. احفظه خارج الهاتف (الحاسوب، Google Drive، البريد). لا يُفتح إلا بكلمة المرور.';
+
+  @override
+  String get backupCount => 'حساب حجم النسخة';
+
+  @override
+  String backupEstimate(int count) {
+    return '$count وثيقة (الحسابات، المواد، الطلبة، المحاضرات، الإحصائيات…)';
+  }
+
+  @override
+  String backupWithRecords(int count) {
+    return 'تضمين سجلات الحضور التفصيلية ($count)';
+  }
+
+  @override
+  String get backupRecordsHelp =>
+      'كل سجل قراءة من حصة الخطة المجانية (50,000 قراءة يومياً). النسب لا تحتاجها فهي في الإحصائيات؛ إن كانت كثيرة فاحفظها في يوم هادئ.';
+
+  @override
+  String get backupPassword => 'كلمة مرور النسخة';
+
+  @override
+  String get backupPasswordConfirm => 'تأكيد كلمة المرور';
+
+  @override
+  String get backupPasswordWarning =>
+      'إن نُسيت كلمة المرور فلا يمكن فتح النسخة أبداً.';
+
+  @override
+  String get backupPasswordShort => 'كلمة المرور 8 أحرف على الأقل.';
+
+  @override
+  String get backupPasswordMismatch => 'كلمتا المرور غير متطابقتين.';
+
+  @override
+  String get backupCreate => 'إنشاء النسخة وحفظها';
+
+  @override
+  String backupReading(String name) {
+    return 'قراءة $name…';
+  }
+
+  @override
+  String get backupEncrypting => 'تشفير الملف…';
+
+  @override
+  String backupSaved(int count) {
+    return 'حُفظت النسخة ($count وثيقة).';
+  }
+
+  @override
+  String backupCollection(String name) {
+    String _temp0 = intl.Intl.selectLogic(name, {
+      'academicYears': 'السنوات',
+      'stages': 'المراحل',
+      'users': 'الحسابات',
+      'courses': 'المواد',
+      'students': 'الطلبة',
+      'groups': 'المجاميع',
+      'assignments': 'الإسنادات',
+      'sessions': 'المحاضرات',
+      'leaves': 'الإجازات',
+      'stats': 'الإحصائيات',
+      'warningLists': 'القرارات',
+      'config': 'الإعدادات',
+      'editRequests': 'طلبات التعديل',
+      'accessRequests': 'طلبات الانضمام',
+      'auditLog': 'سجل التدقيق',
+      'records': 'سجلات الحضور',
+      'other': '$name',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get backupRestoreTitle => 'الاستعادة من نسخة';
+
+  @override
+  String get backupRestoreHelp =>
+      'للمدير العام فقط. تعيد كل وثائق النسخة كما كانت وتكتب فوق الحالية، ولا تحذف ما أُضيف بعدها. طلبات التعديل والانضمام وسجل التدقيق لا تُستعاد. يمكن إعادة تشغيلها إن انقطعت.';
+
+  @override
+  String get backupPickFile => 'اختيار ملف النسخة (.uobk)';
+
+  @override
+  String get backupOpen => 'فتح الملف';
+
+  @override
+  String get backupWrongPassword => 'كلمة المرور خاطئة أو الملف تالف.';
+
+  @override
+  String get backupNotABackup => 'هذا ليس ملف نسخة احتياطية لهذا البرنامج.';
+
+  @override
+  String backupFileInfo(String date, String by) {
+    return 'نسخة $date — $by';
+  }
+
+  @override
+  String get backupRestore => 'استعادة';
+
+  @override
+  String get backupRestoreConfirmTitle => 'استعادة النسخة؟';
+
+  @override
+  String get backupRestoreConfirmBody =>
+      'ستُستبدل البيانات الحالية بما في النسخة لكل وثيقة موجودة فيها، ولا يمكن التراجع. احفظ نسخة من الحالة الحالية أولاً إن لم تفعل.';
+
+  @override
+  String get backupRestoreTypeTitle => 'تأكيد أخير';
+
+  @override
+  String backupRestoreType(String word) {
+    return 'اكتب «$word» للمتابعة';
+  }
+
+  @override
+  String get backupRestoreWord => 'استعادة';
+
+  @override
+  String backupRestoreProgress(int done, int total) {
+    return 'الدفعة $done من $total';
+  }
+
+  @override
+  String backupRestored(int count) {
+    return 'اكتملت الاستعادة ($count كتابة).';
+  }
+
+  @override
+  String backupRestoreFailed(String error) {
+    return 'توقفت الاستعادة: $error. أعد تشغيلها لتكمل (قد تكون حصة الكتابة اليومية انتهت).';
+  }
+
+  @override
+  String get auditOpen => 'سجل التدقيق';
+
+  @override
+  String get auditTitle => 'سجل التدقيق';
+
+  @override
+  String get auditAllStages => 'كل القسم';
+
+  @override
+  String get auditEmpty => 'لا توجد عمليات مسجلة.';
+
+  @override
+  String get auditMore => 'عرض المزيد';
+
+  @override
+  String get auditEnd => 'نهاية السجل';
+
+  @override
+  String get auditBefore => 'قبل';
+
+  @override
+  String get auditAfter => 'بعد';
+
+  @override
+  String auditActionLabel(String action) {
+    String _temp0 = intl.Intl.selectLogic(action, {
+      'record_update': 'تعديل حضور طالب',
+      'editRequest_reject': 'رفض طلب تعديل',
+      'leave_create': 'إضافة إجازة',
+      'leave_delete': 'حذف إجازة',
+      'warnings_create': 'إنشاء قرار',
+      'warnings_regenerate': 'إعادة توليد قرار',
+      'warnings_delete': 'حذف قرار',
+      'warnings_finalize': 'تحويل قرار إلى العمادة',
+      'user_create': 'إضافة حساب',
+      'user_update': 'تعديل حساب',
+      'user_approve': 'قبول طلب انضمام',
+      'user_reject': 'رفض طلب انضمام',
+      'user_rename': 'تغيير بريد حساب',
+      'users_delete': 'حذف حسابات',
+      'student_rename': 'تغيير رقم جامعي',
+      'students_delete': 'حذف طلبة',
+      'course_rename': 'تغيير رمز مادة',
+      'courses_delete': 'حذف مواد',
+      'import_students': 'استيراد طلبة',
+      'import_teachers': 'استيراد تدريسيين',
+      'import_courses': 'استيراد مواد',
+      'year_update': 'تعديل إعدادات السنة',
+      'backup_export': 'نسخة احتياطية',
+      'backup_restore': 'استعادة نسخة احتياطية',
+      'other': '$action',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get deptAction => 'لوحة القسم';
+
+  @override
+  String get deptTitle => 'لوحة القسم';
+
+  @override
+  String deptActiveAccounts(int count) {
+    return '$count حساب فعّال';
+  }
+
+  @override
+  String deptAccessRequests(int count) {
+    return 'طلبات الانضمام المعلّقة: $count';
+  }
+
+  @override
+  String get deptStageEmpty => 'لا بيانات بعد.';
+
+  @override
+  String deptStudents(int count) {
+    return '$count طالب';
+  }
+
+  @override
+  String deptCourses(int count) {
+    return '$count مادة';
+  }
+
+  @override
+  String deptLecturesToday(int count) {
+    return 'محاضرات اليوم: $count';
+  }
+
+  @override
+  String deptPendingRequests(int count) {
+    return 'طلبات تعديل: $count';
+  }
 }

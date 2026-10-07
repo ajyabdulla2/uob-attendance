@@ -1514,5 +1514,215 @@
   },
   "letterDismissalClosing": "يُعدّ هذا الإشعار أولياً حتى صدور قرار العمادة.",
   "letterAction": "كتاب إنذار (PDF)",
-  "letterBatchAction": "كتب الإنذار لكل القائمة (PDF)"
+  "letterBatchAction": "كتب الإنذار لكل القائمة (PDF)",
+  "backupAction": "النسخ الاحتياطي",
+  "backupTitle": "النسخ الاحتياطي",
+  "backupAdminsOnly": "النسخ الاحتياطي للمدراء فقط.",
+  "backupNever": "لم تُحفظ نسخة احتياطية بعد.",
+  "backupLast": "آخر نسخة: {date} الساعة {time}",
+  "@backupLast": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLastDetail": "{count} وثيقة · {by}",
+  "@backupLastDetail": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "by": {
+        "type": "String"
+      }
+    }
+  },
+  "backupAgo": "{days, plural, =0{آخر نسخة احتياطية اليوم} =1{آخر نسخة احتياطية قبل يوم} =2{آخر نسخة احتياطية قبل يومين} few{آخر نسخة احتياطية قبل {days} أيام} other{آخر نسخة احتياطية قبل {days} يوماً}}",
+  "@backupAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "backupDue": "مرّ أكثر من أسبوع؛ احفظ نسخة جديدة.",
+  "backupCreateTitle": "إنشاء نسخة احتياطية",
+  "backupCreateHelp": "ملف واحد مشفّر بكلمة مرور فيه كل بيانات القسم. احفظه خارج الهاتف (الحاسوب، Google Drive، البريد). لا يُفتح إلا بكلمة المرور.",
+  "backupCount": "حساب حجم النسخة",
+  "backupEstimate": "{count} وثيقة (الحسابات، المواد، الطلبة، المحاضرات، الإحصائيات…)",
+  "@backupEstimate": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupWithRecords": "تضمين سجلات الحضور التفصيلية ({count})",
+  "@backupWithRecords": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRecordsHelp": "كل سجل قراءة من حصة الخطة المجانية (50,000 قراءة يومياً). النسب لا تحتاجها فهي في الإحصائيات؛ إن كانت كثيرة فاحفظها في يوم هادئ.",
+  "backupPassword": "كلمة مرور النسخة",
+  "backupPasswordConfirm": "تأكيد كلمة المرور",
+  "backupPasswordWarning": "إن نُسيت كلمة المرور فلا يمكن فتح النسخة أبداً.",
+  "backupPasswordShort": "كلمة المرور 8 أحرف على الأقل.",
+  "backupPasswordMismatch": "كلمتا المرور غير متطابقتين.",
+  "backupCreate": "إنشاء النسخة وحفظها",
+  "backupReading": "قراءة {name}…",
+  "@backupReading": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "backupEncrypting": "تشفير الملف…",
+  "backupSaved": "حُفظت النسخة ({count} وثيقة).",
+  "@backupSaved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCollection": "{name, select, academicYears{السنوات} stages{المراحل} users{الحسابات} courses{المواد} students{الطلبة} groups{المجاميع} assignments{الإسنادات} sessions{المحاضرات} leaves{الإجازات} stats{الإحصائيات} warningLists{القرارات} config{الإعدادات} editRequests{طلبات التعديل} accessRequests{طلبات الانضمام} auditLog{سجل التدقيق} records{سجلات الحضور} other{{name}}}",
+  "@backupCollection": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreTitle": "الاستعادة من نسخة",
+  "backupRestoreHelp": "للمدير العام فقط. تعيد كل وثائق النسخة كما كانت وتكتب فوق الحالية، ولا تحذف ما أُضيف بعدها. طلبات التعديل والانضمام وسجل التدقيق لا تُستعاد. يمكن إعادة تشغيلها إن انقطعت.",
+  "backupPickFile": "اختيار ملف النسخة (.uobk)",
+  "backupOpen": "فتح الملف",
+  "backupWrongPassword": "كلمة المرور خاطئة أو الملف تالف.",
+  "backupNotABackup": "هذا ليس ملف نسخة احتياطية لهذا البرنامج.",
+  "backupFileInfo": "نسخة {date} — {by}",
+  "@backupFileInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "by": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestore": "استعادة",
+  "backupRestoreConfirmTitle": "استعادة النسخة؟",
+  "backupRestoreConfirmBody": "ستُستبدل البيانات الحالية بما في النسخة لكل وثيقة موجودة فيها، ولا يمكن التراجع. احفظ نسخة من الحالة الحالية أولاً إن لم تفعل.",
+  "backupRestoreTypeTitle": "تأكيد أخير",
+  "backupRestoreType": "اكتب «{word}» للمتابعة",
+  "@backupRestoreType": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreWord": "استعادة",
+  "backupRestoreProgress": "الدفعة {done} من {total}",
+  "@backupRestoreProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestored": "اكتملت الاستعادة ({count} كتابة).",
+  "@backupRestored": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreFailed": "توقفت الاستعادة: {error}. أعد تشغيلها لتكمل (قد تكون حصة الكتابة اليومية انتهت).",
+  "@backupRestoreFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "auditOpen": "سجل التدقيق",
+  "auditTitle": "سجل التدقيق",
+  "auditAllStages": "كل القسم",
+  "auditEmpty": "لا توجد عمليات مسجلة.",
+  "auditMore": "عرض المزيد",
+  "auditEnd": "نهاية السجل",
+  "auditBefore": "قبل",
+  "auditAfter": "بعد",
+  "auditActionLabel": "{action, select, record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} other{{action}}}",
+  "@auditActionLabel": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "deptAction": "لوحة القسم",
+  "deptTitle": "لوحة القسم",
+  "deptActiveAccounts": "{count} حساب فعّال",
+  "@deptActiveAccounts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deptAccessRequests": "طلبات الانضمام المعلّقة: {count}",
+  "@deptAccessRequests": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deptStageEmpty": "لا بيانات بعد.",
+  "deptStudents": "{count} طالب",
+  "@deptStudents": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deptCourses": "{count} مادة",
+  "@deptCourses": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deptLecturesToday": "محاضرات اليوم: {count}",
+  "@deptLecturesToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deptPendingRequests": "طلبات تعديل: {count}",
+  "@deptPendingRequests": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }
