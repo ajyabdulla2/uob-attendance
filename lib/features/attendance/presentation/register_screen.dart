@@ -96,21 +96,28 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               key: const Key('register.export'),
               tooltip: l10n.reportRegisterAction,
               icon: const Icon(Icons.download),
-              onPressed: () => exportReport(
-                context,
-                ref,
-                year: ref.read(cachedYearProvider).value,
-                build: (format) => ReportBuilders.classRegister(
-                  l10n,
-                  assignment: a,
-                  courseName: a.courseName.isEmpty ? a.courseId : a.courseName,
-                  students: students.value!,
-                  sessions: sessions.value!,
-                  marks: marks.value ?? const {},
-                  standings: ref.read(classStandingsProvider(widget.assignmentId)).value ?? const {},
-                  format: format,
-                ),
-              ),
+              onPressed: () async {
+                final period = await _choosePeriod(context, sessions.value!);
+                if (period == null || !context.mounted) return;
+                final formatDate = MaterialLocalizations.of(context).formatMediumDate;
+                await exportReport(
+                  context,
+                  ref,
+                  year: ref.read(cachedYearProvider).value,
+                  build: (format) => ReportBuilders.classRegister(
+                    l10n,
+                    assignment: a,
+                    courseName: a.courseName.isEmpty ? a.courseId : a.courseName,
+                    students: students.value!,
+                    sessions: sessions.value!,
+                    marks: marks.value ?? const {},
+                    standings: ref.read(classStandingsProvider(widget.assignmentId)).value ?? const {},
+                    format: format,
+                    period: period.range,
+                    formatDate: formatDate,
+                  ),
+                );
+              },
             ),
           if (a != null)
             IconButton(
@@ -146,6 +153,59 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             ),
     );
   }
+}
+
+/// The register export's period: the whole semester, or from–to days.
+final class _Period {
+  const _Period(this.range);
+  final ({DateTime from, DateTime to})? range;
+}
+
+Future<_Period?> _choosePeriod(BuildContext context, List<AttendanceSession> sessions) async {
+  final l10n = context.l10n;
+  final whole = await showModalBottomSheet<bool>(
+    context: context,
+    showDragHandle: true,
+    builder: (context) => SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            key: const Key('export.period.all'),
+            leading: const Icon(Icons.date_range),
+            title: Text(l10n.reportPeriodAll),
+            onTap: () => Navigator.pop(context, true),
+          ),
+          ListTile(
+            key: const Key('export.period.range'),
+            leading: const Icon(Icons.calendar_today),
+            title: Text(l10n.reportPeriodPick),
+            onTap: () => Navigator.pop(context, false),
+          ),
+        ],
+      ),
+    ),
+  );
+  if (whole == null || !context.mounted) return null;
+  if (whole) return const _Period(null);
+  final dates = [for (final s in sessions) s.date]..sort();
+  final now = DateTime.now();
+  final first = dates.isEmpty ? now.subtract(const Duration(days: 180)) : dates.first;
+  final last = dates.isEmpty || now.isAfter(dates.last) ? now : dates.last;
+  final picked = await showDateRangePicker(
+    context: context,
+    firstDate: DateTime(first.year, first.month, first.day),
+    lastDate: DateTime(last.year, last.month, last.day),
+    initialDateRange: DateTimeRange(
+      start: DateTime(last.year, last.month, last.day).subtract(const Duration(days: 6)).isBefore(first)
+          ? DateTime(first.year, first.month, first.day)
+          : DateTime(last.year, last.month, last.day).subtract(const Duration(days: 6)),
+      end: DateTime(last.year, last.month, last.day),
+    ),
+    helpText: l10n.reportPeriodPick,
+  );
+  if (picked == null) return null;
+  return _Period((from: picked.start, to: picked.end));
 }
 
 class _RegisterTable extends StatelessWidget {

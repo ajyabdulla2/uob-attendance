@@ -625,5 +625,9 @@
   "studentSourceNote": "Includes the course's lectures by all its teachers as last downloaded (refresh in the register) and this phone's records.",
   "studentCounts": "Late: {lates} · Excused: {excused} · of which on approved leave: {byLeave}",
   "studentUntilNext": "{count, plural, =1{Reaches {level} after one more absence} other{Reaches {level} after {count} more absences}}",
-  "studentOnLeave": "on approved leave"
+  "studentOnLeave": "on approved leave",
+  "reportPeriodAll": "The whole semester",
+  "reportPeriodPick": "A period…",
+  "reportPeriod": "Period: {from} to {to}",
+  "reportPeriodNote": "The absences column counts lectures in the period only; the percentage is for the whole semester."
 }

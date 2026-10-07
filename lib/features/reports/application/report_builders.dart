@@ -51,8 +51,18 @@ abstract final class ReportBuilders {
     required Map<String, Map<String, AttendanceStatus>> marks,
     required Map<String, AbsenceSummary> standings,
     required ReportFormat format,
+    ({DateTime from, DateTime to})? period,
+    String Function(DateTime)? formatDate,
   }) {
-    final ordered = [...sessions]
+    // A period keeps the lectures from [from] to [to] (whole days, inclusive).
+    bool inPeriod(AttendanceSession s) {
+      if (period == null) return true;
+      final day = DateTime.utc(s.date.year, s.date.month, s.date.day);
+      return !day.isBefore(DateTime.utc(period.from.year, period.from.month, period.from.day)) &&
+          !day.isAfter(DateTime.utc(period.to.year, period.to.month, period.to.day));
+    }
+
+    final ordered = [...sessions.where(inPeriod)]
       ..sort((a, b) => a.date != b.date ? a.date.compareTo(b.date) : a.lectureNo.compareTo(b.lectureNo));
     final chunks = <List<AttendanceSession>>[];
     final size = format == ReportFormat.pdf ? lecturesPerPdfTable : (ordered.isEmpty ? 1 : ordered.length);
@@ -97,13 +107,20 @@ abstract final class ReportBuilders {
     return Report(
       title: l10n.reportRegisterTitle(courseName),
       fileBase: '${l10n.reportRegisterSheet} $courseName ${assignment.stageId}',
-      meta: [l10n.classLabel(assignment), l10n.reportLectureCount(ordered.length)],
+      meta: [
+        l10n.classLabel(assignment),
+        if (period != null)
+          l10n.reportPeriod((formatDate ?? _isoDate)(period.from), (formatDate ?? _isoDate)(period.to)),
+        l10n.reportLectureCount(ordered.length),
+      ],
       tables: tables,
-      notes: [l10n.reportLegend, l10n.reportPercentNote],
+      notes: [l10n.reportLegend, l10n.reportPercentNote, if (period != null) l10n.reportPeriodNote],
       signatures: [l10n.reportSignTeacher, l10n.reportSignStageManager, l10n.reportSignHead],
       orientation: ReportOrientation.landscape,
     );
   }
+
+  static String _isoDate(DateTime d) => '${d.year}/${d.month}/${d.day}';
 
   static List<ReportColumn> _standingColumns(AppLocalizations l10n, {bool withCourse = true}) => [
         const ReportColumn('ت', flex: 0.5, numeric: true),

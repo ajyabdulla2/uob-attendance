@@ -73,6 +73,26 @@ void main() {
         format: f,
       );
 
+  test('class register for a period keeps only its lectures and says so', () {
+    final r = ReportBuilders.classRegister(
+      l10n,
+      assignment: assignment,
+      courseName: course.name,
+      students: students,
+      sessions: sessions,
+      marks: marks,
+      standings: standings,
+      format: ReportFormat.pdf,
+      period: (from: DateTime(2026, 10, 2), to: DateTime(2026, 10, 5)),
+    );
+    expect(r.tables.single.columns, hasLength(2 + 4 + 2));
+    expect(r.tables.single.columns[2].title, '2/10\n#1');
+    expect(r.meta, contains('الفترة: من 2026/10/2 إلى 2026/10/5'));
+    expect(r.meta, contains(l10n.reportLectureCount(4)));
+    expect(r.tables.single.rows.first.reversed.elementAt(1).text, '2', reason: 'absences in the period');
+    expect(r.notes, contains(l10n.reportPeriodNote));
+  });
+
   test('class register: PDF splits lectures into tables of 16, Excel keeps one sheet', () {
     final pdf = register(ReportFormat.pdf);
     expect(pdf.tables, hasLength(2));

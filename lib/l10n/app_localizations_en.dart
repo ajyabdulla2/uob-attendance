@@ -2362,4 +2362,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get studentOnLeave => 'on approved leave';
+
+  @override
+  String get reportPeriodAll => 'The whole semester';
+
+  @override
+  String get reportPeriodPick => 'A period…';
+
+  @override
+  String reportPeriod(String from, String to) {
+    return 'Period: $from to $to';
+  }
+
+  @override
+  String get reportPeriodNote =>
+      'The absences column counts lectures in the period only; the percentage is for the whole semester.';
 }

@@ -1792,5 +1792,19 @@
         "type": "String"
       }
     }
+  },
+  "reportPeriodAll": "الفصل كله",
+  "reportPeriodPick": "فترة محددة…",
+  "reportPeriod": "الفترة: من {from} إلى {to}",
+  "reportPeriodNote": "عمود الغياب للمحاضرات ضمن الفترة فقط، والنسبة للفصل كله.",
+  "@reportPeriod": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
   }
 }

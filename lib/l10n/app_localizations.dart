@@ -3866,6 +3866,30 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'بإجازة معتمدة'**
   String get studentOnLeave;
+
+  /// No description provided for @reportPeriodAll.
+  ///
+  /// In ar, this message translates to:
+  /// **'الفصل كله'**
+  String get reportPeriodAll;
+
+  /// No description provided for @reportPeriodPick.
+  ///
+  /// In ar, this message translates to:
+  /// **'فترة محددة…'**
+  String get reportPeriodPick;
+
+  /// No description provided for @reportPeriod.
+  ///
+  /// In ar, this message translates to:
+  /// **'الفترة: من {from} إلى {to}'**
+  String reportPeriod(String from, String to);
+
+  /// No description provided for @reportPeriodNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'عمود الغياب للمحاضرات ضمن الفترة فقط، والنسبة للفصل كله.'**
+  String get reportPeriodNote;
 }
 
 class _AppLocalizationsDelegate

@@ -2357,4 +2357,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get studentOnLeave => 'بإجازة معتمدة';
+
+  @override
+  String get reportPeriodAll => 'الفصل كله';
+
+  @override
+  String get reportPeriodPick => 'فترة محددة…';
+
+  @override
+  String reportPeriod(String from, String to) {
+    return 'الفترة: من $from إلى $to';
+  }
+
+  @override
+  String get reportPeriodNote =>
+      'عمود الغياب للمحاضرات ضمن الفترة فقط، والنسبة للفصل كله.';
 }
