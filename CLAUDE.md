@@ -222,7 +222,7 @@ tool/            سكربتات الإعداد والفحص
 | EAS Update (تحديث JS بلا بناء جديد) | **Shorebird** code push لكود Dart: `android.yml` يبني كل APK كإصدار Shorebird، و`patch.yml` يرسل الرقع | ✅ مفعّل (`shorebird.yaml`) |
 | رسالة «تحديث جديد جاهز» | `config/app` + `UpdateGate` (لافتة أو شاشة إلزامية مع رابط التنزيل) | ✅ جاهز |
 | EAS Submit | iOS: `flutter build ipa` على macOS (GitHub macOS runner أو Codemagic) ثم TestFlight | 📝 يحتاج حساب Apple (99$ سنوياً) |
-| Firebase Hosting (نسخة الحاسوب + صفحة الخصوصية) | `firebase.json` + `web/privacy.html` (تُخدَم في `/privacy.html`) | ✅ منشور على `basrah-researches.web.app` (7 تشرين الأول 2026)؛ نص الخصوصية كامل بانتظار اعتماد القسم وبريده الرسمي |
+| Firebase Hosting (نسخة الحاسوب + صفحة الخصوصية) | `firebase.json` + `web/privacy.html` (تُخدَم في `/privacy.html`) | ✅ منشور على `basrah-researches.web.app` (7 تشرين الأول 2026)؛ نص الخصوصية كامل مع بريد القسم `computer.edup@uobasrah.edu.iq`، بانتظار اعتماد القسم |
 | «اختبر القواعد قبل النشر» | `ci.yml` في كل push، و`deploy.yml` لا ينشر القواعد إلا بعد نجاح اختبارات المحاكي | ✅ جاهز |
 | Expo Push | FCM يحتاج خادماً للإرسال (غير متاح في Spark) → إشعارات داخل التطبيق من Firestore، وإشعارات محلية على الجهاز (مثل «سجلات غير مرفوعة منذ 24 ساعة») في المرحلة 2 | 📝 قرار |
 
