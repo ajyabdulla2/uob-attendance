@@ -54,7 +54,7 @@ source tool/cloud_setup.sh   # يثبّت Flutter 3.47.6 في /opt/flutter-sdk �
 ### على جهاز المطوّر (Windows، Claude Code محلياً)
 
 - المجلد: `F:\attendance\uob-attendance`. كل العمل على الفرع `claude/intelligent-keller-wlg3ld` (`main` فيه المواصفات فقط حتى الدمج). `git pull` قبل البدء و`git push` بعد كل التزام، ولا تعمل على الفرع في جلسة سحابية ومحلية معاً.
-- Flutter 3.47.6 وNode و`firebase` CLI مثبّتة على الجهاز وفي PATH، فلا حاجة لتعديل PATH. `source tool/cloud_setup.sh` هنا يجلب الحزم والمحاكي فقط (لا يثبّت Flutter إلا على Linux). المحاكي يحتاج Java 11+.
+- Flutter 3.47.6 (في `C:\src\flutter`) وNode و`firebase` CLI مثبّتة على الجهاز وفي PATH، فلا حاجة لتعديل PATH. كان عليه 3.47.1 (Dart 3.13.1) ففشل `pub get` لأن المشروع يشترط `^3.13.5`؛ تحقّق بـ `flutter --version` ولا تستعمل `flutter upgrade` (يقفز لأحدث إصدار). `source tool/cloud_setup.sh` هنا يجلب الحزم والمحاكي فقط (لا يثبّت Flutter إلا على Linux). المحاكي يحتاج Java 11+.
 - الملفات الحقيقية موجودة هنا ومُهمَلة في git: `lib/firebase_options.dart` (السكربت `ensure_firebase_options.sh` لا يمسّه)، و`android/key.properties` والمفتاح و`google-services.json` إن وُجدت. لا تعرض محتواها ولا تلتزمها.
 - لا قيود شبكة: `./tool/build_drift_web.sh` يعمل هنا. بناء APK محلياً يحتاج Android Studio (SDK)؛ وإلا فـ GitHub Actions كما في السحابة. `gh` غير مضمون؛ أدوات GitHub MCP أو موقع GitHub.
 - سكربتات `tool/*.sh` تعمل في Git Bash، و`.gitattributes` يثبّت نهايات LF لها. إن ظهر `$'\r': command not found` فالملفات سُحبت بـ CRLF قبله: مع شجرة نظيفة `git rm -r -q --cached . && git reset -q --hard`.
@@ -222,7 +222,7 @@ tool/            سكربتات الإعداد والفحص
 | EAS Update (تحديث JS بلا بناء جديد) | **Shorebird** code push لكود Dart: `android.yml` يبني كل APK كإصدار Shorebird، و`patch.yml` يرسل الرقع | ✅ مفعّل (`shorebird.yaml`) |
 | رسالة «تحديث جديد جاهز» | `config/app` + `UpdateGate` (لافتة أو شاشة إلزامية مع رابط التنزيل) | ✅ جاهز |
 | EAS Submit | iOS: `flutter build ipa` على macOS (GitHub macOS runner أو Codemagic) ثم TestFlight | 📝 يحتاج حساب Apple (99$ سنوياً) |
-| Firebase Hosting (نسخة الحاسوب + صفحة الخصوصية) | `firebase.json` + `web/privacy.html` (تُخدَم في `/privacy.html`) | ✅ جاهز (الصفحة مسودة) |
+| Firebase Hosting (نسخة الحاسوب + صفحة الخصوصية) | `firebase.json` + `web/privacy.html` (تُخدَم في `/privacy.html`) | ✅ منشور على `basrah-researches.web.app` (7 تشرين الأول 2026)؛ نص الخصوصية كامل بانتظار اعتماد القسم وبريده الرسمي |
 | «اختبر القواعد قبل النشر» | `ci.yml` في كل push، و`deploy.yml` لا ينشر القواعد إلا بعد نجاح اختبارات المحاكي | ✅ جاهز |
 | Expo Push | FCM يحتاج خادماً للإرسال (غير متاح في Spark) → إشعارات داخل التطبيق من Firestore، وإشعارات محلية على الجهاز (مثل «سجلات غير مرفوعة منذ 24 ساعة») في المرحلة 2 | 📝 قرار |
 
