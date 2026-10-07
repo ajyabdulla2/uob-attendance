@@ -1852,5 +1852,33 @@
         "type": "int"
       }
     }
+  },
+  "chartTitle": "نسب الغياب",
+  "chartHelp": "متوسط نسبة غياب الطلبة (من لم يغب يُحسب صفراً) للفصل الحالي. يقرأ إحصائيات كل المراحل، فاعرضه عند الحاجة.",
+  "chartShow": "عرض الرسم",
+  "chartByStage": "حسب المرحلة",
+  "chartByCourse": "حسب المادة — {stage}",
+  "chartTapStage": "المس مرحلة لعرض موادها.",
+  "chartNoData": "لا بيانات بعد.",
+  "chartBarTip": "متوسط الغياب {mean}٪ · في التنبيه فأعلى: {alert} من {students} طالب",
+  "@chartByCourse": {
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "@chartBarTip": {
+    "placeholders": {
+      "mean": {
+        "type": "String"
+      },
+      "alert": {
+        "type": "int"
+      },
+      "students": {
+        "type": "int"
+      }
+    }
   }
 }

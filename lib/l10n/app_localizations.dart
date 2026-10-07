@@ -4082,6 +4082,54 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'أُرسلت الرسالة.'**
   String get notifSent;
+
+  /// No description provided for @chartTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسب الغياب'**
+  String get chartTitle;
+
+  /// No description provided for @chartHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'متوسط نسبة غياب الطلبة (من لم يغب يُحسب صفراً) للفصل الحالي. يقرأ إحصائيات كل المراحل، فاعرضه عند الحاجة.'**
+  String get chartHelp;
+
+  /// No description provided for @chartShow.
+  ///
+  /// In ar, this message translates to:
+  /// **'عرض الرسم'**
+  String get chartShow;
+
+  /// No description provided for @chartByStage.
+  ///
+  /// In ar, this message translates to:
+  /// **'حسب المرحلة'**
+  String get chartByStage;
+
+  /// No description provided for @chartByCourse.
+  ///
+  /// In ar, this message translates to:
+  /// **'حسب المادة — {stage}'**
+  String chartByCourse(String stage);
+
+  /// No description provided for @chartTapStage.
+  ///
+  /// In ar, this message translates to:
+  /// **'المس مرحلة لعرض موادها.'**
+  String get chartTapStage;
+
+  /// No description provided for @chartNoData.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا بيانات بعد.'**
+  String get chartNoData;
+
+  /// No description provided for @chartBarTip.
+  ///
+  /// In ar, this message translates to:
+  /// **'متوسط الغياب {mean}٪ · في التنبيه فأعلى: {alert} من {students} طالب'**
+  String chartBarTip(String mean, int alert, int students);
 }
 
 class _AppLocalizationsDelegate

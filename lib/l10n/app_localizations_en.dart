@@ -2485,4 +2485,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifSent => 'Message sent.';
+
+  @override
+  String get chartTitle => 'Absence rates';
+
+  @override
+  String get chartHelp =>
+      'Mean absence percentage of the students (no absence counts as zero) this semester. It reads every stage’s statistics, so show it when needed.';
+
+  @override
+  String get chartShow => 'Show chart';
+
+  @override
+  String get chartByStage => 'By stage';
+
+  @override
+  String chartByCourse(String stage) {
+    return 'By course — $stage';
+  }
+
+  @override
+  String get chartTapStage => 'Tap a stage to see its courses.';
+
+  @override
+  String get chartNoData => 'No data yet.';
+
+  @override
+  String chartBarTip(String mean, int alert, int students) {
+    return 'Mean absence $mean% · at alert or above: $alert of $students students';
+  }
 }

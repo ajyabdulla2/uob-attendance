@@ -661,5 +661,13 @@
   "notifMessageTitle": "Title",
   "notifMessageBody": "Message",
   "notifSend": "Send",
-  "notifSent": "Message sent."
+  "notifSent": "Message sent.",
+  "chartTitle": "Absence rates",
+  "chartHelp": "Mean absence percentage of the students (no absence counts as zero) this semester. It reads every stage’s statistics, so show it when needed.",
+  "chartShow": "Show chart",
+  "chartByStage": "By stage",
+  "chartByCourse": "By course — {stage}",
+  "chartTapStage": "Tap a stage to see its courses.",
+  "chartNoData": "No data yet.",
+  "chartBarTip": "Mean absence {mean}% · at alert or above: {alert} of {students} students"
 }

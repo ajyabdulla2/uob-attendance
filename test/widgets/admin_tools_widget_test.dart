@@ -68,6 +68,35 @@ void main() {
         findsOneWidget);
   });
 
+  testWidgets('department dashboard: absence chart by stage, then by course', (tester) async {
+    final db = await seed();
+    await db.doc('academicYears/2026-2027').set({'label': '2026-2027', 'semester': 1, 'active': true, 'lockHours': 48});
+    await db.doc('stats/${course.id}__1').set({
+      'courseId': course.id,
+      'studentId': '1',
+      'stageId': stage.id,
+      'bySession': {
+        for (var d = 1; d <= 3; d++) '${course.id}__theory__all__2026100${d}__1': 'absent',
+      },
+    });
+    await pumpApp(tester, firestore: db, user: MockUser(email: adminEmail, isEmailVerified: true), profile: admin);
+    await tester.scrollUntilVisible(find.byKey(const Key('home.department')), 200);
+    await tester.tap(find.byKey(const Key('home.department')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('dept.charts.show')));
+    await tester.pumpAndSettle();
+    // 3 units × 15 weeks = 45 lectures; 3/45 = 6.7% for one of two students.
+    final bar = find.byKey(Key('chart.stage.${stage.id}'));
+    expect(bar, findsOneWidget);
+    expect(find.descendant(of: bar, matching: find.text('3.3%')), findsOneWidget);
+    expect(find.byKey(Key('chart.stage.${other.id}')), findsNothing, reason: 'no students');
+    await tester.tap(bar);
+    await tester.pumpAndSettle();
+    final courseBar = find.byKey(Key('chart.course.${stage.id}.0'));
+    expect(courseBar, findsOneWidget);
+    expect(find.descendant(of: courseBar, matching: find.text('البرمجة')), findsOneWidget);
+  });
+
   testWidgets('a recent backup silences the home reminder', (tester) async {
     final db = await seed();
     await db.doc('config/backup').set({'at': Timestamp.now(), 'by': adminEmail, 'documents': 10, 'withRecords': true});

@@ -9,6 +9,7 @@ import '../../../l10n/l10n.dart';
 import '../../backup/application/backup_providers.dart';
 import '../application/department_providers.dart';
 import '../data/department_repository.dart';
+import 'absence_charts.dart';
 
 /// لوحة القسم (admins): every stage at a glance, pending requests and the
 /// backup reminder. Built from count() aggregations only.
@@ -68,6 +69,8 @@ class DepartmentDashboardScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
+                const SizedBox(height: 12),
+                const AbsenceChartsCard(),
                 const SizedBox(height: 12),
                 for (final c in s.stages) _StageCard(counts: c),
               ],

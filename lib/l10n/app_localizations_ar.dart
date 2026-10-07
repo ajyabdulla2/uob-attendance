@@ -2480,4 +2480,33 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get notifSent => 'أُرسلت الرسالة.';
+
+  @override
+  String get chartTitle => 'نسب الغياب';
+
+  @override
+  String get chartHelp =>
+      'متوسط نسبة غياب الطلبة (من لم يغب يُحسب صفراً) للفصل الحالي. يقرأ إحصائيات كل المراحل، فاعرضه عند الحاجة.';
+
+  @override
+  String get chartShow => 'عرض الرسم';
+
+  @override
+  String get chartByStage => 'حسب المرحلة';
+
+  @override
+  String chartByCourse(String stage) {
+    return 'حسب المادة — $stage';
+  }
+
+  @override
+  String get chartTapStage => 'المس مرحلة لعرض موادها.';
+
+  @override
+  String get chartNoData => 'لا بيانات بعد.';
+
+  @override
+  String chartBarTip(String mean, int alert, int students) {
+    return 'متوسط الغياب $mean٪ · في التنبيه فأعلى: $alert من $students طالب';
+  }
 }
