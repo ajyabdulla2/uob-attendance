@@ -3944,6 +3944,144 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'لا نتائج مطابقة.'**
   String get auditNoMatch;
+
+  /// No description provided for @notifTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإشعارات'**
+  String get notifTitle;
+
+  /// No description provided for @notifCompose.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسالة جديدة'**
+  String get notifCompose;
+
+  /// No description provided for @notifMessages.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسائل القسم'**
+  String get notifMessages;
+
+  /// No description provided for @notifNoMessages.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا رسائل.'**
+  String get notifNoMessages;
+
+  /// No description provided for @notifRequests.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبات التعديل'**
+  String get notifRequests;
+
+  /// No description provided for @notifDecisions.
+  ///
+  /// In ar, this message translates to:
+  /// **'قرارات طلباتك'**
+  String get notifDecisions;
+
+  /// No description provided for @notifAlerts.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبة وصلوا حدّ التنبيه'**
+  String get notifAlerts;
+
+  /// No description provided for @notifAlertsOnPhone.
+  ///
+  /// In ar, this message translates to:
+  /// **'تظهر طلبة صفوفك على الهاتف.'**
+  String get notifAlertsOnPhone;
+
+  /// No description provided for @notifNoAlerts.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا طلبة في مستوى التنبيه أو أعلى.'**
+  String get notifNoAlerts;
+
+  /// No description provided for @notifNew.
+  ///
+  /// In ar, this message translates to:
+  /// **'جديد'**
+  String get notifNew;
+
+  /// No description provided for @notifApproved.
+  ///
+  /// In ar, this message translates to:
+  /// **'وافق مسؤول المرحلة على طلبك'**
+  String get notifApproved;
+
+  /// No description provided for @notifRejected.
+  ///
+  /// In ar, this message translates to:
+  /// **'رُفض طلبك'**
+  String get notifRejected;
+
+  /// No description provided for @notifStageAlerts.
+  ///
+  /// In ar, this message translates to:
+  /// **'{stage}: افتح لعرض الطلبة'**
+  String notifStageAlerts(String stage);
+
+  /// No description provided for @notifOpenWarnings.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count, plural, =1{طالب واحد — فتح النسب والقوائم} =2{طالبان — فتح النسب والقوائم} few{{count} طلبة — فتح النسب والقوائم} other{{count} طالباً — فتح النسب والقوائم}}'**
+  String notifOpenWarnings(int count);
+
+  /// No description provided for @notifAudience.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلى'**
+  String get notifAudience;
+
+  /// No description provided for @notifToAll.
+  ///
+  /// In ar, this message translates to:
+  /// **'الجميع'**
+  String get notifToAll;
+
+  /// No description provided for @notifToTeachers.
+  ///
+  /// In ar, this message translates to:
+  /// **'التدريسيون'**
+  String get notifToTeachers;
+
+  /// No description provided for @notifToStageManagers.
+  ///
+  /// In ar, this message translates to:
+  /// **'مسؤولو المراحل'**
+  String get notifToStageManagers;
+
+  /// No description provided for @notifToStage.
+  ///
+  /// In ar, this message translates to:
+  /// **'مرحلة محددة'**
+  String get notifToStage;
+
+  /// No description provided for @notifMessageTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'العنوان'**
+  String get notifMessageTitle;
+
+  /// No description provided for @notifMessageBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'نص الرسالة'**
+  String get notifMessageBody;
+
+  /// No description provided for @notifSend.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال'**
+  String get notifSend;
+
+  /// No description provided for @notifSent.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُرسلت الرسالة.'**
+  String get notifSent;
 }
 
 class _AppLocalizationsDelegate

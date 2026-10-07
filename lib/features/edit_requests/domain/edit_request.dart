@@ -25,6 +25,7 @@ final class EditRequest {
     this.status = EditRequestStatus.pending,
     this.createdAt,
     this.decidedBy,
+    this.decidedAt,
     this.decisionNote = '',
     this.departmentId = AppConfig.departmentId,
   });
@@ -42,6 +43,7 @@ final class EditRequest {
   final EditRequestStatus status;
   final DateTime? createdAt;
   final String? decidedBy;
+  final DateTime? decidedAt;
   final String decisionNote;
   final String departmentId;
 
@@ -60,6 +62,7 @@ final class EditRequest {
         createdAt: Fs.date(map['createdAt']),
         status: Fs.enumByName(EditRequestStatus.values, map['status'], EditRequestStatus.pending),
         decidedBy: Fs.strOrNull(map['decidedBy']),
+        decidedAt: Fs.date(map['decidedAt']),
         decisionNote: Fs.str(map['decisionNote']),
         departmentId: Fs.str(map['departmentId'], AppConfig.departmentId),
       );

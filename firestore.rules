@@ -533,12 +533,37 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // ============================================================ messages ==
+    // رسائل الإدارة (in-app notifications; FCM needs a server, not on Spark).
+    // Admins write to anyone; a stage manager to the stages they manage.
+    // Every active account reads them; the app shows those meant for it.
+    function validMessage() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['title', 'body', 'audience', 'stageId', 'createdBy', 'createdAt', 'departmentId'])
+        && nonEmptyString(d.title) && d.title.size() <= 120
+        && d.get('body', '') is string && d.get('body', '').size() <= 2000
+        && d.audience in ['all', 'teachers', 'stageManagers', 'stage']
+        && (d.audience != 'stage' || validStageId(d.get('stageId', null)))
+        && d.createdBy == myEmail()
+        && d.createdAt == request.time;
+    }
+
+    match /messages/{messageId} {
+      allow read: if isActive();
+      allow create: if validMessage()
+                    && (isAdmin()
+                        || (request.resource.data.audience == 'stage'
+                            && inStageScope(request.resource.data.stageId)));
+      allow delete: if isAdmin() || (isActive() && resource.data.createdBy == myEmail());
+      allow update: if false;
+    }
+
     // ========================================================= rulesVersion ==
     // Canary (lib/core/firebase/rules_version.dart): the app reads
     // rulesVersion/<its version>; a refusal means older rules are deployed.
     // Change both together whenever these rules change.
     match /rulesVersion/{version} {
-      allow get: if version == '2026-10-07';
+      allow get: if version == '2026-10-07b';
     }
 
     // ============================================================ auditLog ==

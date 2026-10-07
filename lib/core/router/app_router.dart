@@ -21,6 +21,7 @@ import '../../features/home/presentation/app_shell.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/import/presentation/import_screen.dart';
 import '../../features/leaves/presentation/leaves_screen.dart';
+import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/settings/presentation/profile_screen.dart';
 import '../../features/stats/presentation/stage_dashboard_screen.dart';
 import '../../features/users/presentation/accounts_screen.dart';
@@ -49,6 +50,7 @@ abstract final class Routes {
   static const departmentDashboard = '/department';
   static const backup = '/backup';
   static const auditLog = '/audit-log';
+  static const notifications = '/notifications';
 
   /// Record screen of a class, optionally on a given lecture.
   static String recordFor(String assignmentId, {DateTime? date, int? lectureNo}) => Uri(path: record, queryParameters: {
@@ -128,6 +130,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.departmentDashboard, builder: (_, _) => const DepartmentDashboardScreen()),
       GoRoute(path: Routes.backup, builder: (_, _) => const BackupScreen()),
       GoRoute(path: Routes.auditLog, builder: (_, _) => const AuditLogScreen()),
+      GoRoute(path: Routes.notifications, builder: (_, _) => const NotificationsScreen()),
       GoRoute(
         path: Routes.register,
         builder: (_, s) => RegisterScreen(assignmentId: s.uri.queryParameters['a'] ?? ''),

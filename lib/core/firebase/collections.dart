@@ -18,6 +18,9 @@ abstract final class Col {
   /// Join requests from verified but unprovisioned e-mails (doc ID = e-mail).
   static const accessRequests = 'accessRequests';
 
+  /// رسائل الإدارة (in-app notifications).
+  static const messages = 'messages';
+
   /// App-wide settings (`config/app`: published versions + download links).
   static const config = 'config';
 }

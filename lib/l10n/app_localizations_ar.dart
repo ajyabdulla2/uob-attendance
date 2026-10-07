@@ -2399,4 +2399,85 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get auditNoMatch => 'لا نتائج مطابقة.';
+
+  @override
+  String get notifTitle => 'الإشعارات';
+
+  @override
+  String get notifCompose => 'رسالة جديدة';
+
+  @override
+  String get notifMessages => 'رسائل القسم';
+
+  @override
+  String get notifNoMessages => 'لا رسائل.';
+
+  @override
+  String get notifRequests => 'طلبات التعديل';
+
+  @override
+  String get notifDecisions => 'قرارات طلباتك';
+
+  @override
+  String get notifAlerts => 'طلبة وصلوا حدّ التنبيه';
+
+  @override
+  String get notifAlertsOnPhone => 'تظهر طلبة صفوفك على الهاتف.';
+
+  @override
+  String get notifNoAlerts => 'لا طلبة في مستوى التنبيه أو أعلى.';
+
+  @override
+  String get notifNew => 'جديد';
+
+  @override
+  String get notifApproved => 'وافق مسؤول المرحلة على طلبك';
+
+  @override
+  String get notifRejected => 'رُفض طلبك';
+
+  @override
+  String notifStageAlerts(String stage) {
+    return '$stage: افتح لعرض الطلبة';
+  }
+
+  @override
+  String notifOpenWarnings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طالباً — فتح النسب والقوائم',
+      few: '$count طلبة — فتح النسب والقوائم',
+      two: 'طالبان — فتح النسب والقوائم',
+      one: 'طالب واحد — فتح النسب والقوائم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get notifAudience => 'إلى';
+
+  @override
+  String get notifToAll => 'الجميع';
+
+  @override
+  String get notifToTeachers => 'التدريسيون';
+
+  @override
+  String get notifToStageManagers => 'مسؤولو المراحل';
+
+  @override
+  String get notifToStage => 'مرحلة محددة';
+
+  @override
+  String get notifMessageTitle => 'العنوان';
+
+  @override
+  String get notifMessageBody => 'نص الرسالة';
+
+  @override
+  String get notifSend => 'إرسال';
+
+  @override
+  String get notifSent => 'أُرسلت الرسالة.';
 }

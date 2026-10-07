@@ -14,6 +14,7 @@ import '../../attendance/presentation/sync_widgets.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../auth/domain/app_user.dart';
 import '../../department/presentation/department_dashboard_screen.dart';
+import '../../notifications/application/notifications_providers.dart';
 import '../../users/application/users_providers.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -25,7 +26,10 @@ class HomeScreen extends ConsumerWidget {
     final user = ref.watch(signedInUserProvider);
     final perms = ref.watch(permissionsProvider);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.appTitle)),
+      appBar: AppBar(
+        title: Text(l10n.appTitle),
+        actions: const [_NotificationsButton()],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -400,4 +404,24 @@ class _CourseCard extends StatelessWidget {
           l10n.groupLabel(a.target),
         ],
       ].join(' · ');
+}
+
+/// «الإشعارات» with the number of new items.
+class _NotificationsButton extends ConsumerWidget {
+  const _NotificationsButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final unread = ref.watch(unreadNotificationsProvider);
+    return IconButton(
+      key: const Key('home.notifications'),
+      tooltip: context.l10n.notifTitle,
+      onPressed: () => context.push(Routes.notifications),
+      icon: Badge(
+        isLabelVisible: unread > 0,
+        label: Text('$unread'),
+        child: Icon(unread > 0 ? Icons.mark_email_unread_outlined : Icons.inbox),
+      ),
+    );
+  }
 }

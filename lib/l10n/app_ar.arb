@@ -1815,5 +1815,42 @@
   "auditAnyDate": "كل التواريخ",
   "auditClear": "مسح",
   "auditApply": "بحث",
-  "auditNoMatch": "لا نتائج مطابقة."
+  "auditNoMatch": "لا نتائج مطابقة.",
+  "notifTitle": "الإشعارات",
+  "notifCompose": "رسالة جديدة",
+  "notifMessages": "رسائل القسم",
+  "notifNoMessages": "لا رسائل.",
+  "notifRequests": "طلبات التعديل",
+  "notifDecisions": "قرارات طلباتك",
+  "notifAlerts": "طلبة وصلوا حدّ التنبيه",
+  "notifAlertsOnPhone": "تظهر طلبة صفوفك على الهاتف.",
+  "notifNoAlerts": "لا طلبة في مستوى التنبيه أو أعلى.",
+  "notifNew": "جديد",
+  "notifApproved": "وافق مسؤول المرحلة على طلبك",
+  "notifRejected": "رُفض طلبك",
+  "notifStageAlerts": "{stage}: افتح لعرض الطلبة",
+  "notifOpenWarnings": "{count, plural, =1{طالب واحد — فتح النسب والقوائم} =2{طالبان — فتح النسب والقوائم} few{{count} طلبة — فتح النسب والقوائم} other{{count} طالباً — فتح النسب والقوائم}}",
+  "notifAudience": "إلى",
+  "notifToAll": "الجميع",
+  "notifToTeachers": "التدريسيون",
+  "notifToStageManagers": "مسؤولو المراحل",
+  "notifToStage": "مرحلة محددة",
+  "notifMessageTitle": "العنوان",
+  "notifMessageBody": "نص الرسالة",
+  "notifSend": "إرسال",
+  "notifSent": "أُرسلت الرسالة.",
+  "@notifStageAlerts": {
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "@notifOpenWarnings": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

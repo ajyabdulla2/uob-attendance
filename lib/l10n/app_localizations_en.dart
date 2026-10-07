@@ -2405,4 +2405,84 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get auditNoMatch => 'No matching entries.';
+
+  @override
+  String get notifTitle => 'Notifications';
+
+  @override
+  String get notifCompose => 'New message';
+
+  @override
+  String get notifMessages => 'Department messages';
+
+  @override
+  String get notifNoMessages => 'No messages.';
+
+  @override
+  String get notifRequests => 'Edit requests';
+
+  @override
+  String get notifDecisions => 'Decisions on your requests';
+
+  @override
+  String get notifAlerts => 'Students at alert level';
+
+  @override
+  String get notifAlertsOnPhone =>
+      'Students of your classes appear on the phone.';
+
+  @override
+  String get notifNoAlerts => 'No students at alert level or above.';
+
+  @override
+  String get notifNew => 'New';
+
+  @override
+  String get notifApproved => 'The stage manager approved your request';
+
+  @override
+  String get notifRejected => 'Your request was rejected';
+
+  @override
+  String notifStageAlerts(String stage) {
+    return '$stage: open to list the students';
+  }
+
+  @override
+  String notifOpenWarnings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count students — open percentages and lists',
+      one: 'One student — open percentages and lists',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get notifAudience => 'To';
+
+  @override
+  String get notifToAll => 'Everyone';
+
+  @override
+  String get notifToTeachers => 'Teachers';
+
+  @override
+  String get notifToStageManagers => 'Stage managers';
+
+  @override
+  String get notifToStage => 'A stage';
+
+  @override
+  String get notifMessageTitle => 'Title';
+
+  @override
+  String get notifMessageBody => 'Message';
+
+  @override
+  String get notifSend => 'Send';
+
+  @override
+  String get notifSent => 'Message sent.';
 }
