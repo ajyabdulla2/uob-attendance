@@ -324,6 +324,24 @@ const S4 = 'النشر من GitHub والبيانات';
       }
     }
 
+    // Composite indexes from firestore.indexes.json (deployed with the rules).
+    const wanted = JSON.parse(readFileSync(join(root, 'firestore.indexes.json'), 'utf8')).indexes ?? [];
+    const admin = `https://firestore.googleapis.com/v1/projects/${project}/databases/(default)/collectionGroups`;
+    for (const ix of wanted) {
+      const fields = ix.fields.map((f) => `${f.fieldPath} ${f.order === 'DESCENDING' ? '↓' : '↑'}`).join('، ');
+      const label = `فهرس ${ix.collectionGroup} (${fields})`;
+      const r = await request(`${admin}/${ix.collectionGroup}/indexes`, bearer);
+      if (r.status !== 200) {
+        report(S4, label, 'warn', `تعذّرت القراءة (${errorMessage(r)}) — يحتاج دور Datastore Index Admin`);
+        continue;
+      }
+      const same = (r.json.indexes ?? []).find((d) => d.queryScope === ix.queryScope
+        && JSON.stringify(d.fields.filter((f) => f.fieldPath !== '__name__').map((f) => [f.fieldPath, f.order]))
+          === JSON.stringify(ix.fields.map((f) => [f.fieldPath, f.order])));
+      if (!same) report(S4, label, 'fail', 'غير منشور؛ انشر: firebase deploy --only firestore:indexes');
+      else report(S4, label, same.state === 'READY' ? 'ok' : 'warn', same.state === 'READY' ? 'جاهز' : `قيد الإنشاء (${same.state})`);
+    }
+
     // Data written by the first steps (needs a role that can read Firestore data).
     const base = `https://firestore.googleapis.com/v1/projects/${project}/databases/(default)/documents`;
     const post = (path, body) => request(`${base}${path}`, {
