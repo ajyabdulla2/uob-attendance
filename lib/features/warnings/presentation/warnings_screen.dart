@@ -62,14 +62,14 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
             ListTile(title: Text(s.student.fullName), subtitle: Text(bidiIsolate(s.student.universityId))),
             ListTile(
               key: const Key('student.summary'),
-              leading: const Icon(Icons.picture_as_pdf),
+              leading: const Icon(Icons.report_outlined),
               title: Text(l10n.reportStudentAction),
               onTap: () => Navigator.pop(context, 'summary'),
             ),
             if (s.level == WarningLevel.warning || s.level == WarningLevel.dismissal)
               ListTile(
                 key: const Key('student.letter'),
-                leading: const Icon(Icons.mail_outline),
+                leading: const Icon(Icons.email_outlined),
                 title: Text(l10n.letterAction),
                 subtitle: Text(_courseText(l10n, s)),
                 onTap: () => Navigator.pop(context, 'letter'),
@@ -157,7 +157,7 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
               IconButton(
                 key: const Key('warn.stats'),
                 tooltip: l10n.reportStatsAction,
-                icon: const Icon(Icons.bar_chart),
+                icon: const Icon(Icons.trending_up),
                 onPressed: () {
                   final standings = ref.read(stageStandingsProvider(stage.id)).value;
                   if (standings == null) return;
@@ -300,7 +300,7 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
                 child: OutlinedButton.icon(
                   key: const Key('warn.export'),
-                  icon: const Icon(Icons.file_download_outlined),
+                  icon: const Icon(Icons.download),
                   label: Text(l10n.reportListAction),
                   onPressed: () => exportReport(
                     context,
@@ -321,7 +321,7 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                   child: OutlinedButton.icon(
                     key: const Key('warn.letters'),
-                    icon: const Icon(Icons.mail_outline),
+                    icon: const Icon(Icons.email_outlined),
                     label: Text(l10n.letterBatchAction),
                     onPressed: () {
                       final year = ref.read(activeYearProvider).value;
@@ -543,7 +543,7 @@ class _DecisionScreenState extends ConsumerState<DecisionScreen> {
           IconButton(
             key: const Key('decision.export'),
             tooltip: l10n.reportExport,
-            icon: const Icon(Icons.file_download_outlined),
+            icon: const Icon(Icons.download),
             onPressed: () => exportReport(
               context,
               ref,

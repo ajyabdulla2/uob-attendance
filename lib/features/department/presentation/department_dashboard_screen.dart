@@ -44,7 +44,7 @@ class DepartmentDashboardScreen extends ConsumerWidget {
                     children: [
                       ListTile(
                         key: const Key('dept.accounts'),
-                        leading: const Icon(Icons.people_outline),
+                        leading: const Icon(Icons.groups_outlined),
                         title: Text(l10n.deptActiveAccounts(s.activeAccounts)),
                       ),
                       ListTile(
@@ -96,9 +96,9 @@ class _StageCard extends StatelessWidget {
                   spacing: 8,
                   runSpacing: 4,
                   children: [
-                    _chip(Icons.school_outlined, l10n.deptStudents(counts.students)),
+                    _chip(Icons.person_outline, l10n.deptStudents(counts.students)),
                     _chip(Icons.menu_book_outlined, l10n.deptCourses(counts.courses)),
-                    _chip(Icons.today, l10n.deptLecturesToday(counts.lecturesToday)),
+                    _chip(Icons.calendar_today, l10n.deptLecturesToday(counts.lecturesToday)),
                     if (counts.pendingRequests > 0)
                       _chip(Icons.edit_calendar, l10n.deptPendingRequests(counts.pendingRequests), highlight: theme),
                   ],
@@ -138,7 +138,7 @@ class BackupReminderCard extends ConsumerWidget {
       key: const Key('backup.reminder'),
       color: due ? theme.colorScheme.errorContainer : null,
       child: ListTile(
-        leading: Icon(due ? Icons.warning_amber : Icons.verified_outlined),
+        leading: Icon(due ? Icons.warning_amber : Icons.verified),
         title: Text(at == null ? l10n.backupNever : l10n.backupAgo(days!)),
         subtitle: due ? Text(l10n.backupDue) : null,
         trailing: const Icon(Icons.chevron_right),

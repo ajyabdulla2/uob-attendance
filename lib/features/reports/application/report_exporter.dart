@@ -83,14 +83,14 @@ Future<void> exportReport(
               children: [
                 ListTile(
                   key: const Key('export.pdf'),
-                  leading: const Icon(Icons.picture_as_pdf),
+                  leading: const Icon(Icons.report_outlined),
                   title: Text(l10n.reportPdf),
                   subtitle: Text(l10n.reportPdfHelp),
                   onTap: () => Navigator.pop(context, ReportFormat.pdf),
                 ),
                 ListTile(
                   key: const Key('export.excel'),
-                  leading: const Icon(Icons.table_view),
+                  leading: const Icon(Icons.table_chart_outlined),
                   title: Text(l10n.reportExcel),
                   subtitle: Text(l10n.reportExcelHelp),
                   onTap: () => Navigator.pop(context, ReportFormat.excel),

@@ -95,7 +95,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             IconButton(
               key: const Key('register.export'),
               tooltip: l10n.reportRegisterAction,
-              icon: const Icon(Icons.file_download_outlined),
+              icon: const Icon(Icons.download),
               onPressed: () => exportReport(
                 context,
                 ref,

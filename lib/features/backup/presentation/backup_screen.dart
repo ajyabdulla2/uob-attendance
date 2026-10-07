@@ -55,7 +55,7 @@ class _LastBackupCard extends ConsumerWidget {
     return Card(
       child: ListTile(
         key: const Key('backup.last'),
-        leading: const Icon(Icons.history),
+        leading: const Icon(Icons.schedule),
         title: Text(at == null
             ? l10n.backupNever
             : l10n.backupLast(m.formatMediumDate(at.toLocal()), m.formatTimeOfDay(TimeOfDay.fromDateTime(at.toLocal())))),
@@ -166,7 +166,7 @@ class _CreateCardState extends ConsumerState<_CreateCard> {
               OutlinedButton.icon(
                 key: const Key('backup.count'),
                 onPressed: _busy ? null : _count,
-                icon: const Icon(Icons.calculate_outlined),
+                icon: const Icon(Icons.preview),
                 label: Text(l10n.backupCount),
               )
             else ...[
@@ -184,7 +184,7 @@ class _CreateCardState extends ConsumerState<_CreateCard> {
                 controller: _password,
                 obscureText: true,
                 textDirection: TextDirection.ltr,
-                decoration: InputDecoration(labelText: l10n.backupPassword, prefixIcon: const Icon(Icons.key)),
+                decoration: InputDecoration(labelText: l10n.backupPassword, prefixIcon: const Icon(Icons.password)),
               ),
               const SizedBox(height: 8),
               TextField(
@@ -192,7 +192,7 @@ class _CreateCardState extends ConsumerState<_CreateCard> {
                 controller: _confirm,
                 obscureText: true,
                 textDirection: TextDirection.ltr,
-                decoration: InputDecoration(labelText: l10n.backupPasswordConfirm, prefixIcon: const Icon(Icons.key)),
+                decoration: InputDecoration(labelText: l10n.backupPasswordConfirm, prefixIcon: const Icon(Icons.password)),
               ),
               const SizedBox(height: 4),
               Text(l10n.backupPasswordWarning, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error)),
@@ -200,7 +200,7 @@ class _CreateCardState extends ConsumerState<_CreateCard> {
               FilledButton.icon(
                 key: const Key('backup.create'),
                 onPressed: _busy ? null : _create,
-                icon: const Icon(Icons.save_alt),
+                icon: const Icon(Icons.save),
                 label: Text(l10n.backupCreate),
               ),
             ],
@@ -318,7 +318,7 @@ class _RestoreCardState extends ConsumerState<_RestoreCard> {
             OutlinedButton.icon(
               key: const Key('restore.pick'),
               onPressed: _busy ? null : _pick,
-              icon: const Icon(Icons.folder_open),
+              icon: const Icon(Icons.attach_file),
               label: Text(_fileName ?? l10n.backupPickFile),
             ),
             if (_bytes != null && data == null) ...[
@@ -328,7 +328,7 @@ class _RestoreCardState extends ConsumerState<_RestoreCard> {
                 controller: _password,
                 obscureText: true,
                 textDirection: TextDirection.ltr,
-                decoration: InputDecoration(labelText: l10n.backupPassword, prefixIcon: const Icon(Icons.key)),
+                decoration: InputDecoration(labelText: l10n.backupPassword, prefixIcon: const Icon(Icons.password)),
                 onSubmitted: (_) => _open(),
               ),
               const SizedBox(height: 8),
@@ -364,7 +364,7 @@ class _RestoreCardState extends ConsumerState<_RestoreCard> {
                 key: const Key('restore.run'),
                 style: FilledButton.styleFrom(backgroundColor: theme.colorScheme.error),
                 onPressed: _busy ? null : () => _restore(data),
-                icon: const Icon(Icons.settings_backup_restore),
+                icon: const Icon(Icons.cloud_download_outlined),
                 label: Text(l10n.backupRestore),
               ),
             ],

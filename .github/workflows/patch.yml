@@ -8,7 +8,7 @@ name: Shorebird patch
 
 on:
   push:
-    tags: ['patch/*']
+    tags: ['patch/**']
 
 env:
   FLUTTER_VERSION: 3.47.6
@@ -83,6 +83,25 @@ jobs:
 
       - name: Patch the release
         run: |
+          # patch/1.3.0+12 — or patch/1.3.0+12/2 for a second patch (tags
+          # cannot be reused).
           release="${GITHUB_REF_NAME#patch/}"
+          release="${release%%/*}"
           echo "Patching release $release"
-          shorebird patch android --release-version="$release"
+          # A patch cannot ship assets. Only the generated license list
+          # (NOTICES.Z, new pure-Dart packages) may differ: anything else —
+          # e.g. MaterialIcons-Regular.otf after using an icon the release
+          # lacks — would show blank on phones, so it fails the patch.
+          set +e
+          shorebird patch android --release-version="$release" 2>&1 | tee patch.log
+          status=${PIPESTATUS[0]}
+          set -e
+          [ "$status" -eq 0 ] && exit 0
+          grep -q 'asset changes' patch.log || exit "$status"
+          changed=$(grep -E '^\s+base/assets/' patch.log | sed 's/^ *//')
+          echo "Changed assets:"; echo "$changed"
+          if echo "$changed" | grep -qv 'flutter_assets/NOTICES.Z$'; then
+            echo "::error::The patch changes assets the release does not have (see above). Use only icons/assets present in release $release, or build a new APK."
+            exit 1
+          fi
+          shorebird patch android --release-version="$release" --allow-asset-diffs

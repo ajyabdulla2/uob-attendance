@@ -207,11 +207,11 @@ class _EntryTile extends StatelessWidget {
         'leave' => Icons.event_available,
         'warnings' => Icons.warning_amber,
         'user' || 'users' => Icons.person_outline,
-        'student' || 'students' => Icons.school_outlined,
+        'student' || 'students' => Icons.person_outline,
         'course' || 'courses' => Icons.menu_book_outlined,
         'import' => Icons.upload_file,
         'year' => Icons.tune,
-        'backup' => Icons.backup_outlined,
-        _ => Icons.history,
+        'backup' => Icons.cloud_upload_outlined,
+        _ => Icons.schedule,
       };
 }

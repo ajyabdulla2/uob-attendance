@@ -249,6 +249,8 @@ tool/            سكربتات الإعداد والفحص
 - السر `SHOREBIRD_TOKEN` = **مفتاح API** من console.shorebird.dev (`shorebird login:ci` أُلغي). `shorebird init` يحتاج Android SDK (جهاز المطوّر بلا SDK) و`android/gradlew` المولَّد (مُهمَل في git) — نُفِّذ مرة على GitHub بعد `flutter build apk --config-only`.
 - **الإصدار**: `android.yml` عند وجود السر يبني بـ `shorebird release android --artifact=apk --flutter-version=… -- --build-number=N`، فكل APK إصدار Shorebird اسمه `X.Y.Z+N` (N = رقم التشغيل). بلا السر يبني Flutter عادياً مع تحذير (لا يستقبل رقعاً).
 - **الرقعة** (تغيير Dart فقط): `git tag patch/X.Y.Z+N && git push origin patch/X.Y.Z+N` → `patch.yml` ينفّذ `shorebird patch android --release-version=X.Y.Z+N`. الرقعة تصل فقط للهواتف التي عليها ذلك الإصدار بالضبط؛ لذلك ثبّتوا الجميع على آخر APK ثم رقّعوه. أي تغيير أصلي (حزمة فيها كود Android، `android/`، الأيقونة) يحتاج APK جديداً.
+- **الرقعة لا تحمل أصولاً (assets)**: خط `MaterialIcons` يُقلَّص للأيقونات المستعملة، فأيقونة `Icons.*` جديدة لم تكن في الإصدار تظهر فارغة. استعمل في الرقع الأيقونات الموجودة في كود الإصدار فقط (قارن: `git grep -ohE "Icons\.[a-z_0-9]+" <commit الإصدار> -- lib`). `patch.yml` يسمح باختلاف `NOTICES.Z` وحده (قائمة التراخيص عند إضافة حزمة Dart) ويفشل لغيره. الإصدار 1.3.0+12 بُني من `7e32f8b`.
+- رقعة ثانية للإصدار نفسه: الوسم لا يُعاد استعماله، فاستعمل `patch/1.3.0+12/2` ثم `/3`… (الجزء بعد `/` الثانية يُهمل).
 - الخطة المجانية: 5,000 تثبيت رقعة شهرياً. ترحيلات Drift كود Dart (قابلة للترقيع) لكن اختبرها جيداً؛ القاعدة المحلية تحمل بيانات غير مرفوعة.
 
 ### `config/app` و`accessRequests` (إضافات على جدول SPEC)

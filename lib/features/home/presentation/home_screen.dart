@@ -60,7 +60,7 @@ class HomeScreen extends ConsumerWidget {
                   if (perms.canViewDepartmentDashboard)
                     ListTile(
                       key: const Key('home.department'),
-                      leading: const Icon(Icons.apartment),
+                      leading: const Icon(Icons.supervisor_account),
                       title: Text(l10n.deptAction),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => context.push(Routes.departmentDashboard),
@@ -108,7 +108,7 @@ class HomeScreen extends ConsumerWidget {
                   if (perms.canViewAuditLog)
                     ListTile(
                       key: const Key('home.audit'),
-                      leading: const Icon(Icons.manage_search),
+                      leading: const Icon(Icons.search),
                       title: Text(l10n.auditOpen),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => context.push(Routes.auditLog),
@@ -116,7 +116,7 @@ class HomeScreen extends ConsumerWidget {
                   if (perms.canBackup)
                     ListTile(
                       key: const Key('home.backup'),
-                      leading: const Icon(Icons.backup_outlined),
+                      leading: const Icon(Icons.cloud_upload_outlined),
                       title: Text(l10n.backupAction),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => context.push(Routes.backup),
