@@ -7,6 +7,7 @@ import '../../features/assignments/presentation/assignments_screen.dart';
 import '../../features/audit/presentation/audit_log_screen.dart';
 import '../../features/attendance/presentation/record_screen.dart';
 import '../../features/attendance/presentation/register_screen.dart';
+import '../../features/attendance/presentation/student_screen.dart';
 import '../../features/auth/application/auth_providers.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/no_access_screen.dart';
@@ -57,6 +58,9 @@ abstract final class Routes {
       }).toString();
 
   static String registerFor(String assignmentId) => Uri(path: register, queryParameters: {'a': assignmentId}).toString();
+  static const student = '/student';
+  static String studentFor(String assignmentId, String studentId) =>
+      Uri(path: student, queryParameters: {'a': assignmentId, 's': studentId}).toString();
 
   static const _gates = {splash, login, verifyEmail, noAccess};
 }
@@ -127,6 +131,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.register,
         builder: (_, s) => RegisterScreen(assignmentId: s.uri.queryParameters['a'] ?? ''),
+      ),
+      GoRoute(
+        path: Routes.student,
+        builder: (_, s) => StudentScreen(
+          assignmentId: s.uri.queryParameters['a'] ?? '',
+          studentId: s.uri.queryParameters['s'] ?? '',
+        ),
       ),
       ShellRoute(
         builder: (context, state, child) => AppShell(location: state.matchedLocation, child: child),

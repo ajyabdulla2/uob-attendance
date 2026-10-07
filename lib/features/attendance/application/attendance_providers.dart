@@ -9,7 +9,9 @@ import '../../../core/firebase/firebase_providers.dart';
 import '../../academic/domain/academic_year.dart';
 import '../../assignments/domain/assignment.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../courses/domain/course.dart';
 import '../../courses/domain/practical_group.dart';
+import '../../leaves/domain/leave.dart';
 import '../../stats/domain/absence_summary.dart';
 import '../../students/domain/student.dart';
 import '../data/attendance_store.dart';
@@ -102,36 +104,76 @@ class StandingCacheTick extends Notifier<int> {
 
 final standingCacheTickProvider = NotifierProvider<StandingCacheTick, int>(StandingCacheTick.new);
 
-/// Each student's percentage in the class's course: the course's statuses
-/// as last fetched from the server, overridden by this phone's own marks
-/// for this class (fresher), with the stage's approved leaves and the
-/// year's settings. Empty until the year has been downloaded.
-final classStandingsProvider =
-    FutureProvider.autoDispose.family<Map<String, AbsenceSummary>, String>((ref, id) async {
+/// What the class's percentages are computed from: the course's statuses
+/// as last fetched from the server, overridden by this phone's own marks for
+/// this class (fresher), the stage's approved leaves and the year.
+final class ClassAbsenceData {
+  const ClassAbsenceData({
+    required this.course,
+    required this.year,
+    required this.type,
+    required this.bySession,
+    required this.leaves,
+  });
+
+  final Course course;
+  final AcademicYear year;
+
+  /// `theory` / `practical` when the year keeps two percentages, else null.
+  final String? type;
+
+  /// studentId → sessionId → status.
+  final Map<String, Map<String, AttendanceStatus>> bySession;
+  final Map<String, List<Leave>> leaves;
+
+  AbsenceSummary summaryOf(String studentId) => AbsenceSummary.of(
+        bySession: bySession[studentId] ?? const {},
+        leaves: leaves[studentId] ?? const [],
+        units: course.units,
+        year: year,
+        type: type,
+      );
+}
+
+/// Null until the year and the class have been downloaded.
+final classAbsenceDataProvider = FutureProvider.autoDispose.family<ClassAbsenceData?, String>((ref, id) async {
   ref.watch(standingCacheTickProvider);
   final a = ref.watch(localClassProvider(id));
   final marks = ref.watch(classMarksProvider(id)).value;
   final students = ref.watch(classStudentsProvider(id)).value;
   final year = await ref.watch(cachedYearProvider.future);
-  if (a == null || marks == null || students == null || year == null) return const {};
+  if (a == null || marks == null || students == null || year == null) return null;
   final sync = ref.watch(teacherDataSyncProvider);
   final server = await sync.cachedCourseStats(a.courseId);
   final leaves = await sync.cachedLeaves(a.stageId);
   final course = (await ref.watch(appDatabaseProvider).coursesOfStage(a.stageId)).where((c) => c.id == a.courseId).firstOrNull;
-  if (course == null) return const {};
-  return {
-    for (final s in students)
-      s.id: AbsenceSummary.of(
-        bySession: {
+  if (course == null) return null;
+  final leavesOf = <String, List<Leave>>{};
+  for (final l in leaves) {
+    (leavesOf[l.studentId] ??= []).add(l);
+  }
+  return ClassAbsenceData(
+    course: course,
+    year: year,
+    type: year.combinedTheoryPractical ? null : a.type.name,
+    bySession: {
+      for (final s in students)
+        s.id: {
           ...?server[s.id],
           for (final MapEntry(key: sid, value: byStudent) in marks.entries) sid: ?byStudent[s.id],
         },
-        leaves: [for (final l in leaves) if (l.studentId == s.id) l],
-        units: course.units,
-        year: year,
-        type: year.combinedTheoryPractical ? null : a.type.name,
-      ),
-  };
+    },
+    leaves: leavesOf,
+  );
+});
+
+/// Each student's percentage in the class's course (see [ClassAbsenceData]).
+/// Empty until the year has been downloaded.
+final classStandingsProvider =
+    FutureProvider.autoDispose.family<Map<String, AbsenceSummary>, String>((ref, id) async {
+  final data = await ref.watch(classAbsenceDataProvider(id).future);
+  if (data == null) return const {};
+  return {for (final studentId in data.bySession.keys) studentId: data.summaryOf(studentId)};
 });
 
 /// Batches the server refused (kept on the phone until retried).

@@ -212,10 +212,17 @@ class _RegisterTable extends StatelessWidget {
             rows: [
               for (final st in students)
                 DataRow(cells: [
-                  DataCell(ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 220),
-                    child: Text(st.fullName, overflow: TextOverflow.ellipsis),
-                  )),
+                  DataCell(
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 220),
+                      child: Text(
+                        st.fullName,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: theme.colorScheme.primary, decoration: TextDecoration.underline),
+                      ),
+                    ),
+                    onTap: () => context.push(Routes.studentFor(assignment.id, st.id)),
+                  ),
                   DataCell(Text('${absences(st.id)}')),
                   DataCell(_PercentCell(key: Key('register.percent.${st.id}'), summary: standings[st.id])),
                   for (final s in sessions)

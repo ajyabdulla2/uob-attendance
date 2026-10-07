@@ -618,5 +618,12 @@
   "errorLogCount": "{count, plural, =0{No errors since the app was opened} =1{One error since the app was opened} other{{count} errors since the app was opened}}",
   "syncDiagnose": "Diagnose",
   "syncDiagnoseTitle": "Save diagnosis",
-  "syncDiagnoseRunning": "Checking on the server…"
+  "syncDiagnoseRunning": "Checking on the server…",
+  "studentNoData": "This course has not been downloaded yet; refresh the register.",
+  "studentHistory": "{count, plural, =0{No absences or lateness} =1{One lecture not fully attended} other{{count} lectures not fully attended}}",
+  "studentNoAbsences": "Attended every recorded lecture.",
+  "studentSourceNote": "Includes the course's lectures by all its teachers as last downloaded (refresh in the register) and this phone's records.",
+  "studentCounts": "Late: {lates} · Excused: {excused} · of which on approved leave: {byLeave}",
+  "studentUntilNext": "{count, plural, =1{Reaches {level} after one more absence} other{Reaches {level} after {count} more absences}}",
+  "studentOnLeave": "on approved leave"
 }

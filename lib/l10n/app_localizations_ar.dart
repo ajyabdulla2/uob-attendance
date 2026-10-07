@@ -2311,4 +2311,50 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get syncDiagnoseRunning => 'جارٍ الفحص على الخادم…';
+
+  @override
+  String get studentNoData =>
+      'لم تُنزَّل بيانات هذه المادة بعد؛ اضغط تحديث السجل.';
+
+  @override
+  String studentHistory(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count محاضرة لم يحضرها كاملة',
+      few: '$count محاضرات لم يحضرها كاملة',
+      two: 'محاضرتان لم يحضرهما كاملتين',
+      one: 'محاضرة واحدة لم يحضرها كاملة',
+      zero: 'لا غياب ولا تأخير',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get studentNoAbsences => 'حضر كل المحاضرات المسجّلة.';
+
+  @override
+  String get studentSourceNote =>
+      'يشمل محاضرات المادة لكل تدريسييها كما نُزّلت آخر مرة (زر التحديث في السجل)، وتسجيلات هذا الهاتف.';
+
+  @override
+  String studentCounts(int lates, int excused, int byLeave) {
+    return 'تأخير: $lates · مُجاز: $excused · منها بإجازة معتمدة: $byLeave';
+  }
+
+  @override
+  String studentUntilNext(int count, String level) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'يصل إلى $level بعد $count غياباً',
+      few: 'يصل إلى $level بعد $count غيابات',
+      two: 'يصل إلى $level بعد غيابين',
+      one: 'يصل إلى $level بعد غياب واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get studentOnLeave => 'بإجازة معتمدة';
 }

@@ -2320,4 +2320,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get syncDiagnoseRunning => 'Checking on the server…';
+
+  @override
+  String get studentNoData =>
+      'This course has not been downloaded yet; refresh the register.';
+
+  @override
+  String studentHistory(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count lectures not fully attended',
+      one: 'One lecture not fully attended',
+      zero: 'No absences or lateness',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get studentNoAbsences => 'Attended every recorded lecture.';
+
+  @override
+  String get studentSourceNote =>
+      'Includes the course\'s lectures by all its teachers as last downloaded (refresh in the register) and this phone\'s records.';
+
+  @override
+  String studentCounts(int lates, int excused, int byLeave) {
+    return 'Late: $lates · Excused: $excused · of which on approved leave: $byLeave';
+  }
+
+  @override
+  String studentUntilNext(int count, String level) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Reaches $level after $count more absences',
+      one: 'Reaches $level after one more absence',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get studentOnLeave => 'on approved leave';
 }

@@ -215,6 +215,15 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(Key('register.session.${session.id}')), findsOneWidget);
 
+    // The student's page: the absence with its date and lecture.
+    await tester.tap(find.text(students[2].fullName));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('student.summary')), findsOneWidget);
+    expect(find.byKey(Key('student.entry.${session.id}')), findsOneWidget);
+    expect(find.textContaining('المحاضرة 1 · نظري · غائب'), findsOneWidget);
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+
     await tester.tap(find.byKey(Key('register.session.${session.id}')));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('record.locked')), findsOneWidget);

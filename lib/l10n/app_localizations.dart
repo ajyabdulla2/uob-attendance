@@ -3824,6 +3824,48 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'جارٍ الفحص على الخادم…'**
   String get syncDiagnoseRunning;
+
+  /// No description provided for @studentNoData.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تُنزَّل بيانات هذه المادة بعد؛ اضغط تحديث السجل.'**
+  String get studentNoData;
+
+  /// No description provided for @studentHistory.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count, plural, =0{لا غياب ولا تأخير} =1{محاضرة واحدة لم يحضرها كاملة} =2{محاضرتان لم يحضرهما كاملتين} few{{count} محاضرات لم يحضرها كاملة} other{{count} محاضرة لم يحضرها كاملة}}'**
+  String studentHistory(int count);
+
+  /// No description provided for @studentNoAbsences.
+  ///
+  /// In ar, this message translates to:
+  /// **'حضر كل المحاضرات المسجّلة.'**
+  String get studentNoAbsences;
+
+  /// No description provided for @studentSourceNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'يشمل محاضرات المادة لكل تدريسييها كما نُزّلت آخر مرة (زر التحديث في السجل)، وتسجيلات هذا الهاتف.'**
+  String get studentSourceNote;
+
+  /// No description provided for @studentCounts.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأخير: {lates} · مُجاز: {excused} · منها بإجازة معتمدة: {byLeave}'**
+  String studentCounts(int lates, int excused, int byLeave);
+
+  /// No description provided for @studentUntilNext.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count, plural, =1{يصل إلى {level} بعد غياب واحد} =2{يصل إلى {level} بعد غيابين} few{يصل إلى {level} بعد {count} غيابات} other{يصل إلى {level} بعد {count} غياباً}}'**
+  String studentUntilNext(int count, String level);
+
+  /// No description provided for @studentOnLeave.
+  ///
+  /// In ar, this message translates to:
+  /// **'بإجازة معتمدة'**
+  String get studentOnLeave;
 }
 
 class _AppLocalizationsDelegate
