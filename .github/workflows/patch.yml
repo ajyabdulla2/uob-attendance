@@ -8,7 +8,7 @@ name: Shorebird patch
 
 on:
   push:
-    tags: ['patch/**']
+    tags: ['patch/*']
 
 env:
   FLUTTER_VERSION: 3.47.6
@@ -83,10 +83,10 @@ jobs:
 
       - name: Patch the release
         run: |
-          # patch/1.3.0+12 — or patch/1.3.0+12/2 for a second patch (tags
-          # cannot be reused).
+          # patch/1.3.0+12 — or patch/1.3.0+12-2 for a second patch (tags
+          # cannot be reused; a «/2» suffix clashes with the first tag's ref).
           release="${GITHUB_REF_NAME#patch/}"
-          release="${release%%/*}"
+          release="${release%%-*}"
           echo "Patching release $release"
           # A patch cannot ship assets. Only the generated license list
           # (NOTICES.Z, new pure-Dart packages) may differ: anything else —
