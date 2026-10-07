@@ -12,6 +12,7 @@ import '../../assignments/application/assignments_providers.dart';
 import '../../assignments/domain/assignment.dart';
 import '../application/attendance_providers.dart';
 import '../data/attendance_store.dart';
+import '../data/outbox_uploader.dart';
 
 /// Keeps the phone in sync while the signed-in area is open: at start,
 /// every [every], when the app returns to the foreground, and — through a
@@ -103,9 +104,34 @@ class SyncStatusCard extends ConsumerWidget {
         Text(l10n.syncStale, key: const Key('sync.stale'), style: TextStyle(color: theme.colorScheme.error)),
     ];
 
+    // Nothing waiting and nothing wrong: one slim line.
+    if (pending == 0 && rejected.isEmpty && !stale && sync.problem == null && !sync.offline) {
+      return Card(
+        key: const Key('sync.card'),
+        child: ListTile(
+          dense: true,
+          leading: sync.running
+              ? const SizedBox.square(dimension: 20, child: CircularProgressIndicator(strokeWidth: 2))
+              : const Icon(Icons.cloud_done_outlined),
+          title: Text(l10n.syncAllUploaded),
+          subtitle: lines.first,
+          trailing: IconButton(
+            key: const Key('sync.now'),
+            tooltip: l10n.syncNow,
+            icon: const Icon(Icons.sync),
+            onPressed: sync.running ? null : () => ref.read(syncControllerProvider.notifier).sync(forceDownload: true),
+          ),
+        ),
+      );
+    }
+
     return Card(
       key: const Key('sync.card'),
-      color: pending > 0 ? theme.colorScheme.secondaryContainer : null,
+      color: rejected.isNotEmpty
+          ? theme.colorScheme.errorContainer
+          : pending > 0
+              ? theme.colorScheme.secondaryContainer
+              : null,
       child: Column(
         children: [
           ListTile(
@@ -131,6 +157,7 @@ class SyncStatusCard extends ConsumerWidget {
               key: const Key('sync.rejected'),
               leading: Icon(Icons.report_outlined, color: theme.colorScheme.error),
               title: Text(l10n.syncRejected(rejected.length)),
+              subtitle: Text(l10n.syncRejectedTap),
               trailing: const Icon(Icons.chevron_right), // mirrors in RTL
               onTap: () => showModalBottomSheet<void>(
                 context: context,
@@ -181,7 +208,7 @@ class RejectedUploadsSheet extends ConsumerWidget {
                   ListTile(
                     leading: const Icon(Icons.event_busy),
                     title: Text(_lectureLabel(context, AttendanceStore.sessionOfBatch(e.batchId))),
-                    subtitle: Text(e.lastError ?? '', textDirection: TextDirection.ltr),
+                    subtitle: Text(_reason(context, e.lastError)),
                     trailing: TextButton(
                       onPressed: () => _discard(context, ref, e.batchId),
                       child: Text(l10n.syncDiscard),
@@ -219,6 +246,12 @@ class RejectedUploadsSheet extends ConsumerWidget {
     );
     if (ok) await ref.read(attendanceStoreProvider).discardRejected(batchId);
   }
+
+  static String _reason(BuildContext context, String? code) => switch (code) {
+        OutboxUploader.lockedReason => context.l10n.syncReasonLocked,
+        'permission-denied' => context.l10n.syncReasonDenied,
+        _ => code ?? '',
+      };
 
   /// «CS101_1-morning · 12/10/2026 · المحاضرة 1» from a session ID.
   static String _lectureLabel(BuildContext context, String sessionId) {

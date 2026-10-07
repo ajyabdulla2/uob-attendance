@@ -2253,4 +2253,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String deptPendingRequests(int count) {
     return 'طلبات تعديل: $count';
   }
+
+  @override
+  String get syncRejectedTap => 'المس لمعرفة السبب وإعادة المحاولة';
+
+  @override
+  String get syncReasonLocked =>
+      'انتهت مهلة التسجيل لهذه المحاضرة قبل رفعها. لا يحفظها الآن إلا مسؤول المرحلة: أرسل له الأسماء، ثم احذفها من الهاتف.';
+
+  @override
+  String get syncReasonDenied =>
+      'رفض الخادم الحفظ. اضغط «إعادة المحاولة» (التطبيق يعيد حساب موعد الإقفال من إعدادات السنة)، وإن تكرر فتأكد من إسنادك لهذه المادة لدى مسؤول المرحلة.';
+
+  @override
+  String deptPartial(String collections, String code) {
+    return 'تعذّرت قراءة بعض الأعداد ($collections) — $code. إن كان «permission-denied» فالقواعد المنشورة أقدم من التطبيق: انشر firestore.rules.';
+  }
 }

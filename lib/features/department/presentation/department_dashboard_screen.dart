@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/firebase/collections.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
@@ -39,18 +40,28 @@ class DepartmentDashboardScreen extends ConsumerWidget {
             data: (s) => Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                if (s.failures.isNotEmpty)
+                  Card(
+                    key: const Key('dept.failures'),
+                    color: Theme.of(context).colorScheme.errorContainer,
+                    child: ListTile(
+                      leading: const Icon(Icons.error_outline),
+                      title: Text(l10n.deptPartial(
+                          s.failures.keys.map(l10n.backupCollection).join('، '), s.failures.values.toSet().join('، '))),
+                    ),
+                  ),
                 Card(
                   child: Column(
                     children: [
                       ListTile(
                         key: const Key('dept.accounts'),
                         leading: const Icon(Icons.groups_outlined),
-                        title: Text(l10n.deptActiveAccounts(s.activeAccounts)),
+                        title: Text(s.activeAccounts == null ? '${l10n.backupCollection(Col.users)}: —' : l10n.deptActiveAccounts(s.activeAccounts!)),
                       ),
                       ListTile(
                         key: const Key('dept.access'),
                         leading: const Icon(Icons.person_add_alt),
-                        title: Text(l10n.deptAccessRequests(s.accessRequests)),
+                        title: Text(s.accessRequests == null ? '${l10n.backupCollection(Col.accessRequests)}: —' : l10n.deptAccessRequests(s.accessRequests!)),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () => context.go(Routes.accounts),
                       ),
@@ -78,6 +89,8 @@ class _StageCard extends StatelessWidget {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final empty = counts.students == 0 && counts.courses == 0;
+    String n(int? v, String collection, String Function(int) label) =>
+        v == null ? '${l10n.backupCollection(collection)}: —' : label(v);
     return Card(
       key: Key('dept.stage.${counts.stageId}'),
       child: InkWell(
@@ -96,11 +109,12 @@ class _StageCard extends StatelessWidget {
                   spacing: 8,
                   runSpacing: 4,
                   children: [
-                    _chip(Icons.person_outline, l10n.deptStudents(counts.students)),
-                    _chip(Icons.menu_book_outlined, l10n.deptCourses(counts.courses)),
-                    _chip(Icons.calendar_today, l10n.deptLecturesToday(counts.lecturesToday)),
-                    if (counts.pendingRequests > 0)
-                      _chip(Icons.edit_calendar, l10n.deptPendingRequests(counts.pendingRequests), highlight: theme),
+                    _chip(Icons.person_outline, n(counts.students, Col.students, l10n.deptStudents)),
+                    _chip(Icons.menu_book_outlined, n(counts.courses, Col.courses, l10n.deptCourses)),
+                    _chip(Icons.calendar_today, n(counts.lecturesToday, Col.sessions, l10n.deptLecturesToday)),
+                    if (counts.pendingRequests != 0)
+                      _chip(Icons.edit_calendar, n(counts.pendingRequests, Col.editRequests, l10n.deptPendingRequests),
+                          highlight: theme),
                   ],
                 ),
             ],

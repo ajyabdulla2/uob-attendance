@@ -4,6 +4,8 @@ import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../core/database/app_database.dart';
+import '../../../core/firebase/collections.dart';
+import '../domain/attendance_session.dart';
 import 'outbox_codec.dart';
 
 /// One resolved write of an upload chunk.
@@ -24,9 +26,10 @@ enum RemoteWriteKind { set, merge, update, delete }
 
 /// The Firestore side of the uploader (a seam for tests).
 abstract interface class RemoteWriter {
-  /// Whether [path] exists on the server (not the local cache). Throws a
-  /// [FirebaseException] (`unavailable`) when offline.
-  Future<bool> existsOnServer(String path);
+  /// The document at [path] on the server (not the local cache), or null
+  /// when it does not exist. Throws a [FirebaseException] (`unavailable`)
+  /// when offline.
+  Future<Map<String, Object?>?> readOnServer(String path);
 
   /// Commits [writes] atomically.
   Future<void> commit(List<RemoteWrite> writes);
@@ -38,8 +41,8 @@ class FirestoreRemoteWriter implements RemoteWriter {
   final FirebaseFirestore _fs;
 
   @override
-  Future<bool> existsOnServer(String path) async =>
-      (await _fs.doc(path).get(const GetOptions(source: Source.server))).exists;
+  Future<Map<String, Object?>?> readOnServer(String path) async =>
+      (await _fs.doc(path).get(const GetOptions(source: Source.server))).data();
 
   @override
   Future<void> commit(List<RemoteWrite> writes) {
@@ -112,6 +115,15 @@ class OutboxUploader {
 
   static bool isPermanent(String code) => _permanent.contains(code);
 
+  /// Stored instead of `permission-denied` when the lecture's lock deadline
+  /// had passed (or a stage manager locked it) before the upload: only a
+  /// stage manager can still save it.
+  static const lockedReason = 'session-locked';
+
+  /// Lock state of the lecture in the batch being sent (from the server).
+  DateTime? _lockAt;
+  bool _locked = false;
+
   Future<UploadReport> run() async {
     var uploaded = 0;
     var rejected = 0;
@@ -119,12 +131,15 @@ class OutboxUploader {
       final batch = await _db.nextBatch();
       if (batch.isEmpty) return UploadReport(uploaded: uploaded, rejected: rejected);
       final batchId = batch.first.batchId;
+      _lockAt = null;
+      _locked = false;
       try {
         await _send(batch);
         uploaded++;
       } on FirebaseException catch (e) {
         if (isPermanent(e.code)) {
-          await _db.rejectBatch(batchId, e.code);
+          final lockedBefore = _locked || (_lockAt != null && !_lockAt!.isAfter(DateTime.now()));
+          await _db.rejectBatch(batchId, e.code == 'permission-denied' && lockedBefore ? lockedReason : e.code);
           rejected++;
           continue;
         }
@@ -155,9 +170,31 @@ class OutboxUploader {
       OutboxOp.set => RemoteWrite.set(row.path, data),
       OutboxOp.merge => RemoteWrite.merge(row.path, data),
       OutboxOp.delete => RemoteWrite.delete(row.path),
-      OutboxOp.createOrUpdate => await _remote.existsOnServer(row.path).timeout(timeout)
-          ? RemoteWrite.update(row.path, (data['update'] as Map).cast<String, Object?>())
-          : RemoteWrite.set(row.path, (data['create'] as Map).cast<String, Object?>()),
+      OutboxOp.createOrUpdate => await _createOrUpdate(row.path, data),
     };
+  }
+
+  /// A lecture: only its bookkeeping fields when it already exists on the
+  /// server, else the whole document. A new lecture's lock deadline is
+  /// recomputed from the year's lock hours on the server — the rules demand
+  /// exactly that value, and the copy on the phone may predate an admin's
+  /// change in «إعدادات السنة».
+  Future<RemoteWrite> _createOrUpdate(String path, Map<String, Object?> data) async {
+    final current = await _remote.readOnServer(path).timeout(timeout);
+    if (current != null) {
+      _locked = current['locked'] == true;
+      _lockAt = (current['lockAt'] as Timestamp?)?.toDate();
+      return RemoteWrite.update(path, (data['update'] as Map).cast<String, Object?>());
+    }
+    final create = {...(data['create'] as Map).cast<String, Object?>()};
+    final yearId = create['yearId'];
+    final date = create['date'];
+    if (yearId is String && date is Timestamp) {
+      final year = await _remote.readOnServer('${Col.academicYears}/$yearId').timeout(timeout);
+      final hours = (year?['lockHours'] as num?)?.toInt() ?? 48;
+      create['lockAt'] = Timestamp.fromDate(AttendanceSession.lockAtFor(date.toDate().toUtc(), hours));
+    }
+    _lockAt = (create['lockAt'] as Timestamp?)?.toDate();
+    return RemoteWrite.set(path, create);
   }
 }

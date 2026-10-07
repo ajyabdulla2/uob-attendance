@@ -10,7 +10,8 @@ final appDatabaseProvider = Provider<AppDatabase>((ref) {
   return db;
 });
 
-/// «X سجلات بانتظار الرفع».
+/// «X سجلات بانتظار الرفع» — writes still to be sent (refused saves are
+/// listed apart, see `rejectedUploadsProvider`).
 final pendingUploadsProvider = StreamProvider<int>(
-  (ref) => ref.watch(appDatabaseProvider).watchPendingCount(),
+  (ref) => ref.watch(appDatabaseProvider).watchPendingCount(includeRejected: false),
 );

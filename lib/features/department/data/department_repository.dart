@@ -14,10 +14,12 @@ final class StageCounts {
   });
 
   final String stageId;
-  final int students;
-  final int courses;
-  final int lecturesToday;
-  final int pendingRequests;
+
+  /// null = the count was refused or failed (see [DepartmentRepository.failures]).
+  final int? students;
+  final int? courses;
+  final int? lecturesToday;
+  final int? pendingRequests;
 }
 
 /// لوحة القسم (admins). Only count() aggregations — one read per 1000
@@ -28,18 +30,33 @@ class DepartmentRepository {
 
   final FirebaseFirestore _fs;
 
-  Future<int> _count(Query<Map<String, dynamic>> q) async => (await q.count().get()).count ?? 0;
+  /// Collections whose count failed, with the error code — one refused
+  /// query must not blank the whole dashboard.
+  final failures = <String, String>{};
+
+  Future<int?> _count(String collection, Query<Map<String, dynamic>> q) async {
+    try {
+      return (await q.count().get()).count ?? 0;
+    } on FirebaseException catch (e) {
+      failures[collection] = e.code;
+      return null;
+    }
+  }
 
   Future<List<StageCounts>> stageCounts(String todayKey) => Future.wait([
         for (final s in StageRef.all)
           Future.wait([
-            _count(_fs.collection(Col.students).where('stageId', isEqualTo: s.id)),
-            _count(_fs.collection(Col.courses).where('stageId', isEqualTo: s.id)),
-            _count(_fs
+            _count(Col.students, _fs.collection(Col.students).where('stageId', isEqualTo: s.id)),
+            _count(Col.courses, _fs.collection(Col.courses).where('stageId', isEqualTo: s.id)),
+            _count(
+                Col.sessions,
+                _fs
                 .collection(Col.sessions)
                 .where('stageId', isEqualTo: s.id)
                 .where('dateKey', isEqualTo: todayKey)),
-            _count(_fs
+            _count(
+                Col.editRequests,
+                _fs
                 .collection(Col.editRequests)
                 .where('stageId', isEqualTo: s.id)
                 .where('status', isEqualTo: 'pending')),
@@ -52,7 +69,7 @@ class DepartmentRepository {
               )),
       ]);
 
-  Future<int> pendingAccessRequests() => _count(_fs.collection(Col.accessRequests));
+  Future<int?> pendingAccessRequests() => _count(Col.accessRequests, _fs.collection(Col.accessRequests));
 
-  Future<int> activeTeachers() => _count(_fs.collection(Col.users).where('active', isEqualTo: true));
+  Future<int?> activeTeachers() => _count(Col.users, _fs.collection(Col.users).where('active', isEqualTo: true));
 }

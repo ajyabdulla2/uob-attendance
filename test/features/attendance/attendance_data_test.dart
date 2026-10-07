@@ -23,15 +23,16 @@ Map<String, Mark> marks(Map<String, AttendanceStatus> m) => {for (final e in m.e
 
 /// A remote that records commits and can fail on demand.
 class FakeRemote implements RemoteWriter {
-  final existing = <String>{};
+  final docs = <String, Map<String, Object?>>{};
+  Set<String> get existing => docs.keys.toSet();
   final commits = <List<RemoteWrite>>[];
   FirebaseException? failCommit;
   FirebaseException? failExists;
 
   @override
-  Future<bool> existsOnServer(String path) async {
+  Future<Map<String, Object?>?> readOnServer(String path) async {
     if (failExists != null) throw failExists!;
-    return existing.contains(path);
+    return docs[path];
   }
 
   @override
@@ -39,7 +40,11 @@ class FakeRemote implements RemoteWriter {
     if (failCommit != null) throw failCommit!;
     commits.add(writes);
     for (final w in writes) {
-      if (w.kind != RemoteWriteKind.delete) existing.add(w.path);
+      if (w.kind == RemoteWriteKind.delete) {
+        docs.remove(w.path);
+      } else {
+        docs[w.path] = {...?docs[w.path], ...w.data};
+      }
     }
   }
 }
@@ -193,6 +198,24 @@ void main() {
       await db.retryRejected();
       expect((await OutboxUploader(db, remote).run()).uploaded, 1);
       expect(await db.watchPendingCount().first, 0);
+    });
+
+    test('a new lecture takes its lock deadline from the year on the server', () async {
+      // An admin changed «مدة الإقفال» after the phone downloaded the year.
+      remote.docs['academicYears/2026-2027'] = {'lockHours': 72};
+      final plan = await save(marks({'1': AttendanceStatus.absent}));
+      expect((await OutboxUploader(db, remote).run()).uploaded, 1);
+      final session = remote.commits.single.first;
+      expect(session.path, 'sessions/${plan.session.id}');
+      expect((session.data['lockAt'] as Timestamp).toDate().toUtc(), day.add(const Duration(hours: 24 + 72)));
+    });
+
+    test('a refusal because the lecture was already locked says so', () async {
+      final plan = await save(marks({'1': AttendanceStatus.absent}));
+      remote.docs['sessions/${plan.session.id}'] = {'locked': true, 'lockAt': Timestamp.fromDate(day)};
+      remote.failCommit = FirebaseException(plugin: 'cloud_firestore', code: 'permission-denied');
+      expect((await OutboxUploader(db, remote).run()).rejected, 1);
+      expect((await db.watchRejected().first).single.lastError, OutboxUploader.lockedReason);
     });
 
     test('large lectures go in chunks; committed chunks leave the queue', () async {

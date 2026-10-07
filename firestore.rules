@@ -309,7 +309,7 @@ service cloud.firestore {
     // lock deadline is exactly «end of lecture day + lockHours» of the year.
     function teacherCanOpen() {
       let d = request.resource.data;
-      let lockHours = get(docPath('academicYears', d.yearId)).data.lockHours;
+      let lockHours = get(docPath('academicYears', d.yearId)).data.get('lockHours', 48);
       return isAssignedToSession(d)
         && d.locked == false
         && d.date < request.time + duration.value(1, 'd')

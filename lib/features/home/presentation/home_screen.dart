@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/firebase/doc_ids.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
@@ -31,8 +32,6 @@ class HomeScreen extends ConsumerWidget {
           // The local queue lives on phones; the web panel works online.
           if (ref.watch(localFirstProvider)) const SyncStatusCard(),
           _WelcomeCard(user: user),
-          const SizedBox(height: 12),
-          const _ActiveYearLine(),
           if (perms.isAdmin) const _SetupCard(),
           if (perms.canBackup) const BackupReminderCard(),
           if (perms.canManageAccounts) const _AccessRequestsCard(),
@@ -143,66 +142,41 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-class _WelcomeCard extends StatelessWidget {
+/// One compact card: greeting, roles (and managed stages) and the active
+/// year — the courses below are what the screen is for.
+class _WelcomeCard extends ConsumerWidget {
   const _WelcomeCard({required this.user});
 
   final AppUser user;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(l10n.homeWelcome(user.displayName), style: theme.textTheme.titleLarge),
-            Text(user.email, style: theme.textTheme.bodySmall, textDirection: TextDirection.ltr),
-            const SizedBox(height: 12),
-            Text(l10n.homeRoles, style: theme.textTheme.labelLarge),
-            const SizedBox(height: 4),
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: [
-                for (final role in UserRole.values)
-                  if (user.hasRole(role)) Chip(avatar: const Icon(Icons.verified, size: 18), label: Text(l10n.role(role))),
-              ],
-            ),
-            if (user.hasRole(UserRole.stageManager) && user.stageScopes.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Text(l10n.homeStageScopes, style: theme.textTheme.labelLarge),
-              const SizedBox(height: 4),
-              Wrap(
-                spacing: 8,
-                runSpacing: 4,
-                children: [for (final s in user.stageScopes) Chip(label: Text(l10n.stageId(s)))],
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ActiveYearLine extends ConsumerWidget {
-  const _ActiveYearLine();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
     final year = ref.watch(activeYearProvider).value;
-    if (year == null) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Row(
-        children: [
-          const Icon(Icons.event_note, size: 20),
-          const SizedBox(width: 8),
-          Text(context.l10n.homeActiveYear(year.id, '${year.semester}')),
-        ],
+    final roles = [
+      for (final role in UserRole.values)
+        if (user.hasRole(role)) l10n.role(role),
+    ].join('، ');
+    final scopes = user.hasRole(UserRole.stageManager) && user.stageScopes.isNotEmpty
+        ? user.stageScopes.map(l10n.stageId).join('، ')
+        : null;
+    return Card(
+      key: const Key('home.welcome'),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: theme.colorScheme.primaryContainer,
+          child: Icon(Icons.person, color: theme.colorScheme.onPrimaryContainer),
+        ),
+        title: Text(l10n.homeWelcome(user.displayName), style: theme.textTheme.titleMedium),
+        subtitle: Text(
+          [
+            roles,
+            ?scopes,
+            if (year != null) l10n.homeActiveYear(year.id, '${year.semester}'),
+          ].join('\n'),
+          style: theme.textTheme.bodySmall,
+        ),
       ),
     );
   }
@@ -300,36 +274,130 @@ class _MyCourses extends ConsumerWidget {
             ),
           );
         }
-        final sorted = [...items]..sort((a, b) => a.id.compareTo(b.id));
-        return Card(
-          child: Column(
-            children: [
-              for (final a in sorted)
-                ListTile(
-                  key: Key('home.class.${a.id}'),
-                  leading: Icon(a.type == AssignmentType.theory ? Icons.menu_book : Icons.computer),
-                  title: Text(a.courseName.isEmpty ? a.courseId : a.courseName),
-                  subtitle: Text(l10n.classLabel(a)),
-                  onTap: local ? () => context.push(Routes.recordFor(a.id)) : null,
-                  trailing: local
-                      ? IconButton(
-                          key: Key('home.register.${a.id}'),
-                          tooltip: l10n.registerAction,
-                          icon: const Icon(Icons.table_chart_outlined),
-                          onPressed: () => context.push(Routes.registerFor(a.id)),
-                        )
-                      : null,
-                ),
-              if (!local)
-                ListTile(
+        // One card per course (its theory and practical classes together),
+        // each course in its own colour.
+        final byCourse = <String, List<Assignment>>{};
+        for (final a in items) {
+          (byCourse[a.courseId] ??= []).add(a);
+        }
+        final courses = byCourse.values.toList()
+          ..sort((x, y) => _name(x.first).compareTo(_name(y.first)));
+        return Column(
+          children: [
+            for (var i = 0; i < courses.length; i++)
+              _CourseCard(classes: courses[i], color: _CourseCard.colorAt(context, i), local: local),
+            if (!local)
+              Card(
+                child: ListTile(
                   dense: true,
                   leading: const Icon(Icons.phone_android),
                   title: Text(l10n.homeRecordOnPhone),
                 ),
-            ],
-          ),
+              ),
+          ],
         );
       },
     );
   }
+
+  static String _name(Assignment a) => a.courseName.isEmpty ? a.courseId : a.courseName;
+}
+
+/// A course with a coloured edge; one row per class (theory first, then the
+/// practical groups) — tap to record, the table opens the register.
+class _CourseCard extends StatelessWidget {
+  const _CourseCard({required this.classes, required this.color, required this.local});
+
+  final List<Assignment> classes;
+  final Color color;
+  final bool local;
+
+  static const _palette = [
+    Colors.indigo,
+    Colors.teal,
+    Colors.deepOrange,
+    Colors.purple,
+    Colors.green,
+    Colors.brown,
+    Colors.pink,
+    Colors.blueGrey,
+  ];
+
+  static Color colorAt(BuildContext context, int i) {
+    final c = _palette[i % _palette.length];
+    return Theme.of(context).brightness == Brightness.dark ? c.shade300 : c.shade600;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final first = classes.first;
+    final sorted = [...classes]
+      ..sort((a, b) => a.type == b.type ? a.target.compareTo(b.target) : a.type.index.compareTo(b.type.index));
+    return Card(
+      key: Key('home.course.${first.courseId}'),
+      clipBehavior: Clip.antiAlias,
+      margin: const EdgeInsets.only(bottom: 10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: color.withValues(alpha: 0.5)),
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(width: 6, color: color),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(12, 10, 12, 2),
+                    child: Text(
+                      first.courseName.isEmpty ? first.courseId : first.courseName,
+                      style: theme.textTheme.titleMedium?.copyWith(color: color, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 4),
+                    child: Text(l10n.stageId(first.stageId), style: theme.textTheme.bodySmall),
+                  ),
+                  for (final a in sorted)
+                    ListTile(
+                      key: Key('home.class.${a.id}'),
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                      leading: Icon(a.type == AssignmentType.theory ? Icons.menu_book : Icons.computer, color: color),
+                      title: Text(_classPart(l10n, a), style: theme.textTheme.titleSmall),
+                      onTap: local ? () => context.push(Routes.recordFor(a.id)) : null,
+                      trailing: local
+                          ? IconButton(
+                              key: Key('home.register.${a.id}'),
+                              tooltip: l10n.registerAction,
+                              icon: const Icon(Icons.table_chart_outlined),
+                              onPressed: () => context.push(Routes.registerFor(a.id)),
+                            )
+                          : null,
+                    ),
+                  const SizedBox(height: 4),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// «نظري · كل الشعب» / «عملي · مجموعة A» (the stage is in the header).
+  static String _classPart(AppLocalizations l10n, Assignment a) => [
+        if (a.type == AssignmentType.theory) ...[
+          l10n.theoryLabel,
+          a.target == DocIds.allSections ? l10n.allSections : l10n.sectionLabel(a.target),
+        ] else ...[
+          l10n.practicalLabel,
+          l10n.groupLabel(a.target),
+        ],
+      ].join(' · ');
 }

@@ -93,7 +93,7 @@ void main() {
         user: MockUser(email: adminEmail, isEmailVerified: true),
         profile: const AppUser(email: adminEmail, name: 'المدير', roles: {UserRole.superAdmin, UserRole.teacher}),
       );
-      expect(find.text('مدير عام'), findsOneWidget);
+      expect(find.textContaining('مدير عام، تدريسي'), findsOneWidget);
 
       // Initial setup card → creates 8 stages + active year.
       await tester.tap(find.text('تهيئة الآن'));

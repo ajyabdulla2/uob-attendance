@@ -2264,4 +2264,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String deptPendingRequests(int count) {
     return 'Edit requests: $count';
   }
+
+  @override
+  String get syncRejectedTap => 'Tap for the reason and to retry';
+
+  @override
+  String get syncReasonLocked =>
+      'The lecture locked before it was uploaded. Only the stage manager can save it now: send them the names, then remove it from the phone.';
+
+  @override
+  String get syncReasonDenied =>
+      'The server refused the save. Press Retry (the lock time is recomputed from the year settings); if it repeats, check your assignment with the stage manager.';
+
+  @override
+  String deptPartial(String collections, String code) {
+    return 'Some counts could not be read ($collections) — $code. If it says “permission-denied”, the deployed rules are older than the app: deploy firestore.rules.';
+  }
 }

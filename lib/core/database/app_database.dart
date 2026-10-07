@@ -399,10 +399,13 @@ class AppDatabase extends _$AppDatabase {
         ];
       });
 
-  /// Number of queued writes («X سجلات بانتظار الرفع»).
-  Stream<int> watchPendingCount() {
+  /// Number of queued writes — with [includeRejected] also those the server
+  /// refused, which are still on the phone (sign-out checks all of them).
+  Stream<int> watchPendingCount({bool includeRejected = true}) {
     final count = outboxEntries.id.count();
-    return (selectOnly(outboxEntries)..addColumns([count])).map((r) => r.read(count) ?? 0).watchSingle();
+    final q = selectOnly(outboxEntries)..addColumns([count]);
+    if (!includeRejected) q.where(outboxEntries.failed.equals(false));
+    return q.map((r) => r.read(count) ?? 0).watchSingle();
   }
 
   /// Oldest pending batch (all its rows) that the server has not rejected,

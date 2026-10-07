@@ -28,6 +28,20 @@ describe('opening a session', () => {
     await assertSucceeds(batch.commit());
   });
 
+  it('a year without lockHours locks after the default 48 hours (as the app assumes)', async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => setDoc(doc(ctx.firestore(), 'academicYears', '2026-2027'), {
+      label: '2026-2027', semester: 1, active: true,
+    }));
+    const db = as(env, T1);
+    const sid = sessionId(COURSE, 'theory', 'all', utcMidnight(0), 3);
+    await assertSucceeds(setDoc(doc(db, 'sessions', sid), sessionData({ lectureNo: 3, updatedAt: serverTimestamp() })));
+    const other = sessionId(COURSE, 'theory', 'all', utcMidnight(0), 4);
+    await assertFails(setDoc(doc(db, 'sessions', other), sessionData({
+      lectureNo: 4, lockAt: new Date(lockAtFor(utcMidnight(0)).getTime() + HOUR),
+      updatedAt: serverTimestamp(),
+    })));
+  });
+
   it('assigned teacher opens a practical session for their group only', async () => {
     const db = as(env, T1);
     const sidA = sessionId(COURSE, 'practical', 'A', utcMidnight(0));

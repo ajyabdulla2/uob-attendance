@@ -3740,6 +3740,30 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'طلبات تعديل: {count}'**
   String deptPendingRequests(int count);
+
+  /// No description provided for @syncRejectedTap.
+  ///
+  /// In ar, this message translates to:
+  /// **'المس لمعرفة السبب وإعادة المحاولة'**
+  String get syncRejectedTap;
+
+  /// No description provided for @syncReasonLocked.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهت مهلة التسجيل لهذه المحاضرة قبل رفعها. لا يحفظها الآن إلا مسؤول المرحلة: أرسل له الأسماء، ثم احذفها من الهاتف.'**
+  String get syncReasonLocked;
+
+  /// No description provided for @syncReasonDenied.
+  ///
+  /// In ar, this message translates to:
+  /// **'رفض الخادم الحفظ. اضغط «إعادة المحاولة» (التطبيق يعيد حساب موعد الإقفال من إعدادات السنة)، وإن تكرر فتأكد من إسنادك لهذه المادة لدى مسؤول المرحلة.'**
+  String get syncReasonDenied;
+
+  /// No description provided for @deptPartial.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّرت قراءة بعض الأعداد ({collections}) — {code}. إن كان «permission-denied» فالقواعد المنشورة أقدم من التطبيق: انشر firestore.rules.'**
+  String deptPartial(String collections, String code);
 }
 
 class _AppLocalizationsDelegate

@@ -265,7 +265,7 @@ void main() {
     expect(find.text('رفض الخادم 1 عملية حفظ'), findsOneWidget);
     await tester.tap(find.byKey(const Key('sync.rejected')));
     await tester.pumpAndSettle();
-    expect(find.text('permission-denied'), findsOneWidget);
+    expect(find.textContaining('رفض الخادم الحفظ. اضغط «إعادة المحاولة»'), findsOneWidget);
     await tester.tap(find.text('حذف من الهاتف').first);
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(FilledButton, 'حذف من الهاتف'));
