@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/diagnostics/error_log.dart';
 import '../../../core/router/app_router.dart';
 import '../../../l10n/l10n.dart';
+import '../../app_update/application/app_update_providers.dart';
 import '../../app_update/presentation/update_gate.dart';
 import '../../attendance/presentation/sync_widgets.dart';
 import '../../auth/application/auth_providers.dart';
@@ -30,6 +33,13 @@ class AppShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final perms = ref.watch(permissionsProvider);
+    final me = ref.watch(signedInUserProvider);
+    final version = ref.watch(installedVersionProvider).value;
+    ErrorLog.context = [
+      'account: ${me.email} (${me.roles.map((r) => r.name).join(', ')})',
+      if (me.stageScopes.isNotEmpty) 'stages: ${me.stageScopes.join(', ')}',
+      'app: ${version ?? '?'} · ${kIsWeb ? 'web' : defaultTargetPlatform.name}',
+    ].join('\n');
     final destinations = [
       _Destination(Routes.home, Icons.home_outlined, Icons.home, l10n.navHome),
       if (perms.canImportAnything)

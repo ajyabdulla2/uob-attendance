@@ -3764,6 +3764,66 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تعذّرت قراءة بعض الأعداد ({collections}) — {code}. إن كان «permission-denied» فالقواعد المنشورة أقدم من التطبيق: انشر firestore.rules.'**
   String deptPartial(String collections, String code);
+
+  /// No description provided for @errorDetails.
+  ///
+  /// In ar, this message translates to:
+  /// **'التفاصيل'**
+  String get errorDetails;
+
+  /// No description provided for @errorReportTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تقرير المشكلة'**
+  String get errorReportTitle;
+
+  /// No description provided for @errorReportHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'اضغط «نسخ» ثم الصقه في رسالة للمطوّر (أو صوّر الشاشة). لا يحتوي كلمات مرور.'**
+  String get errorReportHelp;
+
+  /// No description provided for @errorCopy.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسخ'**
+  String get errorCopy;
+
+  /// No description provided for @errorLogAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'سجل الأخطاء (للإرسال إلى المطوّر)'**
+  String get errorLogAction;
+
+  /// No description provided for @errorLogEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يُسجَّل أي خطأ منذ فتح التطبيق.'**
+  String get errorLogEmpty;
+
+  /// No description provided for @errorLogCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count, plural, =0{لا أخطاء منذ فتح التطبيق} =1{خطأ واحد منذ فتح التطبيق} =2{خطآن منذ فتح التطبيق} few{{count} أخطاء منذ فتح التطبيق} other{{count} خطأ منذ فتح التطبيق}}'**
+  String errorLogCount(int count);
+
+  /// No description provided for @syncDiagnose.
+  ///
+  /// In ar, this message translates to:
+  /// **'تشخيص'**
+  String get syncDiagnose;
+
+  /// No description provided for @syncDiagnoseTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تشخيص عملية الحفظ'**
+  String get syncDiagnoseTitle;
+
+  /// No description provided for @syncDiagnoseRunning.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارٍ الفحص على الخادم…'**
+  String get syncDiagnoseRunning;
 }
 
 class _AppLocalizationsDelegate

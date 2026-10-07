@@ -423,6 +423,12 @@ class AppDatabase extends _$AppDatabase {
         .get();
   }
 
+  /// Every queued row of [batchId] (also a rejected one), in order.
+  Future<List<OutboxEntry>> batchRows(String batchId) => (select(outboxEntries)
+        ..where((t) => t.batchId.equals(batchId))
+        ..orderBy([(t) => OrderingTerm.asc(t.id)]))
+      .get();
+
   /// Removes an uploaded batch.
   Future<void> completeBatch(String batchId) =>
       (delete(outboxEntries)..where((t) => t.batchId.equals(batchId))).go();

@@ -75,7 +75,7 @@ class _ImportPanelState extends ConsumerState<_ImportPanel> with AutomaticKeepAl
       );
       if (uri != null && mounted) showSnack(context, l10n.importTemplateSaved);
     } catch (e) {
-      if (mounted) showSnack(context, l10n.errorGeneric('$e'));
+      if (mounted) showError(context, e);
     }
   }
 

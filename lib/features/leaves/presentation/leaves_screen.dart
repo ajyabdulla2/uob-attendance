@@ -34,7 +34,7 @@ class _LeavesScreenState extends ConsumerState<LeavesScreen> {
       await ref.read(leavesRepositoryProvider).add(leave, actor: ref.read(signedInUserProvider).id);
       if (mounted) showSnack(context, l10n.leaveSaved);
     } on Object catch (e) {
-      if (mounted) showSnack(context, l10n.errorGeneric('$e'));
+      if (mounted) showError(context, e);
     }
   }
 
@@ -51,7 +51,7 @@ class _LeavesScreenState extends ConsumerState<LeavesScreen> {
     try {
       await ref.read(leavesRepositoryProvider).delete(leave, actor: ref.read(signedInUserProvider).id);
     } on Object catch (e) {
-      if (mounted) showSnack(context, l10n.errorGeneric('$e'));
+      if (mounted) showError(context, e);
     }
   }
 

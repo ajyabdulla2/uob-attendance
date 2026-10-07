@@ -269,7 +269,7 @@ class _PracticalSection extends ConsumerWidget {
       }
       if (context.mounted) showSnack(context, l10n.assignmentsDistributed(count));
     } catch (e) {
-      if (context.mounted) showSnack(context, l10n.errorGeneric('$e'));
+      if (context.mounted) showError(context, e);
     }
   }
 }
@@ -294,7 +294,7 @@ Future<void> _save(
         );
     if (context.mounted) showSnack(context, l10n.assignmentsSaved);
   } catch (e) {
-    if (context.mounted) showSnack(context, l10n.errorGeneric('$e'));
+    if (context.mounted) showError(context, e);
   }
 }
 
@@ -328,7 +328,7 @@ class _AssignmentChip extends ConsumerWidget {
           await ref.read(assignmentsRepositoryProvider).unassign(assignment);
           if (context.mounted) showSnack(context, l10n.assignmentsRemoved);
         } catch (e) {
-          if (context.mounted) showSnack(context, l10n.errorGeneric('$e'));
+          if (context.mounted) showError(context, e);
         }
       },
     );

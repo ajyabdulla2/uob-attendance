@@ -1738,5 +1738,22 @@
         "type": "String"
       }
     }
+  },
+  "errorDetails": "التفاصيل",
+  "errorReportTitle": "تقرير المشكلة",
+  "errorReportHelp": "اضغط «نسخ» ثم الصقه في رسالة للمطوّر (أو صوّر الشاشة). لا يحتوي كلمات مرور.",
+  "errorCopy": "نسخ",
+  "errorLogAction": "سجل الأخطاء (للإرسال إلى المطوّر)",
+  "errorLogEmpty": "لم يُسجَّل أي خطأ منذ فتح التطبيق.",
+  "errorLogCount": "{count, plural, =0{لا أخطاء منذ فتح التطبيق} =1{خطأ واحد منذ فتح التطبيق} =2{خطآن منذ فتح التطبيق} few{{count} أخطاء منذ فتح التطبيق} other{{count} خطأ منذ فتح التطبيق}}",
+  "syncDiagnose": "تشخيص",
+  "syncDiagnoseTitle": "تشخيص عملية الحفظ",
+  "syncDiagnoseRunning": "جارٍ الفحص على الخادم…",
+  "@errorLogCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

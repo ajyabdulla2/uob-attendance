@@ -25,6 +25,7 @@ import '../../features/stats/presentation/stage_dashboard_screen.dart';
 import '../../features/users/presentation/accounts_screen.dart';
 import '../../features/warnings/presentation/warnings_screen.dart';
 import '../firebase/doc_ids.dart';
+import '../diagnostics/error_log.dart';
 
 abstract final class Routes {
   static const splash = '/splash';
@@ -94,7 +95,9 @@ final routerProvider = Provider<GoRouter>((ref) {
   NoTransitionPage<void> page(GoRouterState state, Widget child) =>
       NoTransitionPage(key: state.pageKey, child: child);
 
-  return GoRouter(
+  late final GoRouter router;
+  ErrorLog.route = () => router.routerDelegate.currentConfiguration.uri.toString();
+  return router = GoRouter(
     initialLocation: Routes.home,
     refreshListenable: refresh,
     redirect: (context, state) => redirectFor(ref.read(authStatusProvider), state.matchedLocation),

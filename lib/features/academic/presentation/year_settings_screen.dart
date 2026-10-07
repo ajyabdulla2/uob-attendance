@@ -105,7 +105,7 @@ class _YearFormState extends ConsumerState<_YearForm> {
           );
       if (mounted) showSnack(context, l10n.yearSaved);
     } on Object catch (e) {
-      if (mounted) showSnack(context, l10n.errorGeneric('$e'));
+      if (mounted) showError(context, e);
     } finally {
       if (mounted) setState(() => _saving = false);
     }

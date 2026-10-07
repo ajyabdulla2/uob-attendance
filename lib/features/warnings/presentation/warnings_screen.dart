@@ -135,7 +135,7 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
           );
       if (mounted) showSnack(context, l10n.warnSaved);
     } on Object catch (e) {
-      if (mounted) showSnack(context, l10n.errorGeneric('$e'));
+      if (mounted) showError(context, e);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -461,7 +461,7 @@ class _DecisionScreenState extends ConsumerState<DecisionScreen> {
       await action();
       if (mounted) showSnack(context, done);
     } on Object catch (e) {
-      if (mounted) showSnack(context, context.l10n.errorGeneric('$e'));
+      if (mounted) showError(context, e);
     } finally {
       if (mounted) setState(() => _busy = false);
     }

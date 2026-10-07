@@ -218,6 +218,27 @@ void main() {
       expect((await db.watchRejected().first).single.lastError, OutboxUploader.lockedReason);
     });
 
+    test('diagnosis reads what the rules check and sends the save in parts', () async {
+      remote.docs['users/$t1'] = {'active': true, 'roles': ['teacher']};
+      remote.docs['academicYears/2026-2027'] = {'lockHours': 48};
+      final plan = await save(marks({'1': AttendanceStatus.absent, '2': AttendanceStatus.present}));
+      remote.failCommit = FirebaseException(plugin: 'cloud_firestore', code: 'permission-denied');
+      await OutboxUploader(db, remote).run();
+      final batchId = (await db.watchRejected().first).single.batchId;
+
+      remote.failCommit = null;
+      final report = await OutboxUploader(db, remote).diagnose(batchId, actor: t1, now: today);
+      expect(report, contains('rules on server: current'));
+      expect(report, contains('user: ok — active=true'));
+      expect(report, contains('assignment: missing (assignments/${course}__theory__all__$t1)'));
+      expect(report, contains('session: sessions/${plan.session.id}'));
+      expect(report, contains('write session (1): OK'));
+      expect(report, contains('write records (2): OK'));
+      expect(report, contains('write stats (1): OK'));
+      expect(report, contains('result: uploaded'));
+      expect(await db.watchRejected().first, isEmpty);
+    });
+
     test('large lectures go in chunks; committed chunks leave the queue', () async {
       final many = {for (var i = 0; i < 25; i++) '$i': const Mark(AttendanceStatus.absent)};
       await save(many);

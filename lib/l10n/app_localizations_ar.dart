@@ -2269,4 +2269,46 @@ class AppLocalizationsAr extends AppLocalizations {
   String deptPartial(String collections, String code) {
     return 'تعذّرت قراءة بعض الأعداد ($collections) — $code. إن كان «permission-denied» فالقواعد المنشورة أقدم من التطبيق: انشر firestore.rules.';
   }
+
+  @override
+  String get errorDetails => 'التفاصيل';
+
+  @override
+  String get errorReportTitle => 'تقرير المشكلة';
+
+  @override
+  String get errorReportHelp =>
+      'اضغط «نسخ» ثم الصقه في رسالة للمطوّر (أو صوّر الشاشة). لا يحتوي كلمات مرور.';
+
+  @override
+  String get errorCopy => 'نسخ';
+
+  @override
+  String get errorLogAction => 'سجل الأخطاء (للإرسال إلى المطوّر)';
+
+  @override
+  String get errorLogEmpty => 'لم يُسجَّل أي خطأ منذ فتح التطبيق.';
+
+  @override
+  String errorLogCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count خطأ منذ فتح التطبيق',
+      few: '$count أخطاء منذ فتح التطبيق',
+      two: 'خطآن منذ فتح التطبيق',
+      one: 'خطأ واحد منذ فتح التطبيق',
+      zero: 'لا أخطاء منذ فتح التطبيق',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncDiagnose => 'تشخيص';
+
+  @override
+  String get syncDiagnoseTitle => 'تشخيص عملية الحفظ';
+
+  @override
+  String get syncDiagnoseRunning => 'جارٍ الفحص على الخادم…';
 }

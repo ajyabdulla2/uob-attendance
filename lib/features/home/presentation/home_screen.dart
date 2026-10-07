@@ -204,7 +204,7 @@ class _SetupCardState extends ConsumerState<_SetupCard> {
       ref.invalidate(setupStatusProvider);
       if (mounted) showSnack(context, l10n.homeSetupDone);
     } catch (e) {
-      if (mounted) showSnack(context, l10n.errorGeneric('$e'));
+      if (mounted) showError(context, e);
     } finally {
       if (mounted) setState(() => _busy = false);
     }

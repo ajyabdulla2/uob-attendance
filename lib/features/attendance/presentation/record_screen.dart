@@ -176,7 +176,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
           ));
       if (mounted) showSnack(context, l10n.editRequestSent);
     } on Object catch (e) {
-      if (mounted) showSnack(context, l10n.errorGeneric('$e'));
+      if (mounted) showError(context, e);
     }
   }
 
@@ -220,7 +220,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
         });
       }
     } on Object catch (e) {
-      if (mounted) showSnack(context, l10n.errorGeneric('$e'));
+      if (mounted) showError(context, e);
     } finally {
       if (mounted) setState(() => _saving = false);
     }

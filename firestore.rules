@@ -533,6 +533,14 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // ========================================================= rulesVersion ==
+    // Canary (lib/core/firebase/rules_version.dart): the app reads
+    // rulesVersion/<its version>; a refusal means older rules are deployed.
+    // Change both together whenever these rules change.
+    match /rulesVersion/{version} {
+      allow get: if version == '2026-10-07';
+    }
+
     // ============================================================ auditLog ==
     // Append-only.
     match /auditLog/{entryId} {

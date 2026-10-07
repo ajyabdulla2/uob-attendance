@@ -57,7 +57,7 @@ Future<void> exportPdfBatch(
     );
     if (saved != null && context.mounted) showSnack(context, l10n.reportSaved);
   } on Object catch (e) {
-    if (context.mounted) showSnack(context, l10n.errorGeneric('$e'));
+    if (context.mounted) showError(context, e);
   }
 }
 
@@ -125,6 +125,6 @@ Future<void> exportReport(
     );
     if (saved != null && context.mounted) showSnack(context, l10n.reportSaved);
   } on Object catch (e) {
-    if (context.mounted) showSnack(context, l10n.errorGeneric('$e'));
+    if (context.mounted) showError(context, e);
   }
 }

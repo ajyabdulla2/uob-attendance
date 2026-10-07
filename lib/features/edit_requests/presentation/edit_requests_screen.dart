@@ -44,7 +44,7 @@ class _EditRequestsScreenState extends ConsumerState<EditRequestsScreen> {
       }
       if (mounted) showSnack(context, approve ? l10n.editRequestApproved : l10n.editRequestRejected);
     } on Object catch (e) {
-      if (mounted) showSnack(context, l10n.errorGeneric('$e'));
+      if (mounted) showError(context, e);
     } finally {
       if (mounted) setState(() => _busy.remove(r.id));
     }

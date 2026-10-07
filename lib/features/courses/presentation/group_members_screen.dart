@@ -72,7 +72,7 @@ class _GroupMembersScreenState extends ConsumerState<GroupMembersScreen> {
       setState(_selected.clear);
       showSnack(context, l10n.groupsMoved(moved, l10n.groupLabel(to)));
     } on Object catch (e) {
-      if (mounted) showSnack(context, l10n.errorGeneric('$e'));
+      if (mounted) showError(context, e);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -87,7 +87,7 @@ class _GroupMembersScreenState extends ConsumerState<GroupMembersScreen> {
           .addGroup(course: _course, groups: groups, actor: ref.read(signedInUserProvider).id);
       if (mounted) showSnack(context, l10n.groupsAdded(l10n.groupLabel(name)));
     } on Object catch (e) {
-      if (mounted) showSnack(context, l10n.errorGeneric('$e'));
+      if (mounted) showError(context, e);
     } finally {
       if (mounted) setState(() => _busy = false);
     }

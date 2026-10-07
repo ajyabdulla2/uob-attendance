@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/firebase/collections.dart';
+import '../../../core/firebase/rules_version.dart';
 import '../domain/attendance_session.dart';
 import 'outbox_codec.dart';
 
@@ -150,6 +151,99 @@ class OutboxUploader {
         return UploadReport(uploaded: uploaded, rejected: rejected, stoppedBy: 'timeout');
       }
     }
+  }
+
+  /// «تشخيص» for a refused save: reads, as the signed-in teacher, every
+  /// document the security rules consult, then sends the lecture, its
+  /// records and its statistics as three separate commits so the refused
+  /// part shows. Parts that go through leave the queue (all writes are
+  /// idempotent); if all do, the save is uploaded. Returns a plain-text
+  /// report for the developer.
+  Future<String> diagnose(String batchId, {required String actor, DateTime? now}) async {
+    final rows = await _db.batchRows(batchId);
+    final at = (now ?? DateTime.now()).toUtc();
+    final out = <String>['save diagnosis', 'batch: $batchId', 'actor: $actor', 'now (UTC): ${at.toIso8601String()}'];
+    try {
+      await _remote.readOnServer(RulesVersion.path).timeout(timeout);
+      out.add(RulesVersion.describe(true));
+    } on FirebaseException catch (e) {
+      out.add(RulesVersion.describe(e.code == 'permission-denied' ? false : null));
+    } on Object {
+      out.add(RulesVersion.describe(null));
+    }
+    if (rows.isEmpty) return (out..add('nothing queued for this batch')).join('\n');
+
+    String show(Object? v) => switch (v) {
+          Timestamp t => t.toDate().toUtc().toIso8601String(),
+          Map m => '{${m.keys.join(', ')}}',
+          _ => '$v',
+        };
+    Future<Map<String, Object?>?> read(String label, String path, List<String> fields) async {
+      try {
+        final d = await _remote.readOnServer(path).timeout(timeout);
+        out.add(d == null
+            ? '$label: missing ($path)'
+            : '$label: ok — ${[for (final f in fields) '$f=${show(d[f])}'].join(', ')}');
+        return d;
+      } on Object catch (e) {
+        out.add('$label: READ FAILED ${e is FirebaseException ? e.code : e} ($path)');
+        return null;
+      }
+    }
+
+    final sessionRow = rows.where((r) => r.op == OutboxOp.createOrUpdate).firstOrNull;
+    final create = sessionRow == null
+        ? const <String, Object?>{}
+        : (OutboxCodec.decode(sessionRow.payloadJson)['create'] as Map).cast<String, Object?>();
+    out.add('rows: ${rows.length} (${rows.where((r) => r.path.contains('/${Col.records}/')).length} records, '
+        '${rows.where((r) => r.path.startsWith('${Col.stats}/')).length} stats)');
+    if (sessionRow != null) {
+      out.add('session: ${sessionRow.path}');
+      out.add('payload: ${[for (final f in ['courseId', 'stageId', 'yearId', 'type', 'target', 'dateKey', 'lectureNo', 'date', 'lockAt', 'openedBy', 'locked']) '$f=${show(create[f])}'].join(', ')}');
+    }
+
+    await read('user', '${Col.users}/$actor', ['active', 'roles', 'stageScopes', 'teachingStages']);
+    final courseId = create['courseId'];
+    if (courseId is String) {
+      await read('course', '${Col.courses}/$courseId', ['stageId', 'code']);
+      await read('assignment', '${Col.assignments}/${courseId}__${create['type']}__${create['target']}__$actor',
+          ['teacherId', 'stageId', 'type', 'target']);
+      if (create['type'] == 'practical') {
+        await read('group', '${Col.groups}/${courseId}__${create['target']}', ['stageId', 'name']);
+      }
+    }
+    final yearId = create['yearId'];
+    if (yearId is String) {
+      final year = await read('year', '${Col.academicYears}/$yearId', ['lockHours', 'active']);
+      final date = create['date'];
+      if (date is Timestamp) {
+        final hours = (year?['lockHours'] as num?)?.toInt() ?? 48;
+        final expected = AttendanceSession.lockAtFor(date.toDate().toUtc(), hours);
+        out.add('lockAt expected by rules: ${expected.toIso8601String()} — ${expected.isAfter(at) ? 'still open' : 'ALREADY PASSED'}');
+      }
+    }
+    if (sessionRow != null) await read('session on server', sessionRow.path, ['locked', 'lockAt', 'openedBy', 'stageId']);
+
+    // The writes, in three parts.
+    final parts = <String, List<OutboxEntry>>{
+      'session': [for (final r in rows) if (r.op == OutboxOp.createOrUpdate) r],
+      'records': [for (final r in rows) if (r.path.contains('/${Col.records}/')) r],
+      'stats': [for (final r in rows) if (r.path.startsWith('${Col.stats}/')) r],
+    };
+    final other = [for (final r in rows) if (!parts.values.any((p) => p.contains(r))) r];
+    if (other.isNotEmpty) parts['other'] = other;
+    for (final part in parts.entries) {
+      if (part.value.isEmpty) continue;
+      try {
+        await _send(part.value);
+        out.add('write ${part.key} (${part.value.length}): OK');
+      } on Object catch (e) {
+        out.add('write ${part.key} (${part.value.length}): REFUSED ${e is FirebaseException ? '${e.code} ${e.message ?? ''}' : e}');
+      }
+    }
+    final left = await _db.batchRows(batchId);
+    out.add(left.isEmpty ? 'result: uploaded — nothing left on the phone' : 'result: ${left.length} rows still on the phone');
+    return out.join('\n');
   }
 
   Future<void> _send(List<OutboxEntry> rows) async {

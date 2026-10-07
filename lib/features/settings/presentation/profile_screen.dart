@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/database_provider.dart';
 import '../../../core/theme/app_settings.dart';
+import '../../../core/diagnostics/error_log.dart';
+import '../../../core/firebase/firebase_providers.dart';
+import '../../../core/firebase/rules_version.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../../auth/application/auth_providers.dart';
@@ -33,7 +36,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       await ref.read(usersRepositoryProvider).updatePhone(ref.read(signedInUserProvider).id, _phone.text);
       if (mounted) showSnack(context, l10n.profilePhoneSaved);
     } catch (e) {
-      if (mounted) showSnack(context, l10n.errorGeneric('$e'));
+      if (mounted) showError(context, e);
     }
   }
 
@@ -149,6 +152,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       leading: const Icon(Icons.password),
                       title: Text(l10n.profileChangePassword),
                       onTap: _changePassword,
+                    ),
+                    ListTile(
+                      key: const Key('profile.errors'),
+                      leading: const Icon(Icons.report_outlined),
+                      title: Text(l10n.errorLogAction),
+                      subtitle: Text(l10n.errorLogCount(ErrorLog.entries.length)),
+                      onTap: () async {
+                        // With the state of the deployed rules: the usual cause of
+                        // «permission-denied» right after an update.
+                        final rules = RulesVersion.describe(await RulesVersion.isDeployed(ref.read(firestoreProvider)));
+                        if (!context.mounted) return;
+                        await showReportDialog(
+                          context,
+                          [rules, ErrorLog.context, ErrorLog.entries.isEmpty ? l10n.errorLogEmpty : ErrorLog.reportAll()]
+                              .where((x) => x.isNotEmpty)
+                              .join('\n\n'),
+                          title: l10n.errorLogAction,
+                        );
+                      },
                     ),
                     ListTile(
                       leading: Icon(Icons.logout, color: theme.colorScheme.error),

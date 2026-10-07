@@ -2280,4 +2280,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String deptPartial(String collections, String code) {
     return 'Some counts could not be read ($collections) — $code. If it says “permission-denied”, the deployed rules are older than the app: deploy firestore.rules.';
   }
+
+  @override
+  String get errorDetails => 'Details';
+
+  @override
+  String get errorReportTitle => 'Problem report';
+
+  @override
+  String get errorReportHelp =>
+      'Press Copy and paste it in a message to the developer (or take a screenshot). It contains no passwords.';
+
+  @override
+  String get errorCopy => 'Copy';
+
+  @override
+  String get errorLogAction => 'Error log (to send to the developer)';
+
+  @override
+  String get errorLogEmpty => 'No errors since the app was opened.';
+
+  @override
+  String errorLogCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count errors since the app was opened',
+      one: 'One error since the app was opened',
+      zero: 'No errors since the app was opened',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncDiagnose => 'Diagnose';
+
+  @override
+  String get syncDiagnoseTitle => 'Save diagnosis';
+
+  @override
+  String get syncDiagnoseRunning => 'Checking on the server…';
 }

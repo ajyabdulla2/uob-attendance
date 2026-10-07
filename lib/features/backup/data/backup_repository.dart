@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../core/diagnostics/error_log.dart';
 import '../../../core/firebase/collections.dart';
+import '../../../core/firebase/rules_version.dart';
 import '../../audit/domain/audit_entry.dart';
 import '../../data_fix/domain/fix_plan.dart';
 import '../domain/backup_file.dart';
@@ -39,17 +41,35 @@ class BackupRepository {
   /// Documents per collection (plus `records`), from count() aggregations
   /// that cost one read per 1000 documents: the admin sees how many reads a
   /// backup will spend (Spark: 50,000 a day) before starting it.
+  ///
+  /// A count that fails is left out and its error kept in [estimateFailures],
+  /// so one refused collection names itself instead of failing the screen.
   Future<Map<String, int>> estimate() async {
-    Future<int> count(Query<Map<String, dynamic>> q) async => (await q.count().get()).count ?? 0;
+    estimateFailures.clear();
+    Future<int?> count(String name, Query<Map<String, dynamic>> q) async {
+      try {
+        return (await q.count().get()).count ?? 0;
+      } on Object catch (e, st) {
+        estimateFailures[name] = ErrorLog.record(e, st, 'count($name)').error;
+        return null;
+      }
+    }
+
+    final names = [...BackupScope.collections, Col.records];
     final counts = await Future.wait([
-      for (final c in BackupScope.collections) count(_fs.collection(c)),
-      count(_fs.collectionGroup(Col.records)),
+      for (final c in BackupScope.collections) count(c, _fs.collection(c)),
+      count(Col.records, _fs.collectionGroup(Col.records)),
     ]);
+    if (estimateFailures.isNotEmpty) {
+      estimateFailures['rules'] = RulesVersion.describe(await RulesVersion.isDeployed(_fs));
+    }
     return {
-      for (var i = 0; i < BackupScope.collections.length; i++) BackupScope.collections[i]: counts[i],
-      Col.records: counts.last,
+      for (var i = 0; i < names.length; i++)
+        if (counts[i] != null) names[i]: counts[i]!,
     };
   }
+
+  final estimateFailures = <String, String>{};
 
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> _all(Query<Map<String, dynamic>> query) async {
     final docs = <QueryDocumentSnapshot<Map<String, dynamic>>>[];

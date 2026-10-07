@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/app_database.dart';
+import '../../../core/diagnostics/error_log.dart';
 import '../../../core/database/database_provider.dart';
 import '../../../core/firebase/doc_ids.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../../assignments/application/assignments_providers.dart';
+import '../../auth/application/auth_providers.dart';
 import '../../assignments/domain/assignment.dart';
 import '../application/attendance_providers.dart';
 import '../data/attendance_store.dart';
@@ -204,16 +206,31 @@ class RejectedUploadsSheet extends ConsumerWidget {
             child: ListView(
               shrinkWrap: true,
               children: [
-                for (final e in rejected)
+                for (final e in rejected) ...[
                   ListTile(
                     leading: const Icon(Icons.event_busy),
                     title: Text(_lectureLabel(context, AttendanceStore.sessionOfBatch(e.batchId))),
                     subtitle: Text(_reason(context, e.lastError)),
-                    trailing: TextButton(
-                      onPressed: () => _discard(context, ref, e.batchId),
-                      child: Text(l10n.syncDiscard),
+                  ),
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(end: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          key: Key('sync.diagnose.${e.batchId}'),
+                          onPressed: () => _diagnose(context, ref, e.batchId),
+                          child: Text(l10n.syncDiagnose),
+                        ),
+                        TextButton(
+                          onPressed: () => _discard(context, ref, e.batchId),
+                          child: Text(l10n.syncDiscard),
+                        ),
+                      ],
                     ),
                   ),
+                  const Divider(height: 1),
+                ],
               ],
             ),
           ),
@@ -233,6 +250,20 @@ class RejectedUploadsSheet extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  /// Checks the save against the server and shows a report to send.
+  Future<void> _diagnose(BuildContext context, WidgetRef ref, String batchId) async {
+    final l10n = context.l10n;
+    showSnack(context, l10n.syncDiagnoseRunning);
+    String report;
+    try {
+      report = await ref.read(outboxUploaderProvider).diagnose(batchId, actor: ref.read(signedInUserProvider).id);
+    } on Object catch (e, st) {
+      report = ErrorLog.report(ErrorLog.record(e, st, 'diagnose'));
+    }
+    report = [ErrorLog.context, report].where((x) => x.isNotEmpty).join('\n');
+    if (context.mounted) await showReportDialog(context, report, title: l10n.syncDiagnoseTitle);
   }
 
   Future<void> _discard(BuildContext context, WidgetRef ref, String batchId) async {

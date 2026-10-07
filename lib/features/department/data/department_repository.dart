@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../core/domain/stage_ref.dart';
+import '../../../core/diagnostics/error_log.dart';
 import '../../../core/firebase/collections.dart';
 
 /// One stage's line on the department dashboard.
@@ -37,8 +38,10 @@ class DepartmentRepository {
   Future<int?> _count(String collection, Query<Map<String, dynamic>> q) async {
     try {
       return (await q.count().get()).count ?? 0;
-    } on FirebaseException catch (e) {
-      failures[collection] = e.code;
+    } on Object catch (e, st) {
+      // Android reports a refused aggregation as a PlatformException, not a
+      // FirebaseException — catch anything and name the collection.
+      failures[collection] = ErrorLog.record(e, st, 'count($collection)').error;
       return null;
     }
   }

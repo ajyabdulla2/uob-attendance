@@ -75,13 +75,12 @@ class _JoinRequestPanelState extends ConsumerState<_JoinRequestPanel> {
   }
 
   Future<void> _run(Future<void> Function() action, String done) async {
-    final l10n = context.l10n;
     setState(() => _busy = true);
     try {
       await action();
       if (mounted) showSnack(context, done);
     } on FirebaseException catch (e) {
-      if (mounted) showSnack(context, l10n.errorGeneric(e.message ?? e.code));
+      if (mounted) showError(context, e);
     } finally {
       if (mounted) setState(() => _busy = false);
     }

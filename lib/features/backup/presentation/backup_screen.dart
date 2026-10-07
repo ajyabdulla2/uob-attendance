@@ -98,7 +98,7 @@ class _CreateCardState extends ConsumerState<_CreateCard> {
         _withRecords = (e[Col.records] ?? 0) <= _recordsByDefaultBelow;
       });
     } on Object catch (e) {
-      if (mounted) showSnack(context, context.l10n.errorGeneric('$e'));
+      if (mounted) showError(context, e);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -134,7 +134,7 @@ class _CreateCardState extends ConsumerState<_CreateCard> {
       _confirm.clear();
       if (mounted) showSnack(context, l10n.backupSaved(data.documentCount));
     } on Object catch (e) {
-      if (mounted) showSnack(context, l10n.errorGeneric('$e'));
+      if (mounted) showError(context, e);
     } finally {
       if (mounted) {
         setState(() {
@@ -171,6 +171,15 @@ class _CreateCardState extends ConsumerState<_CreateCard> {
               )
             else ...[
               Text(l10n.backupEstimate(total), key: const Key('backup.estimate')),
+              if (ref.read(backupRepositoryProvider).estimateFailures case final failed when failed.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    l10n.deptPartial(failed.keys.map(l10n.backupCollection).join('، '), failed.values.toSet().join('، ')),
+                    key: const Key('backup.failures'),
+                    style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error),
+                  ),
+                ),
               SwitchListTile(
                 key: const Key('backup.records'),
                 contentPadding: EdgeInsets.zero,
@@ -261,7 +270,7 @@ class _RestoreCardState extends ConsumerState<_RestoreCard> {
     } on BackupFormatException {
       if (mounted) showSnack(context, l10n.backupNotABackup);
     } on Object catch (e) {
-      if (mounted) showSnack(context, l10n.errorGeneric('$e'));
+      if (mounted) showError(context, e);
     } finally {
       if (mounted) setState(() => _busy = false);
     }

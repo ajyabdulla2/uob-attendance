@@ -42,7 +42,7 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
       if (mounted) showSnack(context, l10n.accountsExists);
     } on FirebaseException catch (e) {
       if (mounted) {
-        showSnack(context, e.code == 'permission-denied' ? l10n.permissionDenied : l10n.errorGeneric(e.message ?? e.code));
+        showError(context, e);
       }
     }
     return false;
@@ -97,7 +97,7 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
       await _save(() => repo.apply(plan), l10n.accountEmailChanged);
     } on FirebaseException catch (e) {
       if (mounted) {
-        showSnack(context, e.code == 'permission-denied' ? l10n.permissionDenied : l10n.errorGeneric(e.message ?? e.code));
+        showError(context, e);
       }
     }
   }
@@ -125,7 +125,7 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
       await _save(() => repo.apply(plan), l10n.accountDeleted);
     } on FirebaseException catch (e) {
       if (mounted) {
-        showSnack(context, e.code == 'permission-denied' ? l10n.permissionDenied : l10n.errorGeneric(e.message ?? e.code));
+        showError(context, e);
       }
     }
   }

@@ -48,7 +48,6 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
       });
 
   Future<void> _preview() async {
-    final l10n = context.l10n;
     final repo = ref.read(dataFixRepositoryProvider);
     final actor = ref.read(signedInUserProvider).id;
     setState(() {
@@ -70,7 +69,7 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
       };
       if (mounted) setState(() => _plan = plan);
     } on Object catch (e) {
-      if (mounted) showSnack(context, l10n.errorGeneric(e is FirebaseException ? e.code : '$e'));
+      if (mounted) showError(context, e);
     } finally {
       if (mounted) setState(() => _busy = false);
     }

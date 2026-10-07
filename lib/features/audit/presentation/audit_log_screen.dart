@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/domain/stage_ref.dart';
+import '../../../core/diagnostics/error_log.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../../auth/application/auth_providers.dart';
@@ -119,7 +120,18 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
   Widget _list(BuildContext context) {
     final l10n = context.l10n;
     if (_error != null && _entries.isEmpty) {
-      return Center(child: MessageView(icon: Icons.error_outline, title: l10n.errorGeneric('$_error')));
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            MessageView(icon: Icons.error_outline, title: l10n.errorGeneric(ErrorLog.describe(_error!))),
+            TextButton(
+              onPressed: () => showReportDialog(context, ErrorLog.report(ErrorLog.record(_error!))),
+              child: Text(l10n.errorDetails),
+            ),
+          ],
+        ),
+      );
     }
     if (_entries.isEmpty) {
       return _loading

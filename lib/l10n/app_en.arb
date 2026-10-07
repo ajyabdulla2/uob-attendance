@@ -608,5 +608,15 @@
   "syncRejectedTap": "Tap for the reason and to retry",
   "syncReasonLocked": "The lecture locked before it was uploaded. Only the stage manager can save it now: send them the names, then remove it from the phone.",
   "syncReasonDenied": "The server refused the save. Press Retry (the lock time is recomputed from the year settings); if it repeats, check your assignment with the stage manager.",
-  "deptPartial": "Some counts could not be read ({collections}) — {code}. If it says “permission-denied”, the deployed rules are older than the app: deploy firestore.rules."
+  "deptPartial": "Some counts could not be read ({collections}) — {code}. If it says “permission-denied”, the deployed rules are older than the app: deploy firestore.rules.",
+  "errorDetails": "Details",
+  "errorReportTitle": "Problem report",
+  "errorReportHelp": "Press Copy and paste it in a message to the developer (or take a screenshot). It contains no passwords.",
+  "errorCopy": "Copy",
+  "errorLogAction": "Error log (to send to the developer)",
+  "errorLogEmpty": "No errors since the app was opened.",
+  "errorLogCount": "{count, plural, =0{No errors since the app was opened} =1{One error since the app was opened} other{{count} errors since the app was opened}}",
+  "syncDiagnose": "Diagnose",
+  "syncDiagnoseTitle": "Save diagnosis",
+  "syncDiagnoseRunning": "Checking on the server…"
 }

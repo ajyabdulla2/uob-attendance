@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/l10n.dart';
+import '../diagnostics/error_log.dart';
 import '../theme/app_settings.dart';
 
 /// The department's round logo (transparent outside the circle).
@@ -131,14 +133,80 @@ class AsyncBody<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) => switch (value) {
         AsyncData(:final value) => data(value),
-        AsyncError(:final error) => Center(
-            child: MessageView(
-              icon: Icons.error_outline,
-              title: context.l10n.errorGeneric('$error'),
+        AsyncError(:final error, :final stackTrace) => Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                MessageView(
+                  icon: Icons.error_outline,
+                  title: context.l10n.errorGeneric(ErrorLog.describe(error)),
+                ),
+                TextButton(
+                  key: const Key('error.details'),
+                  onPressed: () => showReportDialog(context, ErrorLog.report(ErrorLog.record(error, stackTrace))),
+                  child: Text(context.l10n.errorDetails),
+                ),
+              ],
             ),
           ),
         _ => const Center(child: CircularProgressIndicator()),
       };
+}
+
+/// An error for the user, with «التفاصيل»: a report they can copy and
+/// send to the developer. Also kept in [ErrorLog] («سجل الأخطاء»).
+void showError(BuildContext context, Object error, [StackTrace? stack]) {
+  final entry = ErrorLog.record(error, stack);
+  final l10n = context.l10n;
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(
+      duration: const Duration(seconds: 8),
+      content: Text(l10n.errorGeneric(entry.error)),
+      action: SnackBarAction(
+        label: l10n.errorDetails,
+        onPressed: () => showReportDialog(context, ErrorLog.report(entry)),
+      ),
+    ));
+}
+
+/// A copyable technical report (error details, diagnostics).
+Future<void> showReportDialog(BuildContext context, String report, {String? title}) {
+  final l10n = context.l10n;
+  return showDialog<void>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(title ?? l10n.errorReportTitle),
+      content: SizedBox(
+        width: 520,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(l10n.errorReportHelp, style: Theme.of(context).textTheme.bodySmall),
+              const SizedBox(height: 8),
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: SelectableText(report, key: const Key('error.report'), style: const TextStyle(fontSize: 12)),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          key: const Key('error.copy'),
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(text: report));
+            if (context.mounted) Navigator.pop(context);
+          },
+          child: Text(l10n.errorCopy),
+        ),
+        TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.close)),
+      ],
+    ),
+  );
 }
 
 void showSnack(BuildContext context, String message) {

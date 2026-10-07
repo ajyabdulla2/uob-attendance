@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/firebase/doc_ids.dart';
 import '../../../core/firebase/firebase_providers.dart';
+import '../../../core/firebase/rules_version.dart';
 import '../data/department_repository.dart';
 
 final departmentSummaryProvider = FutureProvider.autoDispose<DepartmentSummary>((ref) async {
@@ -14,7 +15,10 @@ final departmentSummaryProvider = FutureProvider.autoDispose<DepartmentSummary>(
     stages: results[0] as List<StageCounts>,
     accessRequests: results[1] as int?,
     activeAccounts: results[2] as int?,
-    failures: Map.of(repo.failures),
+    failures: {
+      ...repo.failures,
+      if (repo.failures.isNotEmpty) 'rules': RulesVersion.describe(await RulesVersion.isDeployed(ref.read(firestoreProvider))),
+    },
   );
 });
 
