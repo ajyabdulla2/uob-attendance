@@ -3890,6 +3890,60 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'عمود الغياب للمحاضرات ضمن الفترة فقط، والنسبة للفصل كله.'**
   String get reportPeriodNote;
+
+  /// No description provided for @auditSearch.
+  ///
+  /// In ar, this message translates to:
+  /// **'بحث'**
+  String get auditSearch;
+
+  /// No description provided for @auditSearchActive.
+  ///
+  /// In ar, this message translates to:
+  /// **'بحث (مفعّل)'**
+  String get auditSearchActive;
+
+  /// No description provided for @auditActor.
+  ///
+  /// In ar, this message translates to:
+  /// **'بريد المستخدم الذي نفّذ العملية'**
+  String get auditActor;
+
+  /// No description provided for @auditText.
+  ///
+  /// In ar, this message translates to:
+  /// **'رقم جامعي أو نص'**
+  String get auditText;
+
+  /// No description provided for @auditTextHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُبحث في هدف العملية وقيمها قبل وبعد'**
+  String get auditTextHelp;
+
+  /// No description provided for @auditAnyDate.
+  ///
+  /// In ar, this message translates to:
+  /// **'كل التواريخ'**
+  String get auditAnyDate;
+
+  /// No description provided for @auditClear.
+  ///
+  /// In ar, this message translates to:
+  /// **'مسح'**
+  String get auditClear;
+
+  /// No description provided for @auditApply.
+  ///
+  /// In ar, this message translates to:
+  /// **'بحث'**
+  String get auditApply;
+
+  /// No description provided for @auditNoMatch.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا نتائج مطابقة.'**
+  String get auditNoMatch;
 }
 
 class _AppLocalizationsDelegate

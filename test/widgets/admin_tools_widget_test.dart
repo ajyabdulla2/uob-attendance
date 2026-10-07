@@ -141,6 +141,34 @@ void main() {
     expect(find.text('studentId: 2'), findsOneWidget);
   });
 
+  testWidgets('audit search: by user on the server, by text on the loaded entries', (tester) async {
+    await pumpApp(tester, firestore: await seed(), user: MockUser(email: adminEmail, isEmailVerified: true), profile: admin);
+    await tester.scrollUntilVisible(find.byKey(const Key('home.audit')), 200);
+    await tester.tap(find.byKey(const Key('home.audit')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('audit.search')));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byKey(const Key('audit.actor')), 'SM@uobasrah.edu.iq');
+    await tester.tap(find.byKey(const Key('audit.apply')));
+    await tester.pumpAndSettle();
+    expect(find.text('إضافة إجازة'), findsOneWidget);
+    expect(find.text('something.new'), findsNothing);
+    expect(find.text('تعديل إعدادات السنة'), findsNothing);
+
+    await tester.enterText(find.byKey(const Key('audit.actor')), '');
+    await tester.enterText(find.byKey(const Key('audit.text')), '2026-2027');
+    await tester.tap(find.byKey(const Key('audit.apply')));
+    await tester.pumpAndSettle();
+    expect(find.text('تعديل إعدادات السنة'), findsOneWidget);
+    expect(find.text('إضافة إجازة'), findsNothing);
+
+    await tester.enterText(find.byKey(const Key('audit.text')), 'لا يوجد');
+    await tester.tap(find.byKey(const Key('audit.apply')));
+    await tester.pumpAndSettle();
+    expect(find.text('لا نتائج مطابقة.'), findsOneWidget);
+  });
+
   testWidgets('stage managers read the audit log of their stage only', (tester) async {
     await pumpApp(
       tester,

@@ -2377,4 +2377,32 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reportPeriodNote =>
       'The absences column counts lectures in the period only; the percentage is for the whole semester.';
+
+  @override
+  String get auditSearch => 'Search';
+
+  @override
+  String get auditSearchActive => 'Search (active)';
+
+  @override
+  String get auditActor => 'E-mail of the user who acted';
+
+  @override
+  String get auditText => 'University ID or text';
+
+  @override
+  String get auditTextHelp =>
+      'Searched in the target and its before/after values';
+
+  @override
+  String get auditAnyDate => 'Any date';
+
+  @override
+  String get auditClear => 'Clear';
+
+  @override
+  String get auditApply => 'Search';
+
+  @override
+  String get auditNoMatch => 'No matching entries.';
 }

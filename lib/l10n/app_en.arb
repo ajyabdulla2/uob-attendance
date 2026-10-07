@@ -629,5 +629,14 @@
   "reportPeriodAll": "The whole semester",
   "reportPeriodPick": "A period…",
   "reportPeriod": "Period: {from} to {to}",
-  "reportPeriodNote": "The absences column counts lectures in the period only; the percentage is for the whole semester."
+  "reportPeriodNote": "The absences column counts lectures in the period only; the percentage is for the whole semester.",
+  "auditSearch": "Search",
+  "auditSearchActive": "Search (active)",
+  "auditActor": "E-mail of the user who acted",
+  "auditText": "University ID or text",
+  "auditTextHelp": "Searched in the target and its before/after values",
+  "auditAnyDate": "Any date",
+  "auditClear": "Clear",
+  "auditApply": "Search",
+  "auditNoMatch": "No matching entries."
 }

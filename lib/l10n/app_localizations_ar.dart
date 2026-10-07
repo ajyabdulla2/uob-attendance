@@ -2372,4 +2372,31 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get reportPeriodNote =>
       'عمود الغياب للمحاضرات ضمن الفترة فقط، والنسبة للفصل كله.';
+
+  @override
+  String get auditSearch => 'بحث';
+
+  @override
+  String get auditSearchActive => 'بحث (مفعّل)';
+
+  @override
+  String get auditActor => 'بريد المستخدم الذي نفّذ العملية';
+
+  @override
+  String get auditText => 'رقم جامعي أو نص';
+
+  @override
+  String get auditTextHelp => 'يُبحث في هدف العملية وقيمها قبل وبعد';
+
+  @override
+  String get auditAnyDate => 'كل التواريخ';
+
+  @override
+  String get auditClear => 'مسح';
+
+  @override
+  String get auditApply => 'بحث';
+
+  @override
+  String get auditNoMatch => 'لا نتائج مطابقة.';
 }

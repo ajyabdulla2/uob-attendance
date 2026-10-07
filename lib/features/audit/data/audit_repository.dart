@@ -20,9 +20,21 @@ class AuditRepository {
 
   static const pageSize = 50;
 
-  Future<AuditPage> page({String? stageId, DocumentSnapshot<Map<String, dynamic>>? after}) async {
+  /// [actor] and the [from]–[to] days (inclusive) filter on the server
+  /// (indexes: stageId/actor + at); a student is matched in the app with
+  /// [AuditFilter.matches], since entries have no student field.
+  Future<AuditPage> page({
+    String? stageId,
+    String? actor,
+    DateTime? from,
+    DateTime? to,
+    DocumentSnapshot<Map<String, dynamic>>? after,
+  }) async {
     Query<Map<String, dynamic>> q = _fs.collection(Col.auditLog);
     if (stageId != null) q = q.where('stageId', isEqualTo: stageId);
+    if (actor != null && actor.isNotEmpty) q = q.where('actor', isEqualTo: actor.trim().toLowerCase());
+    if (from != null) q = q.where('at', isGreaterThanOrEqualTo: Timestamp.fromDate(DateTime(from.year, from.month, from.day)));
+    if (to != null) q = q.where('at', isLessThan: Timestamp.fromDate(DateTime(to.year, to.month, to.day + 1)));
     q = q.orderBy('at', descending: true);
     if (after != null) q = q.startAfterDocument(after);
     final docs = (await q.limit(pageSize).get()).docs;

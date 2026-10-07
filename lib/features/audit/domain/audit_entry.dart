@@ -47,3 +47,19 @@ final class AuditEntry {
         'departmentId': departmentId,
       };
 }
+
+/// «بحث» in the audit log for what the server cannot filter: a student's
+/// university ID (or any text) in the target path or the before/after values.
+abstract final class AuditFilter {
+  static bool matches(AuditEntry e, String query) {
+    final q = query.trim().toLowerCase();
+    if (q.isEmpty) return true;
+    bool inValue(Object? v) => switch (v) {
+          Map m => m.entries.any((x) => '${x.key}'.toLowerCase().contains(q) || inValue(x.value)),
+          List l => l.any(inValue),
+          null => false,
+          _ => '$v'.toLowerCase().contains(q),
+        };
+    return e.targetPath.toLowerCase().contains(q) || e.actor.toLowerCase().contains(q) || inValue(e.before) || inValue(e.after);
+  }
+}

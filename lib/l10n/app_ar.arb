@@ -1806,5 +1806,14 @@
         "type": "String"
       }
     }
-  }
+  },
+  "auditSearch": "بحث",
+  "auditSearchActive": "بحث (مفعّل)",
+  "auditActor": "بريد المستخدم الذي نفّذ العملية",
+  "auditText": "رقم جامعي أو نص",
+  "auditTextHelp": "يُبحث في هدف العملية وقيمها قبل وبعد",
+  "auditAnyDate": "كل التواريخ",
+  "auditClear": "مسح",
+  "auditApply": "بحث",
+  "auditNoMatch": "لا نتائج مطابقة."
 }

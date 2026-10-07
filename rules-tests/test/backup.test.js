@@ -144,6 +144,18 @@ describe('audit log viewer and department dashboard', () => {
     await assertSucceeds(getDocs(query(collection(as(env, DEPUTY), 'auditLog'), orderBy('at', 'desc'), limit(50))));
   });
 
+  it('search: by user and by days, within the stage for stage managers', async () => {
+    const from = Timestamp.fromDate(new Date(2026, 9, 1));
+    const db = as(env, SM3);
+    await assertSucceeds(getDocs(query(collection(db, 'auditLog'), where('stageId', '==', '3-morning'),
+      where('actor', '==', SM3), where('at', '>=', from), orderBy('at', 'desc'), limit(50))));
+    await assertFails(getDocs(query(collection(db, 'auditLog'),
+      where('actor', '==', SM3), orderBy('at', 'desc'), limit(50))));
+    const admin = as(env, DEPUTY);
+    await assertSucceeds(getDocs(query(collection(admin, 'auditLog'),
+      where('actor', '==', SM3), where('at', '>=', from), orderBy('at', 'desc'), limit(50))));
+  });
+
   it('admins count every stage; stage managers cannot count the department', async () => {
     const db = as(env, DEPUTY);
     await assertSucceeds(getCountFromServer(query(collection(db, 'students'), where('stageId', '==', '1-evening'))));

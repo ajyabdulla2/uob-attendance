@@ -29,6 +29,56 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
   bool _done = false;
   Object? _error;
 
+  // البحث: the user and the days filter on the server, the text (a student's
+  // university ID…) on the loaded entries.
+  final _actor = TextEditingController();
+  final _text = TextEditingController();
+  DateTimeRange? _range;
+  String _query = '';
+
+  /// With a text filter, pages are fetched until this many match (or
+  /// [_maxAutoPages] pages: 50 reads each).
+  static const _wanted = 20;
+  static const _maxAutoPages = 10;
+
+  @override
+  void dispose() {
+    _actor.dispose();
+    _text.dispose();
+    super.dispose();
+  }
+
+  List<AuditEntry> get _shown => [for (final e in _entries) if (AuditFilter.matches(e, _query)) e];
+
+  bool get _filtering => _actor.text.trim().isNotEmpty || _range != null || _query.isNotEmpty;
+
+  void _apply() {
+    FocusScope.of(context).unfocus();
+    setState(() => _query = _text.text.trim());
+    _reload();
+  }
+
+  void _clear() {
+    _actor.clear();
+    _text.clear();
+    setState(() {
+      _range = null;
+      _query = '';
+    });
+    _reload();
+  }
+
+  Future<void> _pickRange() async {
+    final now = DateTime.now();
+    final picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(now.year - 2),
+      lastDate: now,
+      initialDateRange: _range,
+    );
+    if (picked != null) setState(() => _range = picked);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -58,13 +108,23 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
     if (stage == null && !perms.isAdmin) return setState(() => _done = true);
     setState(() => _loading = true);
     try {
-      final page = await ref.read(auditRepositoryProvider).page(stageId: stage?.id, after: _cursor);
-      if (!mounted) return;
-      setState(() {
-        _entries.addAll(page.entries);
-        _cursor = page.cursor;
-        _done = page.cursor == null;
-      });
+      var pages = 0;
+      do {
+        final page = await ref.read(auditRepositoryProvider).page(
+              stageId: stage?.id,
+              actor: _actor.text,
+              from: _range?.start,
+              to: _range?.end,
+              after: _cursor,
+            );
+        if (!mounted) return;
+        setState(() {
+          _entries.addAll(page.entries);
+          _cursor = page.cursor;
+          _done = page.cursor == null;
+        });
+        pages++;
+      } while (_query.isNotEmpty && !_done && _shown.length < _wanted && pages < _maxAutoPages);
     } on Object catch (e) {
       if (mounted) setState(() => _error = e);
     } finally {
@@ -111,7 +171,69 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
               },
             ),
           ),
+          _filters(context),
           Expanded(child: _list(context)),
+        ],
+      ),
+    );
+  }
+
+  Widget _filters(BuildContext context) {
+    final l10n = context.l10n;
+    final m = MaterialLocalizations.of(context);
+    final range = _range;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: ExpansionTile(
+        key: const Key('audit.search'),
+        leading: const Icon(Icons.search),
+        title: Text(_filtering ? l10n.auditSearchActive : l10n.auditSearch),
+        initiallyExpanded: _filtering,
+        childrenPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+        children: [
+          TextField(
+            key: const Key('audit.actor'),
+            controller: _actor,
+            keyboardType: TextInputType.emailAddress,
+            textDirection: TextDirection.ltr,
+            decoration: InputDecoration(labelText: l10n.auditActor, prefixIcon: const Icon(Icons.person_outline)),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            key: const Key('audit.text'),
+            controller: _text,
+            decoration: InputDecoration(
+              labelText: l10n.auditText,
+              helperText: l10n.auditTextHelp,
+              prefixIcon: const Icon(Icons.badge_outlined),
+            ),
+            onSubmitted: (_) => _apply(),
+          ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: OutlinedButton.icon(
+              key: const Key('audit.range'),
+              onPressed: _pickRange,
+              icon: const Icon(Icons.date_range),
+              label: Text(range == null
+                  ? l10n.auditAnyDate
+                  : l10n.reportPeriod(m.formatMediumDate(range.start), m.formatMediumDate(range.end))),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(onPressed: _loading ? null : _clear, child: Text(l10n.auditClear)),
+              const SizedBox(width: 8),
+              FilledButton(
+                key: const Key('audit.apply'),
+                onPressed: _loading ? null : _apply,
+                child: Text(l10n.auditApply),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -133,11 +255,20 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
         ),
       );
     }
-    if (_entries.isEmpty) {
-      return _loading
-          ? const Center(child: CircularProgressIndicator())
-          : Center(child: MessageView(icon: Icons.inbox, title: l10n.auditEmpty));
+    final shown = _shown;
+    if (shown.isEmpty && (_done || !_loading)) {
+      if (_loading) return const Center(child: CircularProgressIndicator());
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            MessageView(icon: Icons.inbox, title: _filtering ? l10n.auditNoMatch : l10n.auditEmpty),
+            if (!_done) OutlinedButton(onPressed: _more, child: Text(l10n.auditMore)),
+          ],
+        ),
+      );
     }
+    if (shown.isEmpty) return const Center(child: CircularProgressIndicator());
     return NotificationListener<ScrollNotification>(
       onNotification: (n) {
         if (n.metrics.extentAfter < 400) _more();
@@ -146,9 +277,9 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
       child: ListView.builder(
         key: const Key('audit.list'),
         padding: const EdgeInsets.only(bottom: 24),
-        itemCount: _entries.length + 1,
+        itemCount: shown.length + 1,
         itemBuilder: (context, i) {
-          if (i == _entries.length) {
+          if (i == shown.length) {
             return Padding(
               padding: const EdgeInsets.all(16),
               child: _loading
@@ -158,7 +289,7 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
                       : OutlinedButton(onPressed: _more, child: Text(l10n.auditMore)),
             );
           }
-          return _EntryTile(entry: _entries[i]);
+          return _EntryTile(entry: shown[i]);
         },
       ),
     );
