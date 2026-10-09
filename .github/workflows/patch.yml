@@ -9,6 +9,15 @@ name: Shorebird patch
 on:
   push:
     tags: ['patch/*']
+  # Also from Actions → Shorebird patch → Run workflow (or the GitHub API),
+  # e.g. from a phone or a session that cannot push tags: pick the branch or
+  # commit to ship and type the release it patches.
+  workflow_dispatch:
+    inputs:
+      release:
+        description: Release to patch (the installed APK's version+build)
+        required: true
+        default: 1.3.0+12
 
 env:
   FLUTTER_VERSION: 3.47.6
@@ -82,11 +91,17 @@ jobs:
           cache: true
 
       - name: Patch the release
+        env:
+          RELEASE_INPUT: ${{ inputs.release }}
         run: |
           # patch/1.3.0+12 — or patch/1.3.0+12-2 for a second patch (tags
           # cannot be reused; a «/2» suffix clashes with the first tag's ref).
-          release="${GITHUB_REF_NAME#patch/}"
-          release="${release%%-*}"
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            release="$RELEASE_INPUT"
+          else
+            release="${GITHUB_REF_NAME#patch/}"
+            release="${release%%-*}"
+          fi
           echo "Patching release $release"
           # A patch cannot ship assets. Only the generated license list
           # (NOTICES.Z, new pure-Dart packages) may differ: anything else —

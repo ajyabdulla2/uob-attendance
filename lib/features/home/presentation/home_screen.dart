@@ -342,7 +342,7 @@ class _CourseCard extends StatelessWidget {
     return Card(
       key: Key('home.course.${first.courseId}'),
       clipBehavior: Clip.antiAlias,
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: 18),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: color.withValues(alpha: 0.5)),
@@ -357,10 +357,10 @@ class _CourseCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(12, 10, 12, 2),
+                    padding: const EdgeInsetsDirectional.fromSTEB(14, 12, 14, 2),
                     child: Text(
                       first.courseName.isEmpty ? first.courseId : first.courseName,
-                      style: theme.textTheme.titleMedium?.copyWith(color: color, fontWeight: FontWeight.bold),
+                      style: theme.textTheme.titleLarge?.copyWith(color: color, fontWeight: FontWeight.bold),
                     ),
                   ),
                   Padding(
@@ -368,7 +368,7 @@ class _CourseCard extends StatelessWidget {
                     child: Text(l10n.stageId(first.stageId), style: theme.textTheme.bodySmall),
                   ),
                   for (final a in sorted) _ClassTile(assignment: a, color: color, local: local),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
                 ],
               ),
             ),
@@ -403,22 +403,22 @@ class _ClassTile extends StatelessWidget {
     void record() => context.push(Routes.recordFor(a.id));
 
     final badge = Container(
-      width: 40,
-      height: 40,
+      width: 56,
+      height: 56,
       decoration: BoxDecoration(
         color: theory ? color : theme.colorScheme.surface,
         shape: theory ? BoxShape.circle : BoxShape.rectangle,
-        borderRadius: theory ? null : BorderRadius.circular(8),
-        border: Border.all(color: color, width: 2),
+        borderRadius: theory ? null : BorderRadius.circular(12),
+        border: Border.all(color: color, width: 2.5),
       ),
-      child: Icon(theory ? Icons.menu_book : Icons.computer, size: 22, color: theory ? onColor : color),
+      child: Icon(theory ? Icons.menu_book : Icons.computer, size: 32, color: theory ? onColor : color),
     );
     final target = theory
         ? (a.target == DocIds.allSections ? l10n.allSections : l10n.sectionLabel(a.target))
         : l10n.groupLabel(a.target);
 
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(10, 4, 10, 4),
+      padding: const EdgeInsetsDirectional.fromSTEB(10, 6, 10, 6),
       child: Material(
         key: Key('home.tile.${a.id}'),
         color: theory ? color.withValues(alpha: 0.12) : theme.colorScheme.surface,
@@ -430,28 +430,28 @@ class _ClassTile extends StatelessWidget {
         child: InkWell(
           onTap: local ? record : null,
           child: Padding(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(14),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Row(
                   children: [
                     badge,
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(theory ? l10n.theoryLabel : l10n.practicalLabel,
-                              style: theme.textTheme.titleMedium?.copyWith(color: color, fontWeight: FontWeight.bold)),
-                          Text(target, style: theme.textTheme.bodyMedium),
+                              style: theme.textTheme.titleLarge?.copyWith(color: color, fontWeight: FontWeight.bold)),
+                          Text(target, style: theme.textTheme.titleSmall),
                         ],
                       ),
                     ),
                   ],
                 ),
                 if (local) ...[
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Row(
                     children: [
                       Expanded(
@@ -462,6 +462,7 @@ class _ClassTile extends StatelessWidget {
                             backgroundColor: color,
                             foregroundColor: onColor,
                             padding: const EdgeInsets.symmetric(horizontal: 12),
+                            minimumSize: const Size.fromHeight(48),
                           ),
                           onPressed: record,
                           icon: const Icon(Icons.how_to_reg),
@@ -477,6 +478,7 @@ class _ClassTile extends StatelessWidget {
                             foregroundColor: color,
                             side: BorderSide(color: color),
                             padding: const EdgeInsets.symmetric(horizontal: 8),
+                            minimumSize: const Size.fromHeight(48),
                           ),
                           onPressed: () => context.push(Routes.registerFor(a.id)),
                           icon: const Icon(Icons.table_chart_outlined),
