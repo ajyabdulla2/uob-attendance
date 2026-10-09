@@ -59,6 +59,7 @@ void main() {
         leaves: const [],
         units: course.units,
         year: year,
+        stageId: '1-morning',
       ),
   };
 
@@ -169,6 +170,7 @@ void main() {
         leaves: const [],
         units: 1,
         year: year,
+        stageId: '1-morning',
       ),
     );
     final w = ReportBuilders.warningLetter(l10n, standing: warned, stageLabel: l10n.stage(stage), thresholds: year.thresholds);

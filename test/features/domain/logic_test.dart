@@ -164,6 +164,8 @@ void main() {
       expect(ValueParsers.semester('الثاني'), 2);
       expect(ValueParsers.semester('', fallback: 1), 1);
       expect(ValueParsers.semester('3'), isNull);
+      expect(ValueParsers.semester('سنوي'), 1);
+      expect(ValueParsers.semester('Annual'), 1);
       expect(ValueParsers.units('٣'), 3);
       expect(ValueParsers.units('2.5'), isNull);
       expect(ValueParsers.units('0'), isNull);

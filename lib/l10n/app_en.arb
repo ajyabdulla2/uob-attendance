@@ -688,5 +688,12 @@
   "yearMissed": "Allow recording a missed lecture",
   "yearMissedOn": "On: stage managers and admins see «Record a missed lecture» on the stage dashboard, for any class of their stage on any past day.",
   "yearMissedOff": "Off: a lecture past its lock time can only be corrected through edit requests.",
-  "missedDisabled": "Recording missed lectures is off. An admin can switch it on in Year settings."
+  "missedDisabled": "Recording missed lectures is off. An admin can switch it on in Year settings.",
+  "yearSystems": "Stage systems",
+  "yearSystemsHelp": "Semester stage: each semester's courses are counted over the semester's weeks. Annual stage: its courses run all year and are counted over the year's weeks. The thresholds are the same for both.",
+  "yearSystemSemester": "Semester",
+  "yearSystemAnnual": "Annual",
+  "yearWeeksYear": "Weeks per year (annual stages)",
+  "yearWeeksYearHelp": "For example 30: a 3-unit annual course = 90 lectures a year.",
+  "assignmentsCourseInfoAnnual": "{code} · {units} units · annual"
 }

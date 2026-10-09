@@ -4252,6 +4252,48 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تسجيل المحاضرات الفائتة معطّل. يفعّله المدير من «إعدادات السنة».'**
   String get missedDisabled;
+
+  /// No description provided for @yearSystems.
+  ///
+  /// In ar, this message translates to:
+  /// **'نظام المراحل'**
+  String get yearSystems;
+
+  /// No description provided for @yearSystemsHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'المرحلة الفصلية: مواد كل فصل تُحسب نسبتها على أسابيع الفصل. المرحلة السنوية: موادها تستمر طوال السنة وتُحسب نسبتها على أسابيع السنة. العتبات نفسها للنظامين.'**
+  String get yearSystemsHelp;
+
+  /// No description provided for @yearSystemSemester.
+  ///
+  /// In ar, this message translates to:
+  /// **'فصلي'**
+  String get yearSystemSemester;
+
+  /// No description provided for @yearSystemAnnual.
+  ///
+  /// In ar, this message translates to:
+  /// **'سنوي'**
+  String get yearSystemAnnual;
+
+  /// No description provided for @yearWeeksYear.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدد أسابيع السنة (للمراحل السنوية)'**
+  String get yearWeeksYear;
+
+  /// No description provided for @yearWeeksYearHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'مثلاً 30: مادة سنوية بثلاث وحدات = 90 محاضرة في السنة.'**
+  String get yearWeeksYearHelp;
+
+  /// No description provided for @assignmentsCourseInfoAnnual.
+  ///
+  /// In ar, this message translates to:
+  /// **'{code} · {units} وحدات · سنوية'**
+  String assignmentsCourseInfoAnnual(String code, String units);
 }
 
 class _AppLocalizationsDelegate

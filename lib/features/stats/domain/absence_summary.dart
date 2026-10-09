@@ -29,7 +29,8 @@ final class AbsenceSummary {
   final int byLeave;
   final int lates;
 
-  /// Lectures planned for the course this semester (from its units).
+  /// Lectures planned for the course this semester, or this year in an annual
+  /// stage (from its units).
   final int planned;
   final double percent;
   final WarningLevel level;
@@ -52,6 +53,7 @@ final class AbsenceSummary {
     required Iterable<Leave> leaves,
     required int units,
     required AcademicYear year,
+    required String stageId,
     String? type,
   }) {
     final leaveDays = excusedLeaveDays(leaves, year.maxLeaveDays);
@@ -78,7 +80,7 @@ final class AbsenceSummary {
     final counted = absent + (year.leavesCountAgainst ? excused : 0);
     final planned = AbsenceMath.plannedLectures(
       units: units,
-      weeks: year.weeksPerSemester,
+      weeks: year.weeksFor(stageId),
       lecturesPerUnitPerWeek: year.lecturesPerUnitPerWeek,
     );
     final percent = AbsenceMath.percent(counted, planned);

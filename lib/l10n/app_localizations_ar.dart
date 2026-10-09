@@ -2585,4 +2585,29 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get missedDisabled =>
       'تسجيل المحاضرات الفائتة معطّل. يفعّله المدير من «إعدادات السنة».';
+
+  @override
+  String get yearSystems => 'نظام المراحل';
+
+  @override
+  String get yearSystemsHelp =>
+      'المرحلة الفصلية: مواد كل فصل تُحسب نسبتها على أسابيع الفصل. المرحلة السنوية: موادها تستمر طوال السنة وتُحسب نسبتها على أسابيع السنة. العتبات نفسها للنظامين.';
+
+  @override
+  String get yearSystemSemester => 'فصلي';
+
+  @override
+  String get yearSystemAnnual => 'سنوي';
+
+  @override
+  String get yearWeeksYear => 'عدد أسابيع السنة (للمراحل السنوية)';
+
+  @override
+  String get yearWeeksYearHelp =>
+      'مثلاً 30: مادة سنوية بثلاث وحدات = 90 محاضرة في السنة.';
+
+  @override
+  String assignmentsCourseInfoAnnual(String code, String units) {
+    return '$code · $units وحدات · سنوية';
+  }
 }

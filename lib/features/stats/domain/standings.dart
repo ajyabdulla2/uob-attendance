@@ -51,6 +51,7 @@ List<Standing> buildStandings({
           leaves: leavesOf[student.id] ?? const [],
           units: course.units,
           year: year,
+          stageId: course.stageId,
           type: type,
         ),
       ));
