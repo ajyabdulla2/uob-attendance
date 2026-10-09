@@ -1724,6 +1724,12 @@ abstract class AppLocalizations {
   /// **'تسجيل الحضور'**
   String get recordAction;
 
+  /// No description provided for @homeOpenRegister.
+  ///
+  /// In ar, this message translates to:
+  /// **'عرض السجل'**
+  String get homeOpenRegister;
+
   /// No description provided for @registerAction.
   ///
   /// In ar, this message translates to:

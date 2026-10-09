@@ -962,6 +962,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get recordAction => 'تسجيل الحضور';
 
   @override
+  String get homeOpenRegister => 'عرض السجل';
+
+  @override
   String get registerAction => 'سجل الحضور';
 
   @override

@@ -965,6 +965,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordAction => 'Take attendance';
 
   @override
+  String get homeOpenRegister => 'View register';
+
+  @override
   String get registerAction => 'Register';
 
   @override

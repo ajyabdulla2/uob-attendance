@@ -271,6 +271,7 @@
   "attLate": "Late",
   "attExcused": "Excused",
   "recordAction": "Take attendance",
+  "homeOpenRegister": "View register",
   "registerAction": "Register",
   "homeRecordOnPhone": "Attendance is recorded in the phone app (works offline).",
   "homeDownloading": "Downloading your courses and students…",

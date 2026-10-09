@@ -284,4 +284,52 @@ void main() {
 
     await unmountApp(tester);
   });
+  testWidgets('theory and each practical group are separate boxes with their own buttons', (tester) async {
+    final fs = await seededFirestore();
+    final practical = Assignment.practical(
+      teacherId: teacherEmail,
+      courseId: course.id,
+      stageId: stage.id,
+      groupName: 'A',
+      courseName: course.name,
+    );
+    await fs.doc('courses/${course.id}').update({'hasPractical': true});
+    await fs.doc('groups/${practical.groupId}').set({
+      'courseId': course.id,
+      'stageId': stage.id,
+      'name': 'A',
+      'studentIds': [for (final s in students) s.id],
+    });
+    await fs.doc('assignments/${practical.id}').set(practical.toMap());
+    await pumpApp(
+      tester,
+      user: MockUser(email: teacherEmail, isEmailVerified: true),
+      profile: teacher,
+      firestore: fs,
+      localDb: AppDatabase(NativeDatabase.memory()),
+    );
+    await tester.pumpAndSettle();
+
+    // One course card, two boxes: theory first, then group A.
+    final card = find.byKey(Key('home.course.${course.id}'));
+    expect(card, findsOneWidget);
+    final theoryBox = find.byKey(Key('home.tile.${assignment.id}'));
+    final groupBox = find.byKey(Key('home.tile.${practical.id}'));
+    expect(find.descendant(of: theoryBox, matching: find.text('نظري')), findsOneWidget);
+    expect(find.descendant(of: groupBox, matching: find.text('عملي')), findsOneWidget);
+    expect(find.descendant(of: groupBox, matching: find.text('مجموعة A')), findsOneWidget);
+    expect(tester.getTopLeft(theoryBox).dy, lessThan(tester.getTopLeft(groupBox).dy));
+    for (final a in [assignment, practical]) {
+      final box = find.byKey(Key('home.tile.${a.id}'));
+      expect(find.descendant(of: box, matching: find.byKey(Key('home.class.${a.id}'))), findsOneWidget);
+      expect(find.descendant(of: box, matching: find.byKey(Key('home.register.${a.id}'))), findsOneWidget);
+    }
+
+    // Tapping the group's box (not its buttons) records that group.
+    await tester.tap(find.descendant(of: groupBox, matching: find.text('مجموعة A')));
+    await tester.pumpAndSettle();
+    expect(find.text('المحاضرة 1'), findsOneWidget);
+    expect(find.textContaining('مجموعة A'), findsWidgets);
+    await unmountApp(tester);
+  });
 }

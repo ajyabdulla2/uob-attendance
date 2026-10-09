@@ -307,8 +307,8 @@ class _MyCourses extends ConsumerWidget {
   static String _name(Assignment a) => a.courseName.isEmpty ? a.courseId : a.courseName;
 }
 
-/// A course with a coloured edge; one row per class (theory first, then the
-/// practical groups) — tap to record, the table opens the register.
+/// A course with a coloured edge; one box per class (theory first, then the
+/// practical groups), each with its own record and register buttons.
 class _CourseCard extends StatelessWidget {
   const _CourseCard({required this.classes, required this.color, required this.local});
 
@@ -367,23 +367,7 @@ class _CourseCard extends StatelessWidget {
                     padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 4),
                     child: Text(l10n.stageId(first.stageId), style: theme.textTheme.bodySmall),
                   ),
-                  for (final a in sorted)
-                    ListTile(
-                      key: Key('home.class.${a.id}'),
-                      dense: true,
-                      visualDensity: VisualDensity.compact,
-                      leading: Icon(a.type == AssignmentType.theory ? Icons.menu_book : Icons.computer, color: color),
-                      title: Text(_classPart(l10n, a), style: theme.textTheme.titleSmall),
-                      onTap: local ? () => context.push(Routes.recordFor(a.id)) : null,
-                      trailing: local
-                          ? IconButton(
-                              key: Key('home.register.${a.id}'),
-                              tooltip: l10n.registerAction,
-                              icon: const Icon(Icons.table_chart_outlined),
-                              onPressed: () => context.push(Routes.registerFor(a.id)),
-                            )
-                          : null,
-                    ),
+                  for (final a in sorted) _ClassTile(assignment: a, color: color, local: local),
                   const SizedBox(height: 4),
                 ],
               ),
@@ -393,17 +377,122 @@ class _CourseCard extends StatelessWidget {
       ),
     );
   }
+}
 
-  /// «نظري · كل الشعب» / «عملي · مجموعة A» (the stage is in the header).
-  static String _classPart(AppLocalizations l10n, Assignment a) => [
-        if (a.type == AssignmentType.theory) ...[
-          l10n.theoryLabel,
-          a.target == DocIds.allSections ? l10n.allSections : l10n.sectionLabel(a.target),
-        ] else ...[
-          l10n.practicalLabel,
-          l10n.groupLabel(a.target),
-        ],
-      ].join(' · ');
+/// One class of a course as its own box, so theory and each practical group
+/// are told apart at a glance: theory is a filled box with a round book
+/// badge, a practical group an outlined box with a square computer badge.
+/// On the phone the whole box records (as does the filled button) and the
+/// outlined button opens the register; the web panel only shows the class.
+class _ClassTile extends StatelessWidget {
+  const _ClassTile({required this.assignment, required this.color, required this.local});
+
+  final Assignment assignment;
+  final Color color;
+  final bool local;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final a = assignment;
+    final theory = a.type == AssignmentType.theory;
+    final radius = BorderRadius.circular(12);
+    // Ink on the course colour: dark mode uses its light shades.
+    final onColor = theme.brightness == Brightness.dark ? Colors.black87 : Colors.white;
+    void record() => context.push(Routes.recordFor(a.id));
+
+    final badge = Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: theory ? color : theme.colorScheme.surface,
+        shape: theory ? BoxShape.circle : BoxShape.rectangle,
+        borderRadius: theory ? null : BorderRadius.circular(8),
+        border: Border.all(color: color, width: 2),
+      ),
+      child: Icon(theory ? Icons.menu_book : Icons.computer, size: 22, color: theory ? onColor : color),
+    );
+    final target = theory
+        ? (a.target == DocIds.allSections ? l10n.allSections : l10n.sectionLabel(a.target))
+        : l10n.groupLabel(a.target);
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(10, 4, 10, 4),
+      child: Material(
+        key: Key('home.tile.${a.id}'),
+        color: theory ? color.withValues(alpha: 0.12) : theme.colorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: radius,
+          side: BorderSide(color: color.withValues(alpha: theory ? 0.35 : 0.9), width: theory ? 1 : 1.5),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: local ? record : null,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    badge,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(theory ? l10n.theoryLabel : l10n.practicalLabel,
+                              style: theme.textTheme.titleMedium?.copyWith(color: color, fontWeight: FontWeight.bold)),
+                          Text(target, style: theme.textTheme.bodyMedium),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                if (local) ...[
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: FilledButton.icon(
+                          key: Key('home.class.${a.id}'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: color,
+                            foregroundColor: onColor,
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                          ),
+                          onPressed: record,
+                          icon: const Icon(Icons.how_to_reg),
+                          label: FittedBox(fit: BoxFit.scaleDown, child: Text(l10n.recordAction)),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        flex: 2,
+                        child: OutlinedButton.icon(
+                          key: Key('home.register.${a.id}'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: color,
+                            side: BorderSide(color: color),
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                          ),
+                          onPressed: () => context.push(Routes.registerFor(a.id)),
+                          icon: const Icon(Icons.table_chart_outlined),
+                          label: FittedBox(fit: BoxFit.scaleDown, child: Text(l10n.homeOpenRegister)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 /// «الإشعارات» with the number of new items.
