@@ -685,6 +685,7 @@
   "attLate": "متأخر",
   "attExcused": "مُجاز",
   "recordAction": "تسجيل الحضور",
+  "homeOpenRegister": "عرض السجل",
   "registerAction": "سجل الحضور",
   "homeRecordOnPhone": "يُسجَّل الحضور من تطبيق الهاتف (يعمل دون اتصال).",
   "homeDownloading": "جارٍ تنزيل موادك وطلبتك…",
