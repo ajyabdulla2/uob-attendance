@@ -1,0 +1,579 @@
+rules_version = '2';
+
+// =============================================================================
+// نظام الحضور — قسم علوم الحاسوب، جامعة البصرة
+// Firestore security rules (Spark plan: Auth + Firestore only).
+//
+// Identity model (see CLAUDE.md → "Accounts"):
+//   * users/{email}  — the doc ID is the lower-cased e-mail address.
+//     An admin pre-provisions the doc (import or manual add); the teacher then
+//     activates the account by signing up with the same e-mail and verifying
+//     it. Roles are therefore only granted to *verified* owners of the e-mail.
+//   * roles:        superAdmin | deputyAdmin | stageManager | teacher
+//   * stageScopes:  stages a stage manager manages, e.g. ["3-morning"]
+//   * teachingStages: stages a teacher has assignments in (maintained by the
+//     app together with assignments) — lets teachers read their students only.
+//
+// Deterministic IDs (mirrored in lib/core/firebase/doc_ids.dart):
+//   courses      {code}_{stageId}
+//   groups       {courseId}__{groupName}
+//   assignments  {courseId}__{type}__{target}__{teacherEmail}
+//   sessions     {courseId}__{type}__{target}__{yyyyMMdd}__{lectureNo}
+//   stats        {courseId}__{studentId}
+//   students     {universityId}
+// where target = practical group name, or theory section ("all" = whole stage).
+// =============================================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ------------------------------------------------------------ identity --
+    function signedIn() {
+      return request.auth != null
+        && request.auth.token.email is string
+        && request.auth.token.email_verified == true;
+    }
+
+    function myEmail() {
+      return request.auth.token.email.lower();
+    }
+
+    function userPath(email) {
+      return /databases/$(database)/documents/users/$(email);
+    }
+
+    function me() {
+      return get(userPath(myEmail())).data;
+    }
+
+    function isActive() {
+      return signedIn()
+        && exists(userPath(myEmail()))
+        && me().get('active', false) == true;
+    }
+
+    function hasRole(role) {
+      return isActive() && role in me().get('roles', []);
+    }
+
+    function isSuperAdmin()   { return hasRole('superAdmin'); }
+    function isDeputyAdmin()  { return hasRole('deputyAdmin'); }
+    function isAdmin()        { return isSuperAdmin() || isDeputyAdmin(); }
+    function isStageManager() { return hasRole('stageManager'); }
+
+    function inStageScope(stageId) {
+      return isStageManager() && stageId in me().get('stageScopes', []);
+    }
+
+    function canManageStage(stageId) {
+      return isAdmin() || inStageScope(stageId);
+    }
+
+    function teachesStage(stageId) {
+      return isActive() && stageId in me().get('teachingStages', []);
+    }
+
+    // ---------------------------------------------------------- validation --
+    function validStageId(stageId) {
+      return stageId is string && stageId.matches('^[1-4]-(morning|evening)$');
+    }
+
+    function nonEmptyString(v) {
+      return v is string && v.size() > 0;
+    }
+
+    function changedKeys() {
+      return request.resource.data.diff(resource.data).affectedKeys();
+    }
+
+    function docPath(collection, id) {
+      return /databases/$(database)/documents/$(collection)/$(id);
+    }
+
+    function courseStage(courseId) {
+      return get(docPath('courses', courseId)).data.stageId;
+    }
+
+    // -------------------------------------------- assignments and sessions --
+    function assignmentId(courseId, type, target, email) {
+      return courseId + '__' + type + '__' + target + '__' + email;
+    }
+
+    // Is the caller assigned (as a teacher) to the class this session belongs to?
+    function isAssignedToSession(s) {
+      return isActive()
+        && exists(docPath('assignments', assignmentId(s.courseId, s.type, s.target, myEmail())));
+    }
+
+    function isLockedSession(s) {
+      return s.locked == true || request.time > s.lockAt;
+    }
+
+    function sessionPath(sid) {
+      return docPath('sessions', sid);
+    }
+
+    // ================================================================ users ==
+    function adminRoles() {
+      return ['superAdmin', 'deputyAdmin'];
+    }
+
+    function grantsAdmin(data) {
+      return data.get('roles', []).hasAny(adminRoles());
+    }
+
+    function validUser(email) {
+      let d = request.resource.data;
+      return d.email == email
+        && nonEmptyString(d.name)
+        && d.roles is list
+        && d.roles.hasOnly(['superAdmin', 'deputyAdmin', 'stageManager', 'teacher'])
+        && d.get('stageScopes', []) is list
+        && d.get('teachingStages', []) is list
+        && d.active is bool;
+    }
+
+    // A user may edit only their own phone number.
+    function selfProfileEdit(email) {
+      return isActive()
+        && email == myEmail()
+        && changedKeys().hasOnly(['phone', 'updatedAt']);
+    }
+
+    // A stage manager may add/remove *their own* stages in a teacher's
+    // teachingStages (done when linking a teacher to a course).
+    function stageManagerTeachingEdit() {
+      let before = resource.data.get('teachingStages', []).toSet();
+      let after = request.resource.data.get('teachingStages', []).toSet();
+      return isStageManager()
+        && changedKeys().hasOnly(['teachingStages', 'updatedAt'])
+        && after.difference(before).union(before.difference(after))
+             .hasOnly(me().get('stageScopes', []));
+    }
+
+    match /users/{email} {
+      // A signed-in user can always read their own doc (even when suspended,
+      // so the app can explain why access is denied).
+      allow read: if (signedIn() && email == myEmail())
+                  || isAdmin()
+                  || isStageManager();
+
+      // Super admin: everything. Deputy admin: never grants or touches an
+      // admin role (SPEC: «لا يمنح دور مدير»).
+      allow create: if validUser(email)
+                    && (isSuperAdmin()
+                        || (isDeputyAdmin() && !grantsAdmin(request.resource.data)));
+
+      allow update: if validUser(email)
+                    && (isSuperAdmin()
+                        || (isDeputyAdmin()
+                            && !grantsAdmin(resource.data)
+                            && !grantsAdmin(request.resource.data))
+                        || selfProfileEdit(email)
+                        || stageManagerTeachingEdit());
+
+      allow delete: if isSuperAdmin();
+    }
+
+    // ======================================================= academicYears ==
+    // lockHours feeds every session's lock time below; keep the settings sane.
+    function validYear() {
+      let d = request.resource.data;
+      let t = d.get('thresholds', {});
+      return d.get('lockHours', 48) is int
+        && d.get('lockHours', 48) >= 1 && d.get('lockHours', 48) <= 720
+        && d.get('weeksPerSemester', 15) is int
+        && d.get('weeksPerSemester', 15) >= 1 && d.get('weeksPerSemester', 15) <= 30
+        && d.get('semester', 1) in [1, 2]
+        && d.get('lecturesPerUnitPerWeek', 1) is number && d.get('lecturesPerUnitPerWeek', 1) > 0
+        && (t.size() == 0
+            || (t.alert is number && t.warning is number && t.dismissal is number
+                && 0 < t.alert && t.alert < t.warning && t.warning < t.dismissal && t.dismissal <= 100));
+    }
+
+    match /academicYears/{yearId} {
+      allow read: if isActive();
+      allow create, update: if isAdmin() && validYear();
+      allow delete: if isAdmin();
+    }
+
+    // ============================================================== stages ==
+    match /stages/{stageId} {
+      allow read: if isActive();
+      allow write: if isAdmin() && validStageId(stageId);
+    }
+
+    // ============================================================ students ==
+    function validStudent(studentId) {
+      let d = request.resource.data;
+      return d.universityId == studentId
+        && nonEmptyString(d.fullName)
+        && validStageId(d.stageId)
+        && d.status in ['continuing', 'postponed', 'failedByAbsence', 'withdrawn', 'transferredIn']
+        && d.sortKey is string
+        && d.carryOver is bool;
+    }
+
+    match /students/{studentId} {
+      allow read: if isAdmin()
+                  || inStageScope(resource.data.stageId)
+                  || teachesStage(resource.data.stageId);
+      allow create: if validStudent(studentId)
+                    && canManageStage(request.resource.data.stageId);
+      allow update: if validStudent(studentId)
+                    && canManageStage(resource.data.stageId)
+                    && canManageStage(request.resource.data.stageId);
+      allow delete: if isAdmin();
+    }
+
+    // ============================================================= courses ==
+    function validCourse(courseId) {
+      let d = request.resource.data;
+      return nonEmptyString(d.code)
+        && nonEmptyString(d.name)
+        && validStageId(d.stageId)
+        && courseId == d.code + '_' + d.stageId
+        && d.units is int && d.units > 0
+        && d.semester in [1, 2]
+        && d.hasPractical is bool;
+    }
+
+    match /courses/{courseId} {
+      allow read: if isActive();
+      allow create, update: if isAdmin() && validCourse(courseId);
+      allow delete: if isAdmin();
+    }
+
+    // ===================================================== practical groups ==
+    function validGroup(groupId) {
+      let d = request.resource.data;
+      return nonEmptyString(d.name)
+        && groupId == d.courseId + '__' + d.name
+        && d.studentIds is list
+        && courseStage(d.courseId) == d.stageId;
+    }
+
+    match /groups/{groupId} {
+      allow read: if isAdmin()
+                  || inStageScope(resource.data.stageId)
+                  || teachesStage(resource.data.stageId);
+      allow create: if validGroup(groupId)
+                    && canManageStage(request.resource.data.stageId);
+      allow update: if validGroup(groupId)
+                    && canManageStage(resource.data.stageId)
+                    && canManageStage(request.resource.data.stageId);
+      allow delete: if canManageStage(resource.data.stageId);
+    }
+
+    // ========================================================= assignments ==
+    function validAssignment(id) {
+      let d = request.resource.data;
+      return d.type in ['theory', 'practical']
+        && nonEmptyString(d.target)
+        && nonEmptyString(d.teacherId)
+        && id == assignmentId(d.courseId, d.type, d.target, d.teacherId)
+        && courseStage(d.courseId) == d.stageId
+        && exists(userPath(d.teacherId))
+        && (d.type == 'theory'
+            || exists(docPath('groups', d.courseId + '__' + d.target)));
+    }
+
+    match /assignments/{id} {
+      allow read: if isAdmin()
+                  || inStageScope(resource.data.stageId)
+                  || (isActive() && resource.data.teacherId == myEmail());
+      allow create: if validAssignment(id)
+                    && canManageStage(request.resource.data.stageId);
+      allow update: if validAssignment(id)
+                    && canManageStage(resource.data.stageId)
+                    && canManageStage(request.resource.data.stageId);
+      allow delete: if canManageStage(resource.data.stageId);
+    }
+
+    // ============================================================ sessions ==
+    function validSession(sid) {
+      let d = request.resource.data;
+      return d.type in ['theory', 'practical']
+        && nonEmptyString(d.target)
+        && d.dateKey is string && d.dateKey.matches('^[0-9]{8}$')
+        && d.lectureNo is int && d.lectureNo > 0
+        && sid == d.courseId + '__' + d.type + '__' + d.target + '__' + d.dateKey + '__' + string(d.lectureNo)
+        && courseStage(d.courseId) == d.stageId
+        && d.date is timestamp
+        && d.lockAt is timestamp
+        && d.locked is bool
+        && d.updatedAt == request.time;
+    }
+
+    // A teacher may only open a session that is not in the future and whose
+    // lock deadline is exactly «end of lecture day + lockHours» of the year.
+    function teacherCanOpen() {
+      let d = request.resource.data;
+      let lockHours = get(docPath('academicYears', d.yearId)).data.get('lockHours', 48);
+      return isAssignedToSession(d)
+        && d.locked == false
+        && d.date < request.time + duration.value(1, 'd')
+        && d.lockAt == d.date + duration.value(24 + lockHours, 'h')
+        && request.time < d.lockAt
+        && d.openedBy == myEmail();
+    }
+
+    // Assigned to the class named in a session ID (courseId__type__target__…).
+    function isAssignedToSessionId(sid) {
+      let p = sid.split('__');
+      return p.size() == 5
+        && isActive()
+        && exists(docPath('assignments', assignmentId(p[0], p[1], p[2], myEmail())));
+    }
+
+    match /sessions/{sid} {
+      allow read: if isAdmin()
+                  || inStageScope(resource.data.stageId)
+                  || isAssignedToSession(resource.data);
+
+      // Before the first upload of a lecture the app asks the server whether
+      // it exists yet (create it, or only update counts). A missing doc has
+      // no data to check, so the class comes from the ID.
+      allow get: if resource == null && isAssignedToSessionId(sid);
+
+      allow create: if validSession(sid)
+                    && (canManageStage(request.resource.data.stageId) || teacherCanOpen());
+
+      // Teachers may only touch bookkeeping fields of an unlocked session;
+      // lock / lockAt / identity fields are for stage managers and admins.
+      allow update: if validSession(sid)
+                    && ((canManageStage(resource.data.stageId)
+                         && canManageStage(request.resource.data.stageId))
+                        || (isAssignedToSession(resource.data)
+                            && !isLockedSession(resource.data)
+                            && changedKeys().hasOnly(['updatedAt', 'updatedBy', 'counts'])));
+
+      allow delete: if canManageStage(resource.data.stageId);
+
+      // ---------------------------------------------- per-student records --
+      // getAfter(): the session may be created in the same batch.
+      function validRecord(studentId) {
+        let d = request.resource.data;
+        return d.studentId == studentId
+          && d.status in ['present', 'absent', 'late', 'excused']
+          && d.updatedBy == myEmail()
+          && d.updatedAt == request.time;
+      }
+
+      match /records/{studentId} {
+        allow read: if canManageStage(get(sessionPath(sid)).data.stageId)
+                    || isAssignedToSession(get(sessionPath(sid)).data);
+
+        allow create, update: if validRecord(studentId)
+                              && (canManageStage(getAfter(sessionPath(sid)).data.stageId)
+                                  || (isAssignedToSession(getAfter(sessionPath(sid)).data)
+                                      && !isLockedSession(getAfter(sessionPath(sid)).data)));
+
+        allow delete: if canManageStage(get(sessionPath(sid)).data.stageId);
+      }
+    }
+
+    // Every attendance record at once (collection group), for the backup.
+    // Admins can read each session's records anyway; this only lets them do
+    // it in one paged query instead of one query per session.
+    match /{path=**}/records/{studentId} {
+      allow read: if isAdmin();
+    }
+
+    // =============================================================== stats ==
+    // One doc per student × course, written in the same batch as the
+    // attendance records (SPEC: one read per student and course for the
+    // warnings). Instead of `increment` counters it keeps the student's
+    // status per session in `bySession` — idempotent, so an upload retried
+    // by the outbox (or replayed by the SDK) never counts an absence twice.
+    // A teacher may only set the entry of the session named in
+    // `lastSessionId`, which proves their right to write.
+    function teacherStatWrite(statId) {
+      let d = request.resource.data;
+      let s = getAfter(sessionPath(d.lastSessionId)).data;
+      let before = resource == null ? {} : resource.data;
+      return statId == d.courseId + '__' + d.studentId
+        && s.courseId == d.courseId
+        && s.stageId == d.stageId
+        && isAssignedToSession(s)
+        && !isLockedSession(s)
+        && d.diff(before).affectedKeys().hasOnly(
+             ['courseId', 'studentId', 'stageId', 'lastSessionId', 'bySession', 'updatedAt', 'departmentId'])
+        && d.get('bySession', {}).diff(before.get('bySession', {})).affectedKeys().hasOnly([d.lastSessionId])
+        && d.get('bySession', {}).get(d.lastSessionId, 'present') in ['present', 'absent', 'late', 'excused'];
+    }
+
+    match /stats/{statId} {
+      allow read: if isAdmin()
+                  || inStageScope(resource.data.stageId)
+                  || teachesStage(resource.data.stageId);
+      allow create, update: if canManageStage(request.resource.data.stageId)
+                            || teacherStatWrite(statId);
+      allow delete: if isAdmin();
+    }
+
+    // ============================================================== leaves ==
+    function validLeave() {
+      let d = request.resource.data;
+      return nonEmptyString(d.studentId)
+        && validStageId(d.stageId)
+        && d.type in ['sick', 'official', 'emergency', 'officialParticipation', 'other']
+        && d.from is timestamp && d.to is timestamp && d.from <= d.to;
+    }
+
+    // Whoever sets approvedBy must be the caller (or leave it unchanged).
+    function approvalIsMine(before) {
+      let after = request.resource.data.get('approvedBy', null);
+      return after == null || after == myEmail() || after == before;
+    }
+
+    match /leaves/{leaveId} {
+      allow read: if isAdmin()
+                  || inStageScope(resource.data.stageId)
+                  || teachesStage(resource.data.stageId);
+      allow create: if validLeave()
+                    && canManageStage(request.resource.data.stageId)
+                    && approvalIsMine(null);
+      allow update: if validLeave()
+                    && canManageStage(resource.data.stageId)
+                    && canManageStage(request.resource.data.stageId)
+                    && approvalIsMine(resource.data.get('approvedBy', null));
+      allow delete: if canManageStage(resource.data.stageId);
+    }
+
+    // ======================================================== warningLists ==
+    // department decision: editable (stage manager in scope or admin).
+    // deanery decision: set by admins only with an order number + date, and
+    // is then frozen forever (no update, no delete).
+    function hasOrder() {
+      let d = request.resource.data;
+      return nonEmptyString(d.get('orderNumber', null)) && d.get('orderDate', null) is timestamp;
+    }
+
+    function validWarningList() {
+      let d = request.resource.data;
+      return validStageId(d.stageId)
+        && d.level in ['alert', 'warning', 'dismissal']
+        && d.decision in ['department', 'deanery']
+        && d.entries is list;
+    }
+
+    match /warningLists/{listId} {
+      allow read: if isAdmin() || inStageScope(resource.data.stageId);
+
+      allow create: if validWarningList()
+                    && ((request.resource.data.decision == 'department'
+                         && canManageStage(request.resource.data.stageId))
+                        || (request.resource.data.decision == 'deanery'
+                            && isAdmin() && hasOrder()));
+
+      allow update: if resource.data.decision == 'department'
+                    && validWarningList()
+                    && request.resource.data.stageId == resource.data.stageId
+                    && ((request.resource.data.decision == 'department'
+                         && canManageStage(resource.data.stageId))
+                        || (request.resource.data.decision == 'deanery'
+                            && isAdmin() && hasOrder()));
+
+      allow delete: if resource.data.decision == 'department'
+                    && canManageStage(resource.data.stageId);
+    }
+
+    // ======================================================== editRequests ==
+    match /editRequests/{requestId} {
+      allow read: if isAdmin()
+                  || inStageScope(resource.data.stageId)
+                  || (isActive() && resource.data.requestedBy == myEmail());
+
+      allow create: if isActive()
+                    && request.resource.data.requestedBy == myEmail()
+                    && request.resource.data.status == 'pending'
+                    && nonEmptyString(request.resource.data.reason)
+                    && get(sessionPath(request.resource.data.sessionId)).data.stageId
+                         == request.resource.data.stageId
+                    && (isAssignedToSession(get(sessionPath(request.resource.data.sessionId)).data)
+                        || canManageStage(request.resource.data.stageId));
+
+      allow update: if canManageStage(resource.data.stageId)
+                    && resource.data.status == 'pending'
+                    && request.resource.data.status in ['approved', 'rejected']
+                    && request.resource.data.decidedBy == myEmail()
+                    && changedKeys().hasOnly(['status', 'decidedBy', 'decidedAt', 'decisionNote', 'updatedAt']);
+
+      allow delete: if false;
+    }
+
+    // ====================================================== accessRequests ==
+    // accessRequests/{email}: someone who activated an e-mail the department
+    // has not provisioned asks to join. Admins approve (create users/{email})
+    // or reject; both delete the request. One pending request per e-mail.
+    function validAccessRequest(email) {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['email', 'name', 'note', 'requestedAt'])
+        && d.email == email
+        && nonEmptyString(d.name) && d.name.size() <= 100
+        && d.get('note', '') is string && d.get('note', '').size() <= 300
+        && d.requestedAt == request.time;
+    }
+
+    match /accessRequests/{email} {
+      allow read: if (signedIn() && email == myEmail()) || isAdmin();
+      allow create: if signedIn()
+                    && email == myEmail()
+                    && !exists(userPath(email))
+                    && validAccessRequest(email);
+      allow delete: if isAdmin() || (signedIn() && email == myEmail());
+      allow update: if false;
+    }
+
+    // ============================================================== config ==
+    // config/app: published app versions + download links (update notice).
+    match /config/{docId} {
+      allow read: if isActive();
+      allow write: if isAdmin();
+    }
+
+    // ============================================================ messages ==
+    // رسائل الإدارة (in-app notifications; FCM needs a server, not on Spark).
+    // Admins write to anyone; a stage manager to the stages they manage.
+    // Every active account reads them; the app shows those meant for it.
+    function validMessage() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['title', 'body', 'audience', 'stageId', 'createdBy', 'createdAt', 'departmentId'])
+        && nonEmptyString(d.title) && d.title.size() <= 120
+        && d.get('body', '') is string && d.get('body', '').size() <= 2000
+        && d.audience in ['all', 'teachers', 'stageManagers', 'stage']
+        && (d.audience != 'stage' || validStageId(d.get('stageId', null)))
+        && d.createdBy == myEmail()
+        && d.createdAt == request.time;
+    }
+
+    match /messages/{messageId} {
+      allow read: if isActive();
+      allow create: if validMessage()
+                    && (isAdmin()
+                        || (request.resource.data.audience == 'stage'
+                            && inStageScope(request.resource.data.stageId)));
+      allow delete: if isAdmin() || (isActive() && resource.data.createdBy == myEmail());
+      allow update: if false;
+    }
+
+    // ========================================================= rulesVersion ==
+    // Canary (lib/core/firebase/rules_version.dart): the app reads
+    // rulesVersion/<its version>; a refusal means older rules are deployed.
+    // Change both together whenever these rules change.
+    match /rulesVersion/{version} {
+      allow get: if version == '2026-10-07b';
+    }
+
+    // ============================================================ auditLog ==
+    // Append-only.
+    match /auditLog/{entryId} {
+      allow read: if isAdmin() || inStageScope(resource.data.get('stageId', null));
+      allow create: if isActive()
+                    && request.resource.data.actor == myEmail()
+                    && request.resource.data.at == request.time;
+      allow update, delete: if false;
+    }
+  }
+}

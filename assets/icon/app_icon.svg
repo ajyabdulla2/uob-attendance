@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- التدرج الداكن الفاخر للخلفية المتناسق مع إطار الشعار -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1714"/>
+      <stop offset="50%" stop-color="#262019"/>
+      <stop offset="100%" stop-color="#0E0D0B"/>
+    </linearGradient>
+
+    <!-- التدرج الذهبي المستوحى من الشعار الرسمي -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE082"/>
+      <stop offset="40%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#9A700B"/>
+    </linearGradient>
+
+    <!-- تأثير الظل للعناصر والبطاقات -->
+    <filter id="shadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-opacity="0.55"/>
+    </filter>
+
+    <!-- قناع دائري لاقتصاص شعار القسم بدقة تامة -->
+    <clipPath id="deptLogoClip">
+      <circle cx="256" cy="325" r="102"/>
+    </clipPath>
+  </defs>
+
+  <!-- خلفية الأيقونة: بيضاء بلا إطار داكن، فتندمج مع الورقة -->
+  <rect x="16" y="16" width="480" height="480" rx="108" fill="#FFFFFF"/>
+
+  <!-- ==================== لوح سجل الحضور (Clipboard) ==================== -->
+  <g filter="url(#shadow)">
+    <!-- جسم الورقة البيضاء -->
+    <rect x="100" y="52" width="312" height="395" rx="30" fill="#FFFFFF"/>
+
+    <!-- مشبك اللوح الذهبي العلوي -->
+    <path d="M 196,40 H 316 C 322,40 327,45 327,51 V 76 C 327,82 322,87 316,87 H 196 C 190,87 185,82 185,76 V 51 C 185,45 190,40 196,40 Z" fill="url(#goldGrad)"/>
+    <rect x="226" y="52" width="60" height="12" rx="6" fill="#1A1714" opacity="0.85"/>
+
+    <!-- عنوان السجل والصفوف التوضيحية للحضور في النصف العلوي -->
+    <text x="256" y="122" font-family="'Cairo', 'Segoe UI', sans-serif" font-size="20" font-weight="900" fill="#1A1714" text-anchor="middle">سجل الحضور والغياب</text>
+    <line x1="135" y1="136" x2="377" y2="136" stroke="#E2B842" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- السطر الأول: علامة حضور طالب -->
+    <g transform="translate(138, 152)">
+      <circle cx="13" cy="13" r="12" fill="#2E7D32"/>
+      <path d="M 8,13 L 12,17 L 19,9" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="36" y="6" width="130" height="13" rx="6.5" fill="#262019" opacity="0.85"/>
+      <rect x="180" y="6" width="40" height="13" rx="6.5" fill="#EAECEE"/>
+    </g>
+
+    <!-- السطر الثاني: علامة تسجيل طالب آخر -->
+    <g transform="translate(138, 185)">
+      <circle cx="13" cy="13" r="12" fill="#2E7D32"/>
+      <path d="M 8,13 L 12,17 L 19,9" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="36" y="6" width="150" height="13" rx="6.5" fill="#D5D8DC"/>
+      <rect x="198" y="6" width="22" height="13" rx="6.5" fill="#EAECEE"/>
+    </g>
+  </g>
+
+  <!-- ==================== دائرة شعار القسم بالأسفل ==================== -->
+  <g filter="url(#shadow)">
+    <!-- إطار ذهبي بارز ومزدوج حول الشعار -->
+    <circle cx="256" cy="325" r="110" fill="url(#goldGrad)"/>
+    <circle cx="256" cy="325" r="105" fill="#1A1714"/>
+    <circle cx="256" cy="325" r="102" fill="#FFFFFF"/>
+
+    <!-- استدعاء ملف الشعار الموضوع في نفس المسار -->
+    <image href="dept_logo.png" xlink:href="dept_logo.png" x="154" y="223" width="204" height="204" clip-path="url(#deptLogoClip)" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <!-- شارة تأكيد الحضور الذكية بجانب الدائرة -->
+  <g transform="translate(336, 385)" filter="url(#shadow)">
+    <circle cx="20" cy="20" r="19" fill="#2E7D32" stroke="#FFFFFF" stroke-width="3"/>
+    <path d="M 13,20 L 18,25 L 28,15" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

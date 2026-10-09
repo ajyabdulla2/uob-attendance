@@ -1,0 +1,1884 @@
+{
+  "@@locale": "ar",
+  "appTitle": "نظام الحضور والغياب",
+  "universityName": "جامعة البصرة",
+  "collegeName": "كلية التربية للعلوم الصرفة",
+  "departmentName": "قسم علوم الحاسوب",
+  "ok": "حسناً",
+  "cancel": "إلغاء",
+  "save": "حفظ",
+  "retry": "إعادة المحاولة",
+  "close": "إغلاق",
+  "confirm": "تأكيد",
+  "delete": "حذف",
+  "loading": "جارٍ التحميل…",
+  "errorGeneric": "حدث خطأ غير متوقع: {error}",
+  "@errorGeneric": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionDenied": "لا تملك صلاحية هذا الإجراء.",
+  "signOut": "تسجيل الخروج",
+  "languageSwitch": "English",
+  "toggleTheme": "تبديل الوضع الليلي",
+  "loginTitle": "تسجيل الدخول",
+  "activateTitle": "تفعيل حساب جديد",
+  "emailLabel": "البريد الجامعي",
+  "passwordLabel": "كلمة المرور",
+  "confirmPasswordLabel": "تأكيد كلمة المرور",
+  "showPassword": "إظهار كلمة المرور",
+  "signIn": "دخول",
+  "activate": "تفعيل الحساب",
+  "forgotPassword": "نسيت كلمة المرور؟",
+  "haveNoAccount": "أول مرة؟ فعّل حسابك",
+  "haveAccount": "لديك حساب مفعَّل؟ سجّل الدخول",
+  "activateHint": "يفعّل التدريسي حسابه بالبريد الذي أضافته إدارة القسم، ثم يؤكّده من الرسالة المرسلة إلى بريده.",
+  "resetPasswordTitle": "استعادة كلمة المرور",
+  "resetPasswordBody": "أدخل بريدك وسنرسل إليك رابطاً لتعيين كلمة مرور جديدة. الرابط يصل فقط لبريد فُعِّل من قبل؛ إن كان حسابك جديداً أو غيّرت الإدارة بريدك فاضغط «إلغاء» ثم «أول مرة؟ فعّل حسابك».",
+  "sendLink": "إرسال الرابط",
+  "passwordResetSent": "إن كان البريد مفعَّلاً فستصلك رسالة خلال دقائق (تفقّد مجلد Spam أيضاً). لم تصل؟ فعّل حسابك من «أول مرة؟ فعّل حسابك».",
+  "validationRequired": "هذا الحقل مطلوب",
+  "validationEmail": "صيغة البريد غير صحيحة",
+  "validationPasswordLength": "كلمة المرور 8 أحرف على الأقل",
+  "validationPasswordMatch": "كلمتا المرور غير متطابقتين",
+  "authInvalidCredentials": "البريد أو كلمة المرور غير صحيحة، أو لم يُفعَّل هذا البريد بعد (فعّله من «أول مرة؟ فعّل حسابك»).",
+  "authInvalidEmail": "صيغة البريد غير صحيحة.",
+  "authEmailInUse": "هذا البريد مفعَّل مسبقاً. سجّل الدخول أو استعد كلمة المرور.",
+  "authWeakPassword": "كلمة المرور ضعيفة؛ اختر كلمة أطول.",
+  "authUserDisabled": "هذا الحساب معطَّل. راجع إدارة القسم.",
+  "authTooManyRequests": "محاولات كثيرة. حاول بعد قليل.",
+  "authNetwork": "لا يوجد اتصال بالإنترنت. تسجيل الدخول أول مرة يتطلب اتصالاً.",
+  "authUnknown": "تعذّر إكمال العملية ({code}).",
+  "@authUnknown": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyTitle": "تأكيد البريد",
+  "verifyBody": "أرسلنا رابط تأكيد إلى {email}. افتح الرسالة واضغط الرابط، ثم عد إلى هنا.\nلم تصل خلال دقيقتين؟ ابحث في مجلد الرسائل غير المرغوب فيها (Spam) عن رسالة من noreply.",
+  "@verifyBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyDone": "أكّدت بريدي",
+  "verifyResend": "إعادة إرسال الرابط",
+  "verifySent": "أُرسل رابط جديد.",
+  "verifyNotYet": "لم يُؤكَّد البريد بعد. تحقق من مجلد الرسائل غير المرغوب فيها.",
+  "notProvisionedTitle": "الحساب غير مضاف",
+  "notProvisionedBody": "البريد {email} غير مسجَّل في النظام بعد. أرسل طلب انضمام أدناه، أو اطلب من إدارة القسم إضافتك.",
+  "@notProvisionedBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "suspendedTitle": "الحساب موقوف",
+  "suspendedBody": "أُوقف هذا الحساب من إدارة القسم.",
+  "profileErrorTitle": "تعذّر تحميل الحساب",
+  "profileErrorBody": "تحقق من الاتصال ثم أعد المحاولة.",
+  "configErrorTitle": "إعداد Firebase غير مكتمل",
+  "configErrorBody": "شغّل الأمر flutterfire configure لتوليد lib/firebase_options.dart ثم أعد بناء التطبيق.",
+  "navHome": "الرئيسية",
+  "navImport": "الاستيراد",
+  "navAssignments": "الربط",
+  "navProfile": "الملف الشخصي",
+  "roleSuperAdmin": "مدير عام",
+  "roleDeputyAdmin": "مدير ثانٍ",
+  "roleStageManager": "مسؤول مرحلة",
+  "roleTeacher": "تدريسي",
+  "level1": "المرحلة الأولى",
+  "level2": "المرحلة الثانية",
+  "level3": "المرحلة الثالثة",
+  "level4": "المرحلة الرابعة",
+  "shiftMorning": "صباحي",
+  "shiftEvening": "مسائي",
+  "stageLabel": "{level} — {shift}",
+  "@stageLabel": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "shift": {
+        "type": "String"
+      }
+    }
+  },
+  "statusContinuing": "مستمر",
+  "statusPostponed": "مؤجل",
+  "statusFailedByAbsence": "راسب بالغياب",
+  "statusWithdrawn": "منسحب",
+  "statusTransferredIn": "منقول إلى القسم",
+  "theoryLabel": "نظري",
+  "practicalLabel": "عملي",
+  "groupLabel": "مجموعة {name}",
+  "@groupLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sectionLabel": "شعبة {name}",
+  "@sectionLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "allSections": "كل الشعب",
+  "homeWelcome": "أهلاً، {name}",
+  "@homeWelcome": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeRoles": "صلاحياتك",
+  "homeStageScopes": "المراحل المسندة إليك",
+  "homeMyCourses": "موادي",
+  "homeNoCourses": "لم تُسند إليك مواد بعد.",
+  "homeSetupTitle": "تهيئة البيانات الأساسية",
+  "homeSetupBody": "لم تُنشأ المراحل الثمان أو السنة الدراسية النشطة بعد.",
+  "homeSetupAction": "تهيئة الآن",
+  "homeSetupDone": "تمت التهيئة.",
+  "homeActiveYear": "السنة الدراسية {year} — الفصل {semester}",
+  "@homeActiveYear": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      },
+      "semester": {
+        "type": "String"
+      }
+    }
+  },
+  "homeQuickActions": "إجراءات سريعة",
+  "homeImportAction": "استيراد الطلبة والتدريسيين والمواد",
+  "homeAssignAction": "ربط التدريسيين بالمواد والمجاميع",
+  "pendingUploads": "{count, plural, =0{لا توجد سجلات بانتظار الرفع} =1{سجل واحد بانتظار الرفع} =2{سجلّان بانتظار الرفع} few{{count} سجلات بانتظار الرفع} many{{count} سجلاً بانتظار الرفع} other{{count} سجل بانتظار الرفع}}",
+  "@pendingUploads": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "profileTitle": "الملف الشخصي",
+  "profileTheme": "المظهر",
+  "themeSystem": "حسب النظام",
+  "themeLight": "فاتح",
+  "themeDark": "ليلي",
+  "profileLanguage": "اللغة",
+  "languageArabic": "العربية",
+  "languageEnglish": "English",
+  "profilePhone": "الهاتف",
+  "profilePhoneSaved": "حُفظ رقم الهاتف.",
+  "profileChangePassword": "تغيير كلمة المرور",
+  "profileResetLinkSent": "أُرسل رابط تغيير كلمة المرور إلى بريدك.",
+  "signOutConfirm": "هل تريد تسجيل الخروج؟",
+  "signOutPending": "لا يمكن تسجيل الخروج: توجد {count} سجلات غير مرفوعة. اتصل بالإنترنت وانتظر الرفع أولاً.",
+  "@signOutPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importTitle": "استيراد البيانات",
+  "importStudents": "الطلبة",
+  "importTeachers": "التدريسيون",
+  "importCourses": "المواد",
+  "importStep1": "١. نزّل القالب واملأه",
+  "importStep2": "٢. اختر الملف (xlsx أو csv)",
+  "importDownloadTemplate": "تنزيل القالب",
+  "importTemplateSaved": "حُفظ القالب.",
+  "importPickFile": "اختيار ملف",
+  "importFileName": "الملف: {name}",
+  "@importFileName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "importUpdateExistingStudents": "تحديث الموجود حسب الرقم الجامعي بدل تجاوزه",
+  "importUpdateExistingTeachers": "تحديث الموجود حسب البريد بدل تجاوزه",
+  "importUpdateExistingCourses": "تحديث الموجود حسب رمز المادة والمرحلة بدل تجاوزه",
+  "importDefaultStage": "المرحلة الافتراضية (إن لم يحددها الملف)",
+  "importDefaultStageNone": "من الملف",
+  "importDefaultSemester": "الفصل الافتراضي (إن لم يحدده الملف)",
+  "importPreviewTitle": "معاينة قبل الحفظ",
+  "importSummaryCreate": "جديد: {count}",
+  "@importSummaryCreate": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importSummaryUpdate": "تحديث: {count}",
+  "@importSummaryUpdate": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importSummarySkip": "متجاوَز: {count}",
+  "@importSummarySkip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importSummaryInvalid": "أخطاء: {count}",
+  "@importSummaryInvalid": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importSummaryWarnings": "تحذيرات: {count}",
+  "@importSummaryWarnings": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importFilterAll": "كل الصفوف",
+  "importFilterProblems": "المشكلات فقط",
+  "importRow": "الصف {row}",
+  "@importRow": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      }
+    }
+  },
+  "importSave": "حفظ ({count})",
+  "@importSave": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importSaving": "جارٍ الحفظ…",
+  "importConfirmTitle": "تأكيد الحفظ",
+  "importConfirmBody": "سيُضاف {created} ويُحدَّث {updated}. الصفوف التي فيها أخطاء أو المتجاوَزة لن تُحفظ.",
+  "@importConfirmBody": {
+    "placeholders": {
+      "created": {
+        "type": "String"
+      },
+      "updated": {
+        "type": "String"
+      }
+    }
+  },
+  "importDone": "تم الحفظ: أُضيف {created} وحُدِّث {updated}.",
+  "@importDone": {
+    "placeholders": {
+      "created": {
+        "type": "String"
+      },
+      "updated": {
+        "type": "String"
+      }
+    }
+  },
+  "importFailures": "تعذّر حفظ {count} صفوف: {rows}",
+  "@importFailures": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "rows": {
+        "type": "String"
+      }
+    }
+  },
+  "importNoRowsMatch": "لا توجد صفوف تطابق التصفية.",
+  "importNotAllowed": "لا تملك صلاحية الاستيراد.",
+  "importReading": "جارٍ قراءة الملف…",
+  "actionCreate": "جديد",
+  "actionUpdate": "تحديث",
+  "actionSkip": "تجاوز",
+  "actionInvalid": "خطأ",
+  "issueMissingColumn": "العمود «{column}» غير موجود في الملف.",
+  "@issueMissingColumn": {
+    "placeholders": {
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "issueNoDataRows": "الملف لا يحتوي صفوف بيانات.",
+  "issueEmptyField": "الحقل «{field}» فارغ.",
+  "@issueEmptyField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "issueInvalidLevel": "المرحلة «{value}» غير معروفة (الأولى–الرابعة).",
+  "@issueInvalidLevel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "issueInvalidShift": "الدراسة «{value}» غير معروفة (صباحي/مسائي).",
+  "@issueInvalidShift": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "issueInvalidStatus": "الحالة «{value}» غير معروفة.",
+  "@issueInvalidStatus": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "issueInvalidYesNo": "القيمة «{value}» يجب أن تكون نعم أو لا.",
+  "@issueInvalidYesNo": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "issueInvalidSemester": "الفصل «{value}» يجب أن يكون 1 أو 2.",
+  "@issueInvalidSemester": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "issueInvalidUnits": "الوحدات «{value}» يجب أن تكون عدداً صحيحاً موجباً.",
+  "@issueInvalidUnits": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "issueInvalidEmail": "البريد «{value}» غير صالح.",
+  "@issueInvalidEmail": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "issueStageNotAllowed": "لا تملك صلاحية على {stage}.",
+  "@issueStageNotAllowed": {
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "issueDuplicateIdInFile": "الرقم الجامعي مكرر (ورد في الصف {row}).",
+  "@issueDuplicateIdInFile": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      }
+    }
+  },
+  "issueDuplicateEmailInFile": "البريد مكرر (ورد في الصف {row}).",
+  "@issueDuplicateEmailInFile": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      }
+    }
+  },
+  "issueDuplicateCodeInFile": "المادة {value} مكررة (وردت في الصف {row}).",
+  "@issueDuplicateCodeInFile": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "row": {
+        "type": "String"
+      }
+    }
+  },
+  "issueProtectedAdmin": "الحساب لمدير؛ لا يعدّله إلا المدير العام.",
+  "issueDuplicateNameInFile": "الاسم مكرر (ورد في الصف {row}) — تأكد أنهما شخصان مختلفان.",
+  "@issueDuplicateNameInFile": {
+    "placeholders": {
+      "row": {
+        "type": "String"
+      }
+    }
+  },
+  "issueNameMatchesOther": "يوجد طالب بالاسم نفسه برقم جامعي آخر ({value}).",
+  "@issueNameMatchesOther": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "issueNameNotFourPart": "الاسم ليس رباعياً.",
+  "issueExistsWillSkip": "موجود مسبقاً — سيُتجاوز (فعّل «تحديث الموجود» لتحديثه).",
+  "issueExistsWillUpdate": "موجود مسبقاً — سيُحدَّث.",
+  "issueMovesStage": "سينتقل الطالب من {from} إلى {to}.",
+  "@issueMovesStage": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldFullName": "الاسم الرباعي",
+  "fieldUniversityId": "الرقم الجامعي",
+  "fieldLevel": "المرحلة",
+  "fieldShift": "الدراسة",
+  "fieldSection": "الشعبة",
+  "fieldStatus": "الحالة",
+  "fieldCarryOver": "محمّل",
+  "fieldName": "الاسم",
+  "fieldTitle": "اللقب العلمي",
+  "fieldEmail": "البريد",
+  "fieldPhone": "الهاتف",
+  "fieldCode": "رمز المادة",
+  "fieldCourseName": "اسم المادة",
+  "fieldSemester": "الفصل",
+  "fieldUnits": "الوحدات",
+  "fieldHasPractical": "فيها عملي",
+  "fileUnsupported": "صيغة الملف غير مدعومة. استعمل xlsx أو csv.",
+  "fileLegacyXls": "صيغة xls القديمة غير مدعومة. احفظ الملف من Excel بصيغة «مصنف Excel (.xlsx)».",
+  "fileNotUtf8": "ترميز ملف CSV غير مدعوم. احفظه من Excel بصيغة «CSV UTF-8».",
+  "fileCorrupt": "تعذّرت قراءة الملف؛ قد يكون تالفاً.",
+  "fileEmpty": "الملف فارغ.",
+  "assignmentsTitle": "ربط التدريسيين بالمواد",
+  "assignmentsPickStage": "المرحلة",
+  "assignmentsNoStages": "لا توجد مراحل ضمن صلاحيتك.",
+  "assignmentsNoCourses": "لا توجد مواد لهذه المرحلة. استورد المواد أولاً.",
+  "assignmentsCourseInfo": "{code} · {units} وحدات · الفصل {semester}",
+  "@assignmentsCourseInfo": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "units": {
+        "type": "String"
+      },
+      "semester": {
+        "type": "String"
+      }
+    }
+  },
+  "assignmentsTheory": "النظري",
+  "assignmentsPractical": "العملي",
+  "assignmentsNoTheoryTeacher": "لم يُسند النظري بعد.",
+  "assignmentsNoGroups": "لا توجد مجاميع عملي بعد.",
+  "assignmentsGroupStudents": "{name} · عدد الطلبة: {count}",
+  "@assignmentsGroupStudents": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "assignmentsAssignTheory": "إسناد النظري",
+  "assignmentsAssignGroup": "إسناد {name}",
+  "@assignmentsAssignGroup": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "assignmentsTeacher": "التدريسي",
+  "assignmentsSection": "الشعبة",
+  "assignmentsSaved": "تم الإسناد.",
+  "assignmentsRemoveTitle": "إلغاء الإسناد",
+  "assignmentsRemoveBody": "إلغاء إسناد {teacher} من {target}؟",
+  "@assignmentsRemoveBody": {
+    "placeholders": {
+      "teacher": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "assignmentsRemoved": "أُلغي الإسناد.",
+  "assignmentsCreateGroups": "إنشاء / إعادة توزيع المجاميع",
+  "assignmentsGroupCount": "عدد المجاميع",
+  "assignmentsDistributeBody": "سيوزَّع {count} طالباً مستمراً من {stage} على المجاميع بالتساوي أبجدياً. المجاميع الزائدة تُحذف مع إسناداتها.",
+  "@assignmentsDistributeBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "assignmentsDistribute": "توزيع",
+  "assignmentsDistributed": "وُزِّع الطلبة على {count} مجاميع.",
+  "@assignmentsDistributed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "assignmentsNoTeachers": "لا يوجد تدريسيون. استورد التدريسيين أولاً.",
+  "assignmentsNoStudents": "لا يوجد طلبة مستمرون في هذه المرحلة لتوزيعهم.",
+  "assignmentsAlreadyAssigned": "هذا الإسناد موجود مسبقاً.",
+  "assignmentsSearchTeacher": "ابحث باسم التدريسي أو بريده",
+  "updateAvailable": "إصدار جديد ({version}) متاح",
+  "@updateAvailable": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updateDownload": "تنزيل",
+  "updateLater": "لاحقاً",
+  "updateRequiredTitle": "يجب تحديث التطبيق",
+  "updateRequiredBody": "الإصدار المثبّت ({installed}) لم يعد مدعوماً. ثبّت الإصدار الجديد فوقه مباشرة، وستبقى بياناتك المحلية كما هي.",
+  "@updateRequiredBody": {
+    "placeholders": {
+      "installed": {
+        "type": "String"
+      }
+    }
+  },
+  "updateNoLink": "رابط التنزيل غير مضبوط بعد؛ راجع إدارة القسم.",
+  "updateOpenFailed": "تعذّر فتح الرابط: {url}",
+  "@updateOpenFailed": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "navAccounts": "الحسابات",
+  "accountsTitle": "الحسابات والصلاحيات",
+  "accountsAdd": "إضافة حساب",
+  "accountsAddHint": "بعد الإضافة يفعّل صاحب البريد حسابه من «أول مرة؟ فعّل حسابك».",
+  "accountsSearch": "بحث بالاسم أو البريد",
+  "accountsEmpty": "لا توجد حسابات مطابقة.",
+  "accountsSuspended": "موقوف",
+  "accountsLocked": "حساب مدير؛ يعدّله المدير العام فقط.",
+  "accountsRequestsTitle": "طلبات الانضمام ({count})",
+  "@accountsRequestsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "accountsRequestedOn": "طُلب في {date}",
+  "@accountsRequestedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "accountsApprove": "قبول",
+  "accountsReject": "رفض",
+  "accountsRejectTitle": "رفض الطلب",
+  "accountsRejectBody": "رفض طلب {email}؟ يستطيع صاحبه إرسال طلب جديد.",
+  "@accountsRejectBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "accountsApproved": "أُضيف {name}، ويدخل الآن تلقائياً.",
+  "@accountsApproved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "accountsRejected": "رُفض الطلب.",
+  "accountsCreated": "أُضيف {email}. أخبر صاحبه أن يفعّل حسابه من التطبيق.",
+  "@accountsCreated": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "accountsSaved": "حُفظ الحساب.",
+  "accountsExists": "يوجد حساب بهذا البريد؛ عدّله من القائمة.",
+  "accountEditNew": "حساب جديد",
+  "accountEditApprove": "قبول طلب الانضمام",
+  "accountEditTitle": "تعديل الحساب",
+  "accountRoles": "الصلاحيات",
+  "accountStageScopes": "المراحل التي يديرها",
+  "accountActive": "الحساب فعّال",
+  "accountActiveHint": "الحساب الموقوف لا يصل إلى أي بيانات.",
+  "accountSelfLocked": "لا يمكنك تغيير صلاحياتك أو إيقاف حسابك بنفسك.",
+  "accountIssueRole": "اختر صلاحية واحدة على الأقل.",
+  "accountIssueStage": "اختر مرحلة واحدة على الأقل لمسؤول المرحلة.",
+  "homeAccessRequests": "طلبات انضمام بانتظار موافقتك: {count}",
+  "@homeAccessRequests": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "joinTitle": "طلب الانضمام",
+  "joinBody": "أرسل طلباً إلى إدارة القسم، وستدخل تلقائياً بعد الموافقة.",
+  "joinName": "اسمك الكامل",
+  "joinNote": "ملاحظة للإدارة (اختياري)",
+  "joinNoteHint": "مثل اللقب العلمي أو المرحلة التي تدرّسها",
+  "joinSubmit": "إرسال طلب الانضمام",
+  "joinSent": "أُرسل طلبك.",
+  "joinPending": "طلبك مُرسَل منذ {date} وبانتظار موافقة الإدارة. ستدخل تلقائياً بعد الموافقة.",
+  "@joinPending": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "joinCancel": "إلغاء الطلب",
+  "joinCancelled": "أُلغي الطلب.",
+  "attPresent": "حاضر",
+  "attAbsent": "غائب",
+  "attLate": "متأخر",
+  "attExcused": "مُجاز",
+  "recordAction": "تسجيل الحضور",
+  "registerAction": "سجل الحضور",
+  "homeRecordOnPhone": "يُسجَّل الحضور من تطبيق الهاتف (يعمل دون اتصال).",
+  "homeDownloading": "جارٍ تنزيل موادك وطلبتك…",
+  "recordDate": "التاريخ",
+  "recordLectureN": "المحاضرة {n}",
+  "@recordLectureN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNewLecture": "محاضرة جديدة",
+  "recordSearch": "بحث بالاسم أو الرقم الجامعي",
+  "recordTapHint": "اضغط على الطالب للتبديل بين حاضر وغائب، واضغط مطوّلاً لاختيار «متأخر» أو «مُجاز» أو كتابة ملاحظة.",
+  "recordNote": "ملاحظة",
+  "recordSave": "حفظ الحضور",
+  "recordSaved": "حُفظ على الهاتف، ويُرفع تلقائياً عند توفّر الاتصال.",
+  "recordNothingChanged": "لا تغييرات منذ آخر حفظ.",
+  "recordLocked": "انتهت مهلة التعديل لهذه المحاضرة؛ أي تعديل الآن يكون عبر مسؤول المرحلة.",
+  "recordLockedOverride": "المحاضرة مقفلة للتدريسي، ويمكنك تعديلها بصفتك مسؤولاً.",
+  "recordLocksAt": "يُقفل التعديل {date} {time}",
+  "@recordLocksAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "recordFuture": "لا يمكن تسجيل حضور يوم لم يأتِ بعد.",
+  "recordNoStudents": "لا يوجد طلبة لهذه المادة على الهاتف. اضغط «مزامنة الآن» بعد أن تضيفهم الإدارة.",
+  "recordNeedSync": "لم تُنزَّل بيانات السنة الدراسية بعد. اتصل بالإنترنت واضغط «مزامنة الآن».",
+  "recordClassMissing": "هذه المادة ليست ضمن موادك على هذا الهاتف.",
+  "recordDiscardTitle": "تجاهل التغييرات؟",
+  "recordDiscardBody": "لم تُحفَظ تغييراتك على هذه المحاضرة.",
+  "recordDiscard": "تجاهل",
+  "registerTitle": "سجل الحضور",
+  "registerEmpty": "لا توجد محاضرات مسجّلة بعد.",
+  "registerStudent": "الطالب",
+  "registerAbsences": "الغياب",
+  "registerRefresh": "تحديث من الخادم",
+  "registerPulled": "حُدِّث السجل ({count} محاضرة جديدة أو معدّلة).",
+  "@registerPulled": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "registerOffline": "تعذّر الاتصال بالخادم؛ يُعرض ما على الهاتف.",
+  "registerOpenLecture": "فتح المحاضرة",
+  "syncNow": "مزامنة الآن",
+  "syncAllUploaded": "كل السجلات مرفوعة",
+  "syncRunning": "جارٍ المزامنة…",
+  "syncOffline": "لا يوجد اتصال؛ السجلات محفوظة على الهاتف وتُرفع لاحقاً.",
+  "syncLast": "آخر رفع {time}",
+  "@syncLast": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "syncNever": "لم تتم المزامنة بعد",
+  "syncStale": "توجد سجلات لم تُرفع منذ أكثر من 24 ساعة. اتصل بالإنترنت لرفعها.",
+  "syncRejected": "رفض الخادم {count} عملية حفظ",
+  "@syncRejected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncRejectedBody": "غالباً لأن مهلة التعديل انتهت قبل الرفع أو تغيّر إسنادك. أعد المحاولة، أو احذفها من الهاتف واطلب التعديل من مسؤول المرحلة.",
+  "syncDiscard": "حذف من الهاتف",
+  "syncDiscardBody": "ستُحذف هذه التعديلات من الهاتف، وتُنزَّل نسخة الخادم عند تحديث السجل.",
+  "syncProblem": "تعذّرت المزامنة ({code})",
+  "@syncProblem": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "homeDataFixAction": "تصحيح المعرّفات وحذف الاستيراد الخاطئ",
+  "fixTitle": "تصحيح البيانات",
+  "fixRenameTab": "تغيير معرّف",
+  "fixDeleteTab": "حذف استيراد خاطئ",
+  "fixKindStudent": "رقم جامعي",
+  "fixKindCourse": "رمز مادة",
+  "fixKindTeacher": "بريد تدريسي",
+  "fixStage": "المرحلة",
+  "fixOldId": "المعرّف الحالي",
+  "fixNewId": "المعرّف الجديد",
+  "fixRenameHelp": "يُنقل كل ما يرتبط بالمعرّف إلى المعرّف الجديد (الحضور والإحصائيات والمجموعات والإسنادات والإجازات) ثم يُحذف القديم. إن كان المعرّف الجديد موجوداً بالاسم نفسه (استيراد مكرر) يُدمج فيه.",
+  "fixTeacherHelp": "يُنقل الحساب وإسناداته إلى البريد الجديد، ثم يفعّل التدريسي حسابه بالبريد الجديد. يبقى البريد القديم في سجل الحضور السابق لأنه من سجّل حينها.",
+  "fixDeleteStudents": "طلبة",
+  "fixDeleteCourses": "مواد",
+  "fixOnlyOne": "معرّف واحد فقط (اختياري)",
+  "fixOnlyOneHint": "اتركه فارغاً لكل ما في المرحلة",
+  "fixDeleteHelp": "يُحذف فقط ما ليس له تاريخ: الطالب الذي لم يُسجَّل له حضور ولا إجازة، والمادة التي لم تُفتح لها محاضرة (مع مجموعاتها وإسناداتها). ما له تاريخ يبقى.",
+  "fixPhonesNote": "تتحدّث هواتف التدريسيين في المزامنة التالية. الأفضل التنفيذ قبل بدء التسجيل أو حين لا تكون على الهواتف سجلات غير مرفوعة.",
+  "fixPreview": "معاينة",
+  "fixApply": "تنفيذ",
+  "fixWillMove": "سيُنقل",
+  "fixWillDelete": "سيُحذف",
+  "fixConfirmTitle": "تنفيذ التصحيح؟",
+  "fixConfirmBody": "لا يمكن التراجع تلقائياً عن هذا التصحيح، ويُسجَّل في سجل التدقيق.",
+  "fixDone": "اكتمل التصحيح ({count} عملية كتابة).",
+  "@fixDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fixInterrupted": "توقّف التنفيذ ({code}). أعد المعاينة ثم التنفيذ لإكماله من حيث توقّف.",
+  "@fixInterrupted": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "fixMerge": "المعرّف الجديد موجود باسم «{name}» وسيُدمج فيه.",
+  "@fixMerge": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fixProblemInvalidId": "المعرّف غير صالح.",
+  "fixProblemSameId": "المعرّفان متطابقان.",
+  "fixProblemNotFound": "المعرّف الحالي غير موجود (أو ليس في هذه المرحلة).",
+  "fixProblemTargetExists": "المعرّف الجديد مستعمل لسجل آخر: «{name}». إن كان مكرراً فاحذفه أولاً من «حذف استيراد خاطئ».",
+  "@fixProblemTargetExists": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fixProblemOwnAccount": "لا يمكنك تغيير بريد حسابك أنت.",
+  "fixProblemNothing": "لا يوجد ما يُحذف: كل ما اخترته له تاريخ حضور.",
+  "fixCountStudents": "الطلبة: {n}",
+  "@fixCountStudents": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountCourses": "المواد: {n}",
+  "@fixCountCourses": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountUsers": "الحسابات: {n}",
+  "@fixCountUsers": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountGroups": "مجموعات العملي: {n}",
+  "@fixCountGroups": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountAssignments": "الإسنادات: {n}",
+  "@fixCountAssignments": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountSessions": "المحاضرات: {n}",
+  "@fixCountSessions": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountRecords": "سجلات الحضور: {n}",
+  "@fixCountRecords": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountStats": "إحصائيات الغياب: {n}",
+  "@fixCountStats": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountLeaves": "الإجازات: {n}",
+  "@fixCountLeaves": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "fixCountKept": "يبقى لأن له تاريخاً: {n}",
+  "@fixCountKept": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "accountDelete": "حذف الحساب",
+  "accountDeleteBody": "سيُحذف الحساب {email} مع إسناداته ({count}). لا يمكن التراجع. يستطيع صاحبه بعدها تفعيل حسابه ببريده الصحيح وإرسال طلب انضمام.",
+  "@accountDeleteBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "accountDeleted": "حُذف الحساب.",
+  "fixDeleteTeachers": "تدريسيون",
+  "fixDeleteTeachersHelp": "يُحذف حساب التدريسي (بلا صلاحية إدارية) الذي لم يسجّل أي محاضرة، مع إسناداته، كحسابات استُوردت ببريد خاطئ. من سجّل محاضرات يبقى: أوقف حسابه أو غيّر بريده.",
+  "fixOnlyTeacherHint": "اتركه فارغاً لكل التدريسيين الذين لم يسجّلوا أي محاضرة",
+  "fixOnlyEmail": "بريد واحد فقط (اختياري)",
+  "fixProblemHasHistory": "سجّل هذا الحساب محاضرات، فلا يُحذف حفاظاً على السجل. أوقف الحساب بدلاً من ذلك، أو غيّر بريده من «تصحيح البيانات».",
+  "accountChangeEmail": "تغيير البريد",
+  "accountNewEmail": "البريد الصحيح",
+  "accountChangeEmailBody": "سينتقل الحساب {from} مع إسناداته ({count}) إلى {to}. بعدها يفعّل صاحبه حسابه بالبريد الجديد من «أول مرة؟ فعّل حسابك» ويضع كلمة مروره.",
+  "@accountChangeEmailBody": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "accountEmailChanged": "تغيّر البريد. أخبر صاحبه أن يفعّل حسابه بالبريد الجديد من «أول مرة؟ فعّل حسابك» — «نسيت كلمة المرور» لا يعمل لبريد لم يُفعَّل.",
+  "groupsEditAction": "تعديل أعضاء المجاميع",
+  "groupsEditTitle": "أعضاء المجاميع",
+  "groupsHelp": "حدّد طالباً أو أكثر ثم «نقل إلى…». لا يُشترط تساوي أعداد المجاميع. الحضور المسجَّل سابقاً يبقى في محاضرات مجموعته القديمة.",
+  "groupsUnassigned": "بلا مجموعة · عدد الطلبة: {count}",
+  "@groupsUnassigned": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "groupsSelected": "المحدَّدون: {count}",
+  "@groupsSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "groupsMoveTo": "نقل إلى…",
+  "groupsMoveTitle": "نقل {count} طالب إلى",
+  "@groupsMoveTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "groupsMoved": "نُقل {count} إلى {group}.",
+  "@groupsMoved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "groupsAdd": "إضافة مجموعة",
+  "groupsAdded": "أُضيفت {group}؛ انقل إليها الطلبة.",
+  "@groupsAdded": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "groupsNone": "لا مجاميع بعد. أنشئها أولاً من «إنشاء / إعادة توزيع المجاميع».",
+  "assignmentsRedistributeWarning": "تنبيه: إعادة التوزيع تلغي أي نقل يدوي سابق بين المجاميع.",
+  "yearTitle": "إعدادات السنة الدراسية",
+  "yearAction": "إعدادات السنة والنسب",
+  "yearNone": "لا توجد سنة دراسية نشطة. أنشئها من «تهيئة النظام» في الرئيسية.",
+  "yearHeader": "السنة {year}",
+  "@yearHeader": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "yearHelp": "هذه قرارات القسم التي تُحسب بها نسب الغياب. يمكن تعديلها في أي وقت، فتُعاد النسب كلها تلقائياً.",
+  "yearSemesterN": "الفصل {n}",
+  "@yearSemesterN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "yearThresholds": "عتبات الغياب (نسبة من محاضرات المادة)",
+  "levelAlert": "تنبيه",
+  "levelWarning": "إنذار",
+  "levelDismissal": "فصل",
+  "yearPlanned": "عدد محاضرات المادة في الفصل",
+  "yearWeeks": "عدد أسابيع الفصل",
+  "yearPerUnit": "محاضرات أسبوعياً لكل وحدة",
+  "yearPerUnitHelp": "مثلاً 1: مادة بثلاث وحدات = 3 محاضرات أسبوعياً. اكتب 0.5 إن كانت الوحدتان محاضرة واحدة.",
+  "yearExample": "مثال: مادة بثلاث وحدات = {count} محاضرة في الفصل، والغياب الواحد = {percent}٪.",
+  "@yearExample": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "yearCombined": "نسبة واحدة للنظري والعملي معاً",
+  "yearCombinedOn": "غيابات النظري والعملي تُجمع في نسبة المادة.",
+  "yearCombinedOff": "نسبة للنظري وأخرى للعملي، وكل منهما من محاضرات المادة نفسها.",
+  "yearLock": "إقفال السجل",
+  "yearLockHours": "يُقفل السجل بعد نهاية يوم المحاضرة بـ",
+  "yearHoursSuffix": "ساعة",
+  "yearLockHelp": "بعدها لا يعدّل التدريسي المحاضرة إلا بطلب، ويعدّلها مسؤول المرحلة والمدير مباشرة.",
+  "yearLeaves": "الإجازات",
+  "yearLeavesCount": "الإجازات تُحتسب ضمن الغياب",
+  "yearLeavesCountOn": "الغياب المُجاز (والمغطّى بإجازة) يدخل في النسبة.",
+  "yearLeavesCountOff": "الغياب المُجاز والمغطّى بإجازة معتمدة لا يدخل في النسبة.",
+  "yearMaxLeave": "الحد الأعلى لأيام الإجازة المقبولة (اختياري)",
+  "yearMaxLeaveHelp": "فارغ = بلا حد. ما زاد عليه من أيام الإجازة يُحسب غياباً.",
+  "yearBadNumber": "رقم غير صالح",
+  "yearInvalid": "تحقّق من القيم: العتبات تصاعدية (تنبيه < إنذار < فصل ≤ 100)، والأسابيع 1–30، والإقفال 1–720 ساعة.",
+  "yearSaved": "حُفظت إعدادات السنة.",
+  "leavesTitle": "الإجازات",
+  "leavesAction": "الإجازات",
+  "leavesHelp": "الإجازة المُدخلة هنا معتمدة: غياب الطالب في أيامها يُحسب «مُجاز» في كل مواده (حسب إعدادات السنة).",
+  "leavesEmpty": "لا إجازات في هذه المرحلة.",
+  "leaveAdd": "إضافة إجازة",
+  "leaveStudent": "الطالب (اسم أو رقم جامعي)",
+  "leaveTypeLabel": "نوع الإجازة",
+  "leaveTypeSick": "مرضية",
+  "leaveTypeOfficial": "رسمية",
+  "leaveTypeEmergency": "ظرف طارئ",
+  "leaveTypeParticipation": "مشاركة رسمية (نشاط أو وفد)",
+  "leaveTypeOther": "أخرى",
+  "leavePickRange": "اختر الفترة (من – إلى)",
+  "leaveRange": "من {from} إلى {to}",
+  "@leaveRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "leaveDays": "{count} يوم",
+  "@leaveDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "leaveRef": "رقم الكتاب أو التقرير الطبي",
+  "leaveRefShown": "الكتاب: {ref}",
+  "@leaveRefShown": {
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "leaveSaved": "حُفظت الإجازة.",
+  "leaveDeleteTitle": "حذف الإجازة؟",
+  "leaveDeleteBody": "تُحذف إجازة {name}، فيعود غيابه في أيامها غياباً.",
+  "@leaveDeleteBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "warnTitle": "النسب والقوائم",
+  "warnAction": "النسب وقوائم التنبيه والإنذار",
+  "warnTabLists": "القوائم",
+  "warnTabDecisions": "القرارات",
+  "warnCourse": "المادة",
+  "warnAllCourses": "كل المواد",
+  "warnAll": "الكل",
+  "warnEdge": "على الحافة",
+  "warnHelp": "النسبة = الغيابات المحتسبة ÷ محاضرات المادة المقررة في الفصل (من إعدادات السنة). تُحدَّث مع كل حفظ وإجازة.",
+  "warnEdgeHelp": "طلبة يصلون إلى المستوى التالي بعد غياب واحد.",
+  "warnEmpty": "لا أحد في هذه القائمة.",
+  "warnSaveAction": "حفظ قرار قسم بقائمة {level}",
+  "@warnSaveAction": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "warnSaveTitle": "حفظ قرار القسم؟",
+  "warnSaveBody": "تُحفظ قائمة {level} بـ {count} طالب كما هي اليوم. يبقى القرار قابلاً للتعديل وإعادة التوليد حتى يحوّله المدير إلى قرار عمادة.",
+  "@warnSaveBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "warnSaved": "حُفظ قرار القسم. تجده في «القرارات».",
+  "warnAbsences": "الغياب {absences} من {planned} محاضرة = {percent}٪",
+  "@warnAbsences": {
+    "placeholders": {
+      "absences": {
+        "type": "int"
+      },
+      "planned": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "warnExcused": "مُجاز (لا يُحتسب): {count}",
+  "@warnExcused": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "warnOneMore": "⚠ يصل إلى {level} بعد غياب واحد",
+  "@warnOneMore": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "warnNoDecisions": "لا قرارات محفوظة لهذه المرحلة.",
+  "warnDecisionTitle": "{level} · {course} · {count} طالب",
+  "@warnDecisionTitle": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "course": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "warnDeanery": "قرار عمادة رقم {number} في {date}",
+  "@warnDeanery": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "warnDepartment": "قرار قسم (أولي) · {date}",
+  "@warnDepartment": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "warnDeaneryLabel": "قرار عمادة (نهائي ومقفل)",
+  "warnDepartmentLabel": "قرار قسم (أولي)",
+  "warnDepartmentHelp": "يمكن إعادة توليده من نسب اليوم (بعد نقل أو تأجيل أو إجازة)، ثم يحوّله المدير إلى قرار عمادة برقم الأمر وتاريخه.",
+  "warnRegenerate": "إعادة التوليد",
+  "warnRegenerateBody": "تُستبدل قائمة القرار ({before} طالب) بقائمة اليوم ({after} طالب).",
+  "@warnRegenerateBody": {
+    "placeholders": {
+      "before": {
+        "type": "int"
+      },
+      "after": {
+        "type": "int"
+      }
+    }
+  },
+  "warnRegenerated": "أُعيد توليد القرار.",
+  "warnFinalize": "تحويل إلى قرار عمادة",
+  "warnFinalizeBody": "بعد التحويل يُقفل القرار نهائياً ولا يُعدَّل ولا يُحذف؛ أي تغيير بعده يحتاج قراراً جديداً.",
+  "warnOrderNumber": "رقم الأمر الإداري",
+  "warnOrderDate": "تاريخ الأمر",
+  "warnFinalized": "صار القرار قرار عمادة مقفلاً.",
+  "warnDeleteTitle": "حذف قرار القسم؟",
+  "warnDeleteBody": "يُحذف القرار المحفوظ (النسب نفسها لا تتأثر).",
+  "warnDeleted": "حُذف القرار.",
+  "registerPercent": "النسبة",
+  "registerPercentHelp": "نسبة غياب الطالب في المادة كلها (النظري والعملي حسب إعدادات السنة)، بعد احتساب الإجازات. تُحدَّث بزر التحديث عند الاتصال.",
+  "recordRequestHint": "المحاضرة مقفلة: المس طالباً لطلب تعديل حالته من مسؤول المرحلة.",
+  "editRequestTitle": "طلب تعديل",
+  "editRequestNow": "الحالة الآن: {status}",
+  "@editRequestNow": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "editRequestReason": "سبب التعديل (إلزامي)",
+  "editRequestSend": "إرسال الطلب",
+  "editRequestSent": "أُرسل الطلب إلى مسؤول المرحلة.",
+  "editRequestPending": "⏳ طلب تعديل بانتظار الموافقة",
+  "editRequestsTitle": "طلبات التعديل",
+  "editRequestsAction": "طلبات التعديل",
+  "editRequestsEmpty": "لا طلبات معلّقة.",
+  "editRequestLecture": "{course} · {date} · المحاضرة {n}",
+  "@editRequestLecture": {
+    "placeholders": {
+      "course": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "editRequestWhy": "السبب: {reason}",
+  "@editRequestWhy": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "editRequestApprove": "موافقة وتعديل",
+  "editRequestReject": "رفض",
+  "editRequestNote": "ملاحظة (اختياري)",
+  "editRequestApproved": "عُدّل السجل ووصل التعديل إلى هواتف التدريسيين عند التحديث.",
+  "editRequestRejected": "رُفض الطلب.",
+  "dashTitle": "لوحة المرحلة",
+  "dashAction": "لوحة المرحلة",
+  "dashToday": "محاضرات مسجّلة اليوم: {count}",
+  "@dashToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashWeek": "آخر 7 أيام: {count} محاضرة",
+  "@dashWeek": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashIdle": "صفوف بلا تسجيل منذ 7 أيام: {count}",
+  "@dashIdle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashIdleHelp": "قد تكون عطلة أو محاضرات ملغاة؛ تابع مع تدريسييها.",
+  "dashRequests": "طلبات تعديل معلّقة: {count}",
+  "@dashRequests": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportPrinted": "طُبع في {date}",
+  "@reportPrinted": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reportPage": "صفحة {page} من {pages}",
+  "@reportPage": {
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "pages": {
+        "type": "int"
+      }
+    }
+  },
+  "reportSignatureHint": "الاسم والتوقيع",
+  "reportPdf": "PDF للطباعة والتوقيع",
+  "reportPdfHelp": "بترويسة القسم وأماكن التوقيع",
+  "reportExcel": "Excel",
+  "reportExcelHelp": "جدول قابل للتعديل والفرز",
+  "reportSaved": "حُفظ الملف.",
+  "reportExport": "تصدير",
+  "reportLetterPresent": "ح",
+  "reportLetterAbsent": "غ",
+  "reportLetterLate": "ت",
+  "reportLetterExcused": "م",
+  "reportRegisterSheet": "السجل",
+  "reportLecturesRange": "المحاضرات من {from} إلى {to}",
+  "@reportLecturesRange": {
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "reportRegisterTitle": "سجل حضور مادة {course}",
+  "@reportRegisterTitle": {
+    "placeholders": {
+      "course": {
+        "type": "String"
+      }
+    }
+  },
+  "reportLectureCount": "عدد المحاضرات المسجلة: {count}",
+  "@reportLectureCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportLegend": "ح = حاضر، غ = غائب، ت = متأخر، م = مُجاز، – = لم يُسجَّل.",
+  "reportPercentNote": "النسبة = الغيابات المحتسبة ÷ محاضرات المادة المقررة في الفصل × 100 حسب إعدادات السنة، وتشمل كل محاضرات المادة والإجازات المعتمدة.",
+  "reportSignTeacher": "التدريسي",
+  "reportSignStageManager": "مسؤول المرحلة",
+  "reportSignHead": "رئيس القسم",
+  "reportSignDean": "عميد الكلية",
+  "reportPlanned": "المقررة",
+  "reportListTitle": "قائمة {list} — {stage}",
+  "@reportListTitle": {
+    "placeholders": {
+      "list": {
+        "type": "String"
+      },
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "reportStudentCount": "عدد الطلبة: {count}",
+  "@reportStudentCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportDecisionTitle": "قرار {level} — {stage}",
+  "@reportDecisionTitle": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "reportStudentTitle": "ملخص غياب الطالب {name}",
+  "@reportStudentTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reportStudentSheet": "الملخص",
+  "reportExcused": "مُجاز",
+  "reportLevel": "المستوى",
+  "reportStudentNote": "تظهر المواد التي سُجّل للطالب فيها غياب أو تأخر أو إجازة.",
+  "reportStatsTitle": "إحصائية الغياب — {stage}",
+  "@reportStatsTitle": {
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "reportStatsSheet": "الإحصائية",
+  "reportStatsLevels": "تنبيه: {alert} · إنذار: {warning} · فصل: {dismissal}",
+  "@reportStatsLevels": {
+    "placeholders": {
+      "alert": {
+        "type": "int"
+      },
+      "warning": {
+        "type": "int"
+      },
+      "dismissal": {
+        "type": "int"
+      }
+    }
+  },
+  "reportStatsByCourse": "المواد حسب مجموع الغيابات",
+  "reportAbsentStudents": "طلبة متغيبون",
+  "reportTotalAbsences": "مجموع الغيابات",
+  "reportTopSheet": "الأعلى غياباً",
+  "reportTopStudents": "الطلبة الأعلى غياباً ({count})",
+  "@reportTopStudents": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportStudentAction": "ملخص الطالب (PDF)",
+  "reportStatsAction": "إحصائية المرحلة",
+  "reportListAction": "تصدير القائمة",
+  "reportRegisterAction": "تصدير السجل",
+  "letterWarningTitle": "إنذار بالغياب",
+  "letterDismissalTitle": "إشعار رسوب بسبب الغياب",
+  "letterNumberDate": "العدد: ................     التاريخ: ....../....../..........",
+  "letterTo": "إلى الطالب/ة: {name} — الرقم الجامعي {id} — {stage}",
+  "@letterTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "id": {
+        "type": "String"
+      },
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "letterWarningBody": "نظراً لبلوغ غيابك في مادة ({course}) نسبة {percent}٪ من محاضرات المادة المقررة في الفصل ({absences} غياب من {planned} محاضرة)، وهي نسبة تتجاوز حد الإنذار المعتمد في القسم ({warning}٪)، نوجّه إليك هذا الإنذار، ونلفت انتباهك إلى أن بلوغ نسبة {dismissal}٪ يعرّضك للرسوب في المادة بسبب الغياب وفق التعليمات النافذة.",
+  "@letterWarningBody": {
+    "placeholders": {
+      "course": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "String"
+      },
+      "absences": {
+        "type": "int"
+      },
+      "planned": {
+        "type": "int"
+      },
+      "warning": {
+        "type": "String"
+      },
+      "dismissal": {
+        "type": "String"
+      }
+    }
+  },
+  "letterWarningClosing": "يرجى الالتزام بالحضور ومراجعة مسؤول المرحلة عند وجود عذر مشروع.",
+  "letterDismissalBody": "نظراً لبلوغ غيابك في مادة ({course}) نسبة {percent}٪ من محاضرات المادة المقررة في الفصل ({absences} غياب من {planned} محاضرة)، وهي نسبة تبلغ حد الرسوب بسبب الغياب المعتمد في القسم ({dismissal}٪)، نشعرك بأنك تُعدّ راسباً في المادة بسبب الغياب وفق التعليمات النافذة.",
+  "@letterDismissalBody": {
+    "placeholders": {
+      "course": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "String"
+      },
+      "absences": {
+        "type": "int"
+      },
+      "planned": {
+        "type": "int"
+      },
+      "dismissal": {
+        "type": "String"
+      }
+    }
+  },
+  "letterDismissalClosing": "يُعدّ هذا الإشعار أولياً حتى صدور قرار العمادة.",
+  "letterAction": "كتاب إنذار (PDF)",
+  "letterBatchAction": "كتب الإنذار لكل القائمة (PDF)",
+  "backupAction": "النسخ الاحتياطي",
+  "backupTitle": "النسخ الاحتياطي",
+  "backupAdminsOnly": "النسخ الاحتياطي للمدراء فقط.",
+  "backupNever": "لم تُحفظ نسخة احتياطية بعد.",
+  "backupLast": "آخر نسخة: {date} الساعة {time}",
+  "@backupLast": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLastDetail": "{count} وثيقة · {by}",
+  "@backupLastDetail": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "by": {
+        "type": "String"
+      }
+    }
+  },
+  "backupAgo": "{days, plural, =0{آخر نسخة احتياطية اليوم} =1{آخر نسخة احتياطية قبل يوم} =2{آخر نسخة احتياطية قبل يومين} few{آخر نسخة احتياطية قبل {days} أيام} other{آخر نسخة احتياطية قبل {days} يوماً}}",
+  "@backupAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "backupDue": "مرّ أكثر من أسبوع؛ احفظ نسخة جديدة.",
+  "backupCreateTitle": "إنشاء نسخة احتياطية",
+  "backupCreateHelp": "ملف واحد مشفّر بكلمة مرور فيه كل بيانات القسم. احفظه خارج الهاتف (الحاسوب، Google Drive، البريد). لا يُفتح إلا بكلمة المرور.",
+  "backupCount": "حساب حجم النسخة",
+  "backupEstimate": "{count} وثيقة (الحسابات، المواد، الطلبة، المحاضرات، الإحصائيات…)",
+  "@backupEstimate": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupWithRecords": "تضمين سجلات الحضور التفصيلية ({count})",
+  "@backupWithRecords": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRecordsHelp": "كل سجل قراءة من حصة الخطة المجانية (50,000 قراءة يومياً). النسب لا تحتاجها فهي في الإحصائيات؛ إن كانت كثيرة فاحفظها في يوم هادئ.",
+  "backupPassword": "كلمة مرور النسخة",
+  "backupPasswordConfirm": "تأكيد كلمة المرور",
+  "backupPasswordWarning": "إن نُسيت كلمة المرور فلا يمكن فتح النسخة أبداً.",
+  "backupPasswordShort": "كلمة المرور 8 أحرف على الأقل.",
+  "backupPasswordMismatch": "كلمتا المرور غير متطابقتين.",
+  "backupCreate": "إنشاء النسخة وحفظها",
+  "backupReading": "قراءة {name}…",
+  "@backupReading": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "backupEncrypting": "تشفير الملف…",
+  "backupSaved": "حُفظت النسخة ({count} وثيقة).",
+  "@backupSaved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCollection": "{name, select, academicYears{السنوات} stages{المراحل} users{الحسابات} courses{المواد} students{الطلبة} groups{المجاميع} assignments{الإسنادات} sessions{المحاضرات} leaves{الإجازات} stats{الإحصائيات} warningLists{القرارات} config{الإعدادات} editRequests{طلبات التعديل} accessRequests{طلبات الانضمام} auditLog{سجل التدقيق} records{سجلات الحضور} other{{name}}}",
+  "@backupCollection": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreTitle": "الاستعادة من نسخة",
+  "backupRestoreHelp": "للمدير العام فقط. تعيد كل وثائق النسخة كما كانت وتكتب فوق الحالية، ولا تحذف ما أُضيف بعدها. طلبات التعديل والانضمام وسجل التدقيق لا تُستعاد. يمكن إعادة تشغيلها إن انقطعت.",
+  "backupPickFile": "اختيار ملف النسخة (.uobk)",
+  "backupOpen": "فتح الملف",
+  "backupWrongPassword": "كلمة المرور خاطئة أو الملف تالف.",
+  "backupNotABackup": "هذا ليس ملف نسخة احتياطية لهذا البرنامج.",
+  "backupFileInfo": "نسخة {date} — {by}",
+  "@backupFileInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "by": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestore": "استعادة",
+  "backupRestoreConfirmTitle": "استعادة النسخة؟",
+  "backupRestoreConfirmBody": "ستُستبدل البيانات الحالية بما في النسخة لكل وثيقة موجودة فيها، ولا يمكن التراجع. احفظ نسخة من الحالة الحالية أولاً إن لم تفعل.",
+  "backupRestoreTypeTitle": "تأكيد أخير",
+  "backupRestoreType": "اكتب «{word}» للمتابعة",
+  "@backupRestoreType": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreWord": "استعادة",
+  "backupRestoreProgress": "الدفعة {done} من {total}",
+  "@backupRestoreProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestored": "اكتملت الاستعادة ({count} كتابة).",
+  "@backupRestored": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreFailed": "توقفت الاستعادة: {error}. أعد تشغيلها لتكمل (قد تكون حصة الكتابة اليومية انتهت).",
+  "@backupRestoreFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "auditOpen": "سجل التدقيق",
+  "auditTitle": "سجل التدقيق",
+  "auditAllStages": "كل القسم",
+  "auditEmpty": "لا توجد عمليات مسجلة.",
+  "auditMore": "عرض المزيد",
+  "auditEnd": "نهاية السجل",
+  "auditBefore": "قبل",
+  "auditAfter": "بعد",
+  "auditActionLabel": "{action, select, record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} other{{action}}}",
+  "@auditActionLabel": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "deptAction": "لوحة القسم",
+  "deptTitle": "لوحة القسم",
+  "deptActiveAccounts": "{count} حساب فعّال",
+  "@deptActiveAccounts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deptAccessRequests": "طلبات الانضمام المعلّقة: {count}",
+  "@deptAccessRequests": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deptStageEmpty": "لا بيانات بعد.",
+  "deptStudents": "{count} طالب",
+  "@deptStudents": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deptCourses": "{count} مادة",
+  "@deptCourses": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deptLecturesToday": "محاضرات اليوم: {count}",
+  "@deptLecturesToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deptPendingRequests": "طلبات تعديل: {count}",
+  "@deptPendingRequests": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncRejectedTap": "المس لمعرفة السبب وإعادة المحاولة",
+  "syncReasonLocked": "انتهت مهلة التسجيل لهذه المحاضرة قبل رفعها. لا يحفظها الآن إلا مسؤول المرحلة: أرسل له الأسماء، ثم احذفها من الهاتف.",
+  "syncReasonDenied": "رفض الخادم الحفظ. اضغط «إعادة المحاولة» (التطبيق يعيد حساب موعد الإقفال من إعدادات السنة)، وإن تكرر فتأكد من إسنادك لهذه المادة لدى مسؤول المرحلة.",
+  "deptPartial": "تعذّرت قراءة بعض الأعداد ({collections}) — {code}. إن كان «permission-denied» فالقواعد المنشورة أقدم من التطبيق: انشر firestore.rules.",
+  "@deptPartial": {
+    "placeholders": {
+      "collections": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "errorDetails": "التفاصيل",
+  "errorReportTitle": "تقرير المشكلة",
+  "errorReportHelp": "اضغط «نسخ» ثم الصقه في رسالة للمطوّر (أو صوّر الشاشة). لا يحتوي كلمات مرور.",
+  "errorCopy": "نسخ",
+  "errorLogAction": "سجل الأخطاء (للإرسال إلى المطوّر)",
+  "errorLogEmpty": "لم يُسجَّل أي خطأ منذ فتح التطبيق.",
+  "errorLogCount": "{count, plural, =0{لا أخطاء منذ فتح التطبيق} =1{خطأ واحد منذ فتح التطبيق} =2{خطآن منذ فتح التطبيق} few{{count} أخطاء منذ فتح التطبيق} other{{count} خطأ منذ فتح التطبيق}}",
+  "syncDiagnose": "تشخيص",
+  "syncDiagnoseTitle": "تشخيص عملية الحفظ",
+  "syncDiagnoseRunning": "جارٍ الفحص على الخادم…",
+  "@errorLogCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "studentNoData": "لم تُنزَّل بيانات هذه المادة بعد؛ اضغط تحديث السجل.",
+  "studentHistory": "{count, plural, =0{لا غياب ولا تأخير} =1{محاضرة واحدة لم يحضرها كاملة} =2{محاضرتان لم يحضرهما كاملتين} few{{count} محاضرات لم يحضرها كاملة} other{{count} محاضرة لم يحضرها كاملة}}",
+  "studentNoAbsences": "حضر كل المحاضرات المسجّلة.",
+  "studentSourceNote": "يشمل محاضرات المادة لكل تدريسييها كما نُزّلت آخر مرة (زر التحديث في السجل)، وتسجيلات هذا الهاتف.",
+  "studentCounts": "تأخير: {lates} · مُجاز: {excused} · منها بإجازة معتمدة: {byLeave}",
+  "studentUntilNext": "{count, plural, =1{يصل إلى {level} بعد غياب واحد} =2{يصل إلى {level} بعد غيابين} few{يصل إلى {level} بعد {count} غيابات} other{يصل إلى {level} بعد {count} غياباً}}",
+  "studentOnLeave": "بإجازة معتمدة",
+  "@studentHistory": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@studentCounts": {
+    "placeholders": {
+      "lates": {
+        "type": "int"
+      },
+      "excused": {
+        "type": "int"
+      },
+      "byLeave": {
+        "type": "int"
+      }
+    }
+  },
+  "@studentUntilNext": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "reportPeriodAll": "الفصل كله",
+  "reportPeriodPick": "فترة محددة…",
+  "reportPeriod": "الفترة: من {from} إلى {to}",
+  "reportPeriodNote": "عمود الغياب للمحاضرات ضمن الفترة فقط، والنسبة للفصل كله.",
+  "@reportPeriod": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "auditSearch": "بحث",
+  "auditSearchActive": "بحث (مفعّل)",
+  "auditActor": "بريد المستخدم الذي نفّذ العملية",
+  "auditText": "رقم جامعي أو نص",
+  "auditTextHelp": "يُبحث في هدف العملية وقيمها قبل وبعد",
+  "auditAnyDate": "كل التواريخ",
+  "auditClear": "مسح",
+  "auditApply": "بحث",
+  "auditNoMatch": "لا نتائج مطابقة.",
+  "notifTitle": "الإشعارات",
+  "notifCompose": "رسالة جديدة",
+  "notifMessages": "رسائل القسم",
+  "notifNoMessages": "لا رسائل.",
+  "notifRequests": "طلبات التعديل",
+  "notifDecisions": "قرارات طلباتك",
+  "notifAlerts": "طلبة وصلوا حدّ التنبيه",
+  "notifAlertsOnPhone": "تظهر طلبة صفوفك على الهاتف.",
+  "notifNoAlerts": "لا طلبة في مستوى التنبيه أو أعلى.",
+  "notifNew": "جديد",
+  "notifApproved": "وافق مسؤول المرحلة على طلبك",
+  "notifRejected": "رُفض طلبك",
+  "notifStageAlerts": "{stage}: افتح لعرض الطلبة",
+  "notifOpenWarnings": "{count, plural, =1{طالب واحد — فتح النسب والقوائم} =2{طالبان — فتح النسب والقوائم} few{{count} طلبة — فتح النسب والقوائم} other{{count} طالباً — فتح النسب والقوائم}}",
+  "notifAudience": "إلى",
+  "notifToAll": "الجميع",
+  "notifToTeachers": "التدريسيون",
+  "notifToStageManagers": "مسؤولو المراحل",
+  "notifToStage": "مرحلة محددة",
+  "notifMessageTitle": "العنوان",
+  "notifMessageBody": "نص الرسالة",
+  "notifSend": "إرسال",
+  "notifSent": "أُرسلت الرسالة.",
+  "@notifStageAlerts": {
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "@notifOpenWarnings": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chartTitle": "نسب الغياب",
+  "chartHelp": "متوسط نسبة غياب الطلبة (من لم يغب يُحسب صفراً) للفصل الحالي. يقرأ إحصائيات كل المراحل، فاعرضه عند الحاجة.",
+  "chartShow": "عرض الرسم",
+  "chartByStage": "حسب المرحلة",
+  "chartByCourse": "حسب المادة — {stage}",
+  "chartTapStage": "المس مرحلة لعرض موادها.",
+  "chartNoData": "لا بيانات بعد.",
+  "chartBarTip": "متوسط الغياب {mean}٪ · في التنبيه فأعلى: {alert} من {students} طالب",
+  "@chartByCourse": {
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "@chartBarTip": {
+    "placeholders": {
+      "mean": {
+        "type": "String"
+      },
+      "alert": {
+        "type": "int"
+      },
+      "students": {
+        "type": "int"
+      }
+    }
+  }
+}

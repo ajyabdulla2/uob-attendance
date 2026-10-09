@@ -1,0 +1,85 @@
+# Manual deploy to Firebase (Actions → Deploy Firebase → Run workflow).
+# Security rules are deployed ONLY after the rules tests pass on the emulator:
+# a wrong rule can lock everyone out or expose student data.
+#
+# Needs:
+#   variable FIREBASE_PROJECT_ID          (Settings → Variables)
+#   secret   FIREBASE_SERVICE_ACCOUNT_JSON service account with the roles
+#            "Firebase Rules Admin", "Cloud Datastore Index Admin" and
+#            "Firebase Hosting Admin"
+#   secret   FIREBASE_OPTIONS_DART_B64     (for the web build)
+name: Deploy Firebase
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: What to deploy
+        type: choice
+        options: [rules, hosting, all]
+        default: rules
+
+permissions:
+  contents: read
+
+env:
+  FLUTTER_VERSION: 3.47.6
+
+jobs:
+  rules-tests:
+    uses: ./.github/workflows/rules-tests.yml
+
+  deploy:
+    name: Deploy (${{ inputs.target }})
+    needs: rules-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      PROJECT: ${{ vars.FIREBASE_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - run: npm install -g firebase-tools@15
+
+      - name: Service account
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+        run: |
+          if [ -z "$PROJECT" ] || [ -z "$FIREBASE_SERVICE_ACCOUNT_JSON" ]; then
+            echo "::error::Set the FIREBASE_PROJECT_ID variable and FIREBASE_SERVICE_ACCOUNT_JSON secret"
+            exit 1
+          fi
+          echo "$FIREBASE_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/sa.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/sa.json" >> "$GITHUB_ENV"
+
+      - name: Deploy security rules and indexes
+        if: inputs.target == 'rules' || inputs.target == 'all'
+        run: firebase deploy --only firestore:rules,firestore:indexes --project "$PROJECT" --non-interactive
+
+      - uses: subosito/flutter-action@v2
+        if: inputs.target == 'hosting' || inputs.target == 'all'
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Build and deploy the web panel
+        if: inputs.target == 'hosting' || inputs.target == 'all'
+        env:
+          FIREBASE_OPTIONS_DART_B64: ${{ secrets.FIREBASE_OPTIONS_DART_B64 }}
+        run: |
+          if [ -z "$FIREBASE_OPTIONS_DART_B64" ]; then
+            echo "::error::FIREBASE_OPTIONS_DART_B64 is required to build the web panel"
+            exit 1
+          fi
+          echo "$FIREBASE_OPTIONS_DART_B64" | base64 -d > lib/firebase_options.dart
+          flutter pub get
+          flutter build web --release
+          firebase deploy --only hosting --project "$PROJECT" --non-interactive
+
+      - name: Remove credentials
+        if: always()
+        run: rm -f "$RUNNER_TEMP/sa.json"

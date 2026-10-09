@@ -1,0 +1,45 @@
+# Verifies the release/deploy setup without printing any secret
+# (Actions → Setup check → Run workflow); the report is in the job summary.
+#   * secrets: Firebase options, upload keystore (opened with its passwords
+#     like the Android build does), service account
+#   * live Firebase project: Email/Password sign-in, Firestore, deployed rules
+#     vs firestore.rules, Hosting, and the first data (when readable)
+# Read-only: it never creates accounts or writes data. See tool/check_setup.mjs.
+name: Setup check
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/setup-check.yml'
+      - 'tool/check_setup.mjs'
+      - 'tool/CheckKeystore.java'
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Check setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - name: Check secrets and the Firebase project
+        env:
+          FIREBASE_OPTIONS_DART_B64: ${{ secrets.FIREBASE_OPTIONS_DART_B64 }}
+          GOOGLE_SERVICES_JSON_B64: ${{ secrets.GOOGLE_SERVICES_JSON_B64 }}
+          ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+        run: node tool/check_setup.mjs
