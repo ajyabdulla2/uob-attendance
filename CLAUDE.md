@@ -244,7 +244,7 @@ tool/            سكربتات الإعداد والفحص
 | `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD` | secret | من إنشاء المفتاح |
 | `FIREBASE_OPTIONS_DART_B64` | secret | `base64 -w0 lib/firebase_options.dart` |
 | `GOOGLE_SERVICES_JSON_B64` | secret | `base64 -w0 android/app/google-services.json` (إن وُجد) |
-| `FIREBASE_SERVICE_ACCOUNT_JSON` | secret | حساب خدمة بصلاحيات Rules Admin + Datastore Index Admin + Hosting Admin |
+| `FIREBASE_SERVICE_ACCOUNT_JSON` | secret | حساب الخدمة `github-deploy@basrah-researches.iam.gserviceaccount.com` بأدوار Firebase Rules Admin + Cloud Datastore Index Admin + Firebase Hosting Admin + **Service Usage Consumer** (بدونه يفشل `firebase deploy` بـ 403 عند فحص تفعيل Firestore API؛ حدث فعلاً). Setup check يفحصه |
 | `FIREBASE_PROJECT_ID` | variable | معرّف مشروع Firebase |
 
 ### سير العمل (`.github/workflows/`)

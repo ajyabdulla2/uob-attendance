@@ -301,7 +301,13 @@ const S4 = 'النشر من GitHub والبيانات';
       'يحتاج حساب الخدمة؛ أو انشرها يدوياً: firebase deploy --only firestore:rules,firestore:indexes');
   } else {
     const bearer = { headers: { authorization: `Bearer ${token}` } };
-    const release = await request(`https://firebaserules.googleapis.com/v1/projects/${project}/releases/cloud.firestore`, bearer);
+    // `firebase deploy` first asks Service Usage whether the Firestore API is on.
+    const usage = await request(`https://serviceusage.googleapis.com/v1/projects/${project}/services/firestore.googleapis.com`, bearer);
+    if (usage.status === 200) report(S4, 'دور Service Usage Consumer', 'ok', usage.json.state ?? '');
+    else report(S4, 'دور Service Usage Consumer', 'fail',
+      `مرفوض (${errorMessage(usage)}) — firebase deploy يفشل بـ 403؛ أضف الدور لحساب الخدمة في IAM`);
+
+    const release =await request(`https://firebaserules.googleapis.com/v1/projects/${project}/releases/cloud.firestore`, bearer);
     const ruleset = release.status === 200
       ? await request(`https://firebaserules.googleapis.com/v1/${release.json.rulesetName}`, bearer)
       : release;
