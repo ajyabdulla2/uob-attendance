@@ -70,10 +70,13 @@ abstract final class ValueParsers {
     return null;
   }
 
-  /// 1/2, "الأول"/"الثاني", "first"/"second". Empty → [fallback].
+  /// 1/2, "الأول"/"الثاني", "first"/"second". Empty → [fallback]. "سنوي" /
+  /// "annual" → 1: an annual stage's courses run all year whatever their
+  /// semester (the stage's system is set in year settings).
   static int? semester(String raw, {int? fallback}) {
     final s = _n(raw);
     if (s.isEmpty) return fallback;
+    if (s.contains('سنوي') || s.contains('annual') || s.contains('yearly')) return 1;
     final digits = RegExp(r'^\D*([12])(\.0+)?\D*$').firstMatch(s);
     if (digits != null) return int.parse(digits[1]!);
     if (s.contains('اول') || s.contains('first')) return 1;

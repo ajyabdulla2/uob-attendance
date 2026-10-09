@@ -2200,6 +2200,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String auditActionLabel(String action) {
     String _temp0 = intl.Intl.selectLogic(action, {
+      'session_missed': 'Missed lecture recorded',
       'record_update': 'Attendance changed',
       'editRequest_reject': 'Edit request rejected',
       'leave_create': 'Leave added',
@@ -2516,5 +2517,102 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String chartBarTip(String mean, int alert, int students) {
     return 'Mean absence $mean% · at alert or above: $alert of $students students';
+  }
+
+  @override
+  String get missedTitle => 'Record a missed lecture';
+
+  @override
+  String get missedHelp =>
+      'For a lecture that was not recorded in time, for any class of your stage. It is saved straight to the server (needs a connection), reaches the teachers\' phones and counts in the percentages.';
+
+  @override
+  String get missedClass => 'Class';
+
+  @override
+  String get missedPickClass => 'Choose the class';
+
+  @override
+  String get missedDate => 'Lecture date';
+
+  @override
+  String missedLectureNo(int no) {
+    return 'This will be lecture $no of this class on that day.';
+  }
+
+  @override
+  String get missedHint =>
+      'Tap a name to change the status in turn: present, absent, late, excused.';
+
+  @override
+  String get missedAllPresent => 'All present';
+
+  @override
+  String get missedSave => 'Save the lecture';
+
+  @override
+  String missedConfirm(
+    int no,
+    String date,
+    String cls,
+    int absent,
+    int late,
+    int excused,
+    int present,
+  ) {
+    return 'Lecture $no of $date for $cls will be saved:\nabsent $absent, late $late, excused $excused, present $present.\nOnly a stage manager or an admin can delete it afterwards.';
+  }
+
+  @override
+  String get missedSaved => 'The lecture was saved.';
+
+  @override
+  String get missedNoClasses => 'This stage has no assigned classes.';
+
+  @override
+  String get missedNoStudents => 'This class has no students.';
+
+  @override
+  String get dashMissedHelp =>
+      'For a class whose lecture was not recorded in time, on any past day.';
+
+  @override
+  String get yearMissed => 'Allow recording a missed lecture';
+
+  @override
+  String get yearMissedOn =>
+      'On: stage managers and admins see «Record a missed lecture» on the stage dashboard, for any class of their stage on any past day.';
+
+  @override
+  String get yearMissedOff =>
+      'Off: a lecture past its lock time can only be corrected through edit requests.';
+
+  @override
+  String get missedDisabled =>
+      'Recording missed lectures is off. An admin can switch it on in Year settings.';
+
+  @override
+  String get yearSystems => 'Stage systems';
+
+  @override
+  String get yearSystemsHelp =>
+      'Semester stage: each semester\'s courses are counted over the semester\'s weeks. Annual stage: its courses run all year and are counted over the year\'s weeks. The thresholds are the same for both.';
+
+  @override
+  String get yearSystemSemester => 'Semester';
+
+  @override
+  String get yearSystemAnnual => 'Annual';
+
+  @override
+  String get yearWeeksYear => 'Weeks per year (annual stages)';
+
+  @override
+  String get yearWeeksYearHelp =>
+      'For example 30: a 3-unit annual course = 90 lectures a year.';
+
+  @override
+  String assignmentsCourseInfoAnnual(String code, String units) {
+    return '$code · $units units · annual';
   }
 }

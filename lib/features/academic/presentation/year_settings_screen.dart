@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/domain/stage_ref.dart';
 import '../../../core/utils/arabic_text.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
@@ -47,11 +48,14 @@ class _YearFormState extends ConsumerState<_YearForm> {
   late final _warning = _num(widget.year.thresholds.warning);
   late final _dismissal = _num(widget.year.thresholds.dismissal);
   late final _weeks = _num(widget.year.weeksPerSemester);
+  late final _weeksYear = _num(widget.year.weeksPerYear);
+  late final _annual = {...widget.year.annualStages};
   late final _perUnit = _num(widget.year.lecturesPerUnitPerWeek);
   late final _lockHours = _num(widget.year.lockHours);
   late bool _leavesCount = widget.year.leavesCountAgainst;
   late final _maxLeave = TextEditingController(text: widget.year.maxLeaveDays?.toString() ?? '');
   late bool _combined = widget.year.combinedTheoryPractical;
+  late bool _missed = widget.year.allowMissedLectures;
   bool _saving = false;
 
   static TextEditingController _num(num v) =>
@@ -59,7 +63,7 @@ class _YearFormState extends ConsumerState<_YearForm> {
 
   @override
   void dispose() {
-    for (final c in [_alert, _warning, _dismissal, _weeks, _perUnit, _lockHours, _maxLeave]) {
+    for (final c in [_alert, _warning, _dismissal, _weeks, _weeksYear, _perUnit, _lockHours, _maxLeave]) {
       c.dispose();
     }
     super.dispose();
@@ -71,20 +75,23 @@ class _YearFormState extends ConsumerState<_YearForm> {
 
   AcademicYear? _draft() {
     final a = _parse(_alert.text), w = _parse(_warning.text), d = _parse(_dismissal.text);
-    final weeks = _int(_weeks.text), lock = _int(_lockHours.text);
+    final weeks = _int(_weeks.text), weeksYear = _int(_weeksYear.text), lock = _int(_lockHours.text);
     final perUnit = _parse(_perUnit.text);
     final max = _maxLeave.text.trim().isEmpty ? null : _int(_maxLeave.text);
-    if (a == null || w == null || d == null || weeks == null || lock == null || perUnit == null) return null;
+    if (a == null || w == null || d == null || weeks == null || weeksYear == null || lock == null || perUnit == null) return null;
     if (_maxLeave.text.trim().isNotEmpty && max == null) return null;
     return widget.year.copyWith(
       semester: _semester,
       thresholds: AbsenceThresholds(alert: a, warning: w, dismissal: d),
       weeksPerSemester: weeks,
+      weeksPerYear: weeksYear,
+      annualStages: {..._annual},
       lecturesPerUnitPerWeek: perUnit,
       lockHours: lock,
       leavesCountAgainst: _leavesCount,
       maxLeaveDays: () => max,
       combinedTheoryPractical: _combined,
+      allowMissedLectures: _missed,
     );
   }
 
@@ -202,6 +209,33 @@ class _YearFormState extends ConsumerState<_YearForm> {
                   style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary),
                 ),
               ],
+              section(l10n.yearSystems),
+              Text(l10n.yearSystemsHelp, style: theme.textTheme.bodySmall),
+              const SizedBox(height: 4),
+              for (final st in StageRef.all)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      Expanded(child: Text(l10n.stage(st))),
+                      SegmentedButton<bool>(
+                        key: Key('year.system.${st.id}'),
+                        showSelectedIcon: false,
+                        segments: [
+                          ButtonSegment(value: false, label: Text(l10n.yearSystemSemester)),
+                          ButtonSegment(value: true, label: Text(l10n.yearSystemAnnual)),
+                        ],
+                        selected: {_annual.contains(st.id)},
+                        onSelectionChanged: (v) => setState(() => v.first ? _annual.add(st.id) : _annual.remove(st.id)),
+                      ),
+                    ],
+                  ),
+                ),
+              if (_annual.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                field(_weeksYear, l10n.yearWeeksYear, 'weeksYear',
+                    helper: l10n.yearWeeksYearHelp, validator: (v) => numberIn(v, min: 1, max: 60, integer: true)),
+              ],
               const SizedBox(height: 8),
               SwitchListTile(
                 key: const Key('year.combined'),
@@ -216,6 +250,14 @@ class _YearFormState extends ConsumerState<_YearForm> {
                   suffix: l10n.yearHoursSuffix,
                   helper: l10n.yearLockHelp,
                   validator: (v) => numberIn(v, min: 1, max: 720, integer: true)),
+              SwitchListTile(
+                key: const Key('year.missed'),
+                contentPadding: EdgeInsets.zero,
+                value: _missed,
+                title: Text(l10n.yearMissed),
+                subtitle: Text(_missed ? l10n.yearMissedOn : l10n.yearMissedOff),
+                onChanged: (v) => setState(() => _missed = v),
+              ),
               section(l10n.yearLeaves),
               SwitchListTile(
                 key: const Key('year.leavesCount'),

@@ -8,9 +8,11 @@ import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
+import '../../academic/application/academic_providers.dart';
 import '../../assignments/application/assignments_providers.dart';
 import '../../assignments/domain/assignment.dart';
 import '../../attendance/domain/attendance_session.dart';
+import '../../attendance/presentation/missed_lecture_screen.dart' show classKeyOf;
 import '../../auth/application/auth_providers.dart';
 import '../../edit_requests/application/edit_requests_providers.dart';
 import '../application/stats_providers.dart';
@@ -18,13 +20,12 @@ import '../domain/student_course_stat.dart';
 
 /// The last [days] calendar days (UTC keys, today first).
 List<String> recentDateKeys(DateTime now, {int days = 7}) => [
-      for (var i = 0; i < days; i++)
-        DocIds.dateKey(DateTime.utc(now.year, now.month, now.day).subtract(Duration(days: i))),
-    ];
+  for (var i = 0; i < days; i++) DocIds.dateKey(DateTime.utc(now.year, now.month, now.day).subtract(Duration(days: i))),
+];
 
-final _recentSessionsProvider =
-    StreamProvider.autoDispose.family<List<AttendanceSession>, String>((ref, stageId) =>
-        ref.watch(statsRepositoryProvider).watchSessionsOn(stageId, recentDateKeys(DateTime.now())));
+final _recentSessionsProvider = StreamProvider.autoDispose.family<List<AttendanceSession>, String>(
+  (ref, stageId) => ref.watch(statsRepositoryProvider).watchSessionsOn(stageId, recentDateKeys(DateTime.now())),
+);
 
 /// لوحة المرحلة (stage managers and admins): today's lectures, classes with
 /// nothing recorded this week, the stage's alert / warning / dismissal
@@ -44,10 +45,14 @@ class _StageDashboardScreenState extends ConsumerState<StageDashboardScreen> {
     final l10n = context.l10n;
     final stages = ref.watch(permissionsProvider).manageableStages;
     final stage = _stage != null && stages.contains(_stage) ? _stage : stages.firstOrNull;
+    // «تسجيل محاضرة فائتة» only when an admin switched it on (year settings).
+    final allowMissed = ref.watch(activeYearProvider).value?.allowMissedLectures ?? false;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.dashTitle)),
       body: stage == null
-          ? Center(child: MessageView(icon: Icons.lock_outline, title: l10n.assignmentsNoStages))
+          ? Center(
+              child: MessageView(icon: Icons.lock_outline, title: l10n.assignmentsNoStages),
+            )
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [
@@ -59,8 +64,21 @@ class _StageDashboardScreenState extends ConsumerState<StageDashboardScreen> {
                   items: [for (final s in stages) DropdownMenuItem(value: s, child: Text(l10n.stage(s)))],
                   onChanged: (s) => setState(() => _stage = s),
                 ),
+                if (allowMissed) ...[
+                  const SizedBox(height: 12),
+                  Card(
+                    child: ListTile(
+                      key: const Key('dash.missed'),
+                      leading: const Icon(Icons.edit_calendar),
+                      title: Text(l10n.missedTitle),
+                      subtitle: Text(l10n.dashMissedHelp),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => context.push(Routes.missedLectureFor(stageId: stage.id)),
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 12),
-                _Lectures(stageId: stage.id),
+                _Lectures(stageId: stage.id, allowMissed: allowMissed),
                 const SizedBox(height: 12),
                 _Levels(stageId: stage.id),
                 const SizedBox(height: 12),
@@ -72,9 +90,10 @@ class _StageDashboardScreenState extends ConsumerState<StageDashboardScreen> {
 }
 
 class _Lectures extends ConsumerWidget {
-  const _Lectures({required this.stageId});
+  const _Lectures({required this.stageId, required this.allowMissed});
 
   final String stageId;
+  final bool allowMissed;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -108,11 +127,17 @@ class _Lectures extends ConsumerWidget {
                 Text(l10n.dashIdleHelp, style: theme.textTheme.bodySmall),
                 for (final a in idle.values)
                   ListTile(
+                    key: Key('dash.idle.${a.id}'),
                     dense: true,
                     contentPadding: EdgeInsets.zero,
                     leading: const Icon(Icons.event_busy),
                     title: Text(a.courseName.isEmpty ? a.courseId : a.courseName),
                     subtitle: Text([l10n.classLabel(a), if (a.teacherName.isNotEmpty) a.teacherName].join(' · ')),
+                    trailing: allowMissed ? const Icon(Icons.chevron_right) : null,
+                    // Record the lecture this class missed.
+                    onTap: allowMissed
+                        ? () => context.push(Routes.missedLectureFor(stageId: stageId, classKey: classKeyOf(a)))
+                        : null,
                   ),
               ],
             );
@@ -142,8 +167,10 @@ class _Levels extends ConsumerWidget {
                 key: Key('dash.level.${level.name}'),
                 leading: Icon(StatusPalette.iconForLevel(level), color: palette.forLevel(level)),
                 title: Text(l10n.warningLevel(level)),
-                trailing: Text('${standings.where((s) => s.level == level).length}',
-                    style: Theme.of(context).textTheme.titleMedium),
+                trailing: Text(
+                  '${standings.where((s) => s.level == level).length}',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
                 onTap: () => context.push(Routes.warnings),
               ),
           ],

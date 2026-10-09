@@ -1667,7 +1667,7 @@
   "auditEnd": "نهاية السجل",
   "auditBefore": "قبل",
   "auditAfter": "بعد",
-  "auditActionLabel": "{action, select, record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} other{{action}}}",
+  "auditActionLabel": "{action, select, session_missed{تسجيل محاضرة فائتة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} other{{action}}}",
   "@auditActionLabel": {
     "placeholders": {
       "action": {
@@ -1879,6 +1879,73 @@
       },
       "students": {
         "type": "int"
+      }
+    }
+  },
+  "missedTitle": "تسجيل محاضرة فائتة",
+  "missedHelp": "لمحاضرة لم تُسجَّل في وقتها، لأي صف في مرحلتك. تُحفظ مباشرة على الخادم (يلزم الاتصال)، وتصل إلى هواتف التدريسيين، وتُحسب في النسب.",
+  "missedClass": "الصف",
+  "missedPickClass": "اختر الصف",
+  "missedDate": "تاريخ المحاضرة",
+  "missedLectureNo": "ستُحفظ المحاضرة رقم {no} لهذا الصف في هذا اليوم.",
+  "@missedLectureNo": {
+    "placeholders": {
+      "no": {
+        "type": "int"
+      }
+    }
+  },
+  "missedHint": "اضغط على اسم الطالب لتغيير حالته بالترتيب: حاضر، غائب، متأخر، مُجاز.",
+  "missedAllPresent": "الكل حاضر",
+  "missedSave": "حفظ المحاضرة",
+  "missedConfirm": "ستُحفظ المحاضرة رقم {no} بتاريخ {date} لـ {cls}:\nغائب {absent}، متأخر {late}، مُجاز {excused}، حاضر {present}.\nلا يحذفها بعد ذلك إلا مسؤول المرحلة أو المدير.",
+  "@missedConfirm": {
+    "placeholders": {
+      "no": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      },
+      "cls": {
+        "type": "String"
+      },
+      "absent": {
+        "type": "int"
+      },
+      "late": {
+        "type": "int"
+      },
+      "excused": {
+        "type": "int"
+      },
+      "present": {
+        "type": "int"
+      }
+    }
+  },
+  "missedSaved": "حُفظت المحاضرة.",
+  "missedNoClasses": "لا توجد صفوف مُسندة في هذه المرحلة.",
+  "missedNoStudents": "لا يوجد طلبة في هذا الصف.",
+  "dashMissedHelp": "لصف لم تُسجَّل محاضرته في وقتها، بأي تاريخ سابق.",
+  "yearMissed": "السماح بتسجيل محاضرة فائتة",
+  "yearMissedOn": "مفعّل: يرى مسؤول المرحلة والمدير «تسجيل محاضرة فائتة» في لوحة المرحلة، لأي صف في مرحلته وبأي تاريخ سابق.",
+  "yearMissedOff": "معطّل: المحاضرة التي فات موعد إقفالها تُصحَّح بطلبات التعديل فقط.",
+  "missedDisabled": "تسجيل المحاضرات الفائتة معطّل. يفعّله المدير من «إعدادات السنة».",
+  "yearSystems": "نظام المراحل",
+  "yearSystemsHelp": "المرحلة الفصلية: مواد كل فصل تُحسب نسبتها على أسابيع الفصل. المرحلة السنوية: موادها تستمر طوال السنة وتُحسب نسبتها على أسابيع السنة. العتبات نفسها للنظامين.",
+  "yearSystemSemester": "فصلي",
+  "yearSystemAnnual": "سنوي",
+  "yearWeeksYear": "عدد أسابيع السنة (للمراحل السنوية)",
+  "yearWeeksYearHelp": "مثلاً 30: مادة سنوية بثلاث وحدات = 90 محاضرة في السنة.",
+  "assignmentsCourseInfoAnnual": "{code} · {units} وحدات · سنوية",
+  "@assignmentsCourseInfoAnnual": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "units": {
+        "type": "String"
       }
     }
   }

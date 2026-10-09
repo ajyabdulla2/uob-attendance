@@ -40,6 +40,17 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('year.maxLeave')), findsNothing, reason: 'a cap only matters when leaves excuse');
     await tester.tap(find.text('الفصل 2'));
+    expect(find.byKey(const Key('year.weeksYear')), findsNothing, reason: 'only asked once a stage is annual');
+    final first = find.byKey(const Key('year.system.1-morning'));
+    await tester.ensureVisible(first);
+    await tester.tap(find.descendant(of: first, matching: find.text('سنوي')));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const Key('year.weeksYear')));
+    await tester.enterText(find.byKey(const Key('year.weeksYear')), '28');
+    await tester.ensureVisible(find.byKey(const Key('year.missed')));
+    expect(find.text('معطّل: المحاضرة التي فات موعد إقفالها تُصحَّح بطلبات التعديل فقط.'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('year.missed')));
+    await tester.pumpAndSettle();
     await tester.ensureVisible(find.byKey(const Key('year.save')));
     await tester.tap(find.byKey(const Key('year.save')));
     await tester.pumpAndSettle();
@@ -52,6 +63,9 @@ void main() {
     expect(y.lockHours, 72);
     expect(y.leavesCountAgainst, isTrue);
     expect(y.semester, 2);
+    expect(y.allowMissedLectures, isTrue);
+    expect(y.annualStages, {'1-morning'});
+    expect(y.weeksPerYear, 28);
     expect(y.active, isTrue, reason: 'settings never touch the active flag');
     final audit = (await db.collection('auditLog').get()).docs.single.data();
     expect(audit['action'], 'year.update');
@@ -64,7 +78,7 @@ void main() {
     await tester.tap(find.byKey(const Key('home.year')));
     await tester.pumpAndSettle();
     await tester.enterText(find.byKey(const Key('year.alert')), '12');
-    await tester.ensureVisible(find.byKey(const Key('year.save')));
+    await tester.scrollUntilVisible(find.byKey(const Key('year.save')), 300, scrollable: find.byType(Scrollable).first);
     await tester.tap(find.byKey(const Key('year.save')));
     await tester.pumpAndSettle();
     expect(find.textContaining('العتبات تصاعدية'), findsOneWidget);

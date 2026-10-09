@@ -209,6 +209,16 @@ describe('stages and academic years', () => {
     await assertFails(updateDoc(y, { thresholds: { alert: 10, warning: 5, dismissal: 15 } }));
     await assertFails(updateDoc(y, { thresholds: { alert: 5, warning: 10 } }));
   });
+
+  it('annual stages: a list of stages and the year\'s weeks within bounds', async () => {
+    const y = doc(as(env, DEPUTY), 'academicYears', '2026-2027');
+    await assertSucceeds(updateDoc(y, { annualStages: ['1-morning', '2-evening'], weeksPerYear: 30 }));
+    await assertFails(updateDoc(y, { annualStages: '1-morning' }));
+    await assertFails(updateDoc(y, { weeksPerYear: 0 }));
+    await assertFails(updateDoc(y, { weeksPerYear: 61 }));
+    await assertFails(updateDoc(y, { weeksPerYear: 30.5 }));
+    await assertFails(updateDoc(doc(as(env, SM3), 'academicYears', '2026-2027'), { annualStages: ['3-morning'] }));
+  });
 });
 
 // The exact query shapes the app issues (lib/features/*/data/*_repository.dart).

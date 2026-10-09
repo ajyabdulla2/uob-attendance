@@ -104,7 +104,9 @@ class _CourseCard extends ConsumerWidget {
         shape: const Border(),
         leading: Icon(course.hasPractical ? Icons.computer : Icons.menu_book),
         title: Text(course.name, style: theme.textTheme.titleMedium),
-        subtitle: Text(l10n.assignmentsCourseInfo(bidiIsolate(course.code), '${course.units}', '${course.semester}')),
+        subtitle: Text(ref.watch(activeYearProvider).value?.isAnnual(course.stageId) == true
+            ? l10n.assignmentsCourseInfoAnnual(bidiIsolate(course.code), '${course.units}')
+            : l10n.assignmentsCourseInfo(bidiIsolate(course.code), '${course.units}', '${course.semester}')),
         childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         expandedCrossAxisAlignment: CrossAxisAlignment.start,
         children: [

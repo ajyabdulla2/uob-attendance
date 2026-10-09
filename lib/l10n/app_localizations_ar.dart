@@ -2189,6 +2189,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String auditActionLabel(String action) {
     String _temp0 = intl.Intl.selectLogic(action, {
+      'session_missed': 'تسجيل محاضرة فائتة',
       'record_update': 'تعديل حضور طالب',
       'editRequest_reject': 'رفض طلب تعديل',
       'leave_create': 'إضافة إجازة',
@@ -2511,5 +2512,102 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String chartBarTip(String mean, int alert, int students) {
     return 'متوسط الغياب $mean٪ · في التنبيه فأعلى: $alert من $students طالب';
+  }
+
+  @override
+  String get missedTitle => 'تسجيل محاضرة فائتة';
+
+  @override
+  String get missedHelp =>
+      'لمحاضرة لم تُسجَّل في وقتها، لأي صف في مرحلتك. تُحفظ مباشرة على الخادم (يلزم الاتصال)، وتصل إلى هواتف التدريسيين، وتُحسب في النسب.';
+
+  @override
+  String get missedClass => 'الصف';
+
+  @override
+  String get missedPickClass => 'اختر الصف';
+
+  @override
+  String get missedDate => 'تاريخ المحاضرة';
+
+  @override
+  String missedLectureNo(int no) {
+    return 'ستُحفظ المحاضرة رقم $no لهذا الصف في هذا اليوم.';
+  }
+
+  @override
+  String get missedHint =>
+      'اضغط على اسم الطالب لتغيير حالته بالترتيب: حاضر، غائب، متأخر، مُجاز.';
+
+  @override
+  String get missedAllPresent => 'الكل حاضر';
+
+  @override
+  String get missedSave => 'حفظ المحاضرة';
+
+  @override
+  String missedConfirm(
+    int no,
+    String date,
+    String cls,
+    int absent,
+    int late,
+    int excused,
+    int present,
+  ) {
+    return 'ستُحفظ المحاضرة رقم $no بتاريخ $date لـ $cls:\nغائب $absent، متأخر $late، مُجاز $excused، حاضر $present.\nلا يحذفها بعد ذلك إلا مسؤول المرحلة أو المدير.';
+  }
+
+  @override
+  String get missedSaved => 'حُفظت المحاضرة.';
+
+  @override
+  String get missedNoClasses => 'لا توجد صفوف مُسندة في هذه المرحلة.';
+
+  @override
+  String get missedNoStudents => 'لا يوجد طلبة في هذا الصف.';
+
+  @override
+  String get dashMissedHelp =>
+      'لصف لم تُسجَّل محاضرته في وقتها، بأي تاريخ سابق.';
+
+  @override
+  String get yearMissed => 'السماح بتسجيل محاضرة فائتة';
+
+  @override
+  String get yearMissedOn =>
+      'مفعّل: يرى مسؤول المرحلة والمدير «تسجيل محاضرة فائتة» في لوحة المرحلة، لأي صف في مرحلته وبأي تاريخ سابق.';
+
+  @override
+  String get yearMissedOff =>
+      'معطّل: المحاضرة التي فات موعد إقفالها تُصحَّح بطلبات التعديل فقط.';
+
+  @override
+  String get missedDisabled =>
+      'تسجيل المحاضرات الفائتة معطّل. يفعّله المدير من «إعدادات السنة».';
+
+  @override
+  String get yearSystems => 'نظام المراحل';
+
+  @override
+  String get yearSystemsHelp =>
+      'المرحلة الفصلية: مواد كل فصل تُحسب نسبتها على أسابيع الفصل. المرحلة السنوية: موادها تستمر طوال السنة وتُحسب نسبتها على أسابيع السنة. العتبات نفسها للنظامين.';
+
+  @override
+  String get yearSystemSemester => 'فصلي';
+
+  @override
+  String get yearSystemAnnual => 'سنوي';
+
+  @override
+  String get yearWeeksYear => 'عدد أسابيع السنة (للمراحل السنوية)';
+
+  @override
+  String get yearWeeksYearHelp =>
+      'مثلاً 30: مادة سنوية بثلاث وحدات = 90 محاضرة في السنة.';
+
+  @override
+  String assignmentsCourseInfoAnnual(String code, String units) {
+    return '$code · $units وحدات · سنوية';
   }
 }

@@ -131,6 +131,7 @@ final class ClassAbsenceData {
         leaves: leaves[studentId] ?? const [],
         units: course.units,
         year: year,
+        stageId: course.stageId,
         type: type,
       );
 }

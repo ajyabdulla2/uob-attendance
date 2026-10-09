@@ -37,6 +37,7 @@ void main() {
       leaves: const [],
       units: 2,
       year: year,
+      stageId: '1-morning',
     );
     expect(s.planned, 20);
     expect(s.absences, 2);
@@ -59,6 +60,7 @@ void main() {
       leaves: [leave(DateTime.utc(2026, 10, 1), DateTime.utc(2026, 10, 2))],
       units: 2,
       year: year,
+      stageId: '1-morning',
     );
     expect(approved.absences, 1);
     expect(approved.byLeave, 2);
@@ -69,6 +71,7 @@ void main() {
       leaves: [leave(DateTime.utc(2026, 10, 1), DateTime.utc(2026, 10, 2), approved: false)],
       units: 2,
       year: year,
+      stageId: '1-morning',
     );
     expect(pending.absences, 3);
   });
@@ -80,6 +83,7 @@ void main() {
       leaves: [leave(DateTime.utc(2026, 10, 1), DateTime.utc(2026, 10, 5))],
       units: 2,
       year: capped,
+      stageId: '1-morning',
     );
     expect(s.absences, 1);
     expect(s.byLeave, 1);
@@ -92,6 +96,7 @@ void main() {
       leaves: [leave(DateTime.utc(2026, 10, 2), DateTime.utc(2026, 10, 2))],
       units: 2,
       year: strict,
+      stageId: '1-morning',
     );
     expect(s.absences, 2);
     expect(s.excused, 0);
@@ -103,8 +108,8 @@ void main() {
       sid('20261001', type: 'practical'): AttendanceStatus.absent,
       sid('20261008', type: 'practical'): AttendanceStatus.absent,
     };
-    expect(AbsenceSummary.of(bySession: marks, leaves: const [], units: 2, year: year).absences, 3);
-    expect(AbsenceSummary.of(bySession: marks, leaves: const [], units: 2, year: year, type: 'practical').absences, 2);
+    expect(AbsenceSummary.of(bySession: marks, leaves: const [], units: 2, year: year, stageId: '1-morning').absences, 3);
+    expect(AbsenceSummary.of(bySession: marks, leaves: const [], units: 2, year: year, stageId: '1-morning', type: 'practical').absences, 2);
   });
 
   test('stats documents parse bySession', () {
@@ -159,6 +164,39 @@ void main() {
       );
       expect(rows.map((r) => r.type), unorderedEquals(['theory', 'practical']));
       expect(rows.every((r) => r.summary.absences == 1), isTrue);
+    });
+  });
+
+  group('annual stages', () {
+    // 2 units × 1 lecture × 30 weeks = 60 planned in the annual stage; 2 × 15 = 30 in the others.
+    const mixed = AcademicYear(id: 'y', semester: 2, annualStages: {'1-morning'});
+    final marks = {sid('20261001'): AttendanceStatus.absent, sid('20261002'): AttendanceStatus.absent,
+        sid('20261003'): AttendanceStatus.absent};
+
+    test('the annual stage counts over the year’s weeks, with the same thresholds', () {
+      final annual = AbsenceSummary.of(bySession: marks, leaves: const [], units: 2, year: mixed, stageId: '1-morning');
+      expect(annual.planned, 60);
+      expect(annual.percent, 5);
+      expect(annual.level, WarningLevel.alert);
+      final semester = AbsenceSummary.of(bySession: marks, leaves: const [], units: 2, year: mixed, stageId: '2-morning');
+      expect(semester.planned, 30);
+      expect(semester.percent, 10);
+      expect(semester.level, WarningLevel.warning);
+    });
+
+    test('an annual stage’s courses are current in both semesters', () {
+      expect(mixed.isCurrent('1-morning', 1), isTrue);
+      expect(mixed.isCurrent('1-morning', 2), isTrue);
+      expect(mixed.isCurrent('2-morning', 1), isFalse);
+      expect(mixed.isCurrent('2-morning', 2), isTrue);
+    });
+
+    test('kept in the year document', () {
+      final back = AcademicYear.fromMap('y', mixed.copyWith(weeksPerYear: 28).toMap());
+      expect(back.annualStages, {'1-morning'});
+      expect(back.weeksPerYear, 28);
+      expect(AcademicYear.fromMap('y', const {}).annualStages, isEmpty);
+      expect(AcademicYear.fromMap('y', const {}).weeksPerYear, 30);
     });
   });
 }

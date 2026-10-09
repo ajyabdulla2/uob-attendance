@@ -73,7 +73,7 @@ class _AbsenceChartsCardState extends State<AbsenceChartsCard> {
   final byCourse = AbsenceRates.byCourse(
     standings: standings,
     students: students,
-    courses: courses.where((c) => c.semester == year.semester),
+    courses: courses.where((c) => year.isCurrent(c.stageId, c.semester)),
     combined: year.combinedTheoryPractical,
     label: (c, type) => type == null ? c.name : '${c.name} · ${type == 'theory' ? l10n.theoryLabel : l10n.practicalLabel}',
   );
