@@ -5,8 +5,9 @@
 # Needs:
 #   variable FIREBASE_PROJECT_ID          (Settings → Variables)
 #   secret   FIREBASE_SERVICE_ACCOUNT_JSON service account with the roles
-#            "Firebase Rules Admin", "Cloud Datastore Index Admin" and
-#            "Firebase Hosting Admin"
+#            "Firebase Rules Admin", "Cloud Datastore Index Admin",
+#            "Firebase Hosting Admin" and "Service Usage Consumer" (firebase
+#            deploy checks that the Firestore API is enabled first)
 #   secret   FIREBASE_OPTIONS_DART_B64     (for the web build)
 name: Deploy Firebase
 
