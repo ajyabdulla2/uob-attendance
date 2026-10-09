@@ -2575,4 +2575,19 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dashMissedHelp =>
       'For a class whose lecture was not recorded in time, on any past day.';
+
+  @override
+  String get yearMissed => 'Allow recording a missed lecture';
+
+  @override
+  String get yearMissedOn =>
+      'On: stage managers and admins see «Record a missed lecture» on the stage dashboard, for any class of their stage on any past day.';
+
+  @override
+  String get yearMissedOff =>
+      'Off: a lecture past its lock time can only be corrected through edit requests.';
+
+  @override
+  String get missedDisabled =>
+      'Recording missed lectures is off. An admin can switch it on in Year settings.';
 }

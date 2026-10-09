@@ -39,6 +39,7 @@ final class AcademicYear {
     this.leavesCountAgainst = false,
     this.maxLeaveDays,
     this.combinedTheoryPractical = true,
+    this.allowMissedLectures = false,
     this.departmentId = AppConfig.departmentId,
   });
 
@@ -66,6 +67,10 @@ final class AcademicYear {
 
   /// One combined percentage for theory + practical, or two separate ones.
   final bool combinedTheoryPractical;
+
+  /// Whether stage managers and admins may record a missed lecture (a past
+  /// day, any class of their stage) — switched on by an admin, off by default.
+  final bool allowMissedLectures;
   final String departmentId;
 
   /// Within what the security rules accept (they use [lockHours] to compute
@@ -90,6 +95,7 @@ final class AcademicYear {
     bool? leavesCountAgainst,
     int? Function()? maxLeaveDays,
     bool? combinedTheoryPractical,
+    bool? allowMissedLectures,
   }) =>
       AcademicYear(
         id: id,
@@ -103,6 +109,7 @@ final class AcademicYear {
         leavesCountAgainst: leavesCountAgainst ?? this.leavesCountAgainst,
         maxLeaveDays: maxLeaveDays == null ? this.maxLeaveDays : maxLeaveDays(),
         combinedTheoryPractical: combinedTheoryPractical ?? this.combinedTheoryPractical,
+        allowMissedLectures: allowMissedLectures ?? this.allowMissedLectures,
         departmentId: departmentId,
       );
 
@@ -124,6 +131,7 @@ final class AcademicYear {
         leavesCountAgainst: Fs.boolean(map['leavesCountAgainst']),
         maxLeaveDays: map['maxLeaveDays'] is int ? map['maxLeaveDays'] as int : null,
         combinedTheoryPractical: Fs.boolean(map['combinedTheoryPractical'], true),
+        allowMissedLectures: Fs.boolean(map['allowMissedLectures']),
         departmentId: Fs.str(map['departmentId'], AppConfig.departmentId),
       );
 
@@ -139,6 +147,7 @@ final class AcademicYear {
         'leavesCountAgainst': leavesCountAgainst,
         'maxLeaveDays': maxLeaveDays,
         'combinedTheoryPractical': combinedTheoryPractical,
+        'allowMissedLectures': allowMissedLectures,
         'departmentId': departmentId,
       };
 }

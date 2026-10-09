@@ -52,6 +52,7 @@ class _YearFormState extends ConsumerState<_YearForm> {
   late bool _leavesCount = widget.year.leavesCountAgainst;
   late final _maxLeave = TextEditingController(text: widget.year.maxLeaveDays?.toString() ?? '');
   late bool _combined = widget.year.combinedTheoryPractical;
+  late bool _missed = widget.year.allowMissedLectures;
   bool _saving = false;
 
   static TextEditingController _num(num v) =>
@@ -85,6 +86,7 @@ class _YearFormState extends ConsumerState<_YearForm> {
       leavesCountAgainst: _leavesCount,
       maxLeaveDays: () => max,
       combinedTheoryPractical: _combined,
+      allowMissedLectures: _missed,
     );
   }
 
@@ -216,6 +218,14 @@ class _YearFormState extends ConsumerState<_YearForm> {
                   suffix: l10n.yearHoursSuffix,
                   helper: l10n.yearLockHelp,
                   validator: (v) => numberIn(v, min: 1, max: 720, integer: true)),
+              SwitchListTile(
+                key: const Key('year.missed'),
+                contentPadding: EdgeInsets.zero,
+                value: _missed,
+                title: Text(l10n.yearMissed),
+                subtitle: Text(_missed ? l10n.yearMissedOn : l10n.yearMissedOff),
+                onChanged: (v) => setState(() => _missed = v),
+              ),
               section(l10n.yearLeaves),
               SwitchListTile(
                 key: const Key('year.leavesCount'),

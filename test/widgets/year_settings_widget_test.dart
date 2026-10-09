@@ -40,6 +40,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('year.maxLeave')), findsNothing, reason: 'a cap only matters when leaves excuse');
     await tester.tap(find.text('الفصل 2'));
+    await tester.ensureVisible(find.byKey(const Key('year.missed')));
+    expect(find.text('معطّل: المحاضرة التي فات موعد إقفالها تُصحَّح بطلبات التعديل فقط.'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('year.missed')));
+    await tester.pumpAndSettle();
     await tester.ensureVisible(find.byKey(const Key('year.save')));
     await tester.tap(find.byKey(const Key('year.save')));
     await tester.pumpAndSettle();
@@ -52,6 +56,7 @@ void main() {
     expect(y.lockHours, 72);
     expect(y.leavesCountAgainst, isTrue);
     expect(y.semester, 2);
+    expect(y.allowMissedLectures, isTrue);
     expect(y.active, isTrue, reason: 'settings never touch the active flag');
     final audit = (await db.collection('auditLog').get()).docs.single.data();
     expect(audit['action'], 'year.update');

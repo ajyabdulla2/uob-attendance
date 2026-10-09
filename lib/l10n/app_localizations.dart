@@ -4228,6 +4228,30 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'لصف لم تُسجَّل محاضرته في وقتها، بأي تاريخ سابق.'**
   String get dashMissedHelp;
+
+  /// No description provided for @yearMissed.
+  ///
+  /// In ar, this message translates to:
+  /// **'السماح بتسجيل محاضرة فائتة'**
+  String get yearMissed;
+
+  /// No description provided for @yearMissedOn.
+  ///
+  /// In ar, this message translates to:
+  /// **'مفعّل: يرى مسؤول المرحلة والمدير «تسجيل محاضرة فائتة» في لوحة المرحلة، لأي صف في مرحلته وبأي تاريخ سابق.'**
+  String get yearMissedOn;
+
+  /// No description provided for @yearMissedOff.
+  ///
+  /// In ar, this message translates to:
+  /// **'معطّل: المحاضرة التي فات موعد إقفالها تُصحَّح بطلبات التعديل فقط.'**
+  String get yearMissedOff;
+
+  /// No description provided for @missedDisabled.
+  ///
+  /// In ar, this message translates to:
+  /// **'تسجيل المحاضرات الفائتة معطّل. يفعّله المدير من «إعدادات السنة».'**
+  String get missedDisabled;
 }
 
 class _AppLocalizationsDelegate

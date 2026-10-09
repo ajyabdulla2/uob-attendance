@@ -26,9 +26,11 @@ void main() {
   final now = DateTime.now();
   final day = DateTime.utc(now.year, now.month, now.day).subtract(const Duration(days: 10));
 
-  Future<FakeFirebaseFirestore> seed() async {
+  Future<FakeFirebaseFirestore> seed({bool allowed = true}) async {
     final db = FakeFirebaseFirestore();
-    await db.doc('academicYears/2026-2027').set(const AcademicYear(id: '2026-2027', semester: 1, active: true).toMap());
+    await db
+        .doc('academicYears/2026-2027')
+        .set(AcademicYear(id: '2026-2027', semester: 1, active: true, allowMissedLectures: allowed).toMap());
     await db.doc('courses/${course.id}').set(course.toMap());
     await db.doc('students/1').set(Student(universityId: '1', fullName: 'أحمد علي حسين جاسم', stage: stage).toMap());
     await db.doc('students/2').set(Student(universityId: '2', fullName: 'زينب صالح مهدي حسن', stage: stage).toMap());
@@ -94,6 +96,24 @@ void main() {
     expect((await env.db.doc('stats/${course.id}__2').get()).data()!['bySession'], {sid: 'late'});
     final audit = await env.db.collection('auditLog').where('action', isEqualTo: 'session.missed').get();
     expect(audit.docs.single.data()['actor'], sm);
+  });
+
+  testWidgets('off by default: no button, idle classes do not open it, the screen says so', (tester) async {
+    await pumpApp(tester,
+        firestore: await seed(allowed: false), user: MockUser(email: sm, isEmailVerified: true), profile: smProfile);
+    await tester.tap(find.byKey(const Key('home.dashboard')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('dash.missed')), findsNothing);
+    await tester.tap(find.byKey(Key('dash.idle.${cls.id}')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('dash.missed')), findsNothing);
+    expect(find.text('تسجيل محاضرة فائتة'), findsNothing);
+
+    GoRouter.of(tester.element(find.byType(Scaffold).first))
+        .push(Routes.missedLectureFor(stageId: stage.id, classKey: classKeyOf(cls), date: day));
+    await tester.pumpAndSettle();
+    expect(find.text('تسجيل المحاضرات الفائتة معطّل. يفعّله المدير من «إعدادات السنة».'), findsOneWidget);
+    expect(find.byKey(const Key('missed.save')), findsNothing);
   });
 
   testWidgets('teachers cannot open it', (tester) async {

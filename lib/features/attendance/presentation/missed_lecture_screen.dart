@@ -128,11 +128,17 @@ class _MissedLectureScreenState extends ConsumerState<MissedLectureScreen> {
     final l10n = context.l10n;
     final stages = ref.watch(permissionsProvider).manageableStages;
     final stage = _stage != null && stages.contains(_stage) ? _stage : stages.firstOrNull;
+    final year = ref.watch(activeYearProvider);
     return Scaffold(
       appBar: AppBar(title: Text(l10n.missedTitle)),
-      body: stage == null
-          ? Center(child: MessageView(icon: Icons.lock_outline, title: l10n.assignmentsNoStages))
-          : _body(context, stages, stage),
+      body: !year.hasValue
+          ? const Center(child: CircularProgressIndicator())
+          // Off unless an admin switched it on in year settings.
+          : year.value?.allowMissedLectures != true
+              ? Center(child: MessageView(icon: Icons.lock_outline, title: l10n.missedDisabled))
+              : stage == null
+                  ? Center(child: MessageView(icon: Icons.lock_outline, title: l10n.assignmentsNoStages))
+                  : _body(context, stages, stage),
     );
   }
 

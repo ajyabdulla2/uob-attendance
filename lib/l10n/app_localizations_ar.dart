@@ -2570,4 +2570,19 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get dashMissedHelp =>
       'لصف لم تُسجَّل محاضرته في وقتها، بأي تاريخ سابق.';
+
+  @override
+  String get yearMissed => 'السماح بتسجيل محاضرة فائتة';
+
+  @override
+  String get yearMissedOn =>
+      'مفعّل: يرى مسؤول المرحلة والمدير «تسجيل محاضرة فائتة» في لوحة المرحلة، لأي صف في مرحلته وبأي تاريخ سابق.';
+
+  @override
+  String get yearMissedOff =>
+      'معطّل: المحاضرة التي فات موعد إقفالها تُصحَّح بطلبات التعديل فقط.';
+
+  @override
+  String get missedDisabled =>
+      'تسجيل المحاضرات الفائتة معطّل. يفعّله المدير من «إعدادات السنة».';
 }
