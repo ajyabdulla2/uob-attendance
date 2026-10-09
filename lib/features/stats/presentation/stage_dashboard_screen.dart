@@ -11,6 +11,7 @@ import '../../../l10n/l10n.dart';
 import '../../assignments/application/assignments_providers.dart';
 import '../../assignments/domain/assignment.dart';
 import '../../attendance/domain/attendance_session.dart';
+import '../../attendance/presentation/missed_lecture_screen.dart' show classKeyOf;
 import '../../auth/application/auth_providers.dart';
 import '../../edit_requests/application/edit_requests_providers.dart';
 import '../application/stats_providers.dart';
@@ -58,6 +59,17 @@ class _StageDashboardScreenState extends ConsumerState<StageDashboardScreen> {
                   decoration: InputDecoration(labelText: l10n.fixStage, prefixIcon: const Icon(Icons.layers)),
                   items: [for (final s in stages) DropdownMenuItem(value: s, child: Text(l10n.stage(s)))],
                   onChanged: (s) => setState(() => _stage = s),
+                ),
+                const SizedBox(height: 12),
+                Card(
+                  child: ListTile(
+                    key: const Key('dash.missed'),
+                    leading: const Icon(Icons.edit_calendar),
+                    title: Text(l10n.missedTitle),
+                    subtitle: Text(l10n.dashMissedHelp),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => context.push(Routes.missedLectureFor(stageId: stage.id)),
+                  ),
                 ),
                 const SizedBox(height: 12),
                 _Lectures(stageId: stage.id),
@@ -108,11 +120,15 @@ class _Lectures extends ConsumerWidget {
                 Text(l10n.dashIdleHelp, style: theme.textTheme.bodySmall),
                 for (final a in idle.values)
                   ListTile(
+                    key: Key('dash.idle.${a.id}'),
                     dense: true,
                     contentPadding: EdgeInsets.zero,
                     leading: const Icon(Icons.event_busy),
                     title: Text(a.courseName.isEmpty ? a.courseId : a.courseName),
                     subtitle: Text([l10n.classLabel(a), if (a.teacherName.isNotEmpty) a.teacherName].join(' · ')),
+                    trailing: const Icon(Icons.chevron_right),
+                    // Record the lecture this class missed.
+                    onTap: () => context.push(Routes.missedLectureFor(stageId: stageId, classKey: classKeyOf(a))),
                   ),
               ],
             );

@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/attendance/presentation/missed_lecture_screen.dart';
 import '../../features/academic/presentation/year_settings_screen.dart';
 import '../../features/assignments/presentation/assignments_screen.dart';
 import '../../features/audit/presentation/audit_log_screen.dart';
@@ -47,6 +48,7 @@ abstract final class Routes {
   static const warnings = '/warnings';
   static const editRequests = '/edit-requests';
   static const stageDashboard = '/stage-dashboard';
+  static const missedLecture = '/missed-lecture';
   static const departmentDashboard = '/department';
   static const backup = '/backup';
   static const auditLog = '/audit-log';
@@ -61,6 +63,14 @@ abstract final class Routes {
 
   static String registerFor(String assignmentId) => Uri(path: register, queryParameters: {'a': assignmentId}).toString();
   static const student = '/student';
+  /// «تسجيل محاضرة فائتة», optionally on a stage and class (`courseId|type|target`).
+  static String missedLectureFor({String? stageId, String? classKey, DateTime? date}) =>
+      Uri(path: missedLecture, queryParameters: {
+        's': ?stageId,
+        'c': ?classKey,
+        if (date != null) 'd': DocIds.dateKey(date),
+      }).toString();
+
   static String studentFor(String assignmentId, String studentId) =>
       Uri(path: student, queryParameters: {'a': assignmentId, 's': studentId}).toString();
 
@@ -88,6 +98,7 @@ String? redirectFor(AuthStatus status, String location) {
         _ when location.startsWith(Routes.warnings) && !permissions.canViewWarnings => Routes.home,
         _ when location.startsWith(Routes.editRequests) && !permissions.canReviewEditRequests => Routes.home,
         _ when location.startsWith(Routes.stageDashboard) && !permissions.canViewStageDashboard => Routes.home,
+        _ when location.startsWith(Routes.missedLecture) && !permissions.canViewStageDashboard => Routes.home,
         _ => null,
       },
   };
@@ -127,6 +138,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.warnings, builder: (_, _) => const WarningsScreen()),
       GoRoute(path: Routes.editRequests, builder: (_, _) => const EditRequestsScreen()),
       GoRoute(path: Routes.stageDashboard, builder: (_, _) => const StageDashboardScreen()),
+      GoRoute(
+        path: Routes.missedLecture,
+        builder: (_, s) => MissedLectureScreen(
+          stageId: s.uri.queryParameters['s'],
+          classKey: s.uri.queryParameters['c'],
+          date: DocIds.parseDateKey(s.uri.queryParameters['d'] ?? ''),
+        ),
+      ),
       GoRoute(path: Routes.departmentDashboard, builder: (_, _) => const DepartmentDashboardScreen()),
       GoRoute(path: Routes.backup, builder: (_, _) => const BackupScreen()),
       GoRoute(path: Routes.auditLog, builder: (_, _) => const AuditLogScreen()),

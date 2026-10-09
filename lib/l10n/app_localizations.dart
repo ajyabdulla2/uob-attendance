@@ -3690,7 +3690,7 @@ abstract class AppLocalizations {
   /// No description provided for @auditActionLabel.
   ///
   /// In ar, this message translates to:
-  /// **'{action, select, record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} other{{action}}}'**
+  /// **'{action, select, session_missed{تسجيل محاضرة فائتة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} other{{action}}}'**
   String auditActionLabel(String action);
 
   /// No description provided for @deptAction.
@@ -4136,6 +4136,98 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'متوسط الغياب {mean}٪ · في التنبيه فأعلى: {alert} من {students} طالب'**
   String chartBarTip(String mean, int alert, int students);
+
+  /// No description provided for @missedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تسجيل محاضرة فائتة'**
+  String get missedTitle;
+
+  /// No description provided for @missedHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'لمحاضرة لم تُسجَّل في وقتها، لأي صف في مرحلتك. تُحفظ مباشرة على الخادم (يلزم الاتصال)، وتصل إلى هواتف التدريسيين، وتُحسب في النسب.'**
+  String get missedHelp;
+
+  /// No description provided for @missedClass.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصف'**
+  String get missedClass;
+
+  /// No description provided for @missedPickClass.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر الصف'**
+  String get missedPickClass;
+
+  /// No description provided for @missedDate.
+  ///
+  /// In ar, this message translates to:
+  /// **'تاريخ المحاضرة'**
+  String get missedDate;
+
+  /// No description provided for @missedLectureNo.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستُحفظ المحاضرة رقم {no} لهذا الصف في هذا اليوم.'**
+  String missedLectureNo(int no);
+
+  /// No description provided for @missedHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اضغط على اسم الطالب لتغيير حالته بالترتيب: حاضر، غائب، متأخر، مُجاز.'**
+  String get missedHint;
+
+  /// No description provided for @missedAllPresent.
+  ///
+  /// In ar, this message translates to:
+  /// **'الكل حاضر'**
+  String get missedAllPresent;
+
+  /// No description provided for @missedSave.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظ المحاضرة'**
+  String get missedSave;
+
+  /// No description provided for @missedConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستُحفظ المحاضرة رقم {no} بتاريخ {date} لـ {cls}:\nغائب {absent}، متأخر {late}، مُجاز {excused}، حاضر {present}.\nلا يحذفها بعد ذلك إلا مسؤول المرحلة أو المدير.'**
+  String missedConfirm(
+    int no,
+    String date,
+    String cls,
+    int absent,
+    int late,
+    int excused,
+    int present,
+  );
+
+  /// No description provided for @missedSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُفظت المحاضرة.'**
+  String get missedSaved;
+
+  /// No description provided for @missedNoClasses.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد صفوف مُسندة في هذه المرحلة.'**
+  String get missedNoClasses;
+
+  /// No description provided for @missedNoStudents.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد طلبة في هذا الصف.'**
+  String get missedNoStudents;
+
+  /// No description provided for @dashMissedHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'لصف لم تُسجَّل محاضرته في وقتها، بأي تاريخ سابق.'**
+  String get dashMissedHelp;
 }
 
 class _AppLocalizationsDelegate
