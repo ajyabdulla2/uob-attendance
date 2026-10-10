@@ -2720,4 +2720,29 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get notifToMe => 'رسالة خاصة';
+
+  @override
+  String activitySentPush(int count, int phones) {
+    return 'أُرسل الإشعار إلى $count، ووصل إلى $phones هاتف.';
+  }
+
+  @override
+  String activitySentNoPush(int count) {
+    return 'أُرسل الإشعار إلى $count داخل البرنامج، وتعذّر إرساله إلى الهواتف الآن.';
+  }
+
+  @override
+  String get activityPushOn => 'الإشعارات مفعّلة';
+
+  @override
+  String get activityPushOnLong =>
+      'إشعارات الهاتف مفعّلة: تصله الرسائل والبرنامج مغلق.';
+
+  @override
+  String get activityPushOff =>
+      'إشعارات الهاتف غير مفعّلة (لم يثبّت الإصدار 1.4 أو لم يسمح بالإشعارات).';
+
+  @override
+  String get activityPushNote =>
+      'يصل إشعاراً على هاتف من ثبّت الإصدار 1.4 وسمح بالإشعارات، ويظهر للجميع في «الإشعارات» داخل البرنامج.';
 }

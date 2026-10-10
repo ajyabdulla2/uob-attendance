@@ -12,6 +12,7 @@ import '../../academic/domain/academic_year.dart';
 import '../../activity/application/activity_providers.dart';
 import '../../assignments/domain/assignment.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../push/application/push_providers.dart';
 import '../../courses/domain/course.dart';
 import '../../courses/domain/practical_group.dart';
 import '../../leaves/domain/leave.dart';
@@ -253,6 +254,7 @@ class SyncController extends Notifier<SyncState> {
       problem ??= e is FirebaseException ? e.code : '$e';
     }
     state = SyncState(lastUploadAt: uploadedAt, lastDownloadAt: downloadedAt, problem: problem);
+    unawaited(updateUnsentReminder(ref));
   }
 }
 

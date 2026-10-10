@@ -12,6 +12,7 @@ final class Presence {
     this.lastUploadAt,
     this.platform = '',
     this.appVersion = '',
+    this.hasDevice = false,
   });
 
   /// How often an open app refreshes [lastSeenAt] (the Spark write quota).
@@ -25,12 +26,16 @@ final class Presence {
   final String platform;
   final String appVersion;
 
+  /// A phone registered for notifications (push-worker/ can reach it).
+  final bool hasDevice;
+
   factory Presence.fromMap(String email, Map<String, Object?> map) => Presence(
         email: email,
         lastSeenAt: Fs.date(map['lastSeenAt']),
         lastUploadAt: Fs.date(map['lastUploadAt']),
         platform: Fs.str(map['platform']),
         appVersion: Fs.str(map['appVersion']),
+        hasDevice: Fs.str(map['pushToken']).isNotEmpty,
       );
 
   /// The fields of a «seen» write (the times are server timestamps).

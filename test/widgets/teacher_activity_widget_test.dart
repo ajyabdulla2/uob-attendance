@@ -26,6 +26,7 @@ void main() {
       'lastUploadAt': Timestamp.fromDate(seen),
       'platform': 'android',
       'appVersion': '1.3.0',
+      'pushToken': 'fcm-token',
     });
     final day = DateTime.utc(2026, 10, 5);
     final s = AttendanceSession(
@@ -58,6 +59,7 @@ void main() {
       lessThan(tester.getTopLeft(find.byKey(const Key('activity.row.$t1'))).dy),
     );
     expect(find.textContaining('آخر دخول: منذ 3 ساعة'), findsOneWidget);
+    expect(find.textContaining('الإشعارات مفعّلة'), findsOneWidget);
     expect(find.textContaining('لم يدخل بعد'), findsWidgets);
 
     await tester.tap(find.byKey(const Key('activity.filter.never')));

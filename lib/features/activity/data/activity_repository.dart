@@ -30,6 +30,13 @@ class ActivityRepository {
         'lastUploadAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
 
+  /// This phone's FCM token for [email] (null: stop sending to it).
+  Future<void> reportPushToken(String email, String? token) => _col.doc(email).set({
+        'email': email,
+        'lastSeenAt': FieldValue.serverTimestamp(),
+        'pushToken': token,
+      }, SetOptions(merge: true));
+
   /// The lectures [email] opened, latest first, and how many in all.
   Future<({List<AttendanceSession> latest, int total})> lecturesBy(String email, {int limit = 5}) async {
     final q = _fs.collection(Col.sessions).where('openedBy', isEqualTo: email);

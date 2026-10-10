@@ -4462,6 +4462,42 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'رسالة خاصة'**
   String get notifToMe;
+
+  /// No description provided for @activitySentPush.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُرسل الإشعار إلى {count}، ووصل إلى {phones} هاتف.'**
+  String activitySentPush(int count, int phones);
+
+  /// No description provided for @activitySentNoPush.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُرسل الإشعار إلى {count} داخل البرنامج، وتعذّر إرساله إلى الهواتف الآن.'**
+  String activitySentNoPush(int count);
+
+  /// No description provided for @activityPushOn.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإشعارات مفعّلة'**
+  String get activityPushOn;
+
+  /// No description provided for @activityPushOnLong.
+  ///
+  /// In ar, this message translates to:
+  /// **'إشعارات الهاتف مفعّلة: تصله الرسائل والبرنامج مغلق.'**
+  String get activityPushOnLong;
+
+  /// No description provided for @activityPushOff.
+  ///
+  /// In ar, this message translates to:
+  /// **'إشعارات الهاتف غير مفعّلة (لم يثبّت الإصدار 1.4 أو لم يسمح بالإشعارات).'**
+  String get activityPushOff;
+
+  /// No description provided for @activityPushNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'يصل إشعاراً على هاتف من ثبّت الإصدار 1.4 وسمح بالإشعارات، ويظهر للجميع في «الإشعارات» داخل البرنامج.'**
+  String get activityPushNote;
 }
 
 class _AppLocalizationsDelegate

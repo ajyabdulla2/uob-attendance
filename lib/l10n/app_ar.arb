@@ -1988,5 +1988,13 @@
   "@agoHours": {"placeholders": {"n": {"type": "int"}}},
   "agoDays": "منذ {n} يوم",
   "@agoDays": {"placeholders": {"n": {"type": "int"}}},
-  "notifToMe": "رسالة خاصة"
+  "notifToMe": "رسالة خاصة",
+  "activitySentPush": "أُرسل الإشعار إلى {count}، ووصل إلى {phones} هاتف.",
+  "@activitySentPush": {"placeholders": {"count": {"type": "int"}, "phones": {"type": "int"}}},
+  "activitySentNoPush": "أُرسل الإشعار إلى {count} داخل البرنامج، وتعذّر إرساله إلى الهواتف الآن.",
+  "@activitySentNoPush": {"placeholders": {"count": {"type": "int"}}},
+  "activityPushOn": "الإشعارات مفعّلة",
+  "activityPushOnLong": "إشعارات الهاتف مفعّلة: تصله الرسائل والبرنامج مغلق.",
+  "activityPushOff": "إشعارات الهاتف غير مفعّلة (لم يثبّت الإصدار 1.4 أو لم يسمح بالإشعارات).",
+  "activityPushNote": "يصل إشعاراً على هاتف من ثبّت الإصدار 1.4 وسمح بالإشعارات، ويظهر للجميع في «الإشعارات» داخل البرنامج."
 }

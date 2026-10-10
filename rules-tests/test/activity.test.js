@@ -37,6 +37,15 @@ describe('presence', () => {
     await assertFails(setDoc(doc(as(env, T1), 'presence', T1), { ...seen(T1), roles: ['superAdmin'] }));
   });
 
+  it('a phone registers its notification token, and clears it on sign-out', async () => {
+    const ref = doc(as(env, T1), 'presence', T1);
+    await assertSucceeds(setDoc(ref, { email: T1, lastSeenAt: serverTimestamp(), pushToken: 'fcm-token' }, { merge: true }));
+    await assertSucceeds(setDoc(ref, { email: T1, lastSeenAt: serverTimestamp(), pushToken: null }, { merge: true }));
+    await assertFails(setDoc(ref, { email: T1, lastSeenAt: serverTimestamp(), pushToken: 42 }, { merge: true }));
+    await assertFails(setDoc(doc(as(env, T2), 'presence', T1),
+      { email: T1, lastSeenAt: serverTimestamp(), pushToken: 'hijack' }, { merge: true }));
+  });
+
   it('only the super admin reads it', async () => {
     await assertSucceeds(setDoc(doc(as(env, T1), 'presence', T1), seen(T1)));
     await assertSucceeds(getDocs(collection(as(env, SUPER), 'presence')));

@@ -11,6 +11,7 @@ import '../../app_update/application/app_update_providers.dart';
 import '../../app_update/presentation/update_gate.dart';
 import '../../attendance/presentation/sync_widgets.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../push/presentation/push_lifecycle.dart';
 
 class _Destination {
   const _Destination(this.route, this.icon, this.selectedIcon, this.label);
@@ -76,14 +77,14 @@ class AppShell extends ConsumerWidget {
               ],
             ),
             const VerticalDivider(width: 1),
-            Expanded(child: PresenceReporter(child: SyncLifecycle(child: UpdateGate(child: child)))),
+            Expanded(child: PresenceReporter(child: PushLifecycle(child: SyncLifecycle(child: UpdateGate(child: child))))),
           ],
         ),
       );
     }
 
     return Scaffold(
-      body: PresenceReporter(child: SyncLifecycle(child: UpdateGate(child: child))),
+      body: PresenceReporter(child: PushLifecycle(child: SyncLifecycle(child: UpdateGate(child: child)))),
       bottomNavigationBar: NavigationBar(
         selectedIndex: index,
         onDestinationSelected: go,

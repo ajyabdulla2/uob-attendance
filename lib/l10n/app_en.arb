@@ -723,5 +723,11 @@
   "agoMinutes": "{n} min ago",
   "agoHours": "{n} h ago",
   "agoDays": "{n} days ago",
-  "notifToMe": "Personal message"
+  "notifToMe": "Personal message",
+  "activitySentPush": "Message sent to {count}; it reached {phones} phones.",
+  "activitySentNoPush": "Message sent to {count} in the app; phones could not be reached now.",
+  "activityPushOn": "notifications on",
+  "activityPushOnLong": "Phone notifications on: messages arrive even with the app closed.",
+  "activityPushOff": "Phone notifications off (version 1.4 not installed, or not allowed).",
+  "activityPushNote": "Arrives as a phone notification for those on version 1.4 who allowed notifications, and in «Notifications» in the app for everyone."
 }

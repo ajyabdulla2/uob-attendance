@@ -570,7 +570,7 @@ service cloud.firestore {
       allow create, update: if isActive()
         && email == myEmail()
         && request.resource.data.keys().hasOnly(
-             ['email', 'lastSeenAt', 'lastUploadAt', 'platform', 'appVersion', 'departmentId'])
+             ['email', 'lastSeenAt', 'lastUploadAt', 'platform', 'appVersion', 'pushToken', 'departmentId'])
         && request.resource.data.email == email
         && request.resource.data.lastSeenAt == request.time
         && (request.resource.data.get('lastUploadAt', null) == null
@@ -579,7 +579,11 @@ service cloud.firestore {
         && request.resource.data.get('platform', '') is string
         && request.resource.data.get('platform', '').size() <= 20
         && request.resource.data.get('appVersion', '') is string
-        && request.resource.data.get('appVersion', '').size() <= 20;
+        && request.resource.data.get('appVersion', '').size() <= 20
+        // This phone's FCM token (push-worker/ reads it with its own
+        // service account); null when the account signs out.
+        && (request.resource.data.get('pushToken', null) == null
+            || (request.resource.data.pushToken is string && request.resource.data.pushToken.size() <= 4096));
       allow delete: if false;
     }
 
@@ -603,7 +607,7 @@ service cloud.firestore {
     // rulesVersion/<its version>; a refusal means older rules are deployed.
     // Change both together whenever these rules change.
     match /rulesVersion/{version} {
-      allow get: if version == '2026-10-10a';
+      allow get: if version == '2026-10-10b';
     }
 
     // ============================================================ auditLog ==

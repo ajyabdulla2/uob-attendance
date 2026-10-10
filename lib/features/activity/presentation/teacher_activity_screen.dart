@@ -8,6 +8,7 @@ import '../../auth/application/auth_providers.dart';
 import '../../auth/domain/app_user.dart';
 import '../../notifications/application/notifications_providers.dart';
 import '../../notifications/domain/app_message.dart';
+import '../../push/application/push_providers.dart';
 import '../application/activity_providers.dart';
 import '../domain/teacher_activity.dart';
 
@@ -132,7 +133,8 @@ class _ActivityTile extends StatelessWidget {
         subtitle: Text([
           seen == null ? l10n.activityNeverSeen : l10n.activityLastSeen(agoText(l10n, seen, now)),
           upload == null ? l10n.activityNoUpload : l10n.activityLastUpload(agoText(l10n, upload, now)),
-          if (p != null && p.platform.isNotEmpty) bidiIsolate('${p.platform} ${p.appVersion}'.trim()),
+          if (p != null && p.platform.isNotEmpty)
+            '${bidiIsolate('${p.platform} ${p.appVersion}'.trim())}${p.hasDevice ? ' · ${l10n.activityPushOn}' : ''}',
         ].join('\n')),
         isThreeLine: true,
         trailing: const Icon(Icons.chevron_right),
@@ -174,6 +176,7 @@ class _ActivityDetails extends ConsumerWidget {
           if (p != null && p.platform.isNotEmpty)
             line(p.platform == 'web' ? Icons.computer : Icons.phone_android,
                 l10n.activityDevice(bidiIsolate('${p.platform} ${p.appVersion}'.trim()))),
+          line(Icons.phone_android, p?.hasDevice == true ? l10n.activityPushOnLong : l10n.activityPushOff),
           const Divider(),
           lectures.when(
             loading: () => const Padding(padding: EdgeInsets.all(16), child: Center(child: CircularProgressIndicator())),
@@ -251,12 +254,25 @@ class _PersonalMessageDialogState extends ConsumerState<_PersonalMessageDialog> 
             ),
             [for (final u in widget.to) u.id],
           );
+      // Then to their phones (push-worker/), when configured. The message
+      // is already in their inbox whatever happens here.
+      final push = ref.read(pushClientProvider);
+      var text = l10n.activitySent(widget.to.length);
+      if (push.configured) {
+        try {
+          final r = await push.send(to: [for (final u in widget.to) u.id], title: _title.text, body: _body.text);
+          text = l10n.activitySentPush(widget.to.length, r.sent);
+        } on Object catch (e) {
+          debugPrint('push: $e');
+          text = l10n.activitySentNoPush(widget.to.length);
+        }
+      }
       if (!mounted) return;
       final messenger = ScaffoldMessenger.of(context);
       Navigator.pop(context);
       messenger
         ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(l10n.activitySent(widget.to.length))));
+        ..showSnackBar(SnackBar(content: Text(text)));
     } on Object catch (e) {
       if (mounted) showError(context, e);
     } finally {
@@ -292,7 +308,7 @@ class _PersonalMessageDialogState extends ConsumerState<_PersonalMessageDialog> 
               maxLines: 8,
               decoration: InputDecoration(labelText: l10n.notifMessageBody),
             ),
-            Text(l10n.activityInAppOnly, style: Theme.of(context).textTheme.bodySmall),
+            Text(ref.watch(pushClientProvider).configured ? l10n.activityPushNote : l10n.activityInAppOnly, style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
       ),

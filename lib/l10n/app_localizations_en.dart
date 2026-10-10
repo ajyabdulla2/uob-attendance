@@ -2725,4 +2725,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifToMe => 'Personal message';
+
+  @override
+  String activitySentPush(int count, int phones) {
+    return 'Message sent to $count; it reached $phones phones.';
+  }
+
+  @override
+  String activitySentNoPush(int count) {
+    return 'Message sent to $count in the app; phones could not be reached now.';
+  }
+
+  @override
+  String get activityPushOn => 'notifications on';
+
+  @override
+  String get activityPushOnLong =>
+      'Phone notifications on: messages arrive even with the app closed.';
+
+  @override
+  String get activityPushOff =>
+      'Phone notifications off (version 1.4 not installed, or not allowed).';
+
+  @override
+  String get activityPushNote =>
+      'Arrives as a phone notification for those on version 1.4 who allowed notifications, and in «Notifications» in the app for everyone.';
 }
