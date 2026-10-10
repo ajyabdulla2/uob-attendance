@@ -54,6 +54,15 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # The runner's disk fills up during the release build (R8 failed with
+      # «No space left on device»). Preinstalled tools this app never uses
+      # are removed first; the Android SDK stays.
+      - name: Free disk space
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost /usr/local/share/powershell /usr/share/swift
+          df -h /
+
       - name: Tag must match pubspec version
         if: env.IS_RELEASE == 'true'
         env:
