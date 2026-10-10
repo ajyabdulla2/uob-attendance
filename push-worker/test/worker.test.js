@@ -144,3 +144,18 @@ test('web panel preflight gets CORS headers for the app origin only', async () =
     'https://basrah-researches.web.app');
   assert.equal((await pre('https://evil.example')).headers.get('access-control-allow-origin'), null);
 });
+
+// Cloudflare Workers throw «Illegal invocation» when fetch is called as a
+// method (ctx.fetchFn(…)). A strict fetch stand-in catches that here.
+test('fetch is never called as a method (Cloudflare Workers rejects it)', async () => {
+  const g = fakeGoogle({ tokens: { 't1@uob.iq': 'tok1' } });
+  const strictFetch = function (url, init) {
+    assert.equal(this, undefined, 'fetch must be called as a plain function');
+    return g.fetchFn(url, init);
+  };
+  const res = await send(createHandler({ fetchFn: strictFetch, nowMs: () => NOW }),
+    { to: ['t1@uob.iq'], title: 'x' }, await idToken({ email: SUPER }));
+  const body = await res.json();
+  assert.equal(res.status, 200, JSON.stringify(body));
+  assert.deepEqual(body, { sent: 1, noDevice: 0, failed: 0 });
+});

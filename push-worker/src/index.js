@@ -39,11 +39,18 @@ function json(status, body, origin) {
   });
 }
 
+// Calls fetch as a plain function: Cloudflare Workers throw «Illegal
+// invocation» when it is called as a method of the context object.
+function callFetch(ctx, url, init) {
+  const fetchFn = ctx.fetch;
+  return fetchFn(url, init);
+}
+
 const firestoreBase = (projectId) =>
   `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
 
 async function getDoc(path, ctx) {
-  const res = await ctx.fetchFn(`${firestoreBase(ctx.projectId)}/${path}`, {
+  const res = await callFetch(ctx, `${firestoreBase(ctx.projectId)}/${path}`, {
     headers: { authorization: `Bearer ${ctx.token}` },
   });
   if (res.status === 404) return null;
@@ -53,7 +60,7 @@ async function getDoc(path, ctx) {
 
 async function getDocs(paths, ctx) {
   const prefix = `projects/${ctx.projectId}/databases/(default)/documents`;
-  const res = await ctx.fetchFn(`${firestoreBase(ctx.projectId)}:batchGet`, {
+  const res = await callFetch(ctx, `${firestoreBase(ctx.projectId)}:batchGet`, {
     method: 'POST',
     headers: { authorization: `Bearer ${ctx.token}`, 'content-type': 'application/json' },
     body: JSON.stringify({ documents: paths.map((p) => `${prefix}/${p}`) }),
@@ -73,7 +80,7 @@ export function isActiveSuperAdmin(fields) {
 }
 
 async function sendOne(token, title, body, ctx) {
-  const res = await ctx.fetchFn(`https://fcm.googleapis.com/v1/projects/${ctx.projectId}/messages:send`, {
+  const res = await callFetch(ctx, `https://fcm.googleapis.com/v1/projects/${ctx.projectId}/messages:send`, {
     method: 'POST',
     headers: { authorization: `Bearer ${ctx.token}`, 'content-type': 'application/json' },
     body: JSON.stringify({
@@ -118,7 +125,7 @@ export function createHandler({ fetchFn = fetch, nowMs = () => Date.now() } = {}
     if (request.method === 'GET' && url.pathname === '/health') {
       const out = { firestore: false, fcm: false };
       try {
-        const ctx = { fetchFn, projectId, token: await accessToken(serviceAccount, google) };
+        const ctx = { fetch: fetchFn, projectId, token: await accessToken(serviceAccount, google) };
         out.firestore = (await getDoc('config/app', ctx)) !== undefined;
         // validate_only with a dummy token: 400 means FCM is reachable and
         // the role works; 403 means the API is off or the role is missing.
@@ -156,7 +163,7 @@ export function createHandler({ fetchFn = fetch, nowMs = () => Date.now() } = {}
     if (parsed.error) return json(400, { error: `invalid-${parsed.error}` }, origin);
 
     try {
-      const ctx = { fetchFn, projectId, token: await accessToken(serviceAccount, google) };
+      const ctx = { fetch: fetchFn, projectId, token: await accessToken(serviceAccount, google) };
       if (!isActiveSuperAdmin(await getDoc(`users/${encodeURIComponent(email)}`, ctx))) {
         return json(403, { error: 'permission-denied' }, origin);
       }
