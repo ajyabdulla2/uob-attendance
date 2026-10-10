@@ -90,6 +90,9 @@ final class Permissions {
   bool get canViewAuditLog => isAdmin || isStageManager;
   bool get canViewDepartmentDashboard => isAdmin;
 
+  /// «متابعة التدريسيين» (last seen, last upload) and personal messages.
+  bool get canMonitorTeachers => isSuperAdmin;
+
   // ---------------------------------------------------- decision lists --
   bool get canFinalizeDeaneryDecision => isAdmin;
 }

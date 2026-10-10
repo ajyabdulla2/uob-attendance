@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/diagnostics/error_log.dart';
 import '../../../core/router/app_router.dart';
 import '../../../l10n/l10n.dart';
+import '../../activity/presentation/presence_reporter.dart';
 import '../../app_update/application/app_update_providers.dart';
 import '../../app_update/presentation/update_gate.dart';
 import '../../attendance/presentation/sync_widgets.dart';
@@ -75,14 +76,14 @@ class AppShell extends ConsumerWidget {
               ],
             ),
             const VerticalDivider(width: 1),
-            Expanded(child: SyncLifecycle(child: UpdateGate(child: child))),
+            Expanded(child: PresenceReporter(child: SyncLifecycle(child: UpdateGate(child: child)))),
           ],
         ),
       );
     }
 
     return Scaffold(
-      body: SyncLifecycle(child: UpdateGate(child: child)),
+      body: PresenceReporter(child: SyncLifecycle(child: UpdateGate(child: child))),
       bottomNavigationBar: NavigationBar(
         selectedIndex: index,
         onDestinationSelected: go,

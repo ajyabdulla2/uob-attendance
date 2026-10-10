@@ -121,6 +121,9 @@ void main() {
     expect((await env.fs.doc('stats/${course.id}__1003').get()).data()!['bySession'], {sid: 'late'});
     expect((await env.fs.doc('stats/${course.id}__1001').get()).exists, isFalse);
     expect(await env.db.oldestPendingAt(), isNull);
+    // «متابعة التدريسيين»: the upload is recorded for the super admin.
+    await tester.pump();
+    expect((await env.fs.doc('presence/$teacherEmail').get()).data()!['lastUploadAt'], isNotNull);
 
     // Saving again without changes queues nothing.
     await tester.tap(find.byKey(const Key('record.save')));

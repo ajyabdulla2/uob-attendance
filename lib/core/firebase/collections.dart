@@ -21,6 +21,14 @@ abstract final class Col {
   /// رسائل الإدارة (in-app notifications).
   static const messages = 'messages';
 
+  /// `presence/{email}`: when each account last opened the app and last
+  /// uploaded attendance (read by the super admin: «متابعة التدريسيين»).
+  static const presence = 'presence';
+
+  /// `inbox/{email}/items/{id}`: a message from the super admin to one person.
+  static const inbox = 'inbox';
+  static const inboxItems = 'items';
+
   /// App-wide settings (`config/app`: published versions + download links).
   static const config = 'config';
 }

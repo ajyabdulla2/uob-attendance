@@ -68,6 +68,14 @@ class HomeScreen extends ConsumerWidget {
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => context.push(Routes.departmentDashboard),
                     ),
+                  if (perms.canMonitorTeachers)
+                    ListTile(
+                      key: const Key('home.activity'),
+                      leading: const Icon(Icons.how_to_reg),
+                      title: Text(l10n.activityAction),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => context.push(Routes.teacherActivity),
+                    ),
                   if (perms.canViewStageDashboard)
                     ListTile(
                       key: const Key('home.dashboard'),

@@ -2610,4 +2610,114 @@ class AppLocalizationsAr extends AppLocalizations {
   String assignmentsCourseInfoAnnual(String code, String units) {
     return '$code · $units وحدات · سنوية';
   }
+
+  @override
+  String get activityAction => 'متابعة التدريسيين';
+
+  @override
+  String get activityTitle => 'متابعة التدريسيين';
+
+  @override
+  String get activityHelp =>
+      'آخر مرة فتح فيها كل تدريسي البرنامج، وآخر مرة رفع هاتفه حضوراً (تسجيل محاضرة أو تعديلها). تبدأ المتابعة من تحديث البرنامج هذا، فمن لم يفتحه بعد يظهر «لم يدخل بعد». المسّ اسماً لتفاصيله ومحاضراته ولإرسال إشعار.';
+
+  @override
+  String get activityAll => 'الكل';
+
+  @override
+  String get activityToday => 'اليوم';
+
+  @override
+  String get activityRecent => 'خلال 7 أيام';
+
+  @override
+  String get activityIdle => 'غير نشط';
+
+  @override
+  String get activityNever => 'لم يدخل بعد';
+
+  @override
+  String get activityEmpty => 'لا يوجد تدريسيون في هذا التصنيف.';
+
+  @override
+  String get activityNeverSeen => 'لم يدخل بعد';
+
+  @override
+  String activityLastSeen(String when) {
+    return 'آخر دخول: $when';
+  }
+
+  @override
+  String get activityNoUpload => 'لم يرفع حضوراً بعد';
+
+  @override
+  String activityLastUpload(String when) {
+    return 'آخر رفع للحضور: $when';
+  }
+
+  @override
+  String activityDevice(String device) {
+    return 'الجهاز والإصدار: $device';
+  }
+
+  @override
+  String activityLectures(int count) {
+    return 'المحاضرات التي فتحها: $count';
+  }
+
+  @override
+  String activityLectureNo(int no) {
+    return 'المحاضرة $no';
+  }
+
+  @override
+  String get activityLecturesError => 'تعذّرت قراءة المحاضرات.';
+
+  @override
+  String get activitySendMessage => 'إرسال إشعار';
+
+  @override
+  String activityMessageShown(int count) {
+    return 'إرسال إشعار للمعروضين ($count)';
+  }
+
+  @override
+  String activityRecipients(int count) {
+    return '$count تدريسياً';
+  }
+
+  @override
+  String activityTo(String names) {
+    return 'إلى: $names';
+  }
+
+  @override
+  String get activityInAppOnly =>
+      'يظهر في «الإشعارات» داخل البرنامج مع شارة في الرئيسية عند فتحه، ولا يصل كإشعار هاتف والبرنامج مغلق.';
+
+  @override
+  String activitySent(int count) {
+    return 'أُرسل الإشعار إلى $count.';
+  }
+
+  @override
+  String get agoJustNow => 'الآن';
+
+  @override
+  String agoMinutes(int n) {
+    return 'منذ $n دقيقة';
+  }
+
+  @override
+  String agoHours(int n) {
+    return 'منذ $n ساعة';
+  }
+
+  @override
+  String agoDays(int n) {
+    return 'منذ $n يوم';
+  }
+
+  @override
+  String get notifToMe => 'رسالة خاصة';
 }

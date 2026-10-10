@@ -2615,4 +2615,114 @@ class AppLocalizationsEn extends AppLocalizations {
   String assignmentsCourseInfoAnnual(String code, String units) {
     return '$code · $units units · annual';
   }
+
+  @override
+  String get activityAction => 'Teacher activity';
+
+  @override
+  String get activityTitle => 'Teacher activity';
+
+  @override
+  String get activityHelp =>
+      'When each teacher last opened the app and when their phone last uploaded attendance (a lecture recorded or edited). Tracking starts with this update, so anyone who has not opened it yet shows as «Not yet». Tap a name for details, their lectures and to send a message.';
+
+  @override
+  String get activityAll => 'All';
+
+  @override
+  String get activityToday => 'Today';
+
+  @override
+  String get activityRecent => 'Last 7 days';
+
+  @override
+  String get activityIdle => 'Inactive';
+
+  @override
+  String get activityNever => 'Not yet';
+
+  @override
+  String get activityEmpty => 'No teachers in this group.';
+
+  @override
+  String get activityNeverSeen => 'Not opened yet';
+
+  @override
+  String activityLastSeen(String when) {
+    return 'Last seen: $when';
+  }
+
+  @override
+  String get activityNoUpload => 'No attendance uploaded yet';
+
+  @override
+  String activityLastUpload(String when) {
+    return 'Last upload: $when';
+  }
+
+  @override
+  String activityDevice(String device) {
+    return 'Device and version: $device';
+  }
+
+  @override
+  String activityLectures(int count) {
+    return 'Lectures opened: $count';
+  }
+
+  @override
+  String activityLectureNo(int no) {
+    return 'Lecture $no';
+  }
+
+  @override
+  String get activityLecturesError => 'Could not read the lectures.';
+
+  @override
+  String get activitySendMessage => 'Send a message';
+
+  @override
+  String activityMessageShown(int count) {
+    return 'Message those shown ($count)';
+  }
+
+  @override
+  String activityRecipients(int count) {
+    return '$count teachers';
+  }
+
+  @override
+  String activityTo(String names) {
+    return 'To: $names';
+  }
+
+  @override
+  String get activityInAppOnly =>
+      'It appears under «Notifications» in the app, with a badge on the home screen when opened; it is not a phone notification while the app is closed.';
+
+  @override
+  String activitySent(int count) {
+    return 'Message sent to $count.';
+  }
+
+  @override
+  String get agoJustNow => 'just now';
+
+  @override
+  String agoMinutes(int n) {
+    return '$n min ago';
+  }
+
+  @override
+  String agoHours(int n) {
+    return '$n h ago';
+  }
+
+  @override
+  String agoDays(int n) {
+    return '$n days ago';
+  }
+
+  @override
+  String get notifToMe => 'Personal message';
 }

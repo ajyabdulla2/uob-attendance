@@ -561,12 +561,49 @@ service cloud.firestore {
       allow update: if false;
     }
 
+    // ============================================================ presence ==
+    // «متابعة التدريسيين»: each account's own app records when it was last
+    // opened and last uploaded attendance (server time only). The super
+    // admin reads them.
+    match /presence/{email} {
+      allow read: if isSuperAdmin();
+      allow create, update: if isActive()
+        && email == myEmail()
+        && request.resource.data.keys().hasOnly(
+             ['email', 'lastSeenAt', 'lastUploadAt', 'platform', 'appVersion', 'departmentId'])
+        && request.resource.data.email == email
+        && request.resource.data.lastSeenAt == request.time
+        && (request.resource.data.get('lastUploadAt', null) == null
+            || request.resource.data.lastUploadAt == request.time
+            || (resource != null && request.resource.data.lastUploadAt == resource.data.get('lastUploadAt', null)))
+        && request.resource.data.get('platform', '') is string
+        && request.resource.data.get('platform', '').size() <= 20
+        && request.resource.data.get('appVersion', '') is string
+        && request.resource.data.get('appVersion', '').size() <= 20;
+      allow delete: if false;
+    }
+
+    // =============================================================== inbox ==
+    // A personal message from the super admin to one account; its owner
+    // reads it and may delete it.
+    match /inbox/{email}/items/{itemId} {
+      allow read: if (isActive() && email == myEmail()) || isSuperAdmin();
+      allow create: if isSuperAdmin()
+        && request.resource.data.keys().hasOnly(['title', 'body', 'createdBy', 'createdAt', 'departmentId'])
+        && nonEmptyString(request.resource.data.title) && request.resource.data.title.size() <= 120
+        && request.resource.data.get('body', '') is string && request.resource.data.get('body', '').size() <= 2000
+        && request.resource.data.createdBy == myEmail()
+        && request.resource.data.createdAt == request.time;
+      allow delete: if isSuperAdmin() || (isActive() && email == myEmail());
+      allow update: if false;
+    }
+
     // ========================================================= rulesVersion ==
     // Canary (lib/core/firebase/rules_version.dart): the app reads
     // rulesVersion/<its version>; a refusal means older rules are deployed.
     // Change both together whenever these rules change.
     match /rulesVersion/{version} {
-      allow get: if version == '2026-10-09a';
+      allow get: if version == '2026-10-10a';
     }
 
     // ============================================================ auditLog ==
