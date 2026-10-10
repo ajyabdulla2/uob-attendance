@@ -7,8 +7,10 @@
 # Secrets (Settings → Secrets and variables → Actions), see CLAUDE.md:
 #   CLOUDFLARE_API_TOKEN        token with the «Edit Cloudflare Workers» template
 #   CLOUDFLARE_ACCOUNT_ID       from the Cloudflare dashboard
-#   PUSH_SERVICE_ACCOUNT_JSON   Google service account «push-sender» with the roles
-#                               Cloud Datastore Viewer + Firebase Cloud Messaging API Admin
+#   PUSH_SERVICE_ACCOUNT_JSON   (optional) a separate service account «push-sender»
+#                               with Cloud Datastore Viewer + Firebase Cloud Messaging API Admin.
+#                               Without it, the deploy account FIREBASE_SERVICE_ACCOUNT_JSON
+#                               (which needs those two roles added in Google Cloud IAM) is used.
 name: Push worker
 
 on:
@@ -50,7 +52,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      SERVICE_ACCOUNT_JSON: ${{ secrets.PUSH_SERVICE_ACCOUNT_JSON }}
+      SERVICE_ACCOUNT_JSON: ${{ secrets.PUSH_SERVICE_ACCOUNT_JSON || secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
