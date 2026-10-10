@@ -93,6 +93,7 @@ jobs:
       - name: Patch the release
         env:
           RELEASE_INPUT: ${{ inputs.release }}
+          PUSH_URL: ${{ vars.PUSH_URL }}
         run: |
           # patch/1.3.0+12 — or patch/1.3.0+12-2 for a second patch (tags
           # cannot be reused; a «/2» suffix clashes with the first tag's ref).
@@ -108,7 +109,7 @@ jobs:
           # e.g. MaterialIcons-Regular.otf after using an icon the release
           # lacks — would show blank on phones, so it fails the patch.
           set +e
-          shorebird patch android --release-version="$release" 2>&1 | tee patch.log
+          shorebird patch android --release-version="$release" -- --dart-define=PUSH_URL="$PUSH_URL" 2>&1 | tee patch.log
           status=${PIPESTATUS[0]}
           set -e
           [ "$status" -eq 0 ] && exit 0
@@ -119,4 +120,4 @@ jobs:
             echo "::error::The patch changes assets the release does not have (see above). Use only icons/assets present in release $release, or build a new APK."
             exit 1
           fi
-          shorebird patch android --release-version="$release" --allow-asset-diffs
+          shorebird patch android --release-version="$release" --allow-asset-diffs -- --dart-define=PUSH_URL="$PUSH_URL"

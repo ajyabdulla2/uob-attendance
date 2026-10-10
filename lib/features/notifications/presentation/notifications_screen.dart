@@ -129,7 +129,9 @@ class _MessageCard extends ConsumerWidget {
     final m = MaterialLocalizations.of(context);
     final at = message.createdAt?.toLocal();
     final me = ref.watch(signedInUserProvider);
-    final canDelete = message.createdBy == me.id || ref.watch(permissionsProvider).isAdmin;
+    final canDelete = message.createdBy == me.id ||
+        ref.watch(permissionsProvider).isAdmin ||
+        (message.audience == MessageAudience.person && message.to == me.id);
     return Card(
       key: Key('notif.message.${message.id}'),
       color: isNew ? theme.colorScheme.secondaryContainer : null,
@@ -152,7 +154,7 @@ class _MessageCard extends ConsumerWidget {
                     onPressed: () async {
                       if (await confirmDialog(context, title: l10n.delete, body: message.title, destructive: true)) {
                         try {
-                          await ref.read(messagesRepositoryProvider).delete(message.id);
+                          await ref.read(messagesRepositoryProvider).delete(message);
                         } on Object catch (e) {
                           if (context.mounted) showError(context, e);
                         }
@@ -182,6 +184,7 @@ class _MessageCard extends ConsumerWidget {
         MessageAudience.teachers => l10n.notifToTeachers,
         MessageAudience.stageManagers => l10n.notifToStageManagers,
         MessageAudience.stage => l10n.stageId(m.stageId ?? ''),
+        MessageAudience.person => l10n.notifToMe,
       };
 }
 
@@ -349,7 +352,7 @@ class _ComposeDialogState extends ConsumerState<_ComposeDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final perms = ref.watch(permissionsProvider);
-    final audiences = perms.isAdmin ? MessageAudience.values : const [MessageAudience.stage];
+    final audiences = perms.isAdmin ? MessageAudience.broadcast : const [MessageAudience.stage];
     return AlertDialog(
       title: Text(l10n.notifCompose),
       content: SingleChildScrollView(
@@ -370,6 +373,7 @@ class _ComposeDialogState extends ConsumerState<_ComposeDialog> {
                       MessageAudience.teachers => l10n.notifToTeachers,
                       MessageAudience.stageManagers => l10n.notifToStageManagers,
                       MessageAudience.stage => l10n.notifToStage,
+                      MessageAudience.person => l10n.notifToMe,
                     }),
                   ),
               ],

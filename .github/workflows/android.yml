@@ -4,6 +4,8 @@
 #   * manual run (Actions → Android APK → Run workflow) → APK artifact
 #   * tag vX.Y.Z (must equal `version:` in pubspec.yaml) → signed APK attached
 #     to a GitHub Release, ready to distribute.
+#   * manual run on main with «release» ticked → the same, creating the tag
+#     vX.Y.Z from pubspec (for sessions that cannot push tags).
 #
 # Secrets (Settings → Secrets and variables → Actions), see CLAUDE.md:
 #   FIREBASE_OPTIONS_DART_B64   base64 of lib/firebase_options.dart
@@ -26,6 +28,11 @@ on:
       - 'pubspec.lock'
       - '.github/workflows/android.yml'
   workflow_dispatch:
+    inputs:
+      release:
+        description: 'Publish a GitHub Release v<pubspec version> (main only)'
+        type: boolean
+        default: false
 
 concurrency:
   group: android-${{ github.ref }}
@@ -42,19 +49,36 @@ jobs:
     permissions:
       contents: write # create the GitHub Release on tags
     env:
-      IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
+      IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') || (inputs.release && github.ref == 'refs/heads/main') }}
       SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
     steps:
       - uses: actions/checkout@v6
 
+      # The runner's disk fills up during the release build (R8 failed with
+      # «No space left on device»). Preinstalled tools this app never uses
+      # are removed first; the Android SDK stays.
+      - name: Free disk space
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost /usr/local/share/powershell /usr/share/swift
+          df -h /
+
       - name: Tag must match pubspec version
         if: env.IS_RELEASE == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           version=$(sed -n 's/^version: *\([^+]*\).*/\1/p' pubspec.yaml)
-          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
-            echo "::error::Tag $GITHUB_REF_NAME does not match pubspec version $version"
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+              echo "::error::Tag $GITHUB_REF_NAME does not match pubspec version $version"
+              exit 1
+            fi
+          elif gh release view "v$version" >/dev/null 2>&1; then
+            echo "::error::Release v$version exists already: raise version in pubspec.yaml"
             exit 1
           fi
+          echo "RELEASE_TAG=v$version" >> "$GITHUB_ENV"
 
       - uses: actions/setup-java@v5
         with:
@@ -121,12 +145,14 @@ jobs:
       - name: Build release APK
         env:
           BUILD_NUMBER: ${{ github.run_number }}
+          # Phone notifications: the push-worker/ URL (empty = in-app only).
+          PUSH_URL: ${{ vars.PUSH_URL }}
         run: |
           if [ -n "$SHOREBIRD_TOKEN" ]; then
-            shorebird release android --artifact=apk --flutter-version="$FLUTTER_VERSION" -- --build-number="$BUILD_NUMBER"
+            shorebird release android --artifact=apk --flutter-version="$FLUTTER_VERSION" -- --build-number="$BUILD_NUMBER" --dart-define=PUSH_URL="$PUSH_URL"
           else
             echo "::warning::No SHOREBIRD_TOKEN: plain Flutter build, which can never receive patches."
-            flutter build apk --release --build-number="$BUILD_NUMBER"
+            flutter build apk --release --build-number="$BUILD_NUMBER" --dart-define=PUSH_URL="$PUSH_URL"
           fi
 
       - name: Name the APK
@@ -151,7 +177,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" "${{ steps.apk.outputs.name }}" \
-            --title "$GITHUB_REF_NAME" \
+          # A tag push has the tag; a manual release creates it at this commit.
+          gh release create "$RELEASE_TAG" "${{ steps.apk.outputs.name }}" \
+            --title "$RELEASE_TAG" \
             --notes "APK للأندرويد (build ${{ github.run_number }}). ثبّته فوق النسخة السابقة؛ البيانات المحلية تبقى." \
-            --verify-tag
+            --target "$GITHUB_SHA"

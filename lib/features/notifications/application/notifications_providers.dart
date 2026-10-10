@@ -12,13 +12,27 @@ final messagesRepositoryProvider = Provider<MessagesRepository>(
   (ref) => MessagesRepository(ref.watch(firestoreProvider)),
 );
 
-/// The latest messages meant for the signed-in user.
-final myMessagesProvider = StreamProvider.autoDispose<List<AppMessage>>((ref) {
+/// Messages sent to the signed-in user alone (from the super admin).
+final myInboxProvider = StreamProvider.autoDispose<List<AppMessage>>(
+  (ref) => ref.watch(messagesRepositoryProvider).watchInbox(ref.watch(signedInUserProvider).id),
+);
+
+final _broadcastProvider = StreamProvider.autoDispose<List<AppMessage>>((ref) {
   final me = ref.watch(signedInUserProvider);
   return ref.watch(messagesRepositoryProvider).watchRecent().map((all) => [
         for (final m in all)
           if (m.isFor(me)) m,
       ]);
+});
+
+/// The latest messages meant for the signed-in user, newest first: the
+/// broadcasts for them and their personal ones. An inbox that cannot be read
+/// (rules not deployed yet) leaves the broadcasts.
+final myMessagesProvider = Provider.autoDispose<AsyncValue<List<AppMessage>>>((ref) {
+  final broadcast = ref.watch(_broadcastProvider);
+  final inbox = ref.watch(myInboxProvider).value ?? const <AppMessage>[];
+  return broadcast.whenData((b) => [...b, ...inbox]
+    ..sort((x, y) => (y.createdAt ?? DateTime(9999)).compareTo(x.createdAt ?? DateTime(9999))));
 });
 
 /// The user's own edit requests that were decided, newest first.

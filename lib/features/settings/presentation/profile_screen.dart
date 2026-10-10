@@ -10,6 +10,7 @@ import '../../../core/firebase/rules_version.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../push/application/push_providers.dart';
 import '../../auth/data/auth_repository.dart';
 
 /// SPEC «الملف الشخصي»: البيانات، تغيير كلمة المرور، اللغة، الوضع الليلي، تسجيل الخروج.
@@ -62,6 +63,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
     if (!mounted) return;
     if (await confirmDialog(context, title: l10n.signOut, body: l10n.signOutConfirm, confirmLabel: l10n.signOut)) {
+      await ref.read(pushActionsProvider).forget();
       await ref.read(authRepositoryProvider).signOut();
     }
   }

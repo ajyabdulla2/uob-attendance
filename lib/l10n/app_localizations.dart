@@ -4294,6 +4294,210 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'{code} · {units} وحدات · سنوية'**
   String assignmentsCourseInfoAnnual(String code, String units);
+
+  /// No description provided for @activityAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'متابعة التدريسيين'**
+  String get activityAction;
+
+  /// No description provided for @activityTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'متابعة التدريسيين'**
+  String get activityTitle;
+
+  /// No description provided for @activityHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'آخر مرة فتح فيها كل تدريسي البرنامج، وآخر مرة رفع هاتفه حضوراً (تسجيل محاضرة أو تعديلها). تبدأ المتابعة من تحديث البرنامج هذا، فمن لم يفتحه بعد يظهر «لم يدخل بعد». المسّ اسماً لتفاصيله ومحاضراته ولإرسال إشعار.'**
+  String get activityHelp;
+
+  /// No description provided for @activityAll.
+  ///
+  /// In ar, this message translates to:
+  /// **'الكل'**
+  String get activityAll;
+
+  /// No description provided for @activityToday.
+  ///
+  /// In ar, this message translates to:
+  /// **'اليوم'**
+  String get activityToday;
+
+  /// No description provided for @activityRecent.
+  ///
+  /// In ar, this message translates to:
+  /// **'خلال 7 أيام'**
+  String get activityRecent;
+
+  /// No description provided for @activityIdle.
+  ///
+  /// In ar, this message translates to:
+  /// **'غير نشط'**
+  String get activityIdle;
+
+  /// No description provided for @activityNever.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يدخل بعد'**
+  String get activityNever;
+
+  /// No description provided for @activityEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد تدريسيون في هذا التصنيف.'**
+  String get activityEmpty;
+
+  /// No description provided for @activityNeverSeen.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يدخل بعد'**
+  String get activityNeverSeen;
+
+  /// No description provided for @activityLastSeen.
+  ///
+  /// In ar, this message translates to:
+  /// **'آخر دخول: {when}'**
+  String activityLastSeen(String when);
+
+  /// No description provided for @activityNoUpload.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يرفع حضوراً بعد'**
+  String get activityNoUpload;
+
+  /// No description provided for @activityLastUpload.
+  ///
+  /// In ar, this message translates to:
+  /// **'آخر رفع للحضور: {when}'**
+  String activityLastUpload(String when);
+
+  /// No description provided for @activityDevice.
+  ///
+  /// In ar, this message translates to:
+  /// **'الجهاز والإصدار: {device}'**
+  String activityDevice(String device);
+
+  /// No description provided for @activityLectures.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحاضرات التي فتحها: {count}'**
+  String activityLectures(int count);
+
+  /// No description provided for @activityLectureNo.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحاضرة {no}'**
+  String activityLectureNo(int no);
+
+  /// No description provided for @activityLecturesError.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّرت قراءة المحاضرات.'**
+  String get activityLecturesError;
+
+  /// No description provided for @activitySendMessage.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال إشعار'**
+  String get activitySendMessage;
+
+  /// No description provided for @activityMessageShown.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال إشعار للمعروضين ({count})'**
+  String activityMessageShown(int count);
+
+  /// No description provided for @activityRecipients.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} تدريسياً'**
+  String activityRecipients(int count);
+
+  /// No description provided for @activityTo.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلى: {names}'**
+  String activityTo(String names);
+
+  /// No description provided for @activityInAppOnly.
+  ///
+  /// In ar, this message translates to:
+  /// **'يظهر في «الإشعارات» داخل البرنامج مع شارة في الرئيسية عند فتحه، ولا يصل كإشعار هاتف والبرنامج مغلق.'**
+  String get activityInAppOnly;
+
+  /// No description provided for @activitySent.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُرسل الإشعار إلى {count}.'**
+  String activitySent(int count);
+
+  /// No description provided for @agoJustNow.
+  ///
+  /// In ar, this message translates to:
+  /// **'الآن'**
+  String get agoJustNow;
+
+  /// No description provided for @agoMinutes.
+  ///
+  /// In ar, this message translates to:
+  /// **'منذ {n} دقيقة'**
+  String agoMinutes(int n);
+
+  /// No description provided for @agoHours.
+  ///
+  /// In ar, this message translates to:
+  /// **'منذ {n} ساعة'**
+  String agoHours(int n);
+
+  /// No description provided for @agoDays.
+  ///
+  /// In ar, this message translates to:
+  /// **'منذ {n} يوم'**
+  String agoDays(int n);
+
+  /// No description provided for @notifToMe.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسالة خاصة'**
+  String get notifToMe;
+
+  /// No description provided for @activitySentPush.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُرسل الإشعار إلى {count}، ووصل إلى {phones} هاتف.'**
+  String activitySentPush(int count, int phones);
+
+  /// No description provided for @activitySentNoPush.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُرسل الإشعار إلى {count} داخل البرنامج، وتعذّر إرساله إلى الهواتف الآن.'**
+  String activitySentNoPush(int count);
+
+  /// No description provided for @activityPushOn.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإشعارات مفعّلة'**
+  String get activityPushOn;
+
+  /// No description provided for @activityPushOnLong.
+  ///
+  /// In ar, this message translates to:
+  /// **'إشعارات الهاتف مفعّلة: تصله الرسائل والبرنامج مغلق.'**
+  String get activityPushOnLong;
+
+  /// No description provided for @activityPushOff.
+  ///
+  /// In ar, this message translates to:
+  /// **'إشعارات الهاتف غير مفعّلة (لم يثبّت الإصدار 1.4 أو لم يسمح بالإشعارات).'**
+  String get activityPushOff;
+
+  /// No description provided for @activityPushNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'يصل إشعاراً على هاتف من ثبّت الإصدار 1.4 وسمح بالإشعارات، ويظهر للجميع في «الإشعارات» داخل البرنامج.'**
+  String get activityPushNote;
 }
 
 class _AppLocalizationsDelegate

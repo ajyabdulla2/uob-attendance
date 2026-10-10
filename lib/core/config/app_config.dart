@@ -16,6 +16,10 @@ abstract final class AppConfig {
   static const authEmulatorPort = 9099;
   static const firestoreEmulatorPort = 8080;
 
+  /// The Cloudflare Worker that sends phone notifications (push-worker/).
+  /// Empty = personal messages stay in-app only.
+  static const pushEndpoint = String.fromEnvironment('PUSH_URL');
+
   /// University e-mail domain. Not enforced yet (pending department decision
   /// «هل الدخول بالبريد الجامعي متاح لكل التدريسيين»); used for hints only.
   static const universityEmailDomain = 'uobasrah.edu.iq';

@@ -1,0 +1,9 @@
+# Cloudflare Worker that sends the app's phone notifications (FCM).
+# Deployed by .github/workflows/push-worker.yml; see CLAUDE.md.
+name = "uob-push"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+workers_dev = true
+
+[vars]
+PROJECT_ID = "basrah-researches"

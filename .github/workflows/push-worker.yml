@@ -1,0 +1,102 @@
+# Phone notifications: the Cloudflare Worker in push-worker/ (free plan) that
+# sends FCM messages for the super admin — Firebase stays on Spark.
+#
+#   * push touching push-worker/ → unit tests
+#   * push to main touching push-worker/, or manual run → tests, then deploy
+#
+# Secrets (Settings → Secrets and variables → Actions), see CLAUDE.md:
+#   CLOUDFLARE_API_TOKEN        token with the «Edit Cloudflare Workers» template
+#   CLOUDFLARE_ACCOUNT_ID       from the Cloudflare dashboard
+#   PUSH_SERVICE_ACCOUNT_JSON   (optional) a separate service account «push-sender»
+#                               with Cloud Datastore Viewer + Firebase Cloud Messaging API Admin.
+#                               Without it, the deploy account FIREBASE_SERVICE_ACCOUNT_JSON
+#                               (which needs those two roles added in Google Cloud IAM) is used.
+name: Push worker
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - 'push-worker/**'
+      - '.github/workflows/push-worker.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: push-worker-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Worker tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: push-worker
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - run: npm test
+
+  deploy:
+    name: Deploy to Cloudflare
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: push-worker
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      SERVICE_ACCOUNT_JSON: ${{ secrets.PUSH_SERVICE_ACCOUNT_JSON || secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Secrets present
+        run: |
+          missing=0
+          for v in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID SERVICE_ACCOUNT_JSON; do
+            if [ -z "${!v}" ]; then echo "::error::Missing secret for $v (see CLAUDE.md «إشعارات الهاتف»)"; missing=1; fi
+          done
+          exit $missing
+
+      - run: npm ci --no-audit --no-fund
+
+      - name: Deploy
+        id: deploy
+        run: |
+          npx wrangler deploy 2>&1 | tee deploy.log
+          url=$(grep -oE 'https://[a-z0-9.-]+\.workers\.dev' deploy.log | head -1)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      # The service account key goes straight from the GitHub secret to the
+      # worker's encrypted secret; it is never printed.
+      - name: Service account secret
+        run: printf '%s' "$SERVICE_ACCOUNT_JSON" | npx wrangler secret put SERVICE_ACCOUNT_JSON
+
+      - name: Health check
+        env:
+          URL: ${{ steps.deploy.outputs.url }}
+        run: |
+          {
+            echo "### Push worker"
+            echo "URL: \`$URL\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -z "$URL" ]; then
+            echo "::warning::No workers.dev URL in the deploy output: open Cloudflare → Workers & Pages once to pick a workers.dev subdomain."
+            exit 0
+          fi
+          sleep 5
+          health=$(curl -s "$URL/health" || true)
+          echo "health: $health"
+          echo "Health: \`$health\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "$health" | grep -q '"firestore":true' || echo "::error::The service account cannot read Firestore (role Cloud Datastore Viewer?)"
+          echo "$health" | grep -q '"fcm":true' || echo "::error::The service account cannot send FCM (role Firebase Cloud Messaging API Admin, or the API is disabled)"
+          echo "$health" | grep -q '"firestore":true,"fcm":true'

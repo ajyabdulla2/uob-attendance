@@ -71,6 +71,7 @@ jobs:
         if: inputs.target == 'hosting' || inputs.target == 'all'
         env:
           FIREBASE_OPTIONS_DART_B64: ${{ secrets.FIREBASE_OPTIONS_DART_B64 }}
+          PUSH_URL: ${{ vars.PUSH_URL }}
         run: |
           if [ -z "$FIREBASE_OPTIONS_DART_B64" ]; then
             echo "::error::FIREBASE_OPTIONS_DART_B64 is required to build the web panel"
@@ -78,7 +79,7 @@ jobs:
           fi
           echo "$FIREBASE_OPTIONS_DART_B64" | base64 -d > lib/firebase_options.dart
           flutter pub get
-          flutter build web --release
+          flutter build web --release --dart-define=PUSH_URL="$PUSH_URL"
           firebase deploy --only hosting --project "$PROJECT" --non-interactive
 
       - name: Remove credentials

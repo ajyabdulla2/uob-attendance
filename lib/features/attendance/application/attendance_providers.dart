@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,8 +9,10 @@ import '../../../core/database/database_provider.dart';
 import '../../../core/firebase/doc_ids.dart';
 import '../../../core/firebase/firebase_providers.dart';
 import '../../academic/domain/academic_year.dart';
+import '../../activity/application/activity_providers.dart';
 import '../../assignments/domain/assignment.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../push/application/push_providers.dart';
 import '../../courses/domain/course.dart';
 import '../../courses/domain/practical_group.dart';
 import '../../leaves/domain/leave.dart';
@@ -244,11 +248,13 @@ class SyncController extends Notifier<SyncState> {
     try {
       final report = await ref.read(outboxUploaderProvider).run();
       if (report.completed) uploadedAt = DateTime.now();
+      if (report.uploaded > 0) unawaited(reportUpload(ref));
       problem ??= report.stoppedBy;
     } on Object catch (e) {
       problem ??= e is FirebaseException ? e.code : '$e';
     }
     state = SyncState(lastUploadAt: uploadedAt, lastDownloadAt: downloadedAt, problem: problem);
+    unawaited(updateUnsentReminder(ref));
   }
 }
 
