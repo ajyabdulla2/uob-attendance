@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 /// rules refuse it. Bump [current] here and in the rules together whenever
 /// the rules change.
 abstract final class RulesVersion {
-  static const current = '2026-10-10b';
+  static const current = '2026-10-11a';
   static const path = 'rulesVersion/$current';
 
   /// true = deployed rules match, false = older rules are deployed, null =

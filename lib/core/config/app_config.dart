@@ -20,6 +20,10 @@ abstract final class AppConfig {
   /// Empty = personal messages stay in-app only.
   static const pushEndpoint = String.fromEnvironment('PUSH_URL');
 
+  /// The Firebase Hosting site: the public pages `verify.html` (QR on every
+  /// issued PDF) and `announcements.html` live there.
+  static const siteUrl = String.fromEnvironment('SITE_URL', defaultValue: 'https://basrah-researches.web.app');
+
   /// University e-mail domain. Not enforced yet (pending department decision
   /// «هل الدخول بالبريد الجامعي متاح لكل التدريسيين»); used for hints only.
   static const universityEmailDomain = 'uobasrah.edu.iq';

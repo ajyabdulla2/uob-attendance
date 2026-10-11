@@ -2745,4 +2745,72 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get activityPushNote =>
       'يصل إشعاراً على هاتف من ثبّت الإصدار 1.4 وسمح بالإشعارات، ويظهر للجميع في «الإشعارات» داخل البرنامج.';
+
+  @override
+  String get reportVerifyHint =>
+      'امسح الرمز للتحقق من صحة الوثيقة، أو أدخل رمز التحقق:';
+
+  @override
+  String get annAction => 'إعلانات القسم';
+
+  @override
+  String get annTitle => 'إعلانات القسم';
+
+  @override
+  String get annHelp =>
+      'تظهر هذه الإعلانات للجميع بلا تسجيل دخول في صفحة الإعلانات العامة، وهي التي يفتحها رمز QR المعلّق في القسم.';
+
+  @override
+  String get annEmpty => 'لا إعلانات بعد.';
+
+  @override
+  String get annAdd => 'إعلان جديد';
+
+  @override
+  String get annEdit => 'تعديل الإعلان';
+
+  @override
+  String get annFieldTitle => 'العنوان';
+
+  @override
+  String get annFieldBody => 'نص الإعلان';
+
+  @override
+  String get annSaved => 'حُفظ الإعلان.';
+
+  @override
+  String get annDeleteTitle => 'حذف الإعلان؟';
+
+  @override
+  String get annDeleteBody => 'يختفي من صفحة الإعلانات العامة فوراً.';
+
+  @override
+  String get annDeleted => 'حُذف الإعلان.';
+
+  @override
+  String get annQr => 'رمز صفحة الإعلانات';
+
+  @override
+  String get annQrHelp =>
+      'علّق هذا الرمز في القسم: من يمسحه بكاميرا الهاتف يفتح صفحة الإعلانات.';
+
+  @override
+  String get annCopyLink => 'نسخ الرابط';
+
+  @override
+  String get annLinkCopied => 'نُسخ الرابط.';
+
+  @override
+  String get annPoster => 'ملصق PDF للطباعة';
+
+  @override
+  String get annPosterTitle => 'إعلانات القسم';
+
+  @override
+  String get annPosterLine => 'امسح الرمز بكاميرا الهاتف لعرض آخر الإعلانات';
+
+  @override
+  String annEdited(String date) {
+    return 'عُدِّل $date';
+  }
 }

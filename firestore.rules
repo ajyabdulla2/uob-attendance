@@ -602,12 +602,67 @@ service cloud.firestore {
       allow update: if false;
     }
 
+    // ================================================= reportVerifications ==
+    // A frozen copy of each issued PDF (lib/features/reports/domain/
+    // report_record.dart). The public page its QR opens (web/verify.html)
+    // gets it from the Cloudflare worker (push-worker/src/public.js), which
+    // reads with its service account and caps public reads per day; nobody
+    // reads it here. The ID is random (24 of 30 characters, ~117 bits), so a
+    // record is reachable only from the paper that carries it. Records are
+    // never changed.
+    function listUpTo(v, max) {
+      return v is list && v.size() <= max;
+    }
+
+    match /reportVerifications/{id} {
+      allow read: if false;
+      allow create: if isActive()
+        && id.matches('^[A-HJKMNP-TV-Z2-9]{24}$')
+        && request.resource.data.keys().hasOnly(
+             ['title', 'meta', 'paragraphs', 'tables', 'notes', 'signatures',
+              'issuedBy', 'issuerName', 'issuedAt', 'departmentId'])
+        && nonEmptyString(request.resource.data.title) && request.resource.data.title.size() <= 300
+        && listUpTo(request.resource.data.get('meta', []), 30)
+        && listUpTo(request.resource.data.get('paragraphs', []), 30)
+        && listUpTo(request.resource.data.get('tables', []), 40)
+        && listUpTo(request.resource.data.get('notes', []), 30)
+        && listUpTo(request.resource.data.get('signatures', []), 10)
+        && request.resource.data.issuerName is string && request.resource.data.issuerName.size() <= 200
+        && request.resource.data.issuedBy == myEmail()
+        && request.resource.data.issuedAt == request.time;
+      allow update, delete: if false;
+    }
+
+    // ======================================================= announcements ==
+    // إعلانات القسم: admins write and read them here; the public page
+    // (web/announcements.html, behind the department's QR poster) gets them
+    // from the Cloudflare worker, which caps public reads per day.
+    function validAnnouncement(d) {
+      return nonEmptyString(d.title) && d.title.size() <= 200
+        && d.get('body', '') is string && d.get('body', '').size() <= 5000;
+    }
+
+    match /announcements/{id} {
+      allow read: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['title', 'body', 'createdBy', 'createdAt', 'departmentId'])
+        && validAnnouncement(request.resource.data)
+        && request.resource.data.createdBy == myEmail()
+        && request.resource.data.createdAt == request.time;
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['title', 'body', 'updatedBy', 'updatedAt'])
+        && validAnnouncement(request.resource.data)
+        && request.resource.data.updatedBy == myEmail()
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if isAdmin();
+    }
+
     // ========================================================= rulesVersion ==
     // Canary (lib/core/firebase/rules_version.dart): the app reads
     // rulesVersion/<its version>; a refusal means older rules are deployed.
     // Change both together whenever these rules change.
     match /rulesVersion/{version} {
-      allow get: if version == '2026-10-10b';
+      allow get: if version == '2026-10-11a';
     }
 
     // ============================================================ auditLog ==

@@ -2750,4 +2750,74 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get activityPushNote =>
       'Arrives as a phone notification for those on version 1.4 who allowed notifications, and in «Notifications» in the app for everyone.';
+
+  @override
+  String get reportVerifyHint =>
+      'Scan to verify this document, or enter the verification code:';
+
+  @override
+  String get annAction => 'Department announcements';
+
+  @override
+  String get annTitle => 'Department announcements';
+
+  @override
+  String get annHelp =>
+      'These are public, without signing in, on the announcements page that the department\'s QR code opens.';
+
+  @override
+  String get annEmpty => 'No announcements yet.';
+
+  @override
+  String get annAdd => 'New announcement';
+
+  @override
+  String get annEdit => 'Edit announcement';
+
+  @override
+  String get annFieldTitle => 'Title';
+
+  @override
+  String get annFieldBody => 'Text';
+
+  @override
+  String get annSaved => 'Announcement saved.';
+
+  @override
+  String get annDeleteTitle => 'Delete the announcement?';
+
+  @override
+  String get annDeleteBody =>
+      'It disappears from the public announcements page at once.';
+
+  @override
+  String get annDeleted => 'Announcement deleted.';
+
+  @override
+  String get annQr => 'Announcements page QR';
+
+  @override
+  String get annQrHelp =>
+      'Post this code in the department: scanning it with a phone camera opens the announcements page.';
+
+  @override
+  String get annCopyLink => 'Copy link';
+
+  @override
+  String get annLinkCopied => 'Link copied.';
+
+  @override
+  String get annPoster => 'Printable PDF poster';
+
+  @override
+  String get annPosterTitle => 'Department announcements';
+
+  @override
+  String get annPosterLine =>
+      'Scan with your phone camera for the latest announcements';
+
+  @override
+  String annEdited(String date) {
+    return 'edited $date';
+  }
 }

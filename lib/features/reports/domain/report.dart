@@ -51,6 +51,7 @@ final class ReportBranding {
     required this.printedLine,
     required this.pageLabel,
     required this.signatureHint,
+    this.verifyHint = '',
   });
 
   final String university;
@@ -68,6 +69,19 @@ final class ReportBranding {
 
   /// Under each signature line, e.g. «الاسم والتوقيع».
   final String signatureHint;
+
+  /// Next to the verification QR, e.g. «امسح الرمز للتحقق من الوثيقة».
+  final String verifyHint;
+}
+
+/// The verification QR printed on every page of an issued PDF: [url] opens
+/// the public verification page with the record saved when it was issued;
+/// [code] is the same record ID, grouped for typing by hand.
+final class ReportStamp {
+  const ReportStamp({required this.url, required this.code});
+
+  final String url;
+  final String code;
 }
 
 final class Report {
@@ -80,6 +94,7 @@ final class Report {
     this.notes = const [],
     this.signatures = const [],
     this.orientation = ReportOrientation.portrait,
+    this.stamp,
   });
 
   final String title;
@@ -100,6 +115,21 @@ final class Report {
   /// Signature boxes at the end (e.g. التدريسي، مسؤول المرحلة، رئيس القسم).
   final List<String> signatures;
   final ReportOrientation orientation;
+
+  /// Set when the PDF is issued (null = no QR, e.g. Excel or tests).
+  final ReportStamp? stamp;
+
+  Report stamped(ReportStamp stamp) => Report(
+        title: title,
+        fileBase: fileBase,
+        tables: tables,
+        meta: meta,
+        paragraphs: paragraphs,
+        notes: notes,
+        signatures: signatures,
+        orientation: orientation,
+        stamp: stamp,
+      );
 
   /// A file-system-safe name: Arabic letters are fine, separators are not.
   String fileName(String extension) {

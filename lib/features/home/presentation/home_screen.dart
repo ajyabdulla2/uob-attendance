@@ -76,6 +76,14 @@ class HomeScreen extends ConsumerWidget {
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => context.push(Routes.teacherActivity),
                     ),
+                  if (perms.canManageAnnouncements)
+                    ListTile(
+                      key: const Key('home.announcements'),
+                      leading: const Icon(Icons.event_note),
+                      title: Text(l10n.annAction),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => context.push(Routes.announcements),
+                    ),
                   if (perms.canViewStageDashboard)
                     ListTile(
                       key: const Key('home.dashboard'),

@@ -80,6 +80,10 @@ jobs:
           echo "$FIREBASE_OPTIONS_DART_B64" | base64 -d > lib/firebase_options.dart
           flutter pub get
           flutter build web --release --dart-define=PUSH_URL="$PUSH_URL"
+          # The public pages ask the worker (push-worker/) for their data.
+          if [ -n "$PUSH_URL" ]; then
+            sed -i "s#__PUSH_URL__#${PUSH_URL%/}#" build/web/verify.html build/web/announcements.html
+          fi
           firebase deploy --only hosting --project "$PROJECT" --non-interactive
 
       - name: Remove credentials

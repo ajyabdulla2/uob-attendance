@@ -4498,6 +4498,132 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'يصل إشعاراً على هاتف من ثبّت الإصدار 1.4 وسمح بالإشعارات، ويظهر للجميع في «الإشعارات» داخل البرنامج.'**
   String get activityPushNote;
+
+  /// No description provided for @reportVerifyHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'امسح الرمز للتحقق من صحة الوثيقة، أو أدخل رمز التحقق:'**
+  String get reportVerifyHint;
+
+  /// No description provided for @annAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعلانات القسم'**
+  String get annAction;
+
+  /// No description provided for @annTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعلانات القسم'**
+  String get annTitle;
+
+  /// No description provided for @annHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'تظهر هذه الإعلانات للجميع بلا تسجيل دخول في صفحة الإعلانات العامة، وهي التي يفتحها رمز QR المعلّق في القسم.'**
+  String get annHelp;
+
+  /// No description provided for @annEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا إعلانات بعد.'**
+  String get annEmpty;
+
+  /// No description provided for @annAdd.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعلان جديد'**
+  String get annAdd;
+
+  /// No description provided for @annEdit.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعديل الإعلان'**
+  String get annEdit;
+
+  /// No description provided for @annFieldTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'العنوان'**
+  String get annFieldTitle;
+
+  /// No description provided for @annFieldBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'نص الإعلان'**
+  String get annFieldBody;
+
+  /// No description provided for @annSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُفظ الإعلان.'**
+  String get annSaved;
+
+  /// No description provided for @annDeleteTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف الإعلان؟'**
+  String get annDeleteTitle;
+
+  /// No description provided for @annDeleteBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'يختفي من صفحة الإعلانات العامة فوراً.'**
+  String get annDeleteBody;
+
+  /// No description provided for @annDeleted.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُذف الإعلان.'**
+  String get annDeleted;
+
+  /// No description provided for @annQr.
+  ///
+  /// In ar, this message translates to:
+  /// **'رمز صفحة الإعلانات'**
+  String get annQr;
+
+  /// No description provided for @annQrHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'علّق هذا الرمز في القسم: من يمسحه بكاميرا الهاتف يفتح صفحة الإعلانات.'**
+  String get annQrHelp;
+
+  /// No description provided for @annCopyLink.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسخ الرابط'**
+  String get annCopyLink;
+
+  /// No description provided for @annLinkCopied.
+  ///
+  /// In ar, this message translates to:
+  /// **'نُسخ الرابط.'**
+  String get annLinkCopied;
+
+  /// No description provided for @annPoster.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملصق PDF للطباعة'**
+  String get annPoster;
+
+  /// No description provided for @annPosterTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعلانات القسم'**
+  String get annPosterTitle;
+
+  /// No description provided for @annPosterLine.
+  ///
+  /// In ar, this message translates to:
+  /// **'امسح الرمز بكاميرا الهاتف لعرض آخر الإعلانات'**
+  String get annPosterLine;
+
+  /// No description provided for @annEdited.
+  ///
+  /// In ar, this message translates to:
+  /// **'عُدِّل {date}'**
+  String annEdited(String date);
 }
 
 class _AppLocalizationsDelegate

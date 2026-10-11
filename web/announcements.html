@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>إعلانات قسم علوم الحاسوب — جامعة البصرة</title>
+  <!-- The worker's URL; deploy.yml puts the PUSH_URL variable here. -->
+  <meta name="public-api" content="__PUSH_URL__">
+  <meta name="description" content="آخر إعلانات قسم علوم الحاسوب، كلية التربية للعلوم الصرفة، جامعة البصرة.">
+  <!--
+    The page behind the department's QR poster (app: «إعلانات القسم» →
+    poster). Asks the Cloudflare worker (push-worker/src/public.js) for the
+    latest 30: visitors cannot read Firestore directly, and the worker keeps
+    public reads within a daily share of the Spark quota (429 = try in 24
+    hours).
+  -->
+  <style>
+    /* Cairo is bundled with the Flutter web build (assets/fonts/cairo). */
+    @font-face { font-family: Cairo; src: url("assets/assets/fonts/cairo/Cairo-Regular.ttf"); font-weight: 400; }
+    @font-face { font-family: Cairo; src: url("assets/assets/fonts/cairo/Cairo-Bold.ttf"); font-weight: 700; }
+    :root { --bg: #f7f9fc; --fg: #1b1f24; --muted: #555d68; --card: #ffffff; --accent: #0d3b66; --new: #b8860b; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #111418; --fg: #e6e9ee; --muted: #a9b1bc; --card: #1b2026; --accent: #9cc4ff; --new: #e0b84a; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--fg); font-family: Cairo, "Segoe UI", Tahoma, sans-serif; line-height: 1.8; }
+    main { max-width: 760px; margin: 0 auto; padding: 16px 16px 48px; }
+    header { display: flex; align-items: center; gap: 12px; padding: 8px 0 12px; border-bottom: 2px solid #b8860b; }
+    header img { width: 56px; height: 56px; border-radius: 50%; background: #fff; }
+    header .t { font-weight: 700; color: var(--accent); font-size: 1.15rem; }
+    header .s { color: var(--muted); font-size: .9rem; }
+    article { background: var(--card); border-radius: 12px; padding: 12px 16px; margin-top: 12px; }
+    article h2 { margin: 0; font-size: 1.1rem; color: var(--accent); }
+    article .when { color: var(--muted); font-size: .85rem; }
+    article .new { color: var(--new); font-weight: 700; margin-inline-start: 6px; }
+    article p { margin: 6px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .msg { text-align: center; color: var(--muted); padding: 32px 0; }
+    footer { margin-top: 24px; text-align: center; color: var(--muted); font-size: .85rem; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="icons/Icon-192.png" alt="">
+    <div>
+      <div class="t">إعلانات قسم علوم الحاسوب</div>
+      <div class="s">جامعة البصرة — كلية التربية للعلوم الصرفة</div>
+    </div>
+  </header>
+  <div id="list"><p class="msg">جارٍ تحميل الإعلانات…</p></div>
+  <footer>يُحدَّث تلقائياً عند فتح الصفحة · <a href="privacy.html">الخصوصية</a></footer>
+</main>
+<script>
+(() => {
+  'use strict';
+  const meta = document.querySelector('meta[name="public-api"]').content;
+  const API = meta.startsWith('http') ? meta.replace(/\/+$/, '') : 'https://uob-push.uob-cs.workers.dev';
+  const WEEK = 7 * 24 * 3600 * 1000;
+
+  const el = (tag, text, cls) => {
+    const e = document.createElement(tag);
+    if (text != null) e.textContent = text;
+    if (cls) e.className = cls;
+    return e;
+  };
+  const date = (iso) => (iso ? new Date(iso) : null);
+  const fmt = (d) => d.toLocaleDateString('ar-IQ-u-nu-latn', { dateStyle: 'full' });
+
+  async function load() {
+    const list = document.getElementById('list');
+    try {
+      const res = await fetch(`${API}/public/announcements`);
+      if (res.status === 429) {
+        list.replaceChildren(el('p', 'بلغت زيارات الصفحة حدّها اليومي. يرجى المحاولة بعد 24 ساعة.', 'msg'));
+        return;
+      }
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const docs = (await res.json()).items;
+      list.replaceChildren();
+      if (!docs.length) { list.append(el('p', 'لا إعلانات حالياً.', 'msg')); return; }
+      const now = Date.now();
+      for (const f of docs) {
+        const a = el('article');
+        a.append(el('h2', f.title));
+        const at = date(f.createdAt);
+        const edited = date(f.updatedAt);
+        if (at) {
+          const w = el('div', fmt(at), 'when');
+          if (edited) w.textContent += ` · عُدِّل ${fmt(edited)}`;
+          if (now - at.getTime() < WEEK) w.append(el('span', 'جديد', 'new'));
+          a.append(w);
+        }
+        const body = f.body;
+        if (body) a.append(el('p', body));
+        list.append(a);
+      }
+    } catch (e) {
+      list.replaceChildren(el('p', 'تعذّر تحميل الإعلانات الآن. تحقق من الإنترنت ثم أعد فتح الصفحة.', 'msg'));
+    }
+  }
+  load();
+})();
+</script>
+</body>
+</html>
