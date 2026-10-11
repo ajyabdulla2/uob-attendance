@@ -60,7 +60,7 @@ jobs:
       - name: Free disk space
         run: |
           df -h /
-          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost /usr/local/share/powershell /usr/share/swift
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost /usr/local/share/powershell /usr/share/swift /opt/hostedtoolcache/CodeQL
           df -h /
 
       - name: Tag must match pubspec version

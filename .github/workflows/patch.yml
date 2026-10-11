@@ -32,6 +32,16 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # The patch rebuilds the release APK, which fills the runner's disk
+      # since 1.4.0 (as android.yml did): the runner then dies mid-step and
+      # its log is lost (twice for 1.4.0+18). Remove preinstalled tools this
+      # app never uses first; the Android SDK stays.
+      - name: Free disk space
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost /usr/local/share/powershell /usr/share/swift /opt/hostedtoolcache/CodeQL
+          df -h /
+
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
