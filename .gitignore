@@ -68,6 +68,8 @@ emulator-data/
 
 # Node (Firestore rules tests)
 node_modules/
+# wrangler dev local state (push-worker/)
+.wrangler/
 
 # Drift web runtime (downloaded/compiled locally, see CLAUDE.md)
 web/sqlite3.wasm
