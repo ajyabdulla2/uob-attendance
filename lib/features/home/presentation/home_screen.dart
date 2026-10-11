@@ -16,6 +16,8 @@ import '../../auth/domain/app_user.dart';
 import '../../department/presentation/department_dashboard_screen.dart';
 import '../../notifications/application/notifications_providers.dart';
 import '../../users/application/users_providers.dart';
+import '../domain/admin_menu.dart';
+import 'admin_tiles.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -25,6 +27,9 @@ class HomeScreen extends ConsumerWidget {
     final l10n = context.l10n;
     final user = ref.watch(signedInUserProvider);
     final perms = ref.watch(permissionsProvider);
+    // Managers get their tools here and their own classes under «موادي»;
+    // a plain teacher's home is their classes.
+    final sections = AdminMenu.of(perms);
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.appTitle),
@@ -39,132 +44,32 @@ class HomeScreen extends ConsumerWidget {
           if (perms.isAdmin) const _SetupCard(),
           if (perms.canBackup) const BackupReminderCard(),
           if (perms.canManageAccounts) const _AccessRequestsCard(),
-          if (perms.canImportAnything || perms.canManageAssignments) ...[
+          if (sections.isNotEmpty)
+            AdminTiles(sections: sections)
+          else ...[
             const SizedBox(height: 12),
-            Text(l10n.homeQuickActions, style: Theme.of(context).textTheme.titleMedium),
+            Text(l10n.homeMyCourses, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
-            Card(
-              child: Column(
-                children: [
-                  if (perms.canImportAnything)
-                    ListTile(
-                      leading: const Icon(Icons.upload_file),
-                      title: Text(l10n.homeImportAction),
-                      trailing: const Icon(Icons.chevron_right), // mirrors in RTL
-                      onTap: () => context.go(Routes.import),
-                    ),
-                  if (perms.canManageAssignments)
-                    ListTile(
-                      leading: const Icon(Icons.link),
-                      title: Text(l10n.homeAssignAction),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => context.go(Routes.assignments),
-                    ),
-                  if (perms.canViewDepartmentDashboard)
-                    ListTile(
-                      key: const Key('home.department'),
-                      leading: const Icon(Icons.supervisor_account),
-                      title: Text(l10n.deptAction),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => context.push(Routes.departmentDashboard),
-                    ),
-                  if (perms.canMonitorTeachers)
-                    ListTile(
-                      key: const Key('home.activity'),
-                      leading: const Icon(Icons.how_to_reg),
-                      title: Text(l10n.activityAction),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => context.push(Routes.teacherActivity),
-                    ),
-                  if (perms.canManageAnnouncements)
-                    ListTile(
-                      key: const Key('home.announcements'),
-                      leading: const Icon(Icons.event_note),
-                      title: Text(l10n.annAction),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => context.push(Routes.announcements),
-                    ),
-                  if (perms.canManageAppRelease)
-                    ListTile(
-                      key: const Key('home.release'),
-                      leading: const Icon(Icons.system_update),
-                      title: Text(l10n.releaseAction),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => context.push(Routes.appRelease),
-                    ),
-                  if (perms.canViewStageDashboard)
-                    ListTile(
-                      key: const Key('home.dashboard'),
-                      leading: const Icon(Icons.dashboard_outlined),
-                      title: Text(l10n.dashAction),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => context.push(Routes.stageDashboard),
-                    ),
-                  if (perms.canReviewEditRequests)
-                    ListTile(
-                      key: const Key('home.requests'),
-                      leading: const Icon(Icons.edit_calendar),
-                      title: Text(l10n.editRequestsAction),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => context.push(Routes.editRequests),
-                    ),
-                  if (perms.canViewWarnings)
-                    ListTile(
-                      key: const Key('home.warnings'),
-                      leading: const Icon(Icons.warning_amber),
-                      title: Text(l10n.warnAction),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => context.push(Routes.warnings),
-                    ),
-                  if (perms.canManageLeaves)
-                    ListTile(
-                      key: const Key('home.leaves'),
-                      leading: const Icon(Icons.event_available),
-                      title: Text(l10n.leavesAction),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => context.push(Routes.leaves),
-                    ),
-                  if (perms.canEditYear)
-                    ListTile(
-                      key: const Key('home.year'),
-                      leading: const Icon(Icons.tune),
-                      title: Text(l10n.yearAction),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => context.push(Routes.yearSettings),
-                    ),
-                  if (perms.canViewAuditLog)
-                    ListTile(
-                      key: const Key('home.audit'),
-                      leading: const Icon(Icons.search),
-                      title: Text(l10n.auditOpen),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => context.push(Routes.auditLog),
-                    ),
-                  if (perms.canBackup)
-                    ListTile(
-                      key: const Key('home.backup'),
-                      leading: const Icon(Icons.cloud_upload_outlined),
-                      title: Text(l10n.backupAction),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => context.push(Routes.backup),
-                    ),
-                  if (perms.canFixData)
-                    ListTile(
-                      key: const Key('home.dataFix'),
-                      leading: const Icon(Icons.build_outlined),
-                      title: Text(l10n.homeDataFixAction),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => context.push(Routes.dataFix),
-                    ),
-                ],
-              ),
-            ),
+            const MyCourses(),
           ],
-          const SizedBox(height: 12),
-          Text(l10n.homeMyCourses, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
-          const _MyCourses(),
         ],
+      ),
+    );
+  }
+}
+
+/// «موادي» for managers: their own classes, a tab of its own so the home
+/// screen stays the management tools.
+class CoursesScreen extends StatelessWidget {
+  const CoursesScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(context.l10n.navCourses)),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: const [MyCourses()],
       ),
     );
   }
@@ -273,14 +178,14 @@ class _AccessRequestsCard extends ConsumerWidget {
         leading: const Icon(Icons.how_to_reg),
         title: Text(context.l10n.homeAccessRequests(count)),
         trailing: const Icon(Icons.chevron_right), // mirrors in RTL
-        onTap: () => context.go(Routes.accounts),
+        onTap: () => context.push(Routes.accounts),
       ),
     );
   }
 }
 
-class _MyCourses extends ConsumerWidget {
-  const _MyCourses();
+class MyCourses extends ConsumerWidget {
+  const MyCourses({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

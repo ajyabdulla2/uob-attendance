@@ -64,7 +64,7 @@ class DepartmentDashboardScreen extends ConsumerWidget {
                         leading: const Icon(Icons.person_add_alt),
                         title: Text(s.accessRequests == null ? '${l10n.backupCollection(Col.accessRequests)}: —' : l10n.deptAccessRequests(s.accessRequests!)),
                         trailing: const Icon(Icons.chevron_right),
-                        onTap: () => context.go(Routes.accounts),
+                        onTap: () => context.push(Routes.accounts),
                       ),
                     ],
                   ),
