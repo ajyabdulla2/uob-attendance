@@ -10,6 +10,36 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get menuDaily => 'المتابعة اليومية';
+
+  @override
+  String get menuStudents => 'الطلبة والغياب';
+
+  @override
+  String get menuData => 'البيانات والحسابات';
+
+  @override
+  String get menuCommunication => 'التواصل';
+
+  @override
+  String get menuSystem => 'الإعدادات والنظام';
+
+  @override
+  String get menuWarnings => 'النسب والإنذارات';
+
+  @override
+  String get menuDataFix => 'تصحيح البيانات';
+
+  @override
+  String get menuYear => 'إعدادات السنة';
+
+  @override
+  String get navCourses => 'موادي';
+
+  @override
+  String get backAgainToExit => 'اضغط رجوع مرة أخرى للخروج';
+
+  @override
   String get appTitle => 'نظام الحضور والغياب';
 
   @override

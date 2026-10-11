@@ -98,6 +98,66 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
+  /// No description provided for @menuDaily.
+  ///
+  /// In ar, this message translates to:
+  /// **'المتابعة اليومية'**
+  String get menuDaily;
+
+  /// No description provided for @menuStudents.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطلبة والغياب'**
+  String get menuStudents;
+
+  /// No description provided for @menuData.
+  ///
+  /// In ar, this message translates to:
+  /// **'البيانات والحسابات'**
+  String get menuData;
+
+  /// No description provided for @menuCommunication.
+  ///
+  /// In ar, this message translates to:
+  /// **'التواصل'**
+  String get menuCommunication;
+
+  /// No description provided for @menuSystem.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإعدادات والنظام'**
+  String get menuSystem;
+
+  /// No description provided for @menuWarnings.
+  ///
+  /// In ar, this message translates to:
+  /// **'النسب والإنذارات'**
+  String get menuWarnings;
+
+  /// No description provided for @menuDataFix.
+  ///
+  /// In ar, this message translates to:
+  /// **'تصحيح البيانات'**
+  String get menuDataFix;
+
+  /// No description provided for @menuYear.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعدادات السنة'**
+  String get menuYear;
+
+  /// No description provided for @navCourses.
+  ///
+  /// In ar, this message translates to:
+  /// **'موادي'**
+  String get navCourses;
+
+  /// No description provided for @backAgainToExit.
+  ///
+  /// In ar, this message translates to:
+  /// **'اضغط رجوع مرة أخرى للخروج'**
+  String get backAgainToExit;
+
   /// No description provided for @appTitle.
   ///
   /// In ar, this message translates to:

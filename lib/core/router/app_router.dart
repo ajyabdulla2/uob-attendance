@@ -39,6 +39,7 @@ abstract final class Routes {
   static const verifyEmail = '/verify-email';
   static const noAccess = '/no-access';
   static const home = '/home';
+  static const courses = '/courses';
   static const import = '/import';
   static const assignments = '/assignments';
   static const accounts = '/accounts';
@@ -66,6 +67,9 @@ abstract final class Routes {
         if (date != null) 'd': DocIds.dateKey(date),
         if (lectureNo != null) 'n': '$lectureNo',
       }).toString();
+
+  /// «طلبات التعديل», opened on [stageId] (else the first stage with requests).
+  static String editRequestsFor(String stageId) => Uri(path: editRequests, queryParameters: {'s': stageId}).toString();
 
   static String registerFor(String assignmentId) => Uri(path: register, queryParameters: {'a': assignmentId}).toString();
   static const student = '/student';
@@ -141,11 +145,16 @@ final routerProvider = Provider<GoRouter>((ref) {
           lectureNo: int.tryParse(s.uri.queryParameters['n'] ?? ''),
         ),
       ),
+      // Management tools open above the shell too, so back returns to the
+      // home screen instead of leaving the app.
+      GoRoute(path: Routes.import, builder: (_, _) => const ImportScreen()),
+      GoRoute(path: Routes.assignments, builder: (_, _) => const AssignmentsScreen()),
+      GoRoute(path: Routes.accounts, builder: (_, _) => const AccountsScreen()),
       GoRoute(path: Routes.dataFix, builder: (_, _) => const DataFixScreen()),
       GoRoute(path: Routes.yearSettings, builder: (_, _) => const YearSettingsScreen()),
       GoRoute(path: Routes.leaves, builder: (_, _) => const LeavesScreen()),
       GoRoute(path: Routes.warnings, builder: (_, _) => const WarningsScreen()),
-      GoRoute(path: Routes.editRequests, builder: (_, _) => const EditRequestsScreen()),
+      GoRoute(path: Routes.editRequests, builder: (_, s) => EditRequestsScreen(stageId: s.uri.queryParameters['s'])),
       GoRoute(path: Routes.stageDashboard, builder: (_, _) => const StageDashboardScreen()),
       GoRoute(
         path: Routes.missedLecture,
@@ -177,9 +186,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state, child) => AppShell(location: state.matchedLocation, child: child),
         routes: [
           GoRoute(path: Routes.home, pageBuilder: (_, s) => page(s, const HomeScreen())),
-          GoRoute(path: Routes.import, pageBuilder: (_, s) => page(s, const ImportScreen())),
-          GoRoute(path: Routes.assignments, pageBuilder: (_, s) => page(s, const AssignmentsScreen())),
-          GoRoute(path: Routes.accounts, pageBuilder: (_, s) => page(s, const AccountsScreen())),
+          GoRoute(path: Routes.courses, pageBuilder: (_, s) => page(s, const CoursesScreen())),
           GoRoute(path: Routes.profile, pageBuilder: (_, s) => page(s, const ProfileScreen())),
         ],
       ),

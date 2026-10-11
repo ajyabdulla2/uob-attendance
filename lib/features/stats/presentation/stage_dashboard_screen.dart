@@ -195,7 +195,7 @@ class _Requests extends ConsumerWidget {
         leading: const Icon(Icons.edit_calendar),
         title: Text(l10n.dashRequests(count)),
         trailing: const Icon(Icons.chevron_right),
-        onTap: () => context.push(Routes.editRequests),
+        onTap: () => context.push(Routes.editRequestsFor(stageId)),
       ),
     );
   }

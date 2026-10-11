@@ -119,4 +119,48 @@ void main() {
     expect((await db.doc('sessions/${session.id}/records/2').get()).data()!['status'], 'absent');
     expect((await db.doc('editRequests/r1').get()).data()!['status'], 'rejected');
   });
+
+  testWidgets('requests in another stage: the notification opens that stage, and the list counts each stage',
+      (tester) async {
+    const second = StageRef(2, Shift.morning);
+    final db = FakeFirebaseFirestore();
+    await db.doc('editRequests/r2').set(EditRequest(
+      id: 'r2',
+      sessionId: 'CS201_${second.id}__theory__all__20260928__1',
+      studentId: '77',
+      stageId: second.id,
+      requestedStatus: AttendanceStatus.excused,
+      currentStatus: AttendanceStatus.absent,
+      reason: 'إجازة مرضية',
+      requestedBy: teacher,
+    ).toMap());
+    await pumpApp(
+      tester,
+      firestore: db,
+      user: MockUser(email: sm, isEmailVerified: true),
+      profile: AppUser(email: sm, name: 'مسؤول', roles: const {UserRole.stageManager}, stageScopes: [stage.id, second.id]),
+    );
+
+    // From the notifications: one line for the stage that has requests.
+    await tester.tap(find.byKey(const Key('home.notifications')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(Key('notif.requests.${stage.id}')), findsNothing);
+    await tester.tap(find.byKey(Key('notif.requests.${second.id}')));
+    await tester.pumpAndSettle();
+    expect(find.text('السبب: إجازة مرضية'), findsOneWidget);
+
+    // From the home tile, with no stage named: the first stage with requests,
+    // and its count in the stage list.
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('home.requests')));
+    await tester.pumpAndSettle();
+    expect(find.text('السبب: إجازة مرضية'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('requests.stage')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(Key('requests.count.${second.id}')), findsWidgets);
+    expect(find.byKey(Key('requests.count.${stage.id}')), findsNothing);
+  });
 }

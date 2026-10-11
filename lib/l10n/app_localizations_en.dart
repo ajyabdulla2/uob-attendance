@@ -10,6 +10,36 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get menuDaily => 'Daily follow-up';
+
+  @override
+  String get menuStudents => 'Students and absence';
+
+  @override
+  String get menuData => 'Data and accounts';
+
+  @override
+  String get menuCommunication => 'Communication';
+
+  @override
+  String get menuSystem => 'Settings and system';
+
+  @override
+  String get menuWarnings => 'Rates and warnings';
+
+  @override
+  String get menuDataFix => 'Fix data';
+
+  @override
+  String get menuYear => 'Year settings';
+
+  @override
+  String get navCourses => 'My courses';
+
+  @override
+  String get backAgainToExit => 'Press back again to exit';
+
+  @override
   String get appTitle => 'Attendance System';
 
   @override

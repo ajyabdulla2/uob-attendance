@@ -245,6 +245,7 @@ class _StepsCard extends ConsumerWidget {
             if (kind == ImportKind.students)
               DropdownButtonFormField<StageRef?>(
                 initialValue: state.defaultStage,
+                isExpanded: true, // long labels overflowed phone width
                 decoration: InputDecoration(labelText: l10n.importDefaultStage),
                 items: [
                   DropdownMenuItem(value: null, child: Text(l10n.importDefaultStageNone)),

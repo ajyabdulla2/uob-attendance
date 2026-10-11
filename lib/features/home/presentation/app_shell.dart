@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -12,6 +13,7 @@ import '../../app_update/presentation/update_gate.dart';
 import '../../attendance/presentation/sync_widgets.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../push/presentation/push_lifecycle.dart';
+import '../domain/admin_menu.dart';
 
 class _Destination {
   const _Destination(this.route, this.icon, this.selectedIcon, this.label);
@@ -42,21 +44,20 @@ class AppShell extends ConsumerWidget {
       if (me.stageScopes.isNotEmpty) 'stages: ${me.stageScopes.join(', ')}',
       'app: ${version ?? '?'} · ${kIsWeb ? 'web' : defaultTargetPlatform.name}',
     ].join('\n');
+    // The management tools are tiles on the home screen (AdminMenu); a
+    // manager's own classes get their own tab.
     final destinations = [
       _Destination(Routes.home, Icons.home_outlined, Icons.home, l10n.navHome),
-      if (perms.canImportAnything)
-        _Destination(Routes.import, Icons.upload_file_outlined, Icons.upload_file, l10n.navImport),
-      if (perms.canManageAssignments)
-        _Destination(Routes.assignments, Icons.link_outlined, Icons.link, l10n.navAssignments),
-      if (perms.canManageAccounts)
-        _Destination(Routes.accounts, Icons.manage_accounts_outlined, Icons.manage_accounts, l10n.navAccounts),
+      if (AdminMenu.of(perms).isNotEmpty)
+        _Destination(Routes.courses, Icons.menu_book_outlined, Icons.menu_book, l10n.navCourses),
       _Destination(Routes.profile, Icons.person_outline, Icons.person, l10n.navProfile),
     ];
     final index = destinations.indexWhere((d) => location.startsWith(d.route)).clamp(0, destinations.length - 1);
     void go(int i) => context.go(destinations[i].route);
 
+    final Widget shell;
     if (MediaQuery.sizeOf(context).width >= wideBreakpoint) {
-      return Scaffold(
+      shell = Scaffold(
         body: Row(
           children: [
             NavigationRail(
@@ -81,18 +82,63 @@ class AppShell extends ConsumerWidget {
           ],
         ),
       );
+    } else {
+      shell = Scaffold(
+        body: PresenceReporter(child: PushLifecycle(child: SyncLifecycle(child: UpdateGate(child: child)))),
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: index,
+          onDestinationSelected: go,
+          destinations: [
+            for (final d in destinations)
+              NavigationDestination(icon: Icon(d.icon), selectedIcon: Icon(d.selectedIcon), label: d.label),
+          ],
+        ),
+      );
     }
+    return _BackToHome(location: location, child: shell);
+  }
+}
 
-    return Scaffold(
-      body: PresenceReporter(child: PushLifecycle(child: SyncLifecycle(child: UpdateGate(child: child)))),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: index,
-        onDestinationSelected: go,
-        destinations: [
-          for (final d in destinations)
-            NavigationDestination(icon: Icon(d.icon), selectedIcon: Icon(d.selectedIcon), label: d.label),
-        ],
-      ),
-    );
+/// Android back on a tab: another tab returns to the home screen, and the
+/// home screen asks for a second press within two seconds before leaving
+/// (a single press used to close the app from «الاستيراد» or «الحسابات»).
+/// Pages pushed above the shell pop as usual. The web keeps the browser's
+/// own history.
+class _BackToHome extends StatefulWidget {
+  const _BackToHome({required this.location, required this.child});
+
+  final String location;
+  final Widget child;
+
+  @override
+  State<_BackToHome> createState() => _BackToHomeState();
+}
+
+class _BackToHomeState extends State<_BackToHome> {
+  static const _window = Duration(seconds: 2);
+  DateTime? _lastBack;
+
+  void _onBack(bool didPop, Object? _) {
+    if (didPop) return;
+    if (!widget.location.startsWith(Routes.home)) {
+      context.go(Routes.home);
+      return;
+    }
+    final now = DateTime.now();
+    final last = _lastBack;
+    if (last != null && now.difference(last) < _window) {
+      SystemNavigator.pop();
+      return;
+    }
+    _lastBack = now;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(context.l10n.backAgainToExit), duration: _window));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (kIsWeb) return widget.child;
+    return PopScope(canPop: false, onPopInvokedWithResult: _onBack, child: widget.child);
   }
 }
