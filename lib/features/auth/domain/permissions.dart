@@ -96,6 +96,9 @@ final class Permissions {
   /// إعلانات القسم (public page + QR poster).
   bool get canManageAnnouncements => isAdmin;
 
+  /// «إصدار التطبيق»: `config/app` (the rules let admins write `config`).
+  bool get canManageAppRelease => isAdmin;
+
   // ---------------------------------------------------- decision lists --
   bool get canFinalizeDeaneryDecision => isAdmin;
 }

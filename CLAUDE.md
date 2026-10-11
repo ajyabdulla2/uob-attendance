@@ -277,10 +277,11 @@ tool/            سكربتات الإعداد والفحص
 - **بلا وسم**: `patch.yml` يعمل أيضاً من Actions ← Shorebird patch ← Run workflow (الفرع/الالتزام + `release`، الافتراضي `1.4.0+18`)، أو من الجلسة بـ `actions_run_trigger` (`run_workflow`). الجلسة السحابية لا تستطيع دفع الوسوم (403)، فهذا طريقها لإرسال رقعة حين يكون المستخدم بعيداً عن جهازه.
 - رقعة ثانية للإصدار نفسه: الوسم لا يُعاد استعماله، فاستعمل `patch/1.3.0+12-2` ثم `-3`… (ما بعد `-` يُهمل). لا تستعمل `/2`: يتعارض مع مرجع الوسم الأول في git.
 - **1.4.0 أصلي** (`firebase_messaging` و`flutter_local_notifications`): لا تُرقَّع 1.3.0+12 بكود ما بعده (المكتبتان غائبتان عن ذلك الـ APK). بُني 1.4.0+18 (GitHub Release `v1.4.0`) والافتراضي في `patch.yml` عليه؛ الرقع من الآن لـ `1.4.0+18`.
+- **قرص الخادم**: منذ 1.4.0 يملأ بناء الـ APK قرص خادم GitHub، فيموت الخادم في منتصف الخطوة ويضيع سجلها (`get_job_logs` يعطي 404 وخطوات «Post Run» تبقى pending). حدث لبناء 1.4.0 ولرقعتين متتاليتين؛ لذلك يبدأ `android.yml` و`patch.yml` بخطوة «Free disk space».
 - الخطة المجانية: 5,000 تثبيت رقعة شهرياً. ترحيلات Drift كود Dart (قابلة للترقيع) لكن اختبرها جيداً؛ القاعدة المحلية تحمل بيانات غير مرفوعة.
 
 ### `config/app` و`accessRequests` (إضافات على جدول SPEC)
-`config/app`: `latestVersion`، `minVersion` (نصوص `X.Y.Z`)، `androidUrl`، `iosUrl`، `notes`. يقرؤها كل حساب نشط، ويكتبها المدراء فقط. تُضبط حالياً من Firebase Console.
+`config/app`: `latestVersion`، `minVersion` (نصوص `X.Y.Z`)، `androidUrl`، `iosUrl`، `notes` (+ `updatedBy/updatedAt`). يقرؤها كل حساب نشط، ويكتبها المدراء فقط، من شاشة **«إصدار التطبيق»** (`/app-release`، `canManageAppRelease`): تحقق `AppUpdatePolicy.check` (رقم صحيح، الحد الأدنى لا يتجاوز الأحدث، روابط `https`)، والحقل الفارغ يُحذف، وتأكيد قبل رفع `minVersion` (يمنع النسخ الأقدم)، وزر لتجربة الرابط، وتدقيق `config.update`. **المستودع خاص**: رابط ملف GitHub Release يحتاج دخولاً، فرابط التنزيل للتدريسيين من Google Drive بمشاركة «أي شخص لديه الرابط» بصيغة التنزيل المباشر `https://drive.google.com/uc?export=download&id=<ID>`.
 `accessRequests/{email}`: `email`، `name`، `note`، `requestedAt` (انظر «طلبات الانضمام» أعلاه).
 
 ---

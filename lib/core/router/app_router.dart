@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/attendance/presentation/missed_lecture_screen.dart';
 import '../../features/announcements/presentation/announcements_screen.dart';
+import '../../features/app_update/presentation/app_release_screen.dart';
 import '../../features/activity/presentation/teacher_activity_screen.dart';
 import '../../features/academic/presentation/year_settings_screen.dart';
 import '../../features/assignments/presentation/assignments_screen.dart';
@@ -57,6 +58,7 @@ abstract final class Routes {
   static const notifications = '/notifications';
   static const teacherActivity = '/teacher-activity';
   static const announcements = '/announcements';
+  static const appRelease = '/app-release';
 
   /// Record screen of a class, optionally on a given lecture.
   static String recordFor(String assignmentId, {DateTime? date, int? lectureNo}) => Uri(path: record, queryParameters: {
@@ -105,6 +107,7 @@ String? redirectFor(AuthStatus status, String location) {
         _ when location.startsWith(Routes.missedLecture) && !permissions.canViewStageDashboard => Routes.home,
         _ when location.startsWith(Routes.teacherActivity) && !permissions.canMonitorTeachers => Routes.home,
         _ when location.startsWith(Routes.announcements) && !permissions.canManageAnnouncements => Routes.home,
+        _ when location.startsWith(Routes.appRelease) && !permissions.canManageAppRelease => Routes.home,
         _ => null,
       },
   };
@@ -158,6 +161,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.notifications, builder: (_, _) => const NotificationsScreen()),
       GoRoute(path: Routes.teacherActivity, builder: (_, _) => const TeacherActivityScreen()),
       GoRoute(path: Routes.announcements, builder: (_, _) => const AnnouncementsScreen()),
+      GoRoute(path: Routes.appRelease, builder: (_, _) => const AppReleaseScreen()),
       GoRoute(
         path: Routes.register,
         builder: (_, s) => RegisterScreen(assignmentId: s.uri.queryParameters['a'] ?? ''),

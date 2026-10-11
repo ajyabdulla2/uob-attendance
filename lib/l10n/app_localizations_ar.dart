@@ -2214,6 +2214,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'year_update': 'تعديل إعدادات السنة',
       'backup_export': 'نسخة احتياطية',
       'backup_restore': 'استعادة نسخة احتياطية',
+      'config_update': 'تعديل إصدار التطبيق',
       'other': '$action',
     });
     return '$_temp0';
@@ -2813,4 +2814,79 @@ class AppLocalizationsAr extends AppLocalizations {
   String annEdited(String date) {
     return 'عُدِّل $date';
   }
+
+  @override
+  String get releaseAction => 'إصدار التطبيق';
+
+  @override
+  String get releaseTitle => 'إصدار التطبيق';
+
+  @override
+  String get releaseHelp =>
+      'بعد نشر APK جديد، اكتب رقمه ورابط تنزيله هنا: كل من نسخته أقدم يرى لافتة «تحديث جديد» مع زر التنزيل. الرقع الصغيرة (Shorebird) تصل وحدها ولا تحتاج هذا.';
+
+  @override
+  String releaseInstalled(String version) {
+    return 'نسختك على هذا الجهاز: $version';
+  }
+
+  @override
+  String get releaseLatest => 'أحدث إصدار (مثل 1.4.0)';
+
+  @override
+  String get releaseMinimum => 'أقدم إصدار مسموح (اختياري)';
+
+  @override
+  String get releaseMinimumHelp =>
+      'من نسخته أقدم من هذا لا يستطيع استعمال التطبيق حتى يحدّث. اتركه فارغاً ما لم تتغير القواعد بشكل يكسر النسخ القديمة.';
+
+  @override
+  String get releaseAndroidUrl => 'رابط تنزيل Android';
+
+  @override
+  String get releaseIosUrl => 'رابط iOS (اختياري)';
+
+  @override
+  String get releaseUrlHelp =>
+      'رابط عام يعمل بلا تسجيل دخول، مثل رابط Google Drive بمشاركة «أي شخص لديه الرابط».';
+
+  @override
+  String get releaseNotes => 'ما الجديد (يظهر في اللافتة)';
+
+  @override
+  String releasePreview(String latest) {
+    return 'بعد الحفظ: من نسخته أقدم من $latest يرى لافتة التحديث.';
+  }
+
+  @override
+  String releasePreviewRequired(String minimum) {
+    return 'ومن نسخته أقدم من $minimum يُمنع من استعمال التطبيق حتى يحدّث.';
+  }
+
+  @override
+  String get releaseSaved => 'حُفظ. تظهر اللافتة عند فتح التطبيق.';
+
+  @override
+  String get releaseConfirmTitle => 'إيقاف النسخ القديمة؟';
+
+  @override
+  String releaseConfirmBody(String minimum) {
+    return 'كل من نسخته أقدم من $minimum لن يستطيع استعمال التطبيق حتى يثبّت التحديث، وقد تبقى عنده سجلات غير مرفوعة حتى يحدّث. تأكد أن الرابط يعمل قبل الحفظ.';
+  }
+
+  @override
+  String get releaseLatestMissing => 'اكتب رقم أحدث إصدار.';
+
+  @override
+  String get releaseVersionInvalid => 'الصيغة: أرقام بنقاط، مثل 1.4.0';
+
+  @override
+  String get releaseMinimumAboveLatest =>
+      'أقدم إصدار مسموح لا يكون أحدث من أحدث إصدار.';
+
+  @override
+  String get releaseUrlInvalid => 'الرابط يجب أن يبدأ بـ https://';
+
+  @override
+  String get releaseOpenLink => 'تجربة الرابط';
 }

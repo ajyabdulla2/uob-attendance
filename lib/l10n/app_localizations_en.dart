@@ -2225,6 +2225,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'year_update': 'Year settings changed',
       'backup_export': 'Backup saved',
       'backup_restore': 'Backup restored',
+      'config_update': 'App release changed',
       'other': '$action',
     });
     return '$_temp0';
@@ -2820,4 +2821,80 @@ class AppLocalizationsEn extends AppLocalizations {
   String annEdited(String date) {
     return 'edited $date';
   }
+
+  @override
+  String get releaseAction => 'App release';
+
+  @override
+  String get releaseTitle => 'App release';
+
+  @override
+  String get releaseHelp =>
+      'After publishing a new APK, enter its version and download link here: anyone on an older version sees a «new update» banner with a download button. Small Shorebird patches arrive by themselves and do not need this.';
+
+  @override
+  String releaseInstalled(String version) {
+    return 'Version on this device: $version';
+  }
+
+  @override
+  String get releaseLatest => 'Latest version (e.g. 1.4.0)';
+
+  @override
+  String get releaseMinimum => 'Oldest version allowed (optional)';
+
+  @override
+  String get releaseMinimumHelp =>
+      'Anyone older than this cannot use the app until they update. Leave it empty unless a rules change breaks older versions.';
+
+  @override
+  String get releaseAndroidUrl => 'Android download link';
+
+  @override
+  String get releaseIosUrl => 'iOS link (optional)';
+
+  @override
+  String get releaseUrlHelp =>
+      'A public link that works without signing in, e.g. a Google Drive link shared with «anyone with the link».';
+
+  @override
+  String get releaseNotes => 'What\'s new (shown in the banner)';
+
+  @override
+  String releasePreview(String latest) {
+    return 'After saving: anyone older than $latest sees the update banner.';
+  }
+
+  @override
+  String releasePreviewRequired(String minimum) {
+    return 'And anyone older than $minimum cannot use the app until they update.';
+  }
+
+  @override
+  String get releaseSaved =>
+      'Saved. The banner appears when the app is opened.';
+
+  @override
+  String get releaseConfirmTitle => 'Stop older versions?';
+
+  @override
+  String releaseConfirmBody(String minimum) {
+    return 'Anyone older than $minimum will not be able to use the app until they install the update, and may keep unsent records until then. Check that the link works before saving.';
+  }
+
+  @override
+  String get releaseLatestMissing => 'Enter the latest version.';
+
+  @override
+  String get releaseVersionInvalid => 'Format: numbers with dots, e.g. 1.4.0';
+
+  @override
+  String get releaseMinimumAboveLatest =>
+      'The oldest allowed version cannot be newer than the latest.';
+
+  @override
+  String get releaseUrlInvalid => 'The link must start with https://';
+
+  @override
+  String get releaseOpenLink => 'Test the link';
 }
