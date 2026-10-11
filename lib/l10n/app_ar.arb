@@ -1667,7 +1667,7 @@
   "auditEnd": "نهاية السجل",
   "auditBefore": "قبل",
   "auditAfter": "بعد",
-  "auditActionLabel": "{action, select, session_missed{تسجيل محاضرة فائتة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} other{{action}}}",
+  "auditActionLabel": "{action, select, session_missed{تسجيل محاضرة فائتة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} config_update{تعديل إصدار التطبيق} other{{action}}}",
   "@auditActionLabel": {
     "placeholders": {
       "action": {
@@ -2018,5 +2018,30 @@
   "annPosterTitle": "إعلانات القسم",
   "annPosterLine": "امسح الرمز بكاميرا الهاتف لعرض آخر الإعلانات",
   "annEdited": "عُدِّل {date}",
-  "@annEdited": {"placeholders": {"date": {"type": "String"}}}
+  "@annEdited": {"placeholders": {"date": {"type": "String"}}},
+  "releaseAction": "إصدار التطبيق",
+  "releaseTitle": "إصدار التطبيق",
+  "releaseHelp": "بعد نشر APK جديد، اكتب رقمه ورابط تنزيله هنا: كل من نسخته أقدم يرى لافتة «تحديث جديد» مع زر التنزيل. الرقع الصغيرة (Shorebird) تصل وحدها ولا تحتاج هذا.",
+  "releaseInstalled": "نسختك على هذا الجهاز: {version}",
+  "releaseLatest": "أحدث إصدار (مثل 1.4.0)",
+  "releaseMinimum": "أقدم إصدار مسموح (اختياري)",
+  "releaseMinimumHelp": "من نسخته أقدم من هذا لا يستطيع استعمال التطبيق حتى يحدّث. اتركه فارغاً ما لم تتغير القواعد بشكل يكسر النسخ القديمة.",
+  "releaseAndroidUrl": "رابط تنزيل Android",
+  "releaseIosUrl": "رابط iOS (اختياري)",
+  "releaseUrlHelp": "رابط عام يعمل بلا تسجيل دخول، مثل رابط Google Drive بمشاركة «أي شخص لديه الرابط».",
+  "releaseNotes": "ما الجديد (يظهر في اللافتة)",
+  "releasePreview": "بعد الحفظ: من نسخته أقدم من {latest} يرى لافتة التحديث.",
+  "releasePreviewRequired": "ومن نسخته أقدم من {minimum} يُمنع من استعمال التطبيق حتى يحدّث.",
+  "releaseSaved": "حُفظ. تظهر اللافتة عند فتح التطبيق.",
+  "releaseConfirmTitle": "إيقاف النسخ القديمة؟",
+  "releaseConfirmBody": "كل من نسخته أقدم من {minimum} لن يستطيع استعمال التطبيق حتى يثبّت التحديث، وقد تبقى عنده سجلات غير مرفوعة حتى يحدّث. تأكد أن الرابط يعمل قبل الحفظ.",
+  "releaseLatestMissing": "اكتب رقم أحدث إصدار.",
+  "releaseVersionInvalid": "الصيغة: أرقام بنقاط، مثل 1.4.0",
+  "releaseMinimumAboveLatest": "أقدم إصدار مسموح لا يكون أحدث من أحدث إصدار.",
+  "releaseUrlInvalid": "الرابط يجب أن يبدأ بـ https://",
+  "releaseOpenLink": "تجربة الرابط",
+  "@releaseInstalled": {"placeholders": {"version": {"type": "String"}}},
+  "@releasePreview": {"placeholders": {"latest": {"type": "String"}}},
+  "@releasePreviewRequired": {"placeholders": {"minimum": {"type": "String"}}},
+  "@releaseConfirmBody": {"placeholders": {"minimum": {"type": "String"}}}
 }

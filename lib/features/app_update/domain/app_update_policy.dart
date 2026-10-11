@@ -38,6 +38,9 @@ final class AppVersion implements Comparable<AppVersion> {
 
 enum UpdateUrgency { none, optional, required }
 
+/// What «إصدار التطبيق» refuses to save.
+enum ReleaseIssue { latestMissing, latestInvalid, minimumInvalid, minimumAboveLatest, urlInvalid }
+
 /// `config/app` — set by an admin after publishing a new build that needs
 /// installing (native changes; pure Dart changes may arrive as OTA patches).
 final class AppUpdatePolicy {
@@ -76,4 +79,46 @@ final class AppUpdatePolicy {
   }
 
   String? downloadUrl({required bool ios}) => ios ? iosUrl : androidUrl;
+
+  /// Checks the «إصدار التطبيق» form: a valid latest version, an optional
+  /// minimum not above it, and https download links (or none).
+  static List<ReleaseIssue> check({
+    required String latest,
+    String minimum = '',
+    String androidUrl = '',
+    String iosUrl = '',
+  }) {
+    final l = AppVersion.tryParse(latest);
+    final m = AppVersion.tryParse(minimum);
+    bool badUrl(String u) {
+      if (u.trim().isEmpty) return false;
+      final uri = Uri.tryParse(u.trim());
+      return uri == null || uri.scheme != 'https' || uri.host.isEmpty;
+    }
+
+    return [
+      if (latest.trim().isEmpty) ReleaseIssue.latestMissing else if (l == null) ReleaseIssue.latestInvalid,
+      if (minimum.trim().isNotEmpty && m == null) ReleaseIssue.minimumInvalid,
+      if (l != null && m != null && l < m) ReleaseIssue.minimumAboveLatest,
+      if (badUrl(androidUrl) || badUrl(iosUrl)) ReleaseIssue.urlInvalid,
+    ];
+  }
+
+  /// The policy the form describes (call after [check] passes).
+  factory AppUpdatePolicy.fromForm({
+    required String latest,
+    String minimum = '',
+    String androidUrl = '',
+    String iosUrl = '',
+    String notes = '',
+  }) {
+    String? orNull(String v) => v.trim().isEmpty ? null : v.trim();
+    return AppUpdatePolicy(
+      latest: AppVersion.tryParse(latest),
+      minimum: AppVersion.tryParse(minimum),
+      androidUrl: orNull(androidUrl),
+      iosUrl: orNull(iosUrl),
+      notes: notes.trim(),
+    );
+  }
 }

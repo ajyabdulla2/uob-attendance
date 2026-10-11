@@ -280,7 +280,7 @@ tool/            سكربتات الإعداد والفحص
 - الخطة المجانية: 5,000 تثبيت رقعة شهرياً. ترحيلات Drift كود Dart (قابلة للترقيع) لكن اختبرها جيداً؛ القاعدة المحلية تحمل بيانات غير مرفوعة.
 
 ### `config/app` و`accessRequests` (إضافات على جدول SPEC)
-`config/app`: `latestVersion`، `minVersion` (نصوص `X.Y.Z`)، `androidUrl`، `iosUrl`، `notes`. يقرؤها كل حساب نشط، ويكتبها المدراء فقط. تُضبط حالياً من Firebase Console.
+`config/app`: `latestVersion`، `minVersion` (نصوص `X.Y.Z`)، `androidUrl`، `iosUrl`، `notes` (+ `updatedBy/updatedAt`). يقرؤها كل حساب نشط، ويكتبها المدراء فقط، من شاشة **«إصدار التطبيق»** (`/app-release`، `canManageAppRelease`): تحقق `AppUpdatePolicy.check` (رقم صحيح، الحد الأدنى لا يتجاوز الأحدث، روابط `https`)، والحقل الفارغ يُحذف، وتأكيد قبل رفع `minVersion` (يمنع النسخ الأقدم)، وزر لتجربة الرابط، وتدقيق `config.update`. **المستودع خاص**: رابط ملف GitHub Release يحتاج دخولاً، فرابط التنزيل للتدريسيين من Google Drive بمشاركة «أي شخص لديه الرابط» بصيغة التنزيل المباشر `https://drive.google.com/uc?export=download&id=<ID>`.
 `accessRequests/{email}`: `email`، `name`، `note`، `requestedAt` (انظر «طلبات الانضمام» أعلاه).
 
 ---

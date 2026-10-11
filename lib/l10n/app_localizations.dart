@@ -3690,7 +3690,7 @@ abstract class AppLocalizations {
   /// No description provided for @auditActionLabel.
   ///
   /// In ar, this message translates to:
-  /// **'{action, select, session_missed{تسجيل محاضرة فائتة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} other{{action}}}'**
+  /// **'{action, select, session_missed{تسجيل محاضرة فائتة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} config_update{تعديل إصدار التطبيق} other{{action}}}'**
   String auditActionLabel(String action);
 
   /// No description provided for @deptAction.
@@ -4624,6 +4624,132 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'عُدِّل {date}'**
   String annEdited(String date);
+
+  /// No description provided for @releaseAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'إصدار التطبيق'**
+  String get releaseAction;
+
+  /// No description provided for @releaseTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إصدار التطبيق'**
+  String get releaseTitle;
+
+  /// No description provided for @releaseHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'بعد نشر APK جديد، اكتب رقمه ورابط تنزيله هنا: كل من نسخته أقدم يرى لافتة «تحديث جديد» مع زر التنزيل. الرقع الصغيرة (Shorebird) تصل وحدها ولا تحتاج هذا.'**
+  String get releaseHelp;
+
+  /// No description provided for @releaseInstalled.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسختك على هذا الجهاز: {version}'**
+  String releaseInstalled(String version);
+
+  /// No description provided for @releaseLatest.
+  ///
+  /// In ar, this message translates to:
+  /// **'أحدث إصدار (مثل 1.4.0)'**
+  String get releaseLatest;
+
+  /// No description provided for @releaseMinimum.
+  ///
+  /// In ar, this message translates to:
+  /// **'أقدم إصدار مسموح (اختياري)'**
+  String get releaseMinimum;
+
+  /// No description provided for @releaseMinimumHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'من نسخته أقدم من هذا لا يستطيع استعمال التطبيق حتى يحدّث. اتركه فارغاً ما لم تتغير القواعد بشكل يكسر النسخ القديمة.'**
+  String get releaseMinimumHelp;
+
+  /// No description provided for @releaseAndroidUrl.
+  ///
+  /// In ar, this message translates to:
+  /// **'رابط تنزيل Android'**
+  String get releaseAndroidUrl;
+
+  /// No description provided for @releaseIosUrl.
+  ///
+  /// In ar, this message translates to:
+  /// **'رابط iOS (اختياري)'**
+  String get releaseIosUrl;
+
+  /// No description provided for @releaseUrlHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'رابط عام يعمل بلا تسجيل دخول، مثل رابط Google Drive بمشاركة «أي شخص لديه الرابط».'**
+  String get releaseUrlHelp;
+
+  /// No description provided for @releaseNotes.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما الجديد (يظهر في اللافتة)'**
+  String get releaseNotes;
+
+  /// No description provided for @releasePreview.
+  ///
+  /// In ar, this message translates to:
+  /// **'بعد الحفظ: من نسخته أقدم من {latest} يرى لافتة التحديث.'**
+  String releasePreview(String latest);
+
+  /// No description provided for @releasePreviewRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'ومن نسخته أقدم من {minimum} يُمنع من استعمال التطبيق حتى يحدّث.'**
+  String releasePreviewRequired(String minimum);
+
+  /// No description provided for @releaseSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُفظ. تظهر اللافتة عند فتح التطبيق.'**
+  String get releaseSaved;
+
+  /// No description provided for @releaseConfirmTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إيقاف النسخ القديمة؟'**
+  String get releaseConfirmTitle;
+
+  /// No description provided for @releaseConfirmBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'كل من نسخته أقدم من {minimum} لن يستطيع استعمال التطبيق حتى يثبّت التحديث، وقد تبقى عنده سجلات غير مرفوعة حتى يحدّث. تأكد أن الرابط يعمل قبل الحفظ.'**
+  String releaseConfirmBody(String minimum);
+
+  /// No description provided for @releaseLatestMissing.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب رقم أحدث إصدار.'**
+  String get releaseLatestMissing;
+
+  /// No description provided for @releaseVersionInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصيغة: أرقام بنقاط، مثل 1.4.0'**
+  String get releaseVersionInvalid;
+
+  /// No description provided for @releaseMinimumAboveLatest.
+  ///
+  /// In ar, this message translates to:
+  /// **'أقدم إصدار مسموح لا يكون أحدث من أحدث إصدار.'**
+  String get releaseMinimumAboveLatest;
+
+  /// No description provided for @releaseUrlInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرابط يجب أن يبدأ بـ https://'**
+  String get releaseUrlInvalid;
+
+  /// No description provided for @releaseOpenLink.
+  ///
+  /// In ar, this message translates to:
+  /// **'تجربة الرابط'**
+  String get releaseOpenLink;
 }
 
 class _AppLocalizationsDelegate
