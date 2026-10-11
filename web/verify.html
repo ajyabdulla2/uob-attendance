@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
+  <!-- The worker's URL; deploy.yml puts the PUSH_URL variable here. -->
+  <meta name="public-api" content="__PUSH_URL__">
   <title>التحقق من وثيقة — قسم علوم الحاسوب</title>
   <!--
     Opened by the QR printed on every PDF the app issues
-    (lib/features/reports): verify.html#<record ID>. Reads one
-    reportVerifications/{id} document through the Firestore REST API without
-    signing in (the rules allow reading a record by its ID, never listing).
+    (lib/features/reports): verify.html#<record ID>. Asks the Cloudflare
+    worker (push-worker/src/public.js) for that reportVerifications record:
+    visitors cannot read Firestore directly, and the worker keeps public
+    reads within a daily share of the Spark quota (429 = try in 24 hours).
     The ID sits in the fragment, so it never reaches the hosting server logs.
   -->
   <style>
@@ -101,10 +104,8 @@
 <script>
 (() => {
   'use strict';
-  // The Firebase project: the hosting site's name (<project>.web.app).
-  const host = location.hostname;
-  const PROJECT = /\.(web\.app|firebaseapp\.com)$/.test(host) ? host.split('.')[0] : 'basrah-researches';
-  const API = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents`;
+  const meta = document.querySelector('meta[name="public-api"]').content;
+  const API = meta.startsWith('http') ? meta.replace(/\/+$/, '') : 'https://uob-push.uob-cs.workers.dev';
   const ID = /^[A-HJKMNP-TV-Z2-9]{24}$/; // ReportRecord.alphabet × 24
 
   const $ = (id) => document.getElementById(id);
@@ -115,24 +116,10 @@
     return e;
   };
 
-  // Firestore REST values → plain JS.
-  const val = (v) => {
-    if (v == null) return null;
-    if ('stringValue' in v) return v.stringValue;
-    if ('integerValue' in v) return Number(v.integerValue);
-    if ('doubleValue' in v) return v.doubleValue;
-    if ('booleanValue' in v) return v.booleanValue;
-    if ('timestampValue' in v) return new Date(v.timestampValue);
-    if ('arrayValue' in v) return (v.arrayValue.values || []).map(val);
-    if ('mapValue' in v) return fields(v.mapValue.fields);
-    return null;
-  };
-  const fields = (f) => Object.fromEntries(Object.entries(f || {}).map(([k, v]) => [k, val(v)]));
-
   const clean = (s) => (s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
   const group = (id) => id.match(/.{1,4}/g).join('-');
-  const when = (d) => d instanceof Date
-    ? d.toLocaleString('ar-IQ-u-nu-latn', { dateStyle: 'long', timeStyle: 'short' })
+  const when = (iso) => iso
+    ? new Date(iso).toLocaleString('ar-IQ-u-nu-latn', { dateStyle: 'long', timeStyle: 'short' })
     : '—';
 
   function status(kind, title, detail) {
@@ -186,7 +173,11 @@
     }
     status('ok', 'جارٍ التحقق…');
     try {
-      const res = await fetch(`${API}/reportVerifications/${id}`);
+      const res = await fetch(`${API}/public/verify/${id}`);
+      if (res.status === 429) {
+        status('bad', 'بلغت عمليات التحقق حدّها اليومي.', 'يرجى المحاولة بعد 24 ساعة.');
+        return;
+      }
       if (res.status === 404) {
         status('bad', '✗ لا توجد وثيقة بهذا الرمز.',
           'الوثيقة لم تصدر من نظام الحضور في القسم، أو أن الرمز نُسخ خطأً. لا تعتمدها قبل مراجعة القسم.');
@@ -194,7 +185,7 @@
         return;
       }
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const d = fields((await res.json()).fields);
+      const d = (await res.json()).record;
       status('ok', '✓ وثيقة صحيحة صادرة من نظام الحضور في قسم علوم الحاسوب.',
         'المعلومات أدناه نسخة محفوظة منها لحظة إصدارها.');
       $('ask').hidden = true;

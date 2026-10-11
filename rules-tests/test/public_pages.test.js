@@ -1,6 +1,8 @@
-// The two collections the public web pages read without signing in:
-// reportVerifications (the QR on every issued PDF → web/verify.html) and
-// announcements (the department's QR poster → web/announcements.html).
+// The two collections behind the public web pages: reportVerifications
+// (the QR on every issued PDF → web/verify.html) and announcements (the
+// department's QR poster → web/announcements.html). Visitors never read
+// them here: the Cloudflare worker does, with its service account and a
+// daily cap (push-worker/src/public.js).
 import { describe, it, before, beforeEach, after } from 'node:test';
 import { assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
 import {
@@ -37,9 +39,10 @@ describe('reportVerifications', () => {
     await assertSucceeds(setDoc(doc(as(env, SUPER), 'reportVerifications', 'ABCDEFGHJKMNPQRSTVWXYZ23'), record(SUPER)));
   });
 
-  it('anyone holding the ID reads it, nobody lists them', async () => {
+  it('nobody reads or lists them directly, even with the ID (the worker does)', async () => {
     await assertSucceeds(setDoc(doc(as(env, T1), 'reportVerifications', RID), record(T1)));
-    await assertSucceeds(getDoc(doc(anon(), 'reportVerifications', RID)));
+    await assertFails(getDoc(doc(anon(), 'reportVerifications', RID)));
+    await assertFails(getDoc(doc(as(env, SUPER), 'reportVerifications', RID)));
     await assertFails(getDocs(collection(anon(), 'reportVerifications')));
     await assertFails(getDocs(query(collection(as(env, SUPER), 'reportVerifications'), limit(1))));
   });
@@ -107,12 +110,14 @@ describe('announcements', () => {
     await assertFails(setDoc(doc(as(env, SUPER), 'announcements', 'a2'), announcement(DEPUTY)));
   });
 
-  it('visitors read the latest 30 without signing in, not more at once', async () => {
+  it('admins read them in the app; visitors and other accounts do not (the worker does)', async () => {
     await assertSucceeds(setDoc(doc(as(env, SUPER), 'announcements', 'a1'), announcement(SUPER)));
-    const col = collection(anon(), 'announcements');
-    await assertSucceeds(getDocs(query(col, orderBy('createdAt', 'desc'), limit(30))));
-    await assertSucceeds(getDoc(doc(anon(), 'announcements', 'a1')));
-    await assertFails(getDocs(query(col, orderBy('createdAt', 'desc'), limit(31))));
-    await assertFails(getDocs(col));
+    const latest = (email) => query(collection(as(env, email), 'announcements'), orderBy('createdAt', 'desc'), limit(30));
+    await assertSucceeds(getDocs(latest(SUPER)));
+    await assertSucceeds(getDocs(latest(DEPUTY)));
+    await assertFails(getDocs(latest(T1)));
+    await assertFails(getDocs(latest(SM3)));
+    await assertFails(getDoc(doc(anon(), 'announcements', 'a1')));
+    await assertFails(getDocs(query(collection(anon(), 'announcements'), limit(30))));
   });
 });

@@ -604,17 +604,18 @@ service cloud.firestore {
 
     // ================================================= reportVerifications ==
     // A frozen copy of each issued PDF (lib/features/reports/domain/
-    // report_record.dart), read by the public page its QR opens
-    // (web/verify.html). Public by ID only: the ID is random (24 of 30
-    // characters, ~117 bits), so reading a record needs the paper that
-    // carries it; listing is never allowed. Records are never changed.
+    // report_record.dart). The public page its QR opens (web/verify.html)
+    // gets it from the Cloudflare worker (push-worker/src/public.js), which
+    // reads with its service account and caps public reads per day; nobody
+    // reads it here. The ID is random (24 of 30 characters, ~117 bits), so a
+    // record is reachable only from the paper that carries it. Records are
+    // never changed.
     function listUpTo(v, max) {
       return v is list && v.size() <= max;
     }
 
     match /reportVerifications/{id} {
-      allow get: if true;
-      allow list: if false;
+      allow read: if false;
       allow create: if isActive()
         && id.matches('^[A-HJKMNP-TV-Z2-9]{24}$')
         && request.resource.data.keys().hasOnly(
@@ -633,17 +634,16 @@ service cloud.firestore {
     }
 
     // ======================================================= announcements ==
-    // إعلانات القسم: public (web/announcements.html, behind the department's
-    // QR poster); admins write them. A public page cannot ask for more than
-    // 30 at once (each document read counts against the Spark quota).
+    // إعلانات القسم: admins write and read them here; the public page
+    // (web/announcements.html, behind the department's QR poster) gets them
+    // from the Cloudflare worker, which caps public reads per day.
     function validAnnouncement(d) {
       return nonEmptyString(d.title) && d.title.size() <= 200
         && d.get('body', '') is string && d.get('body', '').size() <= 5000;
     }
 
     match /announcements/{id} {
-      allow get: if true;
-      allow list: if request.query.limit <= 30;
+      allow read: if isAdmin();
       allow create: if isAdmin()
         && request.resource.data.keys().hasOnly(['title', 'body', 'createdBy', 'createdAt', 'departmentId'])
         && validAnnouncement(request.resource.data)

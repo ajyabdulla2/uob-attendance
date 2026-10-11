@@ -7,10 +7,15 @@
 //     send. Device tokens come from presence/{email}.pushToken, written by
 //     each teacher's own app. Answers {"sent", "noDevice", "failed"}.
 //   GET /health  whether the service account can read Firestore and send.
+//   GET /public/verify/<ID>, GET /public/announcements
+//                the signed-out pages on Hosting, within a daily share of
+//                the Firestore quota (src/public.js).
 //
 // Secrets/vars (wrangler): SERVICE_ACCOUNT_JSON (roles: Cloud Datastore
-// Viewer + Firebase Cloud Messaging API Admin), PROJECT_ID.
+// Viewer + Firebase Cloud Messaging API Admin), PROJECT_ID,
+// PUBLIC_DAILY_READS; Durable Object binding QUOTA.
 import { accessToken, verifyIdToken } from './google.js';
+import { PUBLIC_DAILY_READS, durableQuota, handlePublic } from './public.js';
 
 export const LIMITS = { recipients: 500, title: 120, body: 2000 };
 
@@ -73,6 +78,28 @@ async function getDocs(paths, ctx) {
   return out;
 }
 
+async function latestAnnouncements(limit, ctx) {
+  const res = await callFetch(ctx, `${firestoreBase(ctx.projectId)}:runQuery`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${ctx.token}`, 'content-type': 'application/json' },
+    body: JSON.stringify({
+      structuredQuery: {
+        from: [{ collectionId: 'announcements' }],
+        orderBy: [{ field: { fieldPath: 'createdAt' }, direction: 'DESCENDING' }],
+        limit,
+      },
+    }),
+  });
+  if (!res.ok) throw new Error(`firestore ${res.status}: ${await res.text()}`);
+  return (await res.json()).filter((r) => r.document).map((r) => r.document.fields ?? {});
+}
+
+/** The PUBLIC_DAILY_READS var (0 turns the public pages off), else 15%. */
+export function publicLimit(v) {
+  const n = Number(v);
+  return v != null && v !== '' && Number.isFinite(n) && n >= 0 ? n : PUBLIC_DAILY_READS;
+}
+
 export function isActiveSuperAdmin(fields) {
   if (!fields || fields.active?.booleanValue !== true) return false;
   const roles = fields.roles?.arrayValue?.values ?? [];
@@ -108,11 +135,17 @@ export function parseSend(body) {
   return { to, title, body: text };
 }
 
-export function createHandler({ fetchFn = fetch, nowMs = () => Date.now() } = {}) {
+export function createHandler({
+  fetchFn = fetch,
+  nowMs = () => Date.now(),
+  quotaFor = (env) => (env.QUOTA ? durableQuota(env.QUOTA) : null),
+  cache = globalThis.caches?.default ?? null,
+} = {}) {
   return async function handle(request, env) {
     const origin = request.headers.get('origin') ?? '';
     const url = new URL(request.url);
-    if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors(origin) });
+    const isPublic = url.pathname.startsWith('/public/');
+    if (request.method === 'OPTIONS' && !isPublic) return new Response(null, { status: 204, headers: cors(origin) });
     const projectId = env.PROJECT_ID;
     let serviceAccount;
     try {
@@ -121,6 +154,20 @@ export function createHandler({ fetchFn = fetch, nowMs = () => Date.now() } = {}
       return json(500, { error: 'not-configured' }, origin);
     }
     const google = { fetchFn, nowMs: nowMs() };
+
+    if (isPublic) {
+      const ctx = async () => ({ fetch: fetchFn, projectId, token: await accessToken(serviceAccount, google) });
+      return handlePublic(request, {
+        read: {
+          record: async (id) => getDoc(`reportVerifications/${id}`, await ctx()),
+          announcements: async (limit) => latestAnnouncements(limit, await ctx()),
+        },
+        quota: quotaFor(env),
+        cache,
+        limit: publicLimit(env.PUBLIC_DAILY_READS),
+        nowMs,
+      });
+    }
 
     if (request.method === 'GET' && url.pathname === '/health') {
       const out = { firestore: false, fcm: false };
@@ -188,4 +235,5 @@ export function createHandler({ fetchFn = fetch, nowMs = () => Date.now() } = {}
 }
 
 const handle = createHandler();
-export default { fetch: (request, env) => handle(request, env) };
+export const worker = { fetch: (request, env) => handle(request, env) };
+export default worker;

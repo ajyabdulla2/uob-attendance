@@ -4,11 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>إعلانات قسم علوم الحاسوب — جامعة البصرة</title>
+  <!-- The worker's URL; deploy.yml puts the PUSH_URL variable here. -->
+  <meta name="public-api" content="__PUSH_URL__">
   <meta name="description" content="آخر إعلانات قسم علوم الحاسوب، كلية التربية للعلوم الصرفة، جامعة البصرة.">
   <!--
     The page behind the department's QR poster (app: «إعلانات القسم» →
-    poster). Reads the latest 30 announcements through the Firestore REST
-    API without signing in (the rules allow at most 30 per request).
+    poster). Asks the Cloudflare worker (push-worker/src/public.js) for the
+    latest 30: visitors cannot read Firestore directly, and the worker keeps
+    public reads within a daily share of the Spark quota (429 = try in 24
+    hours).
   -->
   <style>
     /* Cairo is bundled with the Flutter web build (assets/fonts/cairo). */
@@ -50,9 +54,8 @@
 <script>
 (() => {
   'use strict';
-  const host = location.hostname;
-  const PROJECT = /\.(web\.app|firebaseapp\.com)$/.test(host) ? host.split('.')[0] : 'basrah-researches';
-  const URL_ = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents:runQuery`;
+  const meta = document.querySelector('meta[name="public-api"]').content;
+  const API = meta.startsWith('http') ? meta.replace(/\/+$/, '') : 'https://uob-push.uob-cs.workers.dev';
   const WEEK = 7 * 24 * 3600 * 1000;
 
   const el = (tag, text, cls) => {
@@ -61,41 +64,34 @@
     if (cls) e.className = cls;
     return e;
   };
-  const str = (f, k) => (f && f[k] && f[k].stringValue) || '';
-  const date = (f, k) => (f && f[k] && f[k].timestampValue ? new Date(f[k].timestampValue) : null);
+  const date = (iso) => (iso ? new Date(iso) : null);
   const fmt = (d) => d.toLocaleDateString('ar-IQ-u-nu-latn', { dateStyle: 'full' });
 
   async function load() {
     const list = document.getElementById('list');
     try {
-      const res = await fetch(URL_, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          structuredQuery: {
-            from: [{ collectionId: 'announcements' }],
-            orderBy: [{ field: { fieldPath: 'createdAt' }, direction: 'DESCENDING' }],
-            limit: 30,
-          },
-        }),
-      });
+      const res = await fetch(`${API}/public/announcements`);
+      if (res.status === 429) {
+        list.replaceChildren(el('p', 'بلغت زيارات الصفحة حدّها اليومي. يرجى المحاولة بعد 24 ساعة.', 'msg'));
+        return;
+      }
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const docs = (await res.json()).filter((r) => r.document).map((r) => r.document.fields);
+      const docs = (await res.json()).items;
       list.replaceChildren();
       if (!docs.length) { list.append(el('p', 'لا إعلانات حالياً.', 'msg')); return; }
       const now = Date.now();
       for (const f of docs) {
         const a = el('article');
-        a.append(el('h2', str(f, 'title')));
-        const at = date(f, 'createdAt');
-        const edited = date(f, 'updatedAt');
+        a.append(el('h2', f.title));
+        const at = date(f.createdAt);
+        const edited = date(f.updatedAt);
         if (at) {
           const w = el('div', fmt(at), 'when');
           if (edited) w.textContent += ` · عُدِّل ${fmt(edited)}`;
           if (now - at.getTime() < WEEK) w.append(el('span', 'جديد', 'new'));
           a.append(w);
         }
-        const body = str(f, 'body');
+        const body = f.body;
         if (body) a.append(el('p', body));
         list.append(a);
       }
