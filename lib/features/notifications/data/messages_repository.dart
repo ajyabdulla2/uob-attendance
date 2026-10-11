@@ -47,6 +47,19 @@ class MessagesRepository {
     }
   }
 
+  /// Deletes every message in [email]'s inbox (account deletion).
+  Future<void> clearInbox(String email) async {
+    while (true) {
+      final page = await _inbox(email).limit(_maxWrites).get();
+      if (page.docs.isEmpty) return;
+      final batch = _fs.batch();
+      for (final d in page.docs) {
+        batch.delete(d.reference);
+      }
+      await batch.commit();
+    }
+  }
+
   Future<void> delete(AppMessage message) => message.audience == MessageAudience.person
       ? _inbox(message.to!).doc(message.id).delete()
       : _col.doc(message.id).delete();

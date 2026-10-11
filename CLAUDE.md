@@ -231,7 +231,7 @@ tool/            سكربتات الإعداد والفحص
 | EAS Build (بناء APK على خوادم سحابية) | **GitHub Actions** `.github/workflows/android.yml` على خوادم GitHub (فيها Android SDK) | ✅ جاهز |
 | EAS Update (تحديث JS بلا بناء جديد) | **Shorebird** code push لكود Dart: `android.yml` يبني كل APK كإصدار Shorebird، و`patch.yml` يرسل الرقع | ✅ مفعّل (`shorebird.yaml`) |
 | رسالة «تحديث جديد جاهز» | `config/app` + `UpdateGate` (لافتة أو شاشة إلزامية مع رابط التنزيل) | ✅ جاهز |
-| EAS Submit | iOS: `flutter build ipa` على macOS (GitHub macOS runner أو Codemagic) ثم TestFlight | 📝 يحتاج حساب Apple (99$ سنوياً) |
+| EAS Submit | iOS: `.github/workflows/ios.yml` على خادم macOS في GitHub يبني ويوقّع ويرفع إلى App Store Connect/TestFlight (انظر «iOS» أدناه) | 🔧 جاهز، بانتظار حساب Apple والأسرار |
 | Firebase Hosting (نسخة الحاسوب + صفحة الخصوصية) | `firebase.json` + `web/privacy.html` (تُخدَم في `/privacy.html`) | ✅ منشور على `uob-cs-attendance.web.app` (والقديم `basrah-researches.web.app` يحوّل إليه)؛ نص الخصوصية كامل مع بريد القسم `computer.edup@uobasrah.edu.iq`، بانتظار اعتماد القسم |
 | «اختبر القواعد قبل النشر» | `ci.yml` في كل push، و`deploy.yml` لا ينشر القواعد إلا بعد نجاح اختبارات المحاكي | ✅ جاهز |
 | QR التحقق والإعلانات | صفحتان ثابتتان على Hosting (`verify.html`، `announcements.html`) تقرآن عبر الـ Worker بحد يومي 15٪ من حصة القراءة | ✅ |
@@ -259,6 +259,8 @@ tool/            سكربتات الإعداد والفحص
 | `FIREBASE_PROJECT_ID` | variable | معرّف مشروع Firebase |
 | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | secret | حساب Cloudflare المجاني؛ الرمز بقالب «Edit Cloudflare Workers» (لنشر `push-worker/`) |
 | `PUSH_SERVICE_ACCOUNT_JSON` | secret | حساب خدمة `push-sender` بدورَي **Cloud Datastore Viewer** و**Firebase Cloud Messaging API Admin** فقط؛ يُنقل إلى سر الـ Worker ولا يُطبع |
+| `APP_STORE_CONNECT_ISSUER_ID`, `APP_STORE_CONNECT_KEY_ID`, `APP_STORE_CONNECT_API_KEY` | secret | مفتاح App Store Connect API للفريق بدور **Admin** (ينشئ شهادة التوزيع): المعرّفان ونص ملف `AuthKey_XXXX.p8` (يُنزَّل مرة واحدة) |
+| `IOS_CERTIFICATE_PRIVATE_KEY` | secret | مفتاح RSA بصيغة PEM تُبنى عليه شهادة التوزيع، يُنشأ **مرة واحدة** (`ssh-keygen -t rsa -b 2048 -m PEM -f ios_cert_key -q -N ""`): تغييره يُنشئ شهادة جديدة، وApple تسمح بثلاث فقط |
 | `PUSH_URL` | variable | رابط الـ Worker (`https://uob-push.<subdomain>.workers.dev`)؛ `android.yml` يمرّره `--dart-define` |
 
 ### سير العمل (`.github/workflows/`)
@@ -281,6 +283,15 @@ tool/            سكربتات الإعداد والفحص
 - **1.4.0 أصلي** (`firebase_messaging` و`flutter_local_notifications`): لا تُرقَّع 1.3.0+12 بكود ما بعده (المكتبتان غائبتان عن ذلك الـ APK). بُني 1.4.0+18 (GitHub Release `v1.4.0`) والافتراضي في `patch.yml` عليه؛ الرقع من الآن لـ `1.4.0+18`.
 - **قرص الخادم**: منذ 1.4.0 يملأ بناء الـ APK قرص خادم GitHub، فيموت الخادم في منتصف الخطوة ويضيع سجلها (`get_job_logs` يعطي 404 وخطوات «Post Run» تبقى pending). حدث لبناء 1.4.0 ولرقعتين متتاليتين؛ لذلك يبدأ `android.yml` و`patch.yml` بخطوة «Free disk space».
 - الخطة المجانية: 5,000 تثبيت رقعة شهرياً. ترحيلات Drift كود Dart (قابلة للترقيع) لكن اختبرها جيداً؛ القاعدة المحلية تحمل بيانات غير مرفوعة.
+
+### iOS (App Store)
+- الاسم «حضور علوم الحاسوب» (English: UoBasrah CS Attendance)، Bundle ID **`iq.edu.uobasrah.uobAttendance`** (يختلف عن `applicationId` في Android، ولا يتغيّر بعد تسجيله). iPhone فقط (`TARGETED_DEVICE_FAMILY = 1`) فلا تُطلب صور شاشة iPad. iOS 15+.
+- يُنشر بحساب Apple فردي (أخو المستخدم)، بتوزيع **Unlisted App** (لا يظهر في البحث، يُثبَّت من رابط) مع كتاب تخويل من القسم في ملاحظات المراجعة. بيانات صفحة المتجر في artifact «بيانات App Store للتطبيق».
+- **حذف الحساب** (شرط Apple 5.1.1(v)، `features/auth/presentation/delete_account.dart`): الملف الشخصي (وشاشة «الحساب غير مضاف») ← كلمة المرور ← يُمسح رمز الإشعارات و`inbox` ويُحذف حساب Firebase Auth ثم الخروج. وثيقة `users/{email}` وسجلاته تبقى (سجلات القسم، مذكور في النافذة وفي `privacy.html`). يُرفض مع سجلات غير مرفوعة. بلا تعديل قواعد.
+- `ios.yml` (يدوي؛ دقائق macOS تُحسب ×10 في المستودع الخاص): `macos-26` (المتجر يشترط SDK iOS 26) ← `codemagic-cli-tools` يجلب شهادة التوزيع وملف App Store بمفتاح API (`fetch-signing-files --create`، يتطلب أن يكون Bundle ID مسجّلاً بخاصية Push Notifications) ← `flutter build ipa` أو `shorebird release ios` ← `app-store-connect publish`. رقم البناء = رقم التشغيل.
+- `Runner.entitlements` فيه `aps-environment = production` (لا بناء تطوير محلي؛ البناء يوقَّع بملف App Store). `Info.plist`: `ITSAppUsesNonExemptEncryption = false` (HTTPS وAES لملف النسخة الاحتياطية فقط، معفى)، `remote-notification`، ونص إذن الصور (`file_picker`). `AppDelegate` يجعل الإشعارات تظهر والتطبيق مفتوح.
+- **Firebase على iOS**: يلزم إضافة تطبيق iOS في المشروع (`flutterfire configure` على جهاز المطوّر) ثم تحديث السر `FIREBASE_OPTIONS_DART_B64`؛ `ios.yml` يرفض ملفاً بلا خيارات iOS. والإشعارات تحتاج مفتاح APNs (.p8) يُرفع في Firebase ← Project settings ← Cloud Messaging.
+- صفحة الدعم `web/support.html` (Support URL في المتجر).
 
 ### `config/app` و`accessRequests` (إضافات على جدول SPEC)
 `config/app`: `latestVersion`، `minVersion` (نصوص `X.Y.Z`)، `androidUrl`، `iosUrl`، `notes` (+ `updatedBy/updatedAt`). يقرؤها كل حساب نشط، ويكتبها المدراء فقط، من شاشة **«إصدار التطبيق»** (`/app-release`، `canManageAppRelease`): تحقق `AppUpdatePolicy.check` (رقم صحيح، الحد الأدنى لا يتجاوز الأحدث، روابط `https`)، والحقل الفارغ يُحذف، وتأكيد قبل رفع `minVersion` (يمنع النسخ الأقدم)، وزر لتجربة الرابط، وتدقيق `config.update`. **المستودع خاص**: رابط ملف GitHub Release يحتاج دخولاً، فرابط التنزيل للتدريسيين من Google Drive بمشاركة «أي شخص لديه الرابط» بصيغة التنزيل المباشر `https://drive.google.com/uc?export=download&id=<ID>`.

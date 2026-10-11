@@ -98,6 +98,42 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
+  /// No description provided for @deleteAccount.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف الحساب'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُحذف حساب الدخول (البريد وكلمة المرور) ورسائلك الخاصة وربط هذا الهاتف بالإشعارات، ثم تخرج من التطبيق.\n\nتبقى سجلات الحضور التي سجّلتها واسمك في قائمة تدريسيي القسم لأنها سجلات رسمية للقسم؛ لحذف اسمك منها راسل إدارة القسم.\n\nيمكنك تفعيل الحساب من جديد بالبريد نفسه ما دام القسم يضيفك.'**
+  String get deleteAccountBody;
+
+  /// No description provided for @deleteAccountPassword.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب كلمة المرور للتأكيد'**
+  String get deleteAccountPassword;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف نهائياً'**
+  String get deleteAccountConfirm;
+
+  /// No description provided for @deleteAccountDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُذف الحساب.'**
+  String get deleteAccountDone;
+
+  /// No description provided for @deleteAccountPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن حذف الحساب: توجد {count} سجلات غير مرفوعة. اتصل بالإنترنت وانتظر الرفع أولاً.'**
+  String deleteAccountPending(int count);
+
   /// No description provided for @menuDaily.
   ///
   /// In ar, this message translates to:

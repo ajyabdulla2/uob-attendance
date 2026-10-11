@@ -10,6 +10,27 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get deleteAccount => 'Delete account';
+
+  @override
+  String get deleteAccountBody =>
+      'Your sign-in account (e-mail and password), your private messages and this phone\'s notification link are deleted, then you are signed out.\n\nThe attendance you recorded and your name in the department\'s staff list stay, as official department records; to be removed from the list, contact the department.\n\nYou can activate the account again with the same e-mail while the department lists you.';
+
+  @override
+  String get deleteAccountPassword => 'Enter your password to confirm';
+
+  @override
+  String get deleteAccountConfirm => 'Delete permanently';
+
+  @override
+  String get deleteAccountDone => 'Account deleted.';
+
+  @override
+  String deleteAccountPending(int count) {
+    return 'You cannot delete the account: $count records are not uploaded yet. Connect and wait for the upload first.';
+  }
+
+  @override
   String get menuDaily => 'Daily follow-up';
 
   @override

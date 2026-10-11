@@ -12,6 +12,7 @@ import '../../../l10n/l10n.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../push/application/push_providers.dart';
 import '../../auth/data/auth_repository.dart';
+import '../../auth/presentation/delete_account.dart';
 
 /// SPEC «الملف الشخصي»: البيانات، تغيير كلمة المرور، اللغة، الوضع الليلي، تسجيل الخروج.
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -178,6 +179,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       leading: Icon(Icons.logout, color: theme.colorScheme.error),
                       title: Text(l10n.signOut, style: TextStyle(color: theme.colorScheme.error)),
                       onTap: _signOut,
+                    ),
+                    ListTile(
+                      key: const Key('profile.deleteAccount'),
+                      leading: Icon(Icons.delete_forever, color: theme.colorScheme.error),
+                      title: Text(l10n.deleteAccount, style: TextStyle(color: theme.colorScheme.error)),
+                      onTap: () => deleteAccountFlow(context, ref, email: user.id),
                     ),
                   ],
                 ),

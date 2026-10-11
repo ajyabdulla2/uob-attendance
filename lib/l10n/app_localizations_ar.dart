@@ -10,6 +10,27 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get deleteAccount => 'حذف الحساب';
+
+  @override
+  String get deleteAccountBody =>
+      'يُحذف حساب الدخول (البريد وكلمة المرور) ورسائلك الخاصة وربط هذا الهاتف بالإشعارات، ثم تخرج من التطبيق.\n\nتبقى سجلات الحضور التي سجّلتها واسمك في قائمة تدريسيي القسم لأنها سجلات رسمية للقسم؛ لحذف اسمك منها راسل إدارة القسم.\n\nيمكنك تفعيل الحساب من جديد بالبريد نفسه ما دام القسم يضيفك.';
+
+  @override
+  String get deleteAccountPassword => 'اكتب كلمة المرور للتأكيد';
+
+  @override
+  String get deleteAccountConfirm => 'حذف نهائياً';
+
+  @override
+  String get deleteAccountDone => 'حُذف الحساب.';
+
+  @override
+  String deleteAccountPending(int count) {
+    return 'لا يمكن حذف الحساب: توجد $count سجلات غير مرفوعة. اتصل بالإنترنت وانتظر الرفع أولاً.';
+  }
+
+  @override
   String get menuDaily => 'المتابعة اليومية';
 
   @override
