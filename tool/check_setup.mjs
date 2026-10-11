@@ -250,9 +250,9 @@ if (!projectId || !apiKey) {
     report(S3, 'Cloud Firestore', 'fail', `${fs.status}: ${fsMsg}`);
   }
 
-  const site = await request(`https://${projectId}.web.app/privacy.html`);
+  const site = await request('https://uob-cs-attendance.web.app/privacy.html');
   if (site.status === 200 && site.text.includes('سياسة الخصوصية')) {
-    report(S3, 'Hosting: صفحة الخصوصية', 'ok', `https://${projectId}.web.app/privacy.html`);
+    report(S3, 'Hosting: صفحة الخصوصية', 'ok', 'https://uob-cs-attendance.web.app/privacy.html');
   } else {
     report(S3, 'Hosting: صفحة الخصوصية', 'warn', 'لم تُنشر نسخة الويب بعد (Deploy Firebase ← hosting)');
   }

@@ -99,7 +99,7 @@ tool/            سكربتات الإعداد والفحص
 - خدمتان فقط: **Authentication (بريد/كلمة مرور)** و**Cloud Firestore**. ممنوع Cloud Functions و Cloud Storage.
 - **لا مفاتيح في المستودع**: `lib/firebase_options.dart`، `google-services.json`، `GoogleService-Info.plist`، `.firebaserc` كلها في `.gitignore`. `tool/ensure_firebase_options.sh` يكتب ملفاً مؤقتاً يرمي خطأ، فيظهر `ConfigErrorApp` بدل الانهيار.
 - مشروع المحاكي والاختبارات: `demo-uob-attendance`.
-- مشروع الإنتاج: **`basrah-researches`** — اسم قديم لمشروع لم يُستعمل (بلغ الحساب حدّ عدد المشاريع)، وهو مخصّص لهذا التطبيق وحده. المعرّف لا يتغيّر، فنسخة الويب على `basrah-researches.web.app`.
+- مشروع الإنتاج: **`basrah-researches`** — اسم قديم لمشروع لم يُستعمل (بلغ الحساب حدّ عدد المشاريع)، وهو مخصّص لهذا التطبيق وحده. المعرّف لا يتغيّر، لكن الاسم يربك من يمسح الرمز، فنسخة الويب والصفحات العامة على **موقع Hosting ثانٍ باسم التطبيق `uob-cs-attendance.web.app`** (مجاني في Spark). `firebase.json` فيه موقعان: الجديد، والافتراضي `basrah-researches.web.app` يحوّل كل مسار إليه (302، والجزء بعد `#` يبقى، فرموز الوثائق المطبوعة قبله تعمل). `deploy.yml` يُنشئ الموقع إن لم يوجد. الرابط في التطبيق `AppConfig.siteUrl`، وأصول الـ Worker المسموحة (`ALLOWED_ORIGINS`) تشمل الاثنين. جلسة الدخول على الويب مرتبطة بالنطاق، فمن دخل من الرابط القديم يدخل مرة أخرى.
 
 ### الحسابات والصلاحيات
 - وثيقة الحساب `users/{email}` — **المعرّف هو البريد بأحرف صغيرة**. القواعد تقرأها بـ `get(/users/$(request.auth.token.email.lower()))`.
@@ -230,7 +230,7 @@ tool/            سكربتات الإعداد والفحص
 | EAS Update (تحديث JS بلا بناء جديد) | **Shorebird** code push لكود Dart: `android.yml` يبني كل APK كإصدار Shorebird، و`patch.yml` يرسل الرقع | ✅ مفعّل (`shorebird.yaml`) |
 | رسالة «تحديث جديد جاهز» | `config/app` + `UpdateGate` (لافتة أو شاشة إلزامية مع رابط التنزيل) | ✅ جاهز |
 | EAS Submit | iOS: `flutter build ipa` على macOS (GitHub macOS runner أو Codemagic) ثم TestFlight | 📝 يحتاج حساب Apple (99$ سنوياً) |
-| Firebase Hosting (نسخة الحاسوب + صفحة الخصوصية) | `firebase.json` + `web/privacy.html` (تُخدَم في `/privacy.html`) | ✅ منشور على `basrah-researches.web.app` (7 تشرين الأول 2026)؛ نص الخصوصية كامل مع بريد القسم `computer.edup@uobasrah.edu.iq`، بانتظار اعتماد القسم |
+| Firebase Hosting (نسخة الحاسوب + صفحة الخصوصية) | `firebase.json` + `web/privacy.html` (تُخدَم في `/privacy.html`) | ✅ منشور على `uob-cs-attendance.web.app` (والقديم `basrah-researches.web.app` يحوّل إليه)؛ نص الخصوصية كامل مع بريد القسم `computer.edup@uobasrah.edu.iq`، بانتظار اعتماد القسم |
 | «اختبر القواعد قبل النشر» | `ci.yml` في كل push، و`deploy.yml` لا ينشر القواعد إلا بعد نجاح اختبارات المحاكي | ✅ جاهز |
 | QR التحقق والإعلانات | صفحتان ثابتتان على Hosting (`verify.html`، `announcements.html`) تقرآن عبر الـ Worker بحد يومي 15٪ من حصة القراءة | ✅ |
 | Expo Push | FCM يحتاج خادماً للإرسال (غير متاح في Spark) → إشعارات داخل التطبيق من Firestore، وإشعارات محلية على الجهاز (مثل «سجلات غير مرفوعة منذ 24 ساعة») في المرحلة 2 | 📝 قرار |

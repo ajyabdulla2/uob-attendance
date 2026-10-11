@@ -20,6 +20,8 @@ import { PUBLIC_DAILY_READS, durableQuota, handlePublic } from './public.js';
 export const LIMITS = { recipients: 500, title: 120, body: 2000 };
 
 const ALLOWED_ORIGINS = new Set([
+  'https://uob-cs-attendance.web.app',
+  'https://uob-cs-attendance.firebaseapp.com',
   'https://basrah-researches.web.app',
   'https://basrah-researches.firebaseapp.com',
   'http://localhost:8080',

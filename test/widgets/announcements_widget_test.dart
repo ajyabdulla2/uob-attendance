@@ -59,7 +59,7 @@ void main() {
     await tester.pumpAndSettle();
     final qr = tester.widget<QrImageView>(find.byType(QrImageView));
     expect(qr, isNotNull);
-    expect(find.text('https://basrah-researches.web.app/announcements.html'), findsOneWidget);
+    expect(find.text('https://uob-cs-attendance.web.app/announcements.html'), findsOneWidget);
   });
 
   testWidgets('teachers and stage managers do not see it', (tester) async {

@@ -140,8 +140,9 @@ test('ID tokens: unknown key id is refused', async () => {
 test('web panel preflight gets CORS headers for the app origin only', async () => {
   const h = createHandler({ fetchFn: fakeGoogle().fetchFn, nowMs: () => NOW });
   const pre = (origin) => h(new Request('https://w.dev/send', { method: 'OPTIONS', headers: { origin } }), env);
-  assert.equal((await pre('https://basrah-researches.web.app')).headers.get('access-control-allow-origin'),
-    'https://basrah-researches.web.app');
+  for (const site of ['https://uob-cs-attendance.web.app', 'https://basrah-researches.web.app']) {
+    assert.equal((await pre(site)).headers.get('access-control-allow-origin'), site);
+  }
   assert.equal((await pre('https://evil.example')).headers.get('access-control-allow-origin'), null);
 });
 
