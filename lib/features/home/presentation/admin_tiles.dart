@@ -12,9 +12,9 @@ import '../domain/admin_menu.dart';
 
 /// The management tools as titled rows of tiles, one colour per group.
 ///
-/// Icons: only ones already in the 1.4.0 release (Shorebird patches cannot
-/// add glyphs, see CLAUDE.md). The grid is plain rows, not a GridView, so the
-/// home screen keeps a single scrollable.
+/// Icons: exactly the set of the 1.4.0 release — a patch can neither add nor
+/// drop a glyph (test/core/release_icons_test.dart). The grid is plain rows,
+/// not a GridView, so the home screen keeps a single scrollable.
 class AdminTiles extends ConsumerWidget {
   const AdminTiles({super.key, required this.sections});
 
@@ -118,9 +118,14 @@ class _Tile extends StatelessWidget {
       AdminTool.teacherActivity => ('home.activity', Icons.how_to_reg, l10n.activityAction, Routes.teacherActivity),
       AdminTool.warnings => ('home.warnings', Icons.warning_amber, l10n.menuWarnings, Routes.warnings),
       AdminTool.leaves => ('home.leaves', Icons.event_available, l10n.leavesAction, Routes.leaves),
-      AdminTool.import => ('home.import', Icons.upload_file, l10n.navImport, Routes.import),
-      AdminTool.assignments => ('home.assignments', Icons.link, l10n.navAssignments, Routes.assignments),
-      AdminTool.accounts => ('home.accounts', Icons.manage_accounts, l10n.navAccounts, Routes.accounts),
+      AdminTool.import => ('home.import', Icons.upload_file_outlined, l10n.navImport, Routes.import),
+      AdminTool.assignments => ('home.assignments', Icons.link_outlined, l10n.navAssignments, Routes.assignments),
+      AdminTool.accounts => (
+        'home.accounts',
+        badge > 0 ? Icons.manage_accounts : Icons.manage_accounts_outlined,
+        l10n.navAccounts,
+        Routes.accounts,
+      ),
       AdminTool.dataFix => ('home.dataFix', Icons.build_outlined, l10n.menuDataFix, Routes.dataFix),
       AdminTool.announcements => ('home.announcements', Icons.event_note, l10n.annAction, Routes.announcements),
       AdminTool.yearSettings => ('home.year', Icons.tune, l10n.menuYear, Routes.yearSettings),
