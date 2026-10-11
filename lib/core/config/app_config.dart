@@ -21,8 +21,10 @@ abstract final class AppConfig {
   static const pushEndpoint = String.fromEnvironment('PUSH_URL');
 
   /// The Firebase Hosting site: the public pages `verify.html` (QR on every
-  /// issued PDF) and `announcements.html` live there.
-  static const siteUrl = String.fromEnvironment('SITE_URL', defaultValue: 'https://basrah-researches.web.app');
+  /// issued PDF) and `announcements.html` live there. The project's default
+  /// site (basrah-researches.web.app, printed on earlier documents) redirects
+  /// here (firebase.json).
+  static const siteUrl = String.fromEnvironment('SITE_URL', defaultValue: 'https://uob-cs-attendance.web.app');
 
   /// University e-mail domain. Not enforced yet (pending department decision
   /// «هل الدخول بالبريد الجامعي متاح لكل التدريسيين»); used for hints only.

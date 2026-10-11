@@ -3,11 +3,23 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
-  "hosting": {
-    "public": "build/web",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-    "rewrites": [{ "source": "**", "destination": "/index.html" }]
-  },
+  "hosting": [
+    {
+      "site": "uob-cs-attendance",
+      "public": "build/web",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [{ "source": "**", "destination": "/index.html" }]
+    },
+    {
+      "site": "basrah-researches",
+      "public": "build/web",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "redirects": [
+        { "source": "/", "destination": "https://uob-cs-attendance.web.app/", "type": 302 },
+        { "regex": "^/(.*)$", "destination": "https://uob-cs-attendance.web.app/:1", "type": 302 }
+      ]
+    }
+  ],
   "emulators": {
     "singleProjectMode": true,
     "auth": { "host": "127.0.0.1", "port": 9099 },

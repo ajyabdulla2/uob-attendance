@@ -58,6 +58,12 @@
     input { flex: 1 1 260px; font: inherit; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);
             background: var(--card); color: var(--fg); direction: ltr; text-align: center; letter-spacing: 1px; }
     button { font: inherit; font-weight: 700; padding: 8px 16px; border: 0; border-radius: 8px; background: var(--accent); color: var(--bg); cursor: pointer; }
+    button.big { display: block; width: 100%; padding: 12px 16px; font-size: 1.05rem; }
+    button.plain { background: transparent; color: var(--accent); border: 1px solid var(--line); margin-top: 8px; }
+    #scanner { margin-top: 8px; text-align: center; }
+    #video { width: 100%; max-height: 60vh; border-radius: 12px; background: #000; object-fit: cover; }
+    .or { text-align: center; color: var(--muted); margin: 8px 0; }
+    .again { text-align: center; margin-top: 16px; }
     .ltr { direction: ltr; unicode-bidi: isolate; }
     #f-code { white-space: nowrap; font-size: .85rem; letter-spacing: .5px; }
     footer { margin-top: 24px; text-align: center; color: var(--muted); font-size: .9rem; }
@@ -78,6 +84,15 @@
   <div id="status" class="status" hidden></div>
 
   <section id="ask" hidden>
+    <div id="scan-box" hidden>
+      <button type="button" id="scan" class="big">📷 امسح رمز QR بالكاميرا</button>
+      <div id="scanner" hidden>
+        <video id="video" muted playsinline></video>
+        <div id="scan-msg" class="notes">وجّه الكاميرا إلى رمز QR المطبوع أسفل الوثيقة.</div>
+        <button type="button" id="scan-stop" class="plain">إيقاف الكاميرا</button>
+      </div>
+      <div class="or">أو</div>
+    </div>
     <div>أدخل رمز التحقق المطبوع أسفل الوثيقة (24 حرفاً ورقماً، والشرطات اختيارية):</div>
     <form id="form">
       <input id="code" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX" aria-label="رمز التحقق">
@@ -95,6 +110,7 @@
     </section>
     <p class="note">قارن ما يلي بالورقة التي بين يديك: أي اختلاف في الأسماء أو الأرقام أو النسب يعني أنها عُدِّلت بعد إصدارها.</p>
     <section id="body"></section>
+    <p class="again"><button type="button" id="again">تحقّق من وثيقة أخرى</button></p>
   </div>
 
   <footer>
@@ -194,6 +210,115 @@
       status('bad', 'تعذّر الاتصال للتحقق الآن.', 'تحقق من الإنترنت ثم أعد فتح الرابط.');
     }
   }
+
+  // --- Camera scanner: BarcodeDetector where the browser has it (Chrome on
+  // Android), else jsQR (vendor/jsQR.js, loaded on first use). Accepts the
+  // printed QR (…/verify.html#ID) or a bare ID.
+  let stream = null;
+  let decode = null;
+
+  const loadScript = (src) => new Promise((ok, fail) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = ok;
+    s.onerror = fail;
+    document.head.append(s);
+  });
+
+  async function makeDecoder() {
+    if ('BarcodeDetector' in window) {
+      try {
+        if ((await BarcodeDetector.getSupportedFormats()).includes('qr_code')) {
+          const d = new BarcodeDetector({ formats: ['qr_code'] });
+          return async (v) => (await d.detect(v))[0]?.rawValue;
+        }
+      } catch (_) { /* fall back to jsQR */ }
+    }
+    await loadScript('vendor/jsQR.js');
+    const c = document.createElement('canvas');
+    const ctx = c.getContext('2d', { willReadFrequently: true });
+    return async (v) => {
+      if (!v.videoWidth) return null;
+      const k = Math.min(1, 720 / Math.max(v.videoWidth, v.videoHeight));
+      c.width = Math.round(v.videoWidth * k);
+      c.height = Math.round(v.videoHeight * k);
+      ctx.drawImage(v, 0, 0, c.width, c.height);
+      return window.jsQR(ctx.getImageData(0, 0, c.width, c.height).data, c.width, c.height)?.data;
+    };
+  }
+
+  function idIn(text) {
+    let s = (text || '').trim();
+    const hash = s.indexOf('#');
+    if (hash >= 0) s = s.slice(hash + 1);
+    const id = clean(decodeURIComponent(s));
+    return ID.test(id) ? id : null;
+  }
+
+  function stopScan() {
+    if (stream) stream.getTracks().forEach((t) => t.stop());
+    stream = null;
+    $('video').srcObject = null;
+    $('scanner').hidden = true;
+    $('scan').hidden = false;
+  }
+
+  async function startScan() {
+    const msg = $('scan-msg');
+    msg.textContent = 'وجّه الكاميرا إلى رمز QR المطبوع أسفل الوثيقة.';
+    $('scan').hidden = true;
+    $('scanner').hidden = false;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+      const video = $('video');
+      video.srcObject = stream;
+      await video.play();
+      decode = decode || await makeDecoder();
+    } catch (e) {
+      stopScan();
+      $('scanner').hidden = false;
+      $('scan').hidden = false;
+      msg.textContent = e && e.name === 'NotAllowedError'
+        ? 'لم يُسمح باستعمال الكاميرا. اسمح بها من إعدادات المتصفح، أو أدخل الرمز يدوياً.'
+        : 'تعذّر تشغيل الكاميرا. أدخل الرمز يدوياً.';
+      $('video').hidden = true;
+      $('scan-stop').hidden = true;
+      return;
+    }
+    $('video').hidden = false;
+    $('scan-stop').hidden = false;
+    const tick = async () => {
+      if (!stream) return;
+      let text = null;
+      try { text = await decode($('video')); } catch (_) { /* next frame */ }
+      if (!stream) return;
+      if (text) {
+        const id = idIn(text);
+        if (id) {
+          stopScan();
+          if (location.hash.slice(1) === id) check(id); else location.hash = id;
+          return;
+        }
+        msg.textContent = 'هذا الرمز ليس رمز تحقق من نظام الحضور.';
+      }
+      setTimeout(tick, 250);
+    };
+    tick();
+  }
+
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    $('scan-box').hidden = false;
+    $('scan').addEventListener('click', startScan);
+    $('scan-stop').addEventListener('click', stopScan);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stopScan(); });
+  }
+
+  $('again').addEventListener('click', () => {
+    history.pushState(null, '', location.pathname);
+    check('');
+    window.scrollTo(0, 0);
+    if (!$('scan-box').hidden) startScan();
+  });
 
   $('form').addEventListener('submit', (e) => {
     e.preventDefault();

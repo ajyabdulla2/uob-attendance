@@ -84,6 +84,12 @@ jobs:
           if [ -n "$PUSH_URL" ]; then
             sed -i "s#__PUSH_URL__#${PUSH_URL%/}#" build/web/verify.html build/web/announcements.html
           fi
+          # Two sites (firebase.json): the app's own name, and the project's
+          # default site that redirects to it. Create the first once.
+          SITE=uob-cs-attendance
+          if ! firebase hosting:sites:get "$SITE" --project "$PROJECT" --non-interactive >/dev/null 2>&1; then
+            firebase hosting:sites:create "$SITE" --project "$PROJECT" --non-interactive
+          fi
           firebase deploy --only hosting --project "$PROJECT" --non-interactive
 
       - name: Remove credentials

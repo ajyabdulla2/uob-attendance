@@ -70,7 +70,7 @@
 
 **النشر على Firebase** (القواعد ونسخة الويب): من Actions شغّل **Deploy Firebase**. لا تُنشَر القواعد إلا بعد نجاح اختباراتها. يحتاج المتغير `FIREBASE_PROJECT_ID` والسر `FIREBASE_SERVICE_ACCOUNT_JSON`.
 
-**صفحة الخصوصية**: `web/privacy.html` تظهر على `https://<المشروع>.web.app/privacy.html`، وتطلبها متاجر Google Play وApp Store. النص الحالي مسودة تحتاج اعتماد القسم وبريد التواصل.
+**صفحة الخصوصية**: `web/privacy.html` تظهر على `https://uob-cs-attendance.web.app/privacy.html`، وتطلبها متاجر Google Play وApp Store. النص الحالي مسودة تحتاج اعتماد القسم وبريد التواصل.
 
 ## التشغيل والتطوير
 
