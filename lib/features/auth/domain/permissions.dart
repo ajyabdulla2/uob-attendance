@@ -93,6 +93,9 @@ final class Permissions {
   /// «متابعة التدريسيين» (last seen, last upload) and personal messages.
   bool get canMonitorTeachers => isSuperAdmin;
 
+  /// إعلانات القسم (public page + QR poster).
+  bool get canManageAnnouncements => isAdmin;
+
   // ---------------------------------------------------- decision lists --
   bool get canFinalizeDeaneryDecision => isAdmin;
 }

@@ -58,12 +58,7 @@ class PdfRenderer {
       margin: const pw.EdgeInsets.fromLTRB(28, 24, 28, 28),
       textDirection: pw.TextDirection.rtl,
       header: (context) => _header(branding, context),
-      footer: (context) => pw.Container(
-        alignment: pw.Alignment.center,
-        margin: const pw.EdgeInsets.only(top: 6),
-        child: pw.Text(branding.pageLabel(context.pageNumber, context.pagesCount),
-            style: const pw.TextStyle(fontSize: 8, color: _line)),
-      ),
+      footer: (context) => _footer(report.stamp, branding, context),
       build: (context) => [
         pw.SizedBox(height: 6),
         pw.Center(
@@ -107,6 +102,82 @@ class PdfRenderer {
         ],
       ],
     ));
+  }
+
+  /// The page number, and with a [stamp] the verification QR on every page
+  /// (a single page torn out of the report can still be checked).
+  pw.Widget _footer(ReportStamp? stamp, ReportBranding b, pw.Context context) {
+    final page = pw.Text(b.pageLabel(context.pageNumber, context.pagesCount),
+        style: const pw.TextStyle(fontSize: 8, color: _line));
+    if (stamp == null) {
+      return pw.Container(alignment: pw.Alignment.center, margin: const pw.EdgeInsets.only(top: 6), child: page);
+    }
+    return pw.Padding(
+      padding: const pw.EdgeInsets.only(top: 6),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.center,
+        children: [
+          _qr(stamp.url, 46),
+          pw.SizedBox(width: 6),
+          pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            mainAxisSize: pw.MainAxisSize.min,
+            children: [
+              pw.Text(b.verifyHint, style: const pw.TextStyle(fontSize: 7, color: _ink)),
+              pw.Text(stamp.code,
+                  textDirection: pw.TextDirection.ltr, style: pw.TextStyle(font: _bold, fontSize: 7, color: _ink)),
+            ],
+          ),
+          pw.Spacer(),
+          page,
+        ],
+      ),
+    );
+  }
+
+  static pw.Widget _qr(String data, double size) => pw.BarcodeWidget(
+        barcode: pw.Barcode.qrCode(errorCorrectLevel: pw.BarcodeQRCorrectionLevel.medium),
+        data: data,
+        width: size,
+        height: size,
+        drawText: false,
+      );
+
+  /// A printable A4 poster: the department header, [title], [lines] and a
+  /// large QR for [url] (the public announcements page).
+  Future<Uint8List> renderPoster({
+    required String title,
+    required List<String> lines,
+    required String url,
+    required ReportBranding branding,
+  }) {
+    final doc = pw.Document(
+      title: title,
+      author: branding.department,
+      theme: pw.ThemeData.withFont(base: _regular, bold: _bold),
+    );
+    doc.addPage(pw.Page(
+      pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.fromLTRB(36, 28, 36, 36),
+      textDirection: pw.TextDirection.rtl,
+      build: (context) => pw.Column(
+        children: [
+          _header(branding, context),
+          pw.Spacer(),
+          pw.Text(title,
+              textAlign: pw.TextAlign.center, style: pw.TextStyle(font: _bold, fontSize: 30, color: _ink)),
+          pw.SizedBox(height: 10),
+          for (final l in lines)
+            pw.Text(l, textAlign: pw.TextAlign.center, style: const pw.TextStyle(fontSize: 14, color: _ink)),
+          pw.SizedBox(height: 28),
+          _qr(url, 300),
+          pw.SizedBox(height: 14),
+          pw.Text(url, textDirection: pw.TextDirection.ltr, style: const pw.TextStyle(fontSize: 11, color: _line)),
+          pw.Spacer(),
+        ],
+      ),
+    ));
+    return doc.save();
   }
 
   pw.Widget _header(ReportBranding b, pw.Context context) {

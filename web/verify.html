@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>التحقق من وثيقة — قسم علوم الحاسوب</title>
+  <!--
+    Opened by the QR printed on every PDF the app issues
+    (lib/features/reports): verify.html#<record ID>. Reads one
+    reportVerifications/{id} document through the Firestore REST API without
+    signing in (the rules allow reading a record by its ID, never listing).
+    The ID sits in the fragment, so it never reaches the hosting server logs.
+  -->
+  <style>
+    /* Cairo is bundled with the Flutter web build (assets/fonts/cairo). */
+    @font-face { font-family: Cairo; src: url("assets/assets/fonts/cairo/Cairo-Regular.ttf"); font-weight: 400; }
+    @font-face { font-family: Cairo; src: url("assets/assets/fonts/cairo/Cairo-Bold.ttf"); font-weight: 700; }
+    :root {
+      --bg: #f7f9fc; --fg: #1b1f24; --muted: #555d68; --card: #ffffff; --accent: #0d3b66; --line: #d5dae1;
+      --ok: #1e7b34; --ok-bg: #e3f4e6; --bad: #b3261e; --bad-bg: #fde7e5; --head: #efe6cc; --note: #fff4ce;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111418; --fg: #e6e9ee; --muted: #a9b1bc; --card: #1b2026; --accent: #9cc4ff; --line: #333a44;
+        --ok: #8fd19e; --ok-bg: #173322; --bad: #ffb4ab; --bad-bg: #3b1714; --head: #3a3322; --note: #3d3417;
+      }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--fg); font-family: Cairo, "Segoe UI", Tahoma, sans-serif; line-height: 1.8; }
+    main { max-width: 860px; margin: 0 auto; padding: 16px 16px 48px; }
+    header { display: flex; align-items: center; gap: 12px; padding: 8px 0 12px; border-bottom: 2px solid #b8860b; }
+    header img { width: 56px; height: 56px; border-radius: 50%; background: #fff; }
+    header .t { font-weight: 700; color: var(--accent); }
+    header .s { color: var(--muted); font-size: .9rem; }
+    .status { border-radius: 12px; padding: 12px 16px; margin: 16px 0; font-weight: 700; }
+    .status.ok { background: var(--ok-bg); color: var(--ok); }
+    .status.bad { background: var(--bad-bg); color: var(--bad); }
+    .status small { display: block; font-weight: 400; color: var(--fg); }
+    section { background: var(--card); border-radius: 12px; padding: 12px 16px; margin-top: 12px; }
+    h1 { font-size: 1.3rem; text-align: center; margin: 4px 0; color: var(--accent); }
+    .meta { text-align: center; color: var(--muted); margin: 0; }
+    .facts { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 0; }
+    .facts dt { color: var(--muted); }
+    .facts dd { margin: 0; font-weight: 700; }
+    p.par { white-space: pre-wrap; text-align: justify; }
+    h2 { font-size: 1rem; margin: 12px 0 4px; }
+    .scroll { overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+    th, td { border: 1px solid var(--line); padding: 4px 6px; text-align: right; vertical-align: top; }
+    th { background: var(--head); white-space: nowrap; }
+    .notes { color: var(--muted); font-size: .85rem; }
+    .note { background: var(--note); border-radius: 10px; padding: 8px 12px; font-size: .9rem; }
+    form { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    input { flex: 1 1 260px; font: inherit; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);
+            background: var(--card); color: var(--fg); direction: ltr; text-align: center; letter-spacing: 1px; }
+    button { font: inherit; font-weight: 700; padding: 8px 16px; border: 0; border-radius: 8px; background: var(--accent); color: var(--bg); cursor: pointer; }
+    .ltr { direction: ltr; unicode-bidi: isolate; }
+    #f-code { white-space: nowrap; font-size: .85rem; letter-spacing: .5px; }
+    footer { margin-top: 24px; text-align: center; color: var(--muted); font-size: .9rem; }
+    a { color: var(--accent); }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="icons/Icon-192.png" alt="">
+    <div>
+      <div class="t">جامعة البصرة — كلية التربية للعلوم الصرفة</div>
+      <div class="s">قسم علوم الحاسوب · التحقق من الوثائق الصادرة من نظام الحضور</div>
+    </div>
+  </header>
+
+  <div id="status" class="status" hidden></div>
+
+  <section id="ask" hidden>
+    <div>أدخل رمز التحقق المطبوع أسفل الوثيقة (24 حرفاً ورقماً، والشرطات اختيارية):</div>
+    <form id="form">
+      <input id="code" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX" aria-label="رمز التحقق">
+      <button type="submit">تحقّق</button>
+    </form>
+  </section>
+
+  <div id="doc" hidden>
+    <section>
+      <dl class="facts">
+        <dt>رمز التحقق</dt><dd class="ltr" id="f-code"></dd>
+        <dt>تاريخ الإصدار</dt><dd id="f-at"></dd>
+        <dt>أصدرها</dt><dd id="f-by"></dd>
+      </dl>
+    </section>
+    <p class="note">قارن ما يلي بالورقة التي بين يديك: أي اختلاف في الأسماء أو الأرقام أو النسب يعني أنها عُدِّلت بعد إصدارها.</p>
+    <section id="body"></section>
+  </div>
+
+  <footer>
+    <a href="announcements.html">إعلانات القسم</a>
+  </footer>
+</main>
+<script>
+(() => {
+  'use strict';
+  // The Firebase project: the hosting site's name (<project>.web.app).
+  const host = location.hostname;
+  const PROJECT = /\.(web\.app|firebaseapp\.com)$/.test(host) ? host.split('.')[0] : 'basrah-researches';
+  const API = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents`;
+  const ID = /^[A-HJKMNP-TV-Z2-9]{24}$/; // ReportRecord.alphabet × 24
+
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, text, cls) => {
+    const e = document.createElement(tag);
+    if (text != null) e.textContent = text;
+    if (cls) e.className = cls;
+    return e;
+  };
+
+  // Firestore REST values → plain JS.
+  const val = (v) => {
+    if (v == null) return null;
+    if ('stringValue' in v) return v.stringValue;
+    if ('integerValue' in v) return Number(v.integerValue);
+    if ('doubleValue' in v) return v.doubleValue;
+    if ('booleanValue' in v) return v.booleanValue;
+    if ('timestampValue' in v) return new Date(v.timestampValue);
+    if ('arrayValue' in v) return (v.arrayValue.values || []).map(val);
+    if ('mapValue' in v) return fields(v.mapValue.fields);
+    return null;
+  };
+  const fields = (f) => Object.fromEntries(Object.entries(f || {}).map(([k, v]) => [k, val(v)]));
+
+  const clean = (s) => (s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const group = (id) => id.match(/.{1,4}/g).join('-');
+  const when = (d) => d instanceof Date
+    ? d.toLocaleString('ar-IQ-u-nu-latn', { dateStyle: 'long', timeStyle: 'short' })
+    : '—';
+
+  function status(kind, title, detail) {
+    const s = $('status');
+    s.className = `status ${kind}`;
+    s.replaceChildren(el('span', title));
+    if (detail) s.append(el('small', detail));
+    s.hidden = false;
+  }
+
+  function ask(prefill) {
+    $('ask').hidden = false;
+    $('code').value = prefill || '';
+  }
+
+  function render(id, d) {
+    $('f-code').textContent = group(id);
+    $('f-at').textContent = when(d.issuedAt);
+    $('f-by').textContent = d.issuerName || '—';
+    const body = $('body');
+    body.replaceChildren(el('h1', d.title || ''));
+    for (const m of d.meta || []) body.append(el('p', m, 'meta'));
+    for (const p of d.paragraphs || []) body.append(el('p', p, 'par'));
+    for (const t of d.tables || []) {
+      if (t.heading) body.append(el('h2', t.heading));
+      const table = el('table');
+      const head = table.createTHead().insertRow();
+      for (const c of t.columns || []) head.append(el('th', c));
+      const tb = table.createTBody();
+      for (const r of t.rows || []) {
+        const row = tb.insertRow();
+        for (const c of r.c || []) row.append(el('td', c));
+      }
+      const wrap = el('div', null, 'scroll');
+      wrap.append(table);
+      body.append(wrap);
+    }
+    for (const n of d.notes || []) body.append(el('p', n, 'notes'));
+    if ((d.signatures || []).length) body.append(el('p', `التوقيعات المطلوبة على الورقة: ${d.signatures.join('، ')}`, 'notes'));
+    $('doc').hidden = false;
+  }
+
+  async function check(raw) {
+    const id = clean(raw);
+    $('doc').hidden = true;
+    if (!id) { $('status').hidden = true; ask(); return; }
+    if (!ID.test(id)) {
+      status('bad', 'رمز التحقق غير صحيح الصيغة.', 'تأكد من نسخه كاملاً كما هو مطبوع أسفل الوثيقة.');
+      ask(raw);
+      return;
+    }
+    status('ok', 'جارٍ التحقق…');
+    try {
+      const res = await fetch(`${API}/reportVerifications/${id}`);
+      if (res.status === 404) {
+        status('bad', '✗ لا توجد وثيقة بهذا الرمز.',
+          'الوثيقة لم تصدر من نظام الحضور في القسم، أو أن الرمز نُسخ خطأً. لا تعتمدها قبل مراجعة القسم.');
+        ask(group(id));
+        return;
+      }
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const d = fields((await res.json()).fields);
+      status('ok', '✓ وثيقة صحيحة صادرة من نظام الحضور في قسم علوم الحاسوب.',
+        'المعلومات أدناه نسخة محفوظة منها لحظة إصدارها.');
+      $('ask').hidden = true;
+      render(id, d);
+    } catch (e) {
+      status('bad', 'تعذّر الاتصال للتحقق الآن.', 'تحقق من الإنترنت ثم أعد فتح الرابط.');
+    }
+  }
+
+  $('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const id = clean($('code').value);
+    if (location.hash.slice(1) === id) check(id); else location.hash = id;
+  });
+  window.addEventListener('hashchange', () => check(decodeURIComponent(location.hash.slice(1))));
+  check(decodeURIComponent(location.hash.slice(1)));
+})();
+</script>
+</body>
+</html>

@@ -61,5 +61,31 @@
       ]
     }
   ],
-  "fieldOverrides": []
+  "fieldOverrides": [
+    {
+      "collectionGroup": "reportVerifications",
+      "fieldPath": "tables",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "reportVerifications",
+      "fieldPath": "meta",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "reportVerifications",
+      "fieldPath": "paragraphs",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "reportVerifications",
+      "fieldPath": "notes",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "reportVerifications",
+      "fieldPath": "signatures",
+      "indexes": []
+    }
+  ]
 }

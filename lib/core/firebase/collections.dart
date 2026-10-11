@@ -29,6 +29,13 @@ abstract final class Col {
   static const inbox = 'inbox';
   static const inboxItems = 'items';
 
+  /// `reportVerifications/{id}`: a frozen copy of each issued PDF, read by
+  /// the public page the report's QR opens (one record by ID, never a list).
+  static const reportVerifications = 'reportVerifications';
+
+  /// إعلانات القسم: public (the page behind the department's QR poster).
+  static const announcements = 'announcements';
+
   /// App-wide settings (`config/app`: published versions + download links).
   static const config = 'config';
 }
