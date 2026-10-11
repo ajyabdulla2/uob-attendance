@@ -88,6 +88,17 @@ class AuthRepository {
 
   Future<void> signOut() => _auth.signOut();
 
+  /// Confirms [password] (Firebase requires a recent sign-in), then deletes
+  /// the sign-in account. The department's `users/{email}` entry and the
+  /// records the person kept stay: they belong to the department.
+  Future<void> verifyPassword(String password) => _guard(() async {
+        final user = _auth.currentUser;
+        if (user?.email == null) throw const AuthException(AuthFailure.unknown);
+        await user!.reauthenticateWithCredential(EmailAuthProvider.credential(email: user.email!, password: password));
+      });
+
+  Future<void> deleteAccount() => _guard(() async => _auth.currentUser?.delete());
+
   Future<T> _guard<T>(Future<T> Function() action) async {
     try {
       return await action();

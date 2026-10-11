@@ -7,6 +7,7 @@ import '../../../l10n/l10n.dart';
 import '../../users/application/users_providers.dart';
 import '../../users/domain/access_request.dart';
 import '../application/auth_providers.dart';
+import 'delete_account.dart';
 
 /// Verified e-mail but no usable profile: not provisioned, suspended, or the
 /// profile could not be loaded. A not-provisioned person can ask to join.
@@ -40,6 +41,12 @@ class NoAccessScreen extends ConsumerWidget {
                   onPressed: () => ref.read(authRepositoryProvider).signOut(),
                   child: Text(l10n.signOut),
                 ),
+                if (status is NotProvisioned)
+                  TextButton(
+                    key: const Key('noAccess.deleteAccount'),
+                    onPressed: () => deleteAccountFlow(context, ref, email: status.email),
+                    child: Text(l10n.deleteAccount),
+                  ),
               ],
             ),
             if (status is NotProvisioned) _JoinRequestPanel(email: status.email),

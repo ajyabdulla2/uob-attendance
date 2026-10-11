@@ -1,4 +1,10 @@
 {
+  "deleteAccount": "Delete account",
+  "deleteAccountBody": "Your sign-in account (e-mail and password), your private messages and this phone's notification link are deleted, then you are signed out.\n\nThe attendance you recorded and your name in the department's staff list stay, as official department records; to be removed from the list, contact the department.\n\nYou can activate the account again with the same e-mail while the department lists you.",
+  "deleteAccountPassword": "Enter your password to confirm",
+  "deleteAccountConfirm": "Delete permanently",
+  "deleteAccountDone": "Account deleted.",
+  "deleteAccountPending": "You cannot delete the account: {count} records are not uploaded yet. Connect and wait for the upload first.",
   "menuDaily": "Daily follow-up",
   "menuStudents": "Students and absence",
   "menuData": "Data and accounts",
