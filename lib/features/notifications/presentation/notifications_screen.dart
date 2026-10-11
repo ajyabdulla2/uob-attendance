@@ -10,6 +10,7 @@ import '../../../l10n/l10n.dart';
 import '../../assignments/domain/assignment.dart';
 import '../../attendance/application/attendance_providers.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../edit_requests/application/edit_requests_providers.dart';
 import '../../edit_requests/domain/edit_request.dart';
 import '../../stats/application/stats_providers.dart';
 import '../../stats/domain/student_course_stat.dart';
@@ -69,13 +70,29 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           ),
           if (stages.isNotEmpty) ...[
             _Section(title: l10n.notifRequests),
+            // One line per stage with requests, opening that stage directly.
             Card(
-              child: ListTile(
-                key: const Key('notif.requests'),
-                leading: Icon(Icons.edit_calendar, color: pending > 0 ? Theme.of(context).colorScheme.error : null),
-                title: Text(l10n.dashRequests(pending)),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => context.push(Routes.editRequests),
+              child: Column(
+                children: [
+                  if (pending == 0)
+                    ListTile(
+                      key: const Key('notif.requests'),
+                      leading: const Icon(Icons.edit_calendar),
+                      title: Text(l10n.dashRequests(0)),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => context.push(Routes.editRequests),
+                    ),
+                  for (final s in stages)
+                    if (ref.watch(pendingEditRequestsProvider(s.id)).value?.length ?? 0 case final n when n > 0)
+                      ListTile(
+                        key: Key('notif.requests.${s.id}'),
+                        leading: Icon(Icons.edit_calendar, color: Theme.of(context).colorScheme.error),
+                        title: Text(l10n.stage(s)),
+                        subtitle: Text(l10n.dashRequests(n)),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => context.push(Routes.editRequestsFor(s.id)),
+                      ),
+                ],
               ),
             ),
           ],

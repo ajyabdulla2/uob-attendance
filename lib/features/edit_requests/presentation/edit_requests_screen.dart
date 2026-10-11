@@ -15,8 +15,14 @@ import '../domain/edit_request.dart';
 
 /// طلبات التعديل (stage managers and admins): approve — which changes the
 /// record, the stats and the lecture — or reject, with an optional note.
+///
+/// Opens on [stageId] when a link names one (a stage's notification or
+/// dashboard), else on the first stage that has requests; the stage list
+/// shows each stage's count, so nobody has to search stage by stage.
 class EditRequestsScreen extends ConsumerStatefulWidget {
-  const EditRequestsScreen({super.key});
+  const EditRequestsScreen({super.key, this.stageId});
+
+  final String? stageId;
 
   @override
   ConsumerState<EditRequestsScreen> createState() => _EditRequestsScreenState();
@@ -54,7 +60,11 @@ class _EditRequestsScreenState extends ConsumerState<EditRequestsScreen> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final stages = ref.watch(permissionsProvider).manageableStages;
-    final stage = _stage != null && stages.contains(_stage) ? _stage : stages.firstOrNull;
+    final counts = {for (final s in stages) s: ref.watch(pendingEditRequestsProvider(s.id)).value?.length ?? 0};
+    final stage = (_stage != null && stages.contains(_stage) ? _stage : null) ??
+        stages.where((s) => s.id == widget.stageId).firstOrNull ??
+        stages.where((s) => counts[s]! > 0).firstOrNull ??
+        stages.firstOrNull;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.editRequestsTitle)),
       body: stage == null
@@ -68,7 +78,19 @@ class _EditRequestsScreenState extends ConsumerState<EditRequestsScreen> {
                     initialValue: stage,
                     isExpanded: true,
                     decoration: InputDecoration(labelText: l10n.fixStage, prefixIcon: const Icon(Icons.layers)),
-                    items: [for (final s in stages) DropdownMenuItem(value: s, child: Text(l10n.stage(s)))],
+                    items: [
+                      for (final s in stages)
+                        DropdownMenuItem(
+                          value: s,
+                          child: Row(
+                            children: [
+                              Expanded(child: Text(l10n.stage(s), overflow: TextOverflow.ellipsis)),
+                              if (counts[s]! > 0)
+                                Badge(key: Key('requests.count.${s.id}'), label: Text('${counts[s]}')),
+                            ],
+                          ),
+                        ),
+                    ],
                     onChanged: (s) => setState(() => _stage = s),
                   ),
                 ),

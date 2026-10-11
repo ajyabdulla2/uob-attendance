@@ -68,6 +68,9 @@ abstract final class Routes {
         if (lectureNo != null) 'n': '$lectureNo',
       }).toString();
 
+  /// «طلبات التعديل», opened on [stageId] (else the first stage with requests).
+  static String editRequestsFor(String stageId) => Uri(path: editRequests, queryParameters: {'s': stageId}).toString();
+
   static String registerFor(String assignmentId) => Uri(path: register, queryParameters: {'a': assignmentId}).toString();
   static const student = '/student';
   /// «تسجيل محاضرة فائتة», optionally on a stage and class (`courseId|type|target`).
@@ -151,7 +154,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.yearSettings, builder: (_, _) => const YearSettingsScreen()),
       GoRoute(path: Routes.leaves, builder: (_, _) => const LeavesScreen()),
       GoRoute(path: Routes.warnings, builder: (_, _) => const WarningsScreen()),
-      GoRoute(path: Routes.editRequests, builder: (_, _) => const EditRequestsScreen()),
+      GoRoute(path: Routes.editRequests, builder: (_, s) => EditRequestsScreen(stageId: s.uri.queryParameters['s'])),
       GoRoute(path: Routes.stageDashboard, builder: (_, _) => const StageDashboardScreen()),
       GoRoute(
         path: Routes.missedLecture,
