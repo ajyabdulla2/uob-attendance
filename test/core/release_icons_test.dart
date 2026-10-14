@@ -9,7 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// in CI instead.
 ///
 /// `tool/release_icons.txt` is the set in the release the patches target
-/// (1.4.0+18, commit 6c97a19). After a new APK release, regenerate it:
+/// (1.5.0+25, commit 35833cc; the same set as 1.4.0+18). After a new APK release, regenerate it:
 /// `git grep -ohE "Icons\.[a-z_0-9]+" <release commit> -- lib | sort -u > tool/release_icons.txt`
 void main() {
   test('lib/ uses exactly the icons of the release that patches target', () {
