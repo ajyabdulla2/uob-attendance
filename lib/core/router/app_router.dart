@@ -60,6 +60,11 @@ abstract final class Routes {
   static const teacherActivity = '/teacher-activity';
   static const announcements = '/announcements';
   static const appRelease = '/app-release';
+  static const classRegister = '/class-register';
+
+  /// A teacher's class register read from the server (admins).
+  static String classRegisterFor(String assignmentId) =>
+      Uri(path: classRegister, queryParameters: {'a': assignmentId}).toString();
 
   /// Record screen of a class, optionally on a given lecture.
   static String recordFor(String assignmentId, {DateTime? date, int? lectureNo}) => Uri(path: record, queryParameters: {
@@ -110,6 +115,7 @@ String? redirectFor(AuthStatus status, String location) {
         _ when location.startsWith(Routes.stageDashboard) && !permissions.canViewStageDashboard => Routes.home,
         _ when location.startsWith(Routes.missedLecture) && !permissions.canViewStageDashboard => Routes.home,
         _ when location.startsWith(Routes.teacherActivity) && !permissions.canMonitorTeachers => Routes.home,
+        _ when location.startsWith(Routes.classRegister) && !permissions.canMonitorTeachers => Routes.home,
         _ when location.startsWith(Routes.announcements) && !permissions.canManageAnnouncements => Routes.home,
         _ when location.startsWith(Routes.appRelease) && !permissions.canManageAppRelease => Routes.home,
         _ => null,
@@ -174,6 +180,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.register,
         builder: (_, s) => RegisterScreen(assignmentId: s.uri.queryParameters['a'] ?? ''),
+      ),
+      GoRoute(
+        path: Routes.classRegister,
+        builder: (_, s) => ServerRegisterScreen(assignmentId: s.uri.queryParameters['a'] ?? ''),
       ),
       GoRoute(
         path: Routes.student,

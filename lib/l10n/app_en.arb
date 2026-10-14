@@ -1,4 +1,6 @@
 {
+  "activityClasses": "Classes — tap one to view and download its register",
+  "activityClassesEmpty": "No classes assigned.",
   "deleteAccount": "Delete account",
   "deleteAccountBody": "Your sign-in account (e-mail and password), your private messages and this phone's notification link are deleted, then you are signed out.\n\nThe attendance you recorded and your name in the department's staff list stay, as official department records; to be removed from the list, contact the department.\n\nYou can activate the account again with the same e-mail while the department lists you.",
   "deleteAccountPassword": "Enter your password to confirm",
@@ -714,7 +716,7 @@
   "assignmentsCourseInfoAnnual": "{code} · {units} units · annual",
   "activityAction": "Teacher activity",
   "activityTitle": "Teacher activity",
-  "activityHelp": "When each teacher last opened the app and when their phone last uploaded attendance (a lecture recorded or edited). Tracking starts with this update, so anyone who has not opened it yet shows as «Not yet». Tap a name for details, their lectures and to send a message.",
+  "activityHelp": "When each teacher last opened the app and when their phone last uploaded attendance (a lecture recorded or edited). Tracking starts with this update, so anyone who has not opened it yet shows as «Not yet». Tap a name for details, their lectures and class registers, and to send a message.",
   "activityAll": "All",
   "activityToday": "Today",
   "activityRecent": "Last 7 days",

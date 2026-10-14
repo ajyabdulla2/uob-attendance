@@ -1,6 +1,6 @@
 // «متابعة التدريسيين»: presence/{email} written by the account's own app
-// (server time only), read by the super admin; inbox/{email}/items written
-// by the super admin, read and deleted by its owner.
+// (server time only), read by the admins; inbox/{email}/items written
+// by an admin (super or deputy), read and deleted by its owner.
 import { describe, it, before, beforeEach, after } from 'node:test';
 import { assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
 import {
@@ -46,24 +46,27 @@ describe('presence', () => {
       { email: T1, lastSeenAt: serverTimestamp(), pushToken: 'hijack' }, { merge: true }));
   });
 
-  it('only the super admin reads it', async () => {
+  it('only the admins read it', async () => {
     await assertSucceeds(setDoc(doc(as(env, T1), 'presence', T1), seen(T1)));
     await assertSucceeds(getDocs(collection(as(env, SUPER), 'presence')));
-    await assertFails(getDocs(collection(as(env, DEPUTY), 'presence')));
+    await assertSucceeds(getDocs(collection(as(env, DEPUTY), 'presence')));
     await assertFails(getDocs(collection(as(env, SM3), 'presence')));
     await assertFails(getDoc(doc(as(env, T1), 'presence', T1)));
   });
 
-  it('the super admin lists a teacher’s lectures, latest first, and counts them', async () => {
-    const q = query(collection(as(env, SUPER), 'sessions'), where('openedBy', '==', T1));
-    await assertSucceeds(getDocs(query(q, orderBy('date', 'desc'), limit(5))));
+  it('the admins list a teacher’s lectures, latest first, and counts them', async () => {
+    for (const admin of [SUPER, DEPUTY]) {
+      const q = query(collection(as(env, admin), 'sessions'), where('openedBy', '==', T1));
+      await assertSucceeds(getDocs(query(q, orderBy('date', 'desc'), limit(5))));
+    }
   });
 });
 
 const message = (by) => ({ title: 'سجّل حضورك', body: 'تذكير', createdBy: by, createdAt: serverTimestamp(), departmentId: 'cs' });
 
 describe('inbox', () => {
-  it('the super admin sends; the owner reads and deletes', async () => {
+  it('an admin sends; the owner reads and deletes', async () => {
+    await assertSucceeds(setDoc(doc(collection(as(env, DEPUTY), 'inbox', T1, 'items')), message(DEPUTY)));
     const ref = doc(collection(as(env, SUPER), 'inbox', T1, 'items'));
     await assertSucceeds(setDoc(ref, message(SUPER)));
     await assertSucceeds(getDocs(query(collection(as(env, T1), 'inbox', T1, 'items'), orderBy('createdAt', 'desc'), limit(30))));
@@ -71,7 +74,7 @@ describe('inbox', () => {
   });
 
   it('others neither send nor read someone else’s', async () => {
-    await assertFails(setDoc(doc(collection(as(env, DEPUTY), 'inbox', T1, 'items')), message(DEPUTY)));
+    await assertFails(setDoc(doc(collection(as(env, SM3), 'inbox', T1, 'items')), message(SM3)));
     await assertFails(setDoc(doc(collection(as(env, T2), 'inbox', T1, 'items')), message(T2)));
     await assertFails(setDoc(doc(collection(as(env, SUPER), 'inbox', T1, 'items')), message(T1)));
     await assertFails(setDoc(doc(collection(as(env, SUPER), 'inbox', T1, 'items')), { ...message(SUPER), audience: 'all' }));

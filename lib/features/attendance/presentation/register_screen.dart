@@ -15,6 +15,7 @@ import '../../stats/domain/absence_summary.dart';
 import '../../stats/domain/student_course_stat.dart';
 import '../../students/domain/student.dart';
 import '../application/attendance_providers.dart';
+import '../application/server_register_providers.dart';
 import '../domain/attendance_session.dart';
 
 /// سجل الحضور of one class: students × lectures, with the number of
@@ -155,6 +156,96 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 }
 
+/// A class register as stored on the server, for the admins: read-only,
+/// with the same table and PDF/Excel export as the teacher's own register.
+class ServerRegisterScreen extends ConsumerWidget {
+  const ServerRegisterScreen({super.key, required this.assignmentId});
+
+  final String assignmentId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final value = ref.watch(serverRegisterProvider(assignmentId));
+    final r = value.value;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(r == null ? l10n.registerTitle : r.courseName),
+        actions: [
+          if (r != null && r.sessions.isNotEmpty)
+            IconButton(
+              key: const Key('serverRegister.export'),
+              tooltip: l10n.reportRegisterAction,
+              icon: const Icon(Icons.download),
+              onPressed: () async {
+                final period = await _choosePeriod(context, r.sessions);
+                if (period == null || !context.mounted) return;
+                final formatDate = MaterialLocalizations.of(context).formatMediumDate;
+                await exportReport(
+                  context,
+                  ref,
+                  year: r.year,
+                  build: (format) => ReportBuilders.classRegister(
+                    l10n,
+                    assignment: r.assignment,
+                    courseName: r.courseName,
+                    students: r.students,
+                    sessions: r.sessions,
+                    marks: r.marks,
+                    standings: r.standings,
+                    format: format,
+                    period: period.range,
+                    formatDate: formatDate,
+                  ),
+                );
+              },
+            ),
+          IconButton(
+            key: const Key('serverRegister.refresh'),
+            tooltip: l10n.registerRefresh,
+            icon: const Icon(Icons.refresh),
+            onPressed: value.isLoading ? null : () => ref.invalidate(serverRegisterProvider(assignmentId)),
+          ),
+        ],
+      ),
+      body: AsyncBody(
+        value: value,
+        data: (r) {
+          if (r == null) return Center(child: MessageView(icon: Icons.link_off, title: l10n.recordClassMissing));
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    '${l10n.classLabel(r.assignment)} · ${r.assignment.teacherName.isEmpty ? r.assignment.teacherId : r.assignment.teacherName}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: r.sessions.isEmpty
+                    ? Center(child: MessageView(icon: Icons.event_note, title: l10n.registerEmpty))
+                    : r.students.isEmpty
+                        ? Center(child: MessageView(icon: Icons.group_off, title: l10n.recordNoStudents))
+                        : _RegisterTable(
+                            assignment: r.assignment,
+                            students: r.students,
+                            sessions: r.sessions,
+                            marks: r.marks,
+                            standings: r.standings,
+                            interactive: false,
+                          ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
 /// The register export's period: the whole semester, or from–to days.
 final class _Period {
   const _Period(this.range);
@@ -215,8 +306,12 @@ class _RegisterTable extends StatelessWidget {
     required this.sessions,
     required this.marks,
     required this.standings,
+    this.interactive = true,
   });
 
+  /// False on the server copy (admins): lectures and names open nothing,
+  /// since the record and student screens read the phone's database.
+  final bool interactive;
   final Map<String, AbsenceSummary> standings;
   final Assignment assignment;
   final List<Student> students;
@@ -234,7 +329,7 @@ class _RegisterTable extends StatelessWidget {
 
     return Scrollbar(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 88), // clear the FAB
+        padding: EdgeInsets.only(bottom: interactive ? 88 : 16), // clear the FAB
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
@@ -257,7 +352,9 @@ class _RegisterTable extends StatelessWidget {
                     message: l10n.registerOpenLecture,
                     child: InkWell(
                       key: Key('register.session.${s.id}'),
-                      onTap: () => context.push(Routes.recordFor(assignment.id, date: s.date, lectureNo: s.lectureNo)),
+                      onTap: interactive
+                          ? () => context.push(Routes.recordFor(assignment.id, date: s.date, lectureNo: s.lectureNo))
+                          : null,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -278,10 +375,12 @@ class _RegisterTable extends StatelessWidget {
                       child: Text(
                         st.fullName,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: theme.colorScheme.primary, decoration: TextDecoration.underline),
+                        style: interactive
+                            ? TextStyle(color: theme.colorScheme.primary, decoration: TextDecoration.underline)
+                            : null,
                       ),
                     ),
-                    onTap: () => context.push(Routes.studentFor(assignment.id, st.id)),
+                    onTap: interactive ? () => context.push(Routes.studentFor(assignment.id, st.id)) : null,
                   ),
                   DataCell(Text('${absences(st.id)}')),
                   DataCell(_PercentCell(key: Key('register.percent.${st.id}'), summary: standings[st.id])),

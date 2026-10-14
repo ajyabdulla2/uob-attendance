@@ -563,10 +563,10 @@ service cloud.firestore {
 
     // ============================================================ presence ==
     // «متابعة التدريسيين»: each account's own app records when it was last
-    // opened and last uploaded attendance (server time only). The super
-    // admin reads them.
+    // opened and last uploaded attendance (server time only). The admins
+    // (super and deputy) read them.
     match /presence/{email} {
-      allow read: if isSuperAdmin();
+      allow read: if isAdmin();
       allow create, update: if isActive()
         && email == myEmail()
         && request.resource.data.keys().hasOnly(
@@ -588,17 +588,17 @@ service cloud.firestore {
     }
 
     // =============================================================== inbox ==
-    // A personal message from the super admin to one account; its owner
-    // reads it and may delete it.
+    // A personal message from an admin (super or deputy) to one account;
+    // its owner reads it and may delete it.
     match /inbox/{email}/items/{itemId} {
-      allow read: if (isActive() && email == myEmail()) || isSuperAdmin();
-      allow create: if isSuperAdmin()
+      allow read: if (isActive() && email == myEmail()) || isAdmin();
+      allow create: if isAdmin()
         && request.resource.data.keys().hasOnly(['title', 'body', 'createdBy', 'createdAt', 'departmentId'])
         && nonEmptyString(request.resource.data.title) && request.resource.data.title.size() <= 120
         && request.resource.data.get('body', '') is string && request.resource.data.get('body', '').size() <= 2000
         && request.resource.data.createdBy == myEmail()
         && request.resource.data.createdAt == request.time;
-      allow delete: if isSuperAdmin() || (isActive() && email == myEmail());
+      allow delete: if isAdmin() || (isActive() && email == myEmail());
       allow update: if false;
     }
 
@@ -662,7 +662,7 @@ service cloud.firestore {
     // rulesVersion/<its version>; a refusal means older rules are deployed.
     // Change both together whenever these rules change.
     match /rulesVersion/{version} {
-      allow get: if version == '2026-10-11a';
+      allow get: if version == '2026-10-14a';
     }
 
     // ============================================================ auditLog ==
