@@ -4,9 +4,12 @@ import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:uob_attendance/core/domain/stage_ref.dart';
+import 'package:uob_attendance/features/academic/domain/academic_year.dart';
 import 'package:uob_attendance/features/assignments/domain/assignment.dart';
 import 'package:uob_attendance/features/attendance/domain/attendance_session.dart';
 import 'package:uob_attendance/features/auth/domain/app_user.dart';
+import 'package:uob_attendance/features/courses/domain/course.dart';
+import 'package:uob_attendance/features/students/domain/student.dart';
 
 import '../helpers/pump_app.dart';
 
@@ -83,6 +86,51 @@ void main() {
     expect(inbox.single.data()['createdBy'], adminEmail);
     expect(inbox.single.data().containsKey('audience'), isFalse);
     expect((await env.db.collection('inbox/$t2/items').get()).docs, isEmpty);
+  });
+
+  testWidgets('the deputy admin opens a teacher’s class register from the server and can export it', (tester) async {
+    final db = await seed();
+    const stage = StageRef(1, Shift.morning);
+    await db.doc('academicYears/2026-2027').set(const AcademicYear(id: '2026-2027', semester: 1, active: true).toMap());
+    final course = Course(code: 'CS101', name: 'البرمجة', stage: stage, semester: 1, units: 3, hasPractical: false);
+    await db.doc('courses/${course.id}').set(course.toMap());
+    await db.doc('students/1').set(Student(universityId: '1', fullName: 'أحمد علي حسين جاسم', stage: stage).toMap());
+    await db.doc('students/2').set(Student(universityId: '2', fullName: 'زينب صالح مهدي حسن', stage: stage).toMap());
+    final a = Assignment.theory(teacherId: t1, courseId: course.id, stageId: stage.id, teacherName: 'علي حسن', courseName: 'البرمجة');
+    await db.doc('assignments/${a.id}').set(a.toMap());
+    final sessionId = (await db.collection('sessions').get()).docs.single.id;
+    await db.doc('sessions/$sessionId/records/1').set({'studentId': '1', 'status': 'present'});
+    await db.doc('sessions/$sessionId/records/2').set({'studentId': '2', 'status': 'absent'});
+    await db.doc('stats/${course.id}__2').set({
+      'courseId': course.id,
+      'studentId': '2',
+      'stageId': stage.id,
+      'bySession': {sessionId: 'absent'},
+    });
+
+    await pumpApp(tester,
+        firestore: db,
+        user: MockUser(email: 'dep@uobasrah.edu.iq', isEmailVerified: true),
+        profile: AppUser(email: 'dep@uobasrah.edu.iq', name: 'المدير الثاني', roles: const {UserRole.deputyAdmin}));
+    await tester.tap(find.byKey(const Key('home.activity')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('activity.row.$t1')));
+    await tester.pumpAndSettle();
+    final classTile = find.byKey(Key('activity.class.${a.id}'));
+    await tester.ensureVisible(classTile);
+    await tester.pumpAndSettle();
+    await tester.tap(classTile);
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('register.table')), findsOneWidget);
+    expect(find.text('أحمد علي حسين جاسم'), findsOneWidget);
+    expect(find.text('زينب صالح مهدي حسن'), findsOneWidget);
+    expect(find.byKey(const Key('register.percent.2')), findsOneWidget);
+    expect(find.byKey(const Key('serverRegister.export')), findsOneWidget);
+    // Read-only: names open nothing (the student screen reads the phone).
+    await tester.tap(find.text('أحمد علي حسين جاسم'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('register.table')), findsOneWidget);
   });
 
   testWidgets('a teacher sees a personal message with a badge and can delete it', (tester) async {

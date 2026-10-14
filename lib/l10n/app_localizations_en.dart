@@ -10,6 +10,13 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get activityClasses =>
+      'Classes — tap one to view and download its register';
+
+  @override
+  String get activityClassesEmpty => 'No classes assigned.';
+
+  @override
   String get deleteAccount => 'Delete account';
 
   @override
@@ -2676,7 +2683,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get activityHelp =>
-      'When each teacher last opened the app and when their phone last uploaded attendance (a lecture recorded or edited). Tracking starts with this update, so anyone who has not opened it yet shows as «Not yet». Tap a name for details, their lectures and to send a message.';
+      'When each teacher last opened the app and when their phone last uploaded attendance (a lecture recorded or edited). Tracking starts with this update, so anyone who has not opened it yet shows as «Not yet». Tap a name for details, their lectures and class registers, and to send a message.';
 
   @override
   String get activityAll => 'All';

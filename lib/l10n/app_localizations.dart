@@ -98,6 +98,18 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
+  /// No description provided for @activityClasses.
+  ///
+  /// In ar, this message translates to:
+  /// **'صفوفه — اضغط صفاً لعرض سجل الحضور وتنزيله'**
+  String get activityClasses;
+
+  /// No description provided for @activityClassesEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا صفوف مُسندة إليه.'**
+  String get activityClassesEmpty;
+
   /// No description provided for @deleteAccount.
   ///
   /// In ar, this message translates to:
@@ -4406,7 +4418,7 @@ abstract class AppLocalizations {
   /// No description provided for @activityHelp.
   ///
   /// In ar, this message translates to:
-  /// **'آخر مرة فتح فيها كل تدريسي البرنامج، وآخر مرة رفع هاتفه حضوراً (تسجيل محاضرة أو تعديلها). تبدأ المتابعة من تحديث البرنامج هذا، فمن لم يفتحه بعد يظهر «لم يدخل بعد». المسّ اسماً لتفاصيله ومحاضراته ولإرسال إشعار.'**
+  /// **'آخر مرة فتح فيها كل تدريسي البرنامج، وآخر مرة رفع هاتفه حضوراً (تسجيل محاضرة أو تعديلها). تبدأ المتابعة من تحديث البرنامج هذا، فمن لم يفتحه بعد يظهر «لم يدخل بعد». المسّ اسماً لتفاصيله ومحاضراته وسجلات صفوفه ولإرسال إشعار.'**
   String get activityHelp;
 
   /// No description provided for @activityAll.

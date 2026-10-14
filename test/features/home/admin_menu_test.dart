@@ -36,9 +36,9 @@ void main() {
     expect(tools, hasLength(AdminTool.values.length));
   });
 
-  test('the deputy admin lacks only the super admin tools', () {
+  test('the deputy admin sees every tool, «متابعة التدريسيين» included', () {
     final tools = [for (final s in AdminMenu.of(perms({UserRole.deputyAdmin}))) ...s.tools];
-    expect(AdminTool.values.toSet().difference(tools.toSet()), {AdminTool.teacherActivity});
+    expect(tools.toSet(), AdminTool.values.toSet());
   });
 
   test('the super admin may open every tool', () {

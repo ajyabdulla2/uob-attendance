@@ -1,6 +1,6 @@
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { createHandler, parseSend, isActiveSuperAdmin } from '../src/index.js';
+import { createHandler, parseSend, isActiveAdmin } from '../src/index.js';
 import { b64url, resetCaches, verifyIdToken } from '../src/google.js';
 
 const PROJECT = 'demo-uob';
@@ -96,14 +96,14 @@ test('the super admin sends to teachers with a device; the others are counted', 
 
 test('anyone else is refused before anything is sent', async () => {
   const g = fakeGoogle({
-    users: { 'dep@uob.iq': userDoc(['deputyAdmin']), 'off@uob.iq': userDoc(['superAdmin'], false) },
+    users: { 'sm@uob.iq': userDoc(['stageManager', 'teacher']), 'off@uob.iq': userDoc(['superAdmin'], false) },
     tokens: { 't1@uob.iq': 'tok1' },
   });
   const h = createHandler({ fetchFn: g.fetchFn, nowMs: () => NOW });
   const body = { to: ['t1@uob.iq'], title: 'x' };
   assert.equal((await send(h, body)).status, 401);
   assert.equal((await send(h, body, 'not.a.token')).status, 401);
-  assert.equal((await send(h, body, await idToken({ email: 'dep@uob.iq' }))).status, 403);
+  assert.equal((await send(h, body, await idToken({ email: 'sm@uob.iq' }))).status, 403);
   assert.equal((await send(h, body, await idToken({ email: 'off@uob.iq' }))).status, 403);
   assert.equal((await send(h, body, await idToken({ email: 'nobody@uob.iq' }))).status, 403);
   assert.equal((await send(h, body, await idToken({ email: SUPER, email_verified: false }))).status, 403);
@@ -126,9 +126,11 @@ test('request bodies are bounded', () => {
 });
 
 test('roles are read from the Firestore REST shape', () => {
-  assert.equal(isActiveSuperAdmin(userDoc(['teacher', 'superAdmin']).fields), true);
-  assert.equal(isActiveSuperAdmin(userDoc(['deputyAdmin']).fields), false);
-  assert.equal(isActiveSuperAdmin(null), false);
+  assert.equal(isActiveAdmin(userDoc(['teacher', 'superAdmin']).fields), true);
+  assert.equal(isActiveAdmin(userDoc(['deputyAdmin']).fields), true);
+  assert.equal(isActiveAdmin(userDoc(['stageManager', 'teacher']).fields), false);
+  assert.equal(isActiveAdmin(userDoc(['deputyAdmin'], false).fields), false);
+  assert.equal(isActiveAdmin(null), false);
 });
 
 test('ID tokens: unknown key id is refused', async () => {

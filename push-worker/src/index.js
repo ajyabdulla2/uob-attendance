@@ -3,7 +3,7 @@
 //
 //   POST /send   Authorization: Bearer <Firebase ID token>
 //                {"to": ["teacher@…"], "title": "…", "body": "…"}
-//     Only an active super admin (users/{email}.roles has superAdmin) may
+//     Only an active admin (users/{email}.roles has superAdmin or deputyAdmin) may
 //     send. Device tokens come from presence/{email}.pushToken, written by
 //     each teacher's own app. Answers {"sent", "noDevice", "failed"}.
 //   GET /health  whether the service account can read Firestore and send.
@@ -102,10 +102,10 @@ export function publicLimit(v) {
   return v != null && v !== '' && Number.isFinite(n) && n >= 0 ? n : PUBLIC_DAILY_READS;
 }
 
-export function isActiveSuperAdmin(fields) {
+export function isActiveAdmin(fields) {
   if (!fields || fields.active?.booleanValue !== true) return false;
   const roles = fields.roles?.arrayValue?.values ?? [];
-  return roles.some((v) => v.stringValue === 'superAdmin');
+  return roles.some((v) => v.stringValue === 'superAdmin' || v.stringValue === 'deputyAdmin');
 }
 
 async function sendOne(token, title, body, ctx) {
@@ -213,7 +213,7 @@ export function createHandler({
 
     try {
       const ctx = { fetch: fetchFn, projectId, token: await accessToken(serviceAccount, google) };
-      if (!isActiveSuperAdmin(await getDoc(`users/${encodeURIComponent(email)}`, ctx))) {
+      if (!isActiveAdmin(await getDoc(`users/${encodeURIComponent(email)}`, ctx))) {
         return json(403, { error: 'permission-denied' }, origin);
       }
       const presence = await getDocs(parsed.to.map((e) => `presence/${e}`), ctx);

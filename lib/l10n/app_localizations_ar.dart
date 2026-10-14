@@ -10,6 +10,12 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get activityClasses => 'صفوفه — اضغط صفاً لعرض سجل الحضور وتنزيله';
+
+  @override
+  String get activityClassesEmpty => 'لا صفوف مُسندة إليه.';
+
+  @override
   String get deleteAccount => 'حذف الحساب';
 
   @override
@@ -2671,7 +2677,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get activityHelp =>
-      'آخر مرة فتح فيها كل تدريسي البرنامج، وآخر مرة رفع هاتفه حضوراً (تسجيل محاضرة أو تعديلها). تبدأ المتابعة من تحديث البرنامج هذا، فمن لم يفتحه بعد يظهر «لم يدخل بعد». المسّ اسماً لتفاصيله ومحاضراته ولإرسال إشعار.';
+      'آخر مرة فتح فيها كل تدريسي البرنامج، وآخر مرة رفع هاتفه حضوراً (تسجيل محاضرة أو تعديلها). تبدأ المتابعة من تحديث البرنامج هذا، فمن لم يفتحه بعد يظهر «لم يدخل بعد». المسّ اسماً لتفاصيله ومحاضراته وسجلات صفوفه ولإرسال إشعار.';
 
   @override
   String get activityAll => 'الكل';

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:go_router/go_router.dart';
+
+import '../../../core/router/app_router.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../../assignments/domain/assignment.dart';
+import '../../attendance/application/server_register_providers.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../auth/domain/app_user.dart';
 import '../../notifications/application/notifications_providers.dart';
@@ -12,9 +16,10 @@ import '../../push/application/push_providers.dart';
 import '../application/activity_providers.dart';
 import '../domain/teacher_activity.dart';
 
-/// «متابعة التدريسيين» (super admin): when each teacher last opened the app
-/// and last uploaded attendance, with a personal in-app message to one
-/// teacher or to everyone in the current filter.
+/// «متابعة التدريسيين» (super and deputy admins): when each teacher last
+/// opened the app and last uploaded attendance, their classes' registers
+/// (read from the server, with PDF/Excel export), and a personal message —
+/// in the app and to the phone — to one teacher or to everyone in the filter.
 class TeacherActivityScreen extends ConsumerStatefulWidget {
   const TeacherActivityScreen({super.key});
 
@@ -160,6 +165,7 @@ class _ActivityDetails extends ConsumerWidget {
     final theme = Theme.of(context);
     final p = row.presence;
     final lectures = ref.watch(lecturesByProvider(row.user.id));
+    final classes = ref.watch(teacherClassesProvider(row.user.id));
     Widget line(IconData icon, String text) => ListTile(dense: true, leading: Icon(icon), title: Text(text));
     return SafeArea(
       child: ListView(
@@ -199,6 +205,28 @@ class _ActivityDetails extends ConsumerWidget {
                   ),
               ],
             ),
+          ),
+          const Divider(),
+          Text(l10n.activityClasses, style: theme.textTheme.titleSmall),
+          classes.when(
+            loading: () => const Padding(padding: EdgeInsets.all(16), child: Center(child: CircularProgressIndicator())),
+            error: (e, _) => Text(l10n.activityLecturesError),
+            data: (list) => list.isEmpty
+                ? Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text(l10n.activityClassesEmpty))
+                : Column(
+                    children: [
+                      for (final a in list)
+                        ListTile(
+                          key: Key('activity.class.${a.id}'),
+                          dense: true,
+                          leading: const Icon(Icons.table_chart_outlined),
+                          title: Text(a.courseName.isEmpty ? a.courseId : a.courseName),
+                          subtitle: Text('${l10n.classLabel(a)} · ${l10n.stageId(a.stageId)}'),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () => context.push(Routes.classRegisterFor(a.id)),
+                        ),
+                    ],
+                  ),
           ),
           const SizedBox(height: 8),
           FilledButton.icon(
