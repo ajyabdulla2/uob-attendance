@@ -2273,6 +2273,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'user_reject': 'Join request rejected',
       'user_rename': 'Account e-mail changed',
       'users_delete': 'Accounts deleted',
+      'student_create': 'إضافة طالب',
+      'student_update': 'تعديل طالب',
       'student_rename': 'University ID changed',
       'students_delete': 'Students deleted',
       'course_rename': 'Course code changed',
@@ -3095,4 +3097,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fixAllCourses => 'All courses';
+
+  @override
+  String get studentsTitle => 'Students';
+
+  @override
+  String get studentsAdd => 'Add student';
+
+  @override
+  String get studentsEdit => 'Edit student';
+
+  @override
+  String get studentsRequired => 'Enter the university ID and the name.';
+
+  @override
+  String get studentsNameHint => 'The full four-part name is preferred.';
+
+  @override
+  String get studentsNoSection => 'No section';
+
+  @override
+  String get studentsCarryOverHelp =>
+      'A carry-over student sits exams only, so is left out of attendance lists and percentages.';
+
+  @override
+  String studentsGroupOf(String course) {
+    return 'Practical group: $course';
+  }
+
+  @override
+  String get studentsNoGroup => 'No group (set later)';
+
+  @override
+  String get studentsPhonesNote =>
+      'The student reaches teachers\' phones at their next sync (daily, or at once with «Sync now»).';
+
+  @override
+  String studentsAdded(String name) {
+    return '$name added.';
+  }
+
+  @override
+  String get studentsSaved => 'Changes saved.';
+
+  @override
+  String studentsExists(String name, String stage) {
+    return 'This university ID belongs to $name in $stage.';
+  }
+
+  @override
+  String get studentsElsewhere =>
+      'Could not add: the university ID most likely belongs to another stage. Ask an admin.';
 }

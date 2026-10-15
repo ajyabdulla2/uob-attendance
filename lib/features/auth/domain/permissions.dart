@@ -33,6 +33,9 @@ final class Permissions {
   // ------------------------------------------------------------- import --
   bool get canImportStudents => isAdmin || isStageManager;
   bool canImportStudentsInto(String stageId) => canManageStage(stageId);
+
+  /// «الطلبة»: add or edit one student in a stage one manages.
+  bool get canManageStudents => isAdmin || isStageManager;
   bool get canImportTeachers => isAdmin;
   bool get canImportCourses => isAdmin;
   bool get canImportAnything => canImportStudents || canImportTeachers || canImportCourses;

@@ -1692,7 +1692,7 @@
   "auditEnd": "نهاية السجل",
   "auditBefore": "قبل",
   "auditAfter": "بعد",
-  "auditActionLabel": "{action, select, session_missed{تسجيل محاضرة فائتة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} sessions_delete{حذف محاضرات} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} config_update{تعديل إصدار التطبيق} other{{action}}}",
+  "auditActionLabel": "{action, select, session_missed{تسجيل محاضرة فائتة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_create{إضافة طالب} student_update{تعديل طالب} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} sessions_delete{حذف محاضرات} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} config_update{تعديل إصدار التطبيق} other{{action}}}",
   "@auditActionLabel": {
     "placeholders": {
       "action": {
@@ -2116,5 +2116,22 @@
   "@fixLecturesList": {"placeholders": {"count": {"type": "int"}}},
   "fixLecturesRejectNote": "حُذفت المحاضرة من الإدارة.",
   "fixLecturesCourse": "المادة",
-  "fixAllCourses": "كل المواد"
+  "fixAllCourses": "كل المواد",
+  "studentsTitle": "الطلبة",
+  "studentsAdd": "إضافة طالب",
+  "studentsEdit": "تعديل طالب",
+  "studentsRequired": "اكتب الرقم الجامعي والاسم.",
+  "studentsNameHint": "يُفضَّل الاسم الرباعي.",
+  "studentsNoSection": "بلا شعبة",
+  "studentsCarryOverHelp": "المحمَّل يحضر الامتحانات فقط، فلا يظهر في قوائم الحضور ولا النسب.",
+  "studentsGroupOf": "مجموعة العملي: {course}",
+  "@studentsGroupOf": {"placeholders": {"course": {"type": "String"}}},
+  "studentsNoGroup": "بلا مجموعة (تُحدَّد لاحقاً)",
+  "studentsPhonesNote": "يظهر الطالب في هواتف التدريسيين بعد مزامنتها (مرة يومياً، أو فوراً بـ«مزامنة الآن»).",
+  "studentsAdded": "أُضيف {name}.",
+  "@studentsAdded": {"placeholders": {"name": {"type": "String"}}},
+  "studentsSaved": "حُفظت التعديلات.",
+  "studentsExists": "هذا الرقم الجامعي مسجّل باسم {name} في {stage}.",
+  "@studentsExists": {"placeholders": {"name": {"type": "String"}, "stage": {"type": "String"}}},
+  "studentsElsewhere": "تعذّرت الإضافة: الرقم الجامعي غالباً مسجّل في مرحلة أخرى. راجع المدير."
 }
