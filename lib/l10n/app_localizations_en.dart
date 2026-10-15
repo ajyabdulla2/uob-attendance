@@ -1186,7 +1186,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fixRenameTab => 'Change an ID';
 
   @override
-  String get fixDeleteTab => 'Undo a wrong import';
+  String get fixDeleteTab => 'Delete wrong data';
 
   @override
   String get fixKindStudent => 'University ID';
@@ -3148,4 +3148,15 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get studentsElsewhere =>
       'Could not add: the university ID most likely belongs to another stage. Ask an admin.';
+
+  @override
+  String get coursePanelDeleteLecture => 'Delete this lecture';
+
+  @override
+  String coursePanelDeleteLectureBody(String lecture) {
+    return 'The lecture «$lecture» is deleted with its attendance, leaves the students\' percentages, and disappears from the teacher\'s phone when the class is opened. This cannot be undone.';
+  }
+
+  @override
+  String get coursePanelLectureDeleted => 'Lecture deleted.';
 }

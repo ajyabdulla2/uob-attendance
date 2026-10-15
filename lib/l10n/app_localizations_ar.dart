@@ -1180,7 +1180,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get fixRenameTab => 'تغيير معرّف';
 
   @override
-  String get fixDeleteTab => 'حذف استيراد خاطئ';
+  String get fixDeleteTab => 'حذف بيانات خاطئة';
 
   @override
   String get fixKindStudent => 'رقم جامعي';
@@ -1274,7 +1274,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String fixProblemTargetExists(String name) {
-    return 'المعرّف الجديد مستعمل لسجل آخر: «$name». إن كان مكرراً فاحذفه أولاً من «حذف استيراد خاطئ».';
+    return 'المعرّف الجديد مستعمل لسجل آخر: «$name». إن كان مكرراً فاحذفه أولاً من «حذف بيانات خاطئة».';
   }
 
   @override
@@ -3136,4 +3136,15 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get studentsElsewhere =>
       'تعذّرت الإضافة: الرقم الجامعي غالباً مسجّل في مرحلة أخرى. راجع المدير.';
+
+  @override
+  String get coursePanelDeleteLecture => 'حذف هذه المحاضرة';
+
+  @override
+  String coursePanelDeleteLectureBody(String lecture) {
+    return 'تُحذف المحاضرة «$lecture» مع حضورها، وتخرج من نسب الطلبة، وتختفي من هاتف التدريسي عند فتحه الصف. لا يمكن التراجع.';
+  }
+
+  @override
+  String get coursePanelLectureDeleted => 'حُذفت المحاضرة.';
 }

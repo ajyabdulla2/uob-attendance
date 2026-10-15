@@ -2111,7 +2111,7 @@ abstract class AppLocalizations {
   /// No description provided for @fixDeleteTab.
   ///
   /// In ar, this message translates to:
-  /// **'حذف استيراد خاطئ'**
+  /// **'حذف بيانات خاطئة'**
   String get fixDeleteTab;
 
   /// No description provided for @fixKindStudent.
@@ -2273,7 +2273,7 @@ abstract class AppLocalizations {
   /// No description provided for @fixProblemTargetExists.
   ///
   /// In ar, this message translates to:
-  /// **'المعرّف الجديد مستعمل لسجل آخر: «{name}». إن كان مكرراً فاحذفه أولاً من «حذف استيراد خاطئ».'**
+  /// **'المعرّف الجديد مستعمل لسجل آخر: «{name}». إن كان مكرراً فاحذفه أولاً من «حذف بيانات خاطئة».'**
   String fixProblemTargetExists(String name);
 
   /// No description provided for @fixProblemOwnAccount.
@@ -5170,6 +5170,24 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تعذّرت الإضافة: الرقم الجامعي غالباً مسجّل في مرحلة أخرى. راجع المدير.'**
   String get studentsElsewhere;
+
+  /// No description provided for @coursePanelDeleteLecture.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف هذه المحاضرة'**
+  String get coursePanelDeleteLecture;
+
+  /// No description provided for @coursePanelDeleteLectureBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تُحذف المحاضرة «{lecture}» مع حضورها، وتخرج من نسب الطلبة، وتختفي من هاتف التدريسي عند فتحه الصف. لا يمكن التراجع.'**
+  String coursePanelDeleteLectureBody(String lecture);
+
+  /// No description provided for @coursePanelLectureDeleted.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُذفت المحاضرة.'**
+  String get coursePanelLectureDeleted;
 }
 
 class _AppLocalizationsDelegate

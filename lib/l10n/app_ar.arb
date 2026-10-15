@@ -801,7 +801,7 @@
   "homeDataFixAction": "تصحيح المعرّفات وحذف الاستيراد الخاطئ",
   "fixTitle": "تصحيح البيانات",
   "fixRenameTab": "تغيير معرّف",
-  "fixDeleteTab": "حذف استيراد خاطئ",
+  "fixDeleteTab": "حذف بيانات خاطئة",
   "fixKindStudent": "رقم جامعي",
   "fixKindCourse": "رمز مادة",
   "fixKindTeacher": "بريد تدريسي",
@@ -849,7 +849,7 @@
   "fixProblemInvalidId": "المعرّف غير صالح.",
   "fixProblemSameId": "المعرّفان متطابقان.",
   "fixProblemNotFound": "المعرّف الحالي غير موجود (أو ليس في هذه المرحلة).",
-  "fixProblemTargetExists": "المعرّف الجديد مستعمل لسجل آخر: «{name}». إن كان مكرراً فاحذفه أولاً من «حذف استيراد خاطئ».",
+  "fixProblemTargetExists": "المعرّف الجديد مستعمل لسجل آخر: «{name}». إن كان مكرراً فاحذفه أولاً من «حذف بيانات خاطئة».",
   "@fixProblemTargetExists": {
     "placeholders": {
       "name": {
@@ -2133,5 +2133,9 @@
   "studentsSaved": "حُفظت التعديلات.",
   "studentsExists": "هذا الرقم الجامعي مسجّل باسم {name} في {stage}.",
   "@studentsExists": {"placeholders": {"name": {"type": "String"}, "stage": {"type": "String"}}},
-  "studentsElsewhere": "تعذّرت الإضافة: الرقم الجامعي غالباً مسجّل في مرحلة أخرى. راجع المدير."
+  "studentsElsewhere": "تعذّرت الإضافة: الرقم الجامعي غالباً مسجّل في مرحلة أخرى. راجع المدير.",
+  "coursePanelDeleteLecture": "حذف هذه المحاضرة",
+  "coursePanelDeleteLectureBody": "تُحذف المحاضرة «{lecture}» مع حضورها، وتخرج من نسب الطلبة، وتختفي من هاتف التدريسي عند فتحه الصف. لا يمكن التراجع.",
+  "@coursePanelDeleteLectureBody": {"placeholders": {"lecture": {"type": "String"}}},
+  "coursePanelLectureDeleted": "حُذفت المحاضرة."
 }

@@ -335,7 +335,7 @@
   "homeDataFixAction": "Fix IDs and undo wrong imports",
   "fixTitle": "Data fixes",
   "fixRenameTab": "Change an ID",
-  "fixDeleteTab": "Undo a wrong import",
+  "fixDeleteTab": "Delete wrong data",
   "fixKindStudent": "University ID",
   "fixKindCourse": "Course code",
   "fixKindTeacher": "Teacher e-mail",
@@ -841,5 +841,8 @@
   "studentsAdded": "{name} added.",
   "studentsSaved": "Changes saved.",
   "studentsExists": "This university ID belongs to {name} in {stage}.",
-  "studentsElsewhere": "Could not add: the university ID most likely belongs to another stage. Ask an admin."
+  "studentsElsewhere": "Could not add: the university ID most likely belongs to another stage. Ask an admin.",
+  "coursePanelDeleteLecture": "Delete this lecture",
+  "coursePanelDeleteLectureBody": "The lecture «{lecture}» is deleted with its attendance, leaves the students' percentages, and disappears from the teacher's phone when the class is opened. This cannot be undone.",
+  "coursePanelLectureDeleted": "Lecture deleted."
 }

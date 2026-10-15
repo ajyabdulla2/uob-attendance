@@ -413,8 +413,8 @@ class DataFixRepository {
   // ------------------------------------------------------------ lectures --
 
   /// Deletes every lecture recorded from [from] to [to] (whole days, at most
-  /// [maxDays]), in [stageId] or every stage, and only [courseId] when
-  /// given — e.g. days entered at random
+  /// [maxDays]), in [stageId] or every stage, and only [courseId] /
+  /// [onlySessionIds] when given — e.g. days entered at random
   /// while trying the app out. With each lecture go its records, its entry
   /// in the students' `stats` (so the percentages drop it) and the pending
   /// edit requests about it (rejected with [rejectNote]; the rules keep
@@ -425,6 +425,7 @@ class DataFixRepository {
     DateTime to, {
     String? stageId,
     String? courseId,
+    Set<String>? onlySessionIds,
     required String actor,
     required String rejectNote,
   }) async {
@@ -443,7 +444,8 @@ class DataFixRepository {
       sessions.addAll([
         for (final d in snap.docs)
           if ((stageId == null || d.data()['stageId'] == stageId) &&
-              (courseId == null || d.data()['courseId'] == courseId))
+              (courseId == null || d.data()['courseId'] == courseId) &&
+              (onlySessionIds == null || onlySessionIds.contains(d.id)))
             d,
       ]);
     }

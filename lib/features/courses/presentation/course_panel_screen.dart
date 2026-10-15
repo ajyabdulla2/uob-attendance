@@ -16,6 +16,7 @@ import '../../auth/application/auth_providers.dart';
 import '../../reports/application/report_builders.dart';
 import '../../reports/application/report_exporter.dart';
 import '../../stats/domain/student_course_stat.dart';
+import '../../data_fix/application/data_fix_providers.dart';
 import '../application/courses_providers.dart';
 import '../data/course_panel.dart';
 import '../domain/course.dart';
@@ -381,6 +382,17 @@ class _LectureSheet extends ConsumerWidget {
             ],
           ),
           const Divider(),
+          if (ref.watch(permissionsProvider).canFixData)
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: TextButton.icon(
+                key: const Key('coursePanel.deleteLecture'),
+                style: TextButton.styleFrom(foregroundColor: theme.colorScheme.error),
+                icon: const Icon(Icons.delete_forever),
+                label: Text(l10n.coursePanelDeleteLecture),
+                onPressed: () => _delete(context, ref),
+              ),
+            ),
           marks.when(
             loading: () => const Padding(padding: EdgeInsets.all(16), child: Center(child: CircularProgressIndicator())),
             error: (e, _) => Text(l10n.activityLecturesError),
@@ -410,6 +422,45 @@ class _LectureSheet extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  /// Deletes this lecture with its attendance and its place in the
+  /// students' percentages (the data-fix lecture deletion, for one lecture).
+  Future<void> _delete(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
+    final s = session;
+    final label = '${panel.course.name} · ${MaterialLocalizations.of(context).formatMediumDate(s.date)} · '
+        '${l10n.sessionClassLabel(s)} · ${l10n.activityLectureNo(s.lectureNo)}';
+    final ok = await confirmDialog(
+      context,
+      title: l10n.coursePanelDeleteLecture,
+      body: l10n.coursePanelDeleteLectureBody(label),
+      confirmLabel: l10n.delete,
+      destructive: true,
+    );
+    if (!ok || !context.mounted) return;
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final repo = ref.read(dataFixRepositoryProvider);
+      final plan = await repo.planLectureDeletion(
+        s.date,
+        s.date,
+        stageId: s.stageId,
+        courseId: s.courseId,
+        onlySessionIds: {s.id},
+        actor: ref.read(signedInUserProvider).id,
+        rejectNote: l10n.fixLecturesRejectNote,
+      );
+      if (plan.canApply) await repo.apply(plan);
+      ref.invalidate(coursePanelProvider(panel.course.id));
+      navigator.pop();
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(l10n.coursePanelLectureDeleted)));
+    } on Object catch (e) {
+      if (context.mounted) showError(context, e);
+    }
   }
 }
 
