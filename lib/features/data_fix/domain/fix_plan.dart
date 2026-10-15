@@ -57,13 +57,18 @@ final class FixPlan {
     this.counts = const {},
     this.phases = const [],
     this.mergeInto,
+    this.sessionIds = const [],
   });
 
   FixPlan.refused(FixProblem problem, {String? name})
       : problems = [problem],
         counts = const {},
         phases = const [],
-        mergeInto = name;
+        mergeInto = name,
+        sessionIds = const [];
+
+  /// Lecture deletion: the lectures that go, listed in the preview.
+  final List<String> sessionIds;
 
   final List<FixProblem> problems;
   final Map<FixCount, int> counts;

@@ -81,7 +81,8 @@ class TeacherDataSync {
   }
 
   /// Pulls the server's sessions of one class into the local register
-  /// (records only for sessions that are new here or changed since).
+  /// (records only for sessions that are new here or changed since), and
+  /// drops local sessions the server no longer has.
   Future<int> pullClassSessions(Assignment a, AttendanceStore store) async {
     await _pullGroup(a);
     final snaps = await _fs
@@ -103,6 +104,13 @@ class TeacherDataSync {
         [for (final r in records.docs) AttendanceRecord.fromMap(r.id, r.data())],
       );
       if (ok) stored++;
+    }
+    // Lectures an admin deleted (e.g. days entered while trying the app
+    // out) leave this phone too — unless a save of them is still queued.
+    final onServer = {for (final d in snaps.docs) d.id};
+    for (final id in await _db.sessionIdsOfClass(a.courseId, a.type.name, a.target)) {
+      if (onServer.contains(id) || await _db.hasPendingWritesFor(id)) continue;
+      await _db.deleteLocalSession(id);
     }
     return stored;
   }

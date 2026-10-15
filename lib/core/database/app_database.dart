@@ -352,6 +352,14 @@ class AppDatabase extends _$AppDatabase {
             ..orderBy([(t) => OrderingTerm.asc(t.dateKey), (t) => OrderingTerm.asc(t.lectureNo)]))
           .watch();
 
+  /// IDs of the sessions of one class on this phone.
+  Future<List<String>> sessionIdsOfClass(String courseId, String type, String target) async => [
+        for (final r in await (select(localSessions)
+              ..where((t) => t.courseId.equals(courseId) & t.type.equals(type) & t.target.equals(target)))
+            .get())
+          r.id,
+      ];
+
   Future<Map<String, LocalRecordRow>> recordsOfSession(String sessionId) async => {
         for (final r in await (select(localRecords)..where((t) => t.sessionId.equals(sessionId))).get())
           r.studentId: r,

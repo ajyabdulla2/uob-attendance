@@ -209,3 +209,43 @@ describe('undoing a wrong import', () => {
     await assertFails(deleteDoc(doc(as(env, SM3), 'students', '1001')));
   });
 });
+
+describe('deleting the lectures of trial days', () => {
+  async function seedStatAndRequest() {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore();
+      await setDoc(doc(db, 'stats', `${COURSE}__1001`), {
+        courseId: COURSE, studentId: '1001', stageId: '3-morning', bySession: { [OPEN_SID]: 'absent' },
+      });
+      await setDoc(doc(db, 'editRequests', 'r1'), {
+        sessionId: OPEN_SID, stageId: '3-morning', status: 'pending', requestedBy: T1, reason: 'x',
+      });
+    });
+  }
+
+  it('an admin deletes a lecture with its records, its stats entry, and rejects its pending request', async () => {
+    await seedStatAndRequest();
+    const db = as(env, SUPER);
+    const first = writeBatch(db);
+    first.set(doc(db, 'stats', `${COURSE}__1001`), {
+      courseId: COURSE, studentId: '1001', stageId: '3-morning', bySession: {}, updatedAt: serverTimestamp(),
+    });
+    first.update(doc(db, 'editRequests', 'r1'), {
+      status: 'rejected', decidedBy: SUPER, decidedAt: serverTimestamp(), decisionNote: 'deleted', updatedAt: serverTimestamp(),
+    });
+    await assertSucceeds(first.commit());
+    const second = writeBatch(db);
+    second.delete(doc(db, 'sessions', OPEN_SID, 'records', '1001'));
+    second.delete(doc(db, 'sessions', OPEN_SID));
+    second.set(doc(collection(db, 'auditLog')), {
+      actor: SUPER, action: 'sessions.delete', targetPath: 'sessions', at: serverTimestamp(),
+    });
+    await assertSucceeds(second.commit());
+  });
+
+  it('a teacher cannot delete a lecture or its records', async () => {
+    const db = as(env, T1);
+    await assertFails(deleteDoc(doc(db, 'sessions', OPEN_SID, 'records', '1001')));
+    await assertFails(deleteDoc(doc(db, 'sessions', OPEN_SID)));
+  });
+});

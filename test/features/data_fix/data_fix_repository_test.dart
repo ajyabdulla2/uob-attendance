@@ -385,4 +385,87 @@ void main() {
       expect((await data(fs, 'users/$teacherEmail'))!['teachingStages'], ['2-morning']);
     });
   });
+
+  group('deleting lectures of trial days', () {
+    final theory = Assignment.theory(teacherId: teacherEmail, courseId: course.id, stageId: stage.id);
+    AttendanceSession on(DateTime date, {int no = 1}) => AttendanceSession(
+          courseId: course.id,
+          stageId: stage.id,
+          yearId: '2026-2027',
+          type: AssignmentType.theory,
+          target: 'all',
+          date: date,
+          lectureNo: no,
+          openedBy: teacherEmail,
+          lockAt: AttendanceSession.lockAtFor(date, 48),
+        );
+
+    test('deletes the days\' lectures, their records, stats entries and pending requests', () async {
+      final d1 = on(DateTime.utc(2026, 10, 1));
+      final d2 = on(DateTime.utc(2026, 10, 2), no: 2);
+      final keep = on(DateTime.utc(2026, 10, 5));
+      for (final s in [d1, d2, keep]) {
+        await addSession(fs, s, {'1': 'absent', '2': 'present'});
+      }
+      await fs.doc('stats/${course.id}__1').set({
+        'courseId': course.id,
+        'studentId': '1',
+        'stageId': stage.id,
+        'bySession': {d1.id: 'absent', d2.id: 'absent', keep.id: 'absent'},
+      });
+      await fs.doc('stats/${course.id}__2').set({
+        'courseId': course.id,
+        'studentId': '2',
+        'stageId': stage.id,
+        'bySession': {keep.id: 'late'},
+      });
+      await fs.doc('editRequests/r1').set({'sessionId': d1.id, 'stageId': stage.id, 'status': 'pending'});
+      await fs.doc('editRequests/r2').set({'sessionId': keep.id, 'stageId': stage.id, 'status': 'pending'});
+
+      final plan = await repo.planLectureDeletion(DateTime(2026, 10, 1), DateTime(2026, 10, 2),
+          actor: admin, rejectNote: 'حُذفت');
+      expect(plan.canApply, isTrue);
+      expect(plan.sessionIds, [d1.id, d2.id]);
+      expect(plan.counts[FixCount.sessions], 2);
+      expect(plan.counts[FixCount.records], 4);
+      expect(plan.counts[FixCount.stats], 1);
+      await repo.apply(plan);
+
+      expect(await data(fs, 'sessions/${d1.id}'), isNull);
+      expect(await data(fs, 'sessions/${d2.id}/records/1'), isNull);
+      expect(await data(fs, 'sessions/${keep.id}'), isNotNull);
+      expect((await data(fs, 'stats/${course.id}__1'))!['bySession'], {keep.id: 'absent'});
+      expect((await data(fs, 'stats/${course.id}__2'))!['bySession'], {keep.id: 'late'});
+      expect((await data(fs, 'editRequests/r1'))!['status'], 'rejected');
+      expect((await data(fs, 'editRequests/r1'))!['decisionNote'], 'حُذفت');
+      expect((await data(fs, 'editRequests/r2'))!['status'], 'pending');
+      expect((await audit(fs)).single['action'], 'sessions.delete');
+
+      // Running it again finds nothing left.
+      final again = await repo.planLectureDeletion(DateTime(2026, 10, 1), DateTime(2026, 10, 2),
+          actor: admin, rejectNote: 'حُذفت');
+      expect(again.problems, [FixProblem.nothingToDelete]);
+      expect(theory.courseId, course.id);
+    });
+
+    test('one stage only', () async {
+      final here = on(DateTime.utc(2026, 10, 1));
+      final other = AttendanceSession(
+        courseId: 'CS201_2-morning',
+        stageId: '2-morning',
+        yearId: '2026-2027',
+        type: AssignmentType.theory,
+        target: 'all',
+        date: DateTime.utc(2026, 10, 1),
+        lectureNo: 1,
+        openedBy: teacherEmail,
+        lockAt: AttendanceSession.lockAtFor(DateTime.utc(2026, 10, 1), 48),
+      );
+      await addSession(fs, here, {'1': 'present'});
+      await addSession(fs, other, {'9': 'present'});
+      final plan = await repo.planLectureDeletion(DateTime(2026, 10, 1), DateTime(2026, 10, 1),
+          stageId: '2-morning', actor: admin, rejectNote: '');
+      expect(plan.sessionIds, [other.id]);
+    });
+  });
 }
