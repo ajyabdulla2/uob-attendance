@@ -844,5 +844,6 @@
   "studentsElsewhere": "Could not add: the university ID most likely belongs to another stage. Ask an admin.",
   "coursePanelDeleteLecture": "Delete this lecture",
   "coursePanelDeleteLectureBody": "The lecture «{lecture}» is deleted with its attendance, leaves the students' percentages, and disappears from the teacher's phone when the class is opened. This cannot be undone.",
-  "coursePanelLectureDeleted": "Lecture deleted."
+  "coursePanelLectureDeleted": "Lecture deleted.",
+  "coursePanelLectureNotFound": "This lecture was not found on the server (perhaps already deleted). The panel was reloaded."
 }

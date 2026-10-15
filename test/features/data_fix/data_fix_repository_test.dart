@@ -468,6 +468,22 @@ void main() {
       expect(plan.sessionIds, [other.id]);
     });
 
+    test('one lecture by ID, even when its stored date does not match', () async {
+      final s = on(DateTime.utc(2026, 10, 5));
+      await addSession(fs, s, {'1': 'absent'});
+      // An older copy written with another day key (e.g. a time-zone shift).
+      await fs.doc('sessions/${s.id}').update({'dateKey': '20261004'});
+      final plan = await repo.planLectureDeletion(DateTime.utc(2026, 10, 5), DateTime.utc(2026, 10, 5),
+          stageId: stage.id, courseId: course.id, onlySessionIds: {s.id}, actor: admin, rejectNote: '');
+      expect(plan.sessionIds, [s.id]);
+      await repo.apply(plan);
+      expect(await data(fs, 'sessions/${s.id}'), isNull);
+
+      final missing = await repo.planLectureDeletion(DateTime.utc(2026, 10, 5), DateTime.utc(2026, 10, 5),
+          onlySessionIds: {s.id}, actor: admin, rejectNote: '');
+      expect(missing.canApply, isFalse);
+    });
+
     test('one course only: other courses of the same day stay', () async {
       final mine = on(DateTime.utc(2026, 10, 1));
       final otherCourse = AttendanceSession(
