@@ -2110,9 +2110,11 @@
   "@fixLecturesDays": {"placeholders": {"from": {"type": "String"}, "to": {"type": "String"}}},
   "fixLecturesTooLong": "اختر {days} يوماً على الأكثر.",
   "@fixLecturesTooLong": {"placeholders": {"days": {"type": "int"}}},
-  "fixDeleteLecturesHelp": "تُحذف كل المحاضرات المسجلة في هذه الأيام (لكل الصفوف والتدريسيين) مع حضورها، وتُزال من نسب الطلبة، وتُرفض طلبات التعديل المعلّقة عليها. لأيام أُدخلت للتجربة أو بالخطأ. لا يمكن التراجع، فخذ نسخة احتياطية قبلها إن شئت.",
+  "fixDeleteLecturesHelp": "تُحذف كل المحاضرات المسجلة في هذه الأيام للمرحلة والمادة المختارتين (أو للكل) مع حضورها، وتُزال من نسب الطلبة، وتُرفض طلبات التعديل المعلّقة عليها. لأيام أُدخلت للتجربة أو بالخطأ. لا يمكن التراجع، فخذ نسخة احتياطية قبلها إن شئت.",
   "fixLecturesPhonesNote": "تختفي من هاتف التدريسي حين يفتح الصف (التسجيل أو السجل)، إلا محاضرة لها حفظ غير مرفوع على هاتفه.",
   "fixLecturesList": "المحاضرات التي ستُحذف ({count})",
   "@fixLecturesList": {"placeholders": {"count": {"type": "int"}}},
-  "fixLecturesRejectNote": "حُذفت المحاضرة من الإدارة."
+  "fixLecturesRejectNote": "حُذفت المحاضرة من الإدارة.",
+  "fixLecturesCourse": "المادة",
+  "fixAllCourses": "كل المواد"
 }

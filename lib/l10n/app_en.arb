@@ -822,8 +822,10 @@
   "fixLecturesPickDays": "Pick the day or days",
   "fixLecturesDays": "{from} to {to}",
   "fixLecturesTooLong": "Pick at most {days} days.",
-  "fixDeleteLecturesHelp": "Deletes every lecture recorded on these days (all classes and teachers) with its attendance, removes it from the students' percentages and rejects pending edit requests about it. For days entered as a trial or by mistake. This cannot be undone; take a backup first if you wish.",
+  "fixDeleteLecturesHelp": "Deletes every lecture recorded on these days in the chosen stage and course (or all) with its attendance, removes it from the students' percentages and rejects pending edit requests about it. For days entered as a trial or by mistake. This cannot be undone; take a backup first if you wish.",
   "fixLecturesPhonesNote": "They leave a teacher's phone when the class is opened (record or register), except a lecture with a save still waiting to upload on that phone.",
   "fixLecturesList": "Lectures to delete ({count})",
-  "fixLecturesRejectNote": "The lecture was deleted by the administration."
+  "fixLecturesRejectNote": "The lecture was deleted by the administration.",
+  "fixLecturesCourse": "Course",
+  "fixAllCourses": "All courses"
 }

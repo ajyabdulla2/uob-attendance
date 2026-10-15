@@ -3075,7 +3075,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fixDeleteLecturesHelp =>
-      'Deletes every lecture recorded on these days (all classes and teachers) with its attendance, removes it from the students\' percentages and rejects pending edit requests about it. For days entered as a trial or by mistake. This cannot be undone; take a backup first if you wish.';
+      'Deletes every lecture recorded on these days in the chosen stage and course (or all) with its attendance, removes it from the students\' percentages and rejects pending edit requests about it. For days entered as a trial or by mistake. This cannot be undone; take a backup first if you wish.';
 
   @override
   String get fixLecturesPhonesNote =>
@@ -3089,4 +3089,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get fixLecturesRejectNote =>
       'The lecture was deleted by the administration.';
+
+  @override
+  String get fixLecturesCourse => 'Course';
+
+  @override
+  String get fixAllCourses => 'All courses';
 }

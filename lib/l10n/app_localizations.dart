@@ -5054,7 +5054,7 @@ abstract class AppLocalizations {
   /// No description provided for @fixDeleteLecturesHelp.
   ///
   /// In ar, this message translates to:
-  /// **'تُحذف كل المحاضرات المسجلة في هذه الأيام (لكل الصفوف والتدريسيين) مع حضورها، وتُزال من نسب الطلبة، وتُرفض طلبات التعديل المعلّقة عليها. لأيام أُدخلت للتجربة أو بالخطأ. لا يمكن التراجع، فخذ نسخة احتياطية قبلها إن شئت.'**
+  /// **'تُحذف كل المحاضرات المسجلة في هذه الأيام للمرحلة والمادة المختارتين (أو للكل) مع حضورها، وتُزال من نسب الطلبة، وتُرفض طلبات التعديل المعلّقة عليها. لأيام أُدخلت للتجربة أو بالخطأ. لا يمكن التراجع، فخذ نسخة احتياطية قبلها إن شئت.'**
   String get fixDeleteLecturesHelp;
 
   /// No description provided for @fixLecturesPhonesNote.
@@ -5074,6 +5074,18 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'حُذفت المحاضرة من الإدارة.'**
   String get fixLecturesRejectNote;
+
+  /// No description provided for @fixLecturesCourse.
+  ///
+  /// In ar, this message translates to:
+  /// **'المادة'**
+  String get fixLecturesCourse;
+
+  /// No description provided for @fixAllCourses.
+  ///
+  /// In ar, this message translates to:
+  /// **'كل المواد'**
+  String get fixAllCourses;
 }
 
 class _AppLocalizationsDelegate

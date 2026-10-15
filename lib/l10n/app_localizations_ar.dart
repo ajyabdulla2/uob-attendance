@@ -3064,7 +3064,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get fixDeleteLecturesHelp =>
-      'تُحذف كل المحاضرات المسجلة في هذه الأيام (لكل الصفوف والتدريسيين) مع حضورها، وتُزال من نسب الطلبة، وتُرفض طلبات التعديل المعلّقة عليها. لأيام أُدخلت للتجربة أو بالخطأ. لا يمكن التراجع، فخذ نسخة احتياطية قبلها إن شئت.';
+      'تُحذف كل المحاضرات المسجلة في هذه الأيام للمرحلة والمادة المختارتين (أو للكل) مع حضورها، وتُزال من نسب الطلبة، وتُرفض طلبات التعديل المعلّقة عليها. لأيام أُدخلت للتجربة أو بالخطأ. لا يمكن التراجع، فخذ نسخة احتياطية قبلها إن شئت.';
 
   @override
   String get fixLecturesPhonesNote =>
@@ -3077,4 +3077,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get fixLecturesRejectNote => 'حُذفت المحاضرة من الإدارة.';
+
+  @override
+  String get fixLecturesCourse => 'المادة';
+
+  @override
+  String get fixAllCourses => 'كل المواد';
 }
