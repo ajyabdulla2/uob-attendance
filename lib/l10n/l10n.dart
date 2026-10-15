@@ -88,6 +88,17 @@ extension DomainLabels on AppLocalizations {
         ],
       ].join(' · ');
 
+  /// «نظري · كل الشعب» / «عملي · مجموعة A» for a lecture (no stage).
+  String sessionClassLabel(AttendanceSession s) => [
+        if (s.type == AssignmentType.theory) ...[
+          theoryLabel,
+          s.target == DocIds.allSections ? allSections : sectionLabel(s.target),
+        ] else ...[
+          practicalLabel,
+          groupLabel(s.target),
+        ],
+      ].join(' · ');
+
   String warningLevel(WarningLevel l) => switch (l) {
         WarningLevel.none => warnAll,
         WarningLevel.alert => levelAlert,

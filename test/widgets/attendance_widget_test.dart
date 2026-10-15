@@ -335,4 +335,58 @@ void main() {
     expect(find.textContaining('مجموعة A'), findsWidgets);
     await unmountApp(tester);
   });
+
+  testWidgets('several practical groups share one «عملي» box that lists them', (tester) async {
+    final fs = await seededFirestore();
+    await fs.doc('courses/${course.id}').update({'hasPractical': true});
+    final groups = [
+      for (final name in ['A', 'B', 'C'])
+        Assignment.practical(
+          teacherId: teacherEmail,
+          courseId: course.id,
+          stageId: stage.id,
+          groupName: name,
+          courseName: course.name,
+        ),
+    ];
+    for (final g in groups) {
+      await fs.doc('groups/${g.groupId}').set({
+        'courseId': course.id,
+        'stageId': stage.id,
+        'name': g.target,
+        'studentIds': [for (final s in students) s.id],
+      });
+      await fs.doc('assignments/${g.id}').set(g.toMap());
+    }
+    await pumpApp(
+      tester,
+      user: MockUser(email: teacherEmail, isEmailVerified: true),
+      profile: teacher,
+      firestore: fs,
+      localDb: AppDatabase(NativeDatabase.memory()),
+    );
+    await tester.pumpAndSettle();
+
+    final box = find.byKey(Key('home.groups.${course.id}'));
+    expect(box, findsOneWidget);
+    expect(find.descendant(of: box, matching: find.text('المجاميع: A، B، C')), findsOneWidget);
+    for (final g in groups) {
+      expect(find.byKey(Key('home.tile.${g.id}')), findsNothing);
+    }
+    expect(find.byKey(Key('home.tile.${assignment.id}')), findsOneWidget);
+
+    await tester.tap(box);
+    await tester.pumpAndSettle();
+    final sheet = find.byKey(const Key('home.groupsSheet'));
+    for (final g in groups) {
+      expect(find.descendant(of: sheet, matching: find.byKey(Key('home.class.${g.id}'))), findsOneWidget);
+    }
+    // Picking a group closes the list and records that group.
+    await tester.tap(find.byKey(Key('home.class.${groups[1].id}')));
+    await tester.pumpAndSettle();
+    expect(sheet, findsNothing);
+    expect(find.text('المحاضرة 1'), findsOneWidget);
+    expect(find.textContaining('مجموعة B'), findsWidgets);
+    await unmountApp(tester);
+  });
 }

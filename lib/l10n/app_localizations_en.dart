@@ -2955,4 +2955,101 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get releaseOpenLink => 'Test the link';
+
+  @override
+  String get activitySearch => 'Search by teacher name or email';
+
+  @override
+  String get coursePanelAction => 'Course panel';
+
+  @override
+  String get coursePanelExport => 'Download the course panel as PDF or Excel';
+
+  @override
+  String get coursePanelInfo => 'Information';
+
+  @override
+  String coursePanelLectures(int count) {
+    return 'Lectures ($count)';
+  }
+
+  @override
+  String coursePanelStudents(int count) {
+    return 'Students ($count)';
+  }
+
+  @override
+  String get coursePanelMissing => 'This course no longer exists.';
+
+  @override
+  String coursePanelWithPractical(int count) {
+    return 'Theory and practical ($count groups)';
+  }
+
+  @override
+  String get coursePanelTheoryOnly => 'Theory only';
+
+  @override
+  String coursePanelLastLecture(String date) {
+    return 'Last lecture: $date';
+  }
+
+  @override
+  String get coursePanelClasses => 'Classes and teachers';
+
+  @override
+  String get coursePanelClassesHelp =>
+      'Tap a class to view and download its register.';
+
+  @override
+  String get coursePanelNoClasses => 'No teacher is linked to this course yet.';
+
+  @override
+  String get coursePanelNoTeacher => 'No teacher';
+
+  @override
+  String coursePanelLectureCount(int count) {
+    return '$count lectures';
+  }
+
+  @override
+  String get coursePanelAllPresent => 'Nobody was absent in this lecture.';
+
+  @override
+  String get coursePanelSearch => 'Search by student name or ID';
+
+  @override
+  String coursePanelReportTitle(String name) {
+    return 'Course panel: $name';
+  }
+
+  @override
+  String get coursePanelStudentsSheet => 'Students';
+
+  @override
+  String get coursePanelLecturesSheet => 'Lectures';
+
+  @override
+  String get coursePanelGroup => 'Group';
+
+  @override
+  String get coursePanelDate => 'Date';
+
+  @override
+  String get coursePanelLectureNo => 'No.';
+
+  @override
+  String get coursePanelClass => 'Class';
+
+  @override
+  String get coursePanelTeacher => 'Teacher';
+
+  @override
+  String homeGroupsList(String groups) {
+    return 'Groups: $groups';
+  }
+
+  @override
+  String get homePickGroup =>
+      'Pick a group to record its attendance or view its register.';
 }

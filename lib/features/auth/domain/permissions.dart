@@ -93,6 +93,10 @@ final class Permissions {
   /// «متابعة التدريسيين» (last seen, last upload) and personal messages.
   bool get canMonitorTeachers => isAdmin;
 
+  /// «لوحة المادة» and the class registers read from the server: admins for
+  /// every stage, a stage manager for their stages (the rules decide).
+  bool get canViewCoursePanel => isAdmin || isStageManager;
+
   /// إعلانات القسم (public page + QR poster).
   bool get canManageAnnouncements => isAdmin;
 

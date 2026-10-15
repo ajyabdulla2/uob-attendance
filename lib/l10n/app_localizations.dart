@@ -4858,6 +4858,168 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تجربة الرابط'**
   String get releaseOpenLink;
+
+  /// No description provided for @activitySearch.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابحث باسم التدريسي أو بريده'**
+  String get activitySearch;
+
+  /// No description provided for @coursePanelAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'لوحة المادة'**
+  String get coursePanelAction;
+
+  /// No description provided for @coursePanelExport.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنزيل لوحة المادة PDF أو Excel'**
+  String get coursePanelExport;
+
+  /// No description provided for @coursePanelInfo.
+  ///
+  /// In ar, this message translates to:
+  /// **'المعلومات'**
+  String get coursePanelInfo;
+
+  /// No description provided for @coursePanelLectures.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحاضرات ({count})'**
+  String coursePanelLectures(int count);
+
+  /// No description provided for @coursePanelStudents.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطلبة ({count})'**
+  String coursePanelStudents(int count);
+
+  /// No description provided for @coursePanelMissing.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تعد هذه المادة موجودة.'**
+  String get coursePanelMissing;
+
+  /// No description provided for @coursePanelWithPractical.
+  ///
+  /// In ar, this message translates to:
+  /// **'نظري وعملي ({count} مجاميع)'**
+  String coursePanelWithPractical(int count);
+
+  /// No description provided for @coursePanelTheoryOnly.
+  ///
+  /// In ar, this message translates to:
+  /// **'نظري فقط'**
+  String get coursePanelTheoryOnly;
+
+  /// No description provided for @coursePanelLastLecture.
+  ///
+  /// In ar, this message translates to:
+  /// **'آخر محاضرة: {date}'**
+  String coursePanelLastLecture(String date);
+
+  /// No description provided for @coursePanelClasses.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصفوف والتدريسيون'**
+  String get coursePanelClasses;
+
+  /// No description provided for @coursePanelClassesHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'المس صفاً لعرض سجله وتنزيله.'**
+  String get coursePanelClassesHelp;
+
+  /// No description provided for @coursePanelNoClasses.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا تدريسي مُسنَد لهذه المادة بعد.'**
+  String get coursePanelNoClasses;
+
+  /// No description provided for @coursePanelNoTeacher.
+  ///
+  /// In ar, this message translates to:
+  /// **'بلا تدريسي'**
+  String get coursePanelNoTeacher;
+
+  /// No description provided for @coursePanelLectureCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} محاضرة'**
+  String coursePanelLectureCount(int count);
+
+  /// No description provided for @coursePanelAllPresent.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا غائب في هذه المحاضرة.'**
+  String get coursePanelAllPresent;
+
+  /// No description provided for @coursePanelSearch.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابحث باسم الطالب أو رقمه'**
+  String get coursePanelSearch;
+
+  /// No description provided for @coursePanelReportTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لوحة مادة {name}'**
+  String coursePanelReportTitle(String name);
+
+  /// No description provided for @coursePanelStudentsSheet.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطلبة'**
+  String get coursePanelStudentsSheet;
+
+  /// No description provided for @coursePanelLecturesSheet.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحاضرات'**
+  String get coursePanelLecturesSheet;
+
+  /// No description provided for @coursePanelGroup.
+  ///
+  /// In ar, this message translates to:
+  /// **'المجموعة'**
+  String get coursePanelGroup;
+
+  /// No description provided for @coursePanelDate.
+  ///
+  /// In ar, this message translates to:
+  /// **'التاريخ'**
+  String get coursePanelDate;
+
+  /// No description provided for @coursePanelLectureNo.
+  ///
+  /// In ar, this message translates to:
+  /// **'رقمها'**
+  String get coursePanelLectureNo;
+
+  /// No description provided for @coursePanelClass.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصف'**
+  String get coursePanelClass;
+
+  /// No description provided for @coursePanelTeacher.
+  ///
+  /// In ar, this message translates to:
+  /// **'التدريسي'**
+  String get coursePanelTeacher;
+
+  /// No description provided for @homeGroupsList.
+  ///
+  /// In ar, this message translates to:
+  /// **'المجاميع: {groups}'**
+  String homeGroupsList(String groups);
+
+  /// No description provided for @homePickGroup.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر المجموعة لتسجيل حضورها أو عرض سجلها.'**
+  String get homePickGroup;
 }
 
 class _AppLocalizationsDelegate

@@ -1,6 +1,7 @@
 import '../../../l10n/l10n.dart';
 import '../../assignments/domain/assignment.dart';
 import '../../attendance/domain/attendance_session.dart';
+import '../../courses/data/course_panel.dart';
 import '../../stats/domain/absence_summary.dart';
 import '../../stats/domain/standings.dart';
 import '../../stats/domain/student_course_stat.dart';
@@ -116,6 +117,99 @@ abstract final class ReportBuilders {
       tables: tables,
       notes: [l10n.reportLegend, l10n.reportPercentNote, if (period != null) l10n.reportPeriodNote],
       signatures: [l10n.reportSignTeacher, l10n.reportSignStageManager, l10n.reportSignHead],
+      orientation: ReportOrientation.landscape,
+    );
+  }
+
+  /// «لوحة المادة»: the course, its classes and teachers, its students with
+  /// their percentages, and every lecture recorded in it.
+  static Report coursePanel(
+    AppLocalizations l10n, {
+    required CoursePanel panel,
+    required String stageLabel,
+    required String courseInfo,
+    String Function(DateTime)? formatDate,
+  }) {
+    final c = panel.course;
+    final date = formatDate ?? _isoDate;
+    // '' = one percentage; otherwise theory then practical.
+    final keys = panel.students.isEmpty ? const <String>[] : panel.students.first.summaries.keys.toList();
+    String suffix(String key) => switch (key) {
+          '' => '',
+          'theory' => '\n${l10n.theoryLabel}',
+          _ => '\n${l10n.practicalLabel}',
+        };
+    return Report(
+      title: l10n.coursePanelReportTitle(c.name),
+      fileBase: '${l10n.coursePanelAction} ${c.name} ${c.stageId}',
+      meta: [
+        '$stageLabel · $courseInfo',
+        for (final a in panel.classes)
+          '${l10n.classLabel(a)}: ${a.teacherName.isEmpty ? a.teacherId : a.teacherName}',
+        l10n.reportLectureCount(panel.sessions.length),
+        l10n.reportStudentCount(panel.students.length),
+      ],
+      tables: [
+        ReportTable(
+          name: l10n.coursePanelStudentsSheet,
+          heading: l10n.coursePanelStudentsSheet,
+          columns: [
+            const ReportColumn('ت', flex: 0.5, numeric: true),
+            ReportColumn(l10n.registerStudent, flex: 3.5),
+            ReportColumn(l10n.fieldUniversityId, flex: 1.4),
+            ReportColumn(l10n.fieldSection, flex: 0.8),
+            if (c.hasPractical) ReportColumn(l10n.coursePanelGroup, flex: 0.9),
+            for (final k in keys) ...[
+              ReportColumn('${l10n.registerAbsences}${suffix(k)}', flex: 0.9, numeric: true),
+              ReportColumn('${l10n.registerPercent}${suffix(k)}', flex: 0.9, numeric: true),
+            ],
+          ],
+          rows: [
+            for (final (i, r) in panel.students.indexed)
+              [
+                ReportCell('${i + 1}'),
+                ReportCell(r.student.fullName),
+                ReportCell(r.student.universityId),
+                ReportCell(r.student.section),
+                if (c.hasPractical) ReportCell(r.group ?? '–'),
+                for (final k in keys)
+                  ...switch (r.summaries[k]) {
+                    final sum? when sum.planned > 0 => [
+                        ReportCell('${sum.absences}'),
+                        ReportCell(percent(sum.percent), tone: toneOfLevel(sum.level), bold: sum.level != WarningLevel.none),
+                      ],
+                    _ => const [ReportCell('–'), ReportCell('–')],
+                  },
+              ],
+          ],
+        ),
+        ReportTable(
+          name: l10n.coursePanelLecturesSheet,
+          heading: l10n.coursePanelLecturesSheet,
+          columns: [
+            const ReportColumn('ت', flex: 0.5, numeric: true),
+            ReportColumn(l10n.coursePanelDate, flex: 1.6),
+            ReportColumn(l10n.coursePanelLectureNo, flex: 0.8, numeric: true),
+            ReportColumn(l10n.coursePanelClass, flex: 1.8),
+            ReportColumn(l10n.coursePanelTeacher, flex: 2.6),
+            for (final st in AttendanceStatus.values) ReportColumn(l10n.attendance(st), flex: 0.8, numeric: true),
+          ],
+          rows: [
+            for (final (i, s) in [...panel.sessions.reversed].indexed)
+              [
+                ReportCell('${i + 1}'),
+                ReportCell(date(s.date)),
+                ReportCell('${s.lectureNo}'),
+                ReportCell(l10n.sessionClassLabel(s)),
+                ReportCell(panel.teacherOf(s)),
+                for (final st in AttendanceStatus.values)
+                  ReportCell('${panel.count(s, st)}', tone: panel.count(s, st) > 0 ? toneOfStatus(st) : ReportTone.normal),
+              ],
+          ],
+        ),
+      ],
+      notes: [l10n.reportPercentNote],
+      signatures: [l10n.reportSignStageManager, l10n.reportSignHead],
       orientation: ReportOrientation.landscape,
     );
   }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/router/app_router.dart';
+import '../../../core/utils/arabic_text.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../../assignments/domain/assignment.dart';
@@ -30,13 +31,28 @@ class TeacherActivityScreen extends ConsumerStatefulWidget {
 class _TeacherActivityScreenState extends ConsumerState<TeacherActivityScreen> {
   /// null = all.
   ActivityLevel? _filter;
+  final _search = TextEditingController();
+  String _query = '';
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
+  /// Name or email, ignoring Arabic spelling variants.
+  bool _matches(TeacherActivity r) {
+    if (_query.isEmpty) return true;
+    return ArabicText.normalizeForCompare(r.user.name).contains(_query) || r.user.id.contains(_query);
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final rows = ref.watch(teacherActivityProvider);
+    final found = [for (final r in rows.value ?? const <TeacherActivity>[]) if (_matches(r)) r];
     final shown = [
-      for (final r in rows.value ?? const <TeacherActivity>[])
+      for (final r in found)
         if (_filter == null || r.level == _filter) r,
     ];
     return Scaffold(
@@ -54,8 +70,9 @@ class _TeacherActivityScreenState extends ConsumerState<TeacherActivityScreen> {
       ),
       body: AsyncBody<List<TeacherActivity>>(
         value: rows,
-        data: (all) {
-          int count(ActivityLevel? l) => l == null ? all.length : all.where((r) => r.level == l).length;
+        data: (_) {
+          // The chips count what the search finds.
+          int count(ActivityLevel? l) => l == null ? found.length : found.where((r) => r.level == l).length;
           Widget chip(ActivityLevel? l, String label) => ChoiceChip(
                 key: Key('activity.filter.${l?.name ?? 'all'}'),
                 label: Text('$label ${count(l)}'),
@@ -65,6 +82,26 @@ class _TeacherActivityScreenState extends ConsumerState<TeacherActivityScreen> {
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
+              TextField(
+                key: const Key('activity.search'),
+                controller: _search,
+                decoration: InputDecoration(
+                  hintText: l10n.activitySearch,
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: _query.isEmpty
+                      ? null
+                      : IconButton(
+                          tooltip: l10n.cancel,
+                          icon: const Icon(Icons.cancel),
+                          onPressed: () => setState(() {
+                            _search.clear();
+                            _query = '';
+                          }),
+                        ),
+                ),
+                onChanged: (v) => setState(() => _query = ArabicText.normalizeForCompare(v)),
+              ),
+              const SizedBox(height: 8),
               Text(l10n.activityHelp, style: Theme.of(context).textTheme.bodySmall),
               const SizedBox(height: 8),
               Wrap(

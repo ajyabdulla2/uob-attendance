@@ -133,6 +133,28 @@ void main() {
     expect(find.byKey(const Key('register.table')), findsOneWidget);
   });
 
+  testWidgets('the search finds a teacher by name (spelling variants) or email', (tester) async {
+    await pumpApp(tester, firestore: await seed(), user: MockUser(email: adminEmail, isEmailVerified: true), profile: admin);
+    await tester.tap(find.byKey(const Key('home.activity')));
+    await tester.pumpAndSettle();
+
+    // «ساره» finds «سارة».
+    await tester.enterText(find.byKey(const Key('activity.search')), 'ساره');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('activity.row.$t2')), findsOneWidget);
+    expect(find.byKey(const Key('activity.row.$t1')), findsNothing);
+    expect(find.text('الكل 1'), findsOneWidget);
+
+    await tester.enterText(find.byKey(const Key('activity.search')), 'T1@');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('activity.row.$t1')), findsOneWidget);
+    expect(find.byKey(const Key('activity.row.$t2')), findsNothing);
+
+    await tester.enterText(find.byKey(const Key('activity.search')), 'لا أحد');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('activity.messageAll')), findsNothing);
+  });
+
   testWidgets('a teacher sees a personal message with a badge and can delete it', (tester) async {
     final db = await seed();
     await db.collection('inbox/$t2/items').doc('m1').set({

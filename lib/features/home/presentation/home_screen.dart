@@ -268,6 +268,7 @@ class _CourseCard extends StatelessWidget {
     final first = classes.first;
     final sorted = [...classes]
       ..sort((a, b) => a.type == b.type ? a.target.compareTo(b.target) : a.type.index.compareTo(b.type.index));
+    final practical = [for (final a in sorted) if (a.type == AssignmentType.practical) a];
     return Card(
       key: Key('home.course.${first.courseId}'),
       clipBehavior: Clip.antiAlias,
@@ -296,12 +297,103 @@ class _CourseCard extends StatelessWidget {
                     padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 4),
                     child: Text(l10n.stageId(first.stageId), style: theme.textTheme.bodySmall),
                   ),
-                  for (final a in sorted) _ClassTile(assignment: a, color: color, local: local),
+                  for (final a in sorted)
+                    if (a.type == AssignmentType.theory || practical.length == 1)
+                      _ClassTile(assignment: a, color: color, local: local),
+                  // Several groups (usually on different days): one «عملي»
+                  // box that lists them, so they do not crowd the card.
+                  if (practical.length > 1) _GroupsTile(groups: practical, color: color, local: local),
                   const SizedBox(height: 8),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A course's practical groups as one outlined box; tapping it lists the
+/// groups, each with its record and register buttons.
+class _GroupsTile extends StatelessWidget {
+  const _GroupsTile({required this.groups, required this.color, required this.local});
+
+  final List<Assignment> groups;
+  final Color color;
+  final bool local;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final first = groups.first;
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(10, 6, 10, 6),
+      child: Material(
+        key: Key('home.groups.${first.courseId}'),
+        color: theme.colorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: color.withValues(alpha: 0.9), width: 1.5),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () => showModalBottomSheet<void>(
+            context: context,
+            isScrollControlled: true,
+            showDragHandle: true,
+            builder: (sheet) => SafeArea(
+              child: ListView(
+                key: const Key('home.groupsSheet'),
+                shrinkWrap: true,
+                padding: const EdgeInsets.only(bottom: 12),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      '${first.courseName.isEmpty ? first.courseId : first.courseName} · ${l10n.practicalLabel}',
+                      style: theme.textTheme.titleMedium?.copyWith(color: color, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(l10n.homePickGroup, style: theme.textTheme.bodySmall),
+                  ),
+                  for (final a in groups) _ClassTile(assignment: a, color: color, local: local, inSheet: true),
+                ],
+              ),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: color, width: 2.5),
+                  ),
+                  child: Icon(Icons.computer, size: 32, color: color),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l10n.practicalLabel,
+                          style: theme.textTheme.titleLarge?.copyWith(color: color, fontWeight: FontWeight.bold)),
+                      Text(l10n.homeGroupsList(groups.map((a) => a.target).join('، ')), style: theme.textTheme.titleSmall),
+                    ],
+                  ),
+                ),
+                Icon(Icons.chevron_right, color: color),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -314,11 +406,14 @@ class _CourseCard extends StatelessWidget {
 /// On the phone the whole box records (as does the filled button) and the
 /// outlined button opens the register; the web panel only shows the class.
 class _ClassTile extends StatelessWidget {
-  const _ClassTile({required this.assignment, required this.color, required this.local});
+  const _ClassTile({required this.assignment, required this.color, required this.local, this.inSheet = false});
 
   final Assignment assignment;
   final Color color;
   final bool local;
+
+  /// In the practical groups' sheet: close it before opening a screen.
+  final bool inSheet;
 
   @override
   Widget build(BuildContext context) {
@@ -329,7 +424,13 @@ class _ClassTile extends StatelessWidget {
     final radius = BorderRadius.circular(12);
     // Ink on the course colour: dark mode uses its light shades.
     final onColor = theme.brightness == Brightness.dark ? Colors.black87 : Colors.white;
-    void record() => context.push(Routes.recordFor(a.id));
+    void open(String route) {
+      final router = GoRouter.of(context);
+      if (inSheet) Navigator.of(context).pop();
+      router.push(route);
+    }
+
+    void record() => open(Routes.recordFor(a.id));
 
     final badge = Container(
       width: 56,
@@ -409,7 +510,7 @@ class _ClassTile extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             minimumSize: const Size.fromHeight(48),
                           ),
-                          onPressed: () => context.push(Routes.registerFor(a.id)),
+                          onPressed: () => open(Routes.registerFor(a.id)),
                           icon: const Icon(Icons.table_chart_outlined),
                           label: FittedBox(fit: BoxFit.scaleDown, child: Text(l10n.homeOpenRegister)),
                         ),

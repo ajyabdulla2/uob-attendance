@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/domain/stage_ref.dart';
 import '../../../core/firebase/doc_ids.dart';
+import '../../../core/router/app_router.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../../academic/application/academic_providers.dart';
@@ -110,6 +112,15 @@ class _CourseCard extends ConsumerWidget {
         childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         expandedCrossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton.icon(
+              key: Key('assignments.panel.${course.id}'),
+              icon: const Icon(Icons.dashboard_outlined),
+              label: Text(l10n.coursePanelAction),
+              onPressed: () => context.push(Routes.coursePanelFor(course.id)),
+            ),
+          ),
           Text(l10n.assignmentsTheory, style: theme.textTheme.titleSmall),
           const SizedBox(height: 4),
           if (theory.isEmpty)

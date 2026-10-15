@@ -21,7 +21,7 @@ void main() {
 
   test('a stage manager sees only their tools, grouped and in order', () {
     expect(menu(perms({UserRole.stageManager, UserRole.teacher})), {
-      AdminGroup.daily: [AdminTool.stageDashboard, AdminTool.editRequests],
+      AdminGroup.daily: [AdminTool.stageDashboard, AdminTool.editRequests, AdminTool.coursePanel],
       AdminGroup.students: [AdminTool.warnings, AdminTool.leaves],
       AdminGroup.data: [AdminTool.import, AdminTool.assignments],
       AdminGroup.system: [AdminTool.auditLog],
