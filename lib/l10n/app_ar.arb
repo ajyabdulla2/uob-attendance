@@ -2137,5 +2137,6 @@
   "coursePanelDeleteLecture": "حذف هذه المحاضرة",
   "coursePanelDeleteLectureBody": "تُحذف المحاضرة «{lecture}» مع حضورها، وتخرج من نسب الطلبة، وتختفي من هاتف التدريسي عند فتحه الصف. لا يمكن التراجع.",
   "@coursePanelDeleteLectureBody": {"placeholders": {"lecture": {"type": "String"}}},
-  "coursePanelLectureDeleted": "حُذفت المحاضرة."
+  "coursePanelLectureDeleted": "حُذفت المحاضرة.",
+  "coursePanelLectureNotFound": "لم تُعثر على هذه المحاضرة على الخادم (ربما حُذفت من قبل). أُعيد تحميل اللوحة."
 }

@@ -3159,4 +3159,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get coursePanelLectureDeleted => 'Lecture deleted.';
+
+  @override
+  String get coursePanelLectureNotFound =>
+      'This lecture was not found on the server (perhaps already deleted). The panel was reloaded.';
 }

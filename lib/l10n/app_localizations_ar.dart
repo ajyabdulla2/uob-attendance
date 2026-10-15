@@ -3147,4 +3147,8 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get coursePanelLectureDeleted => 'حُذفت المحاضرة.';
+
+  @override
+  String get coursePanelLectureNotFound =>
+      'لم تُعثر على هذه المحاضرة على الخادم (ربما حُذفت من قبل). أُعيد تحميل اللوحة.';
 }

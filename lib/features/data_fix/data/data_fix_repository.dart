@@ -435,26 +435,33 @@ class DataFixRepository {
         d = d.add(const Duration(days: 1))) {
       keys.add(DocIds.dateKey(d));
     }
-    final sessions = <QueryDocumentSnapshot<Map<String, dynamic>>>[];
-    for (var i = 0; i < keys.length; i += 30) {
-      final snap = await _fs
-          .collection(Col.sessions)
-          .where('dateKey', whereIn: keys.sublist(i, i + 30 > keys.length ? keys.length : i + 30))
-          .get();
-      sessions.addAll([
-        for (final d in snap.docs)
-          if ((stageId == null || d.data()['stageId'] == stageId) &&
-              (courseId == null || d.data()['courseId'] == courseId) &&
-              (onlySessionIds == null || onlySessionIds.contains(d.id)))
-            d,
-      ]);
+    final sessions = <DocumentSnapshot<Map<String, dynamic>>>[];
+    if (onlySessionIds != null) {
+      // Named lectures: read them by ID, whatever their stored date.
+      for (final id in onlySessionIds) {
+        final d = await _fs.collection(Col.sessions).doc(id).get();
+        if (d.exists) sessions.add(d);
+      }
+    } else {
+      for (var i = 0; i < keys.length; i += 30) {
+        final snap = await _fs
+            .collection(Col.sessions)
+            .where('dateKey', whereIn: keys.sublist(i, i + 30 > keys.length ? keys.length : i + 30))
+            .get();
+        sessions.addAll([
+          for (final d in snap.docs)
+            if ((stageId == null || d.data()['stageId'] == stageId) &&
+                (courseId == null || d.data()['courseId'] == courseId))
+              d,
+        ]);
+      }
     }
     if (sessions.isEmpty) return FixPlan.refused(FixProblem.nothingToDelete);
     sessions.sort((a, b) => a.id.compareTo(b.id));
     final gone = {for (final d in sessions) d.id};
 
     // The students' statistics: rewrite bySession without these lectures.
-    final courses = {for (final d in sessions) (Fs.str(d.data()['courseId']), Fs.str(d.data()['stageId']))};
+    final courses = {for (final d in sessions) (Fs.str(d.data()!['courseId']), Fs.str(d.data()!['stageId']))};
     final statItems = <List<FixWrite>>[];
     for (final (courseId, stage) in courses) {
       final stats = await _fs

@@ -5188,6 +5188,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'حُذفت المحاضرة.'**
   String get coursePanelLectureDeleted;
+
+  /// No description provided for @coursePanelLectureNotFound.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تُعثر على هذه المحاضرة على الخادم (ربما حُذفت من قبل). أُعيد تحميل اللوحة.'**
+  String get coursePanelLectureNotFound;
 }
 
 class _AppLocalizationsDelegate

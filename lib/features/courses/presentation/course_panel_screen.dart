@@ -452,7 +452,17 @@ class _LectureSheet extends ConsumerWidget {
         actor: ref.read(signedInUserProvider).id,
         rejectNote: l10n.fixLecturesRejectNote,
       );
-      if (plan.canApply) await repo.apply(plan);
+      if (!plan.canApply) {
+        // Nothing found on the server under this lecture's ID: say so
+        // instead of reporting a deletion that did not happen.
+        ref.invalidate(coursePanelProvider(panel.course.id));
+        navigator.pop();
+        messenger
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(content: Text(l10n.coursePanelLectureNotFound)));
+        return;
+      }
+      await repo.apply(plan);
       ref.invalidate(coursePanelProvider(panel.course.id));
       navigator.pop();
       messenger
