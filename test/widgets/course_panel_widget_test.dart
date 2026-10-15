@@ -152,4 +152,57 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('register.table')), findsOneWidget);
   });
+
+  testWidgets('an admin deletes one lecture from the panel; the other stays', (tester) async {
+    final env = await pumpApp(
+      tester,
+      firestore: await seed(),
+      user: MockUser(email: adminEmail, isEmailVerified: true),
+      profile: AppUser(email: adminEmail, name: 'المدير', roles: const {UserRole.superAdmin}),
+    );
+    final tile = find.byKey(const Key('home.coursePanel'));
+    await tester.ensureVisible(tile);
+    await tester.pumpAndSettle();
+    await tester.tap(tile);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(Key('coursePanel.pick.${course.id}')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('coursePanel.tab.lectures')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(Key('coursePanel.session.${s1.id}')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('coursePanel.deleteLecture')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'حذف'));
+    await tester.pumpAndSettle();
+
+    expect((await env.db.doc('sessions/${s1.id}').get()).exists, isFalse);
+    expect((await env.db.doc('sessions/${s1.id}/records/2').get()).exists, isFalse);
+    expect((await env.db.doc('sessions/${s2.id}').get()).exists, isTrue);
+    expect((await env.db.doc('stats/${course.id}__2').get()).data()!['bySession'], {s2.id: 'absent'});
+    expect(find.text('حُذفت المحاضرة.'), findsOneWidget);
+    expect(find.byKey(Key('coursePanel.session.${s1.id}')), findsNothing);
+    expect(find.byKey(Key('coursePanel.session.${s2.id}')), findsOneWidget);
+  });
+
+  testWidgets('a stage manager sees no delete button', (tester) async {
+    await pumpApp(
+      tester,
+      firestore: await seed(),
+      user: MockUser(email: 'sm@uobasrah.edu.iq', isEmailVerified: true),
+      profile: AppUser(email: 'sm@uobasrah.edu.iq', name: 'م', roles: const {UserRole.stageManager}, stageScopes: [stage.id]),
+    );
+    final tile = find.byKey(const Key('home.coursePanel'));
+    await tester.ensureVisible(tile);
+    await tester.pumpAndSettle();
+    await tester.tap(tile);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(Key('coursePanel.pick.${course.id}')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('coursePanel.tab.lectures')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(Key('coursePanel.session.${s1.id}')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('coursePanel.deleteLecture')), findsNothing);
+  });
 }

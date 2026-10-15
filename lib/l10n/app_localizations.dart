@@ -2111,7 +2111,7 @@ abstract class AppLocalizations {
   /// No description provided for @fixDeleteTab.
   ///
   /// In ar, this message translates to:
-  /// **'حذف استيراد خاطئ'**
+  /// **'حذف بيانات خاطئة'**
   String get fixDeleteTab;
 
   /// No description provided for @fixKindStudent.
@@ -2273,7 +2273,7 @@ abstract class AppLocalizations {
   /// No description provided for @fixProblemTargetExists.
   ///
   /// In ar, this message translates to:
-  /// **'المعرّف الجديد مستعمل لسجل آخر: «{name}». إن كان مكرراً فاحذفه أولاً من «حذف استيراد خاطئ».'**
+  /// **'المعرّف الجديد مستعمل لسجل آخر: «{name}». إن كان مكرراً فاحذفه أولاً من «حذف بيانات خاطئة».'**
   String fixProblemTargetExists(String name);
 
   /// No description provided for @fixProblemOwnAccount.
@@ -3798,7 +3798,7 @@ abstract class AppLocalizations {
   /// No description provided for @auditActionLabel.
   ///
   /// In ar, this message translates to:
-  /// **'{action, select, session_missed{تسجيل محاضرة فائتة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} sessions_delete{حذف محاضرات} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} config_update{تعديل إصدار التطبيق} other{{action}}}'**
+  /// **'{action, select, session_missed{تسجيل محاضرة فائتة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_create{إضافة طالب} student_update{تعديل طالب} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} sessions_delete{حذف محاضرات} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} config_update{تعديل إصدار التطبيق} other{{action}}}'**
   String auditActionLabel(String action);
 
   /// No description provided for @deptAction.
@@ -5086,6 +5086,108 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'كل المواد'**
   String get fixAllCourses;
+
+  /// No description provided for @studentsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطلبة'**
+  String get studentsTitle;
+
+  /// No description provided for @studentsAdd.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة طالب'**
+  String get studentsAdd;
+
+  /// No description provided for @studentsEdit.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعديل طالب'**
+  String get studentsEdit;
+
+  /// No description provided for @studentsRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب الرقم الجامعي والاسم.'**
+  String get studentsRequired;
+
+  /// No description provided for @studentsNameHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُفضَّل الاسم الرباعي.'**
+  String get studentsNameHint;
+
+  /// No description provided for @studentsNoSection.
+  ///
+  /// In ar, this message translates to:
+  /// **'بلا شعبة'**
+  String get studentsNoSection;
+
+  /// No description provided for @studentsCarryOverHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحمَّل يحضر الامتحانات فقط، فلا يظهر في قوائم الحضور ولا النسب.'**
+  String get studentsCarryOverHelp;
+
+  /// No description provided for @studentsGroupOf.
+  ///
+  /// In ar, this message translates to:
+  /// **'مجموعة العملي: {course}'**
+  String studentsGroupOf(String course);
+
+  /// No description provided for @studentsNoGroup.
+  ///
+  /// In ar, this message translates to:
+  /// **'بلا مجموعة (تُحدَّد لاحقاً)'**
+  String get studentsNoGroup;
+
+  /// No description provided for @studentsPhonesNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'يظهر الطالب في هواتف التدريسيين بعد مزامنتها (مرة يومياً، أو فوراً بـ«مزامنة الآن»).'**
+  String get studentsPhonesNote;
+
+  /// No description provided for @studentsAdded.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُضيف {name}.'**
+  String studentsAdded(String name);
+
+  /// No description provided for @studentsSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُفظت التعديلات.'**
+  String get studentsSaved;
+
+  /// No description provided for @studentsExists.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الرقم الجامعي مسجّل باسم {name} في {stage}.'**
+  String studentsExists(String name, String stage);
+
+  /// No description provided for @studentsElsewhere.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّرت الإضافة: الرقم الجامعي غالباً مسجّل في مرحلة أخرى. راجع المدير.'**
+  String get studentsElsewhere;
+
+  /// No description provided for @coursePanelDeleteLecture.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف هذه المحاضرة'**
+  String get coursePanelDeleteLecture;
+
+  /// No description provided for @coursePanelDeleteLectureBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تُحذف المحاضرة «{lecture}» مع حضورها، وتخرج من نسب الطلبة، وتختفي من هاتف التدريسي عند فتحه الصف. لا يمكن التراجع.'**
+  String coursePanelDeleteLectureBody(String lecture);
+
+  /// No description provided for @coursePanelLectureDeleted.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُذفت المحاضرة.'**
+  String get coursePanelLectureDeleted;
 }
 
 class _AppLocalizationsDelegate

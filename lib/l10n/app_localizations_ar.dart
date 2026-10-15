@@ -1180,7 +1180,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get fixRenameTab => 'تغيير معرّف';
 
   @override
-  String get fixDeleteTab => 'حذف استيراد خاطئ';
+  String get fixDeleteTab => 'حذف بيانات خاطئة';
 
   @override
   String get fixKindStudent => 'رقم جامعي';
@@ -1274,7 +1274,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String fixProblemTargetExists(String name) {
-    return 'المعرّف الجديد مستعمل لسجل آخر: «$name». إن كان مكرراً فاحذفه أولاً من «حذف استيراد خاطئ».';
+    return 'المعرّف الجديد مستعمل لسجل آخر: «$name». إن كان مكرراً فاحذفه أولاً من «حذف بيانات خاطئة».';
   }
 
   @override
@@ -2261,6 +2261,8 @@ class AppLocalizationsAr extends AppLocalizations {
       'user_reject': 'رفض طلب انضمام',
       'user_rename': 'تغيير بريد حساب',
       'users_delete': 'حذف حسابات',
+      'student_create': 'إضافة طالب',
+      'student_update': 'تعديل طالب',
       'student_rename': 'تغيير رقم جامعي',
       'students_delete': 'حذف طلبة',
       'course_rename': 'تغيير رمز مادة',
@@ -3083,4 +3085,66 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get fixAllCourses => 'كل المواد';
+
+  @override
+  String get studentsTitle => 'الطلبة';
+
+  @override
+  String get studentsAdd => 'إضافة طالب';
+
+  @override
+  String get studentsEdit => 'تعديل طالب';
+
+  @override
+  String get studentsRequired => 'اكتب الرقم الجامعي والاسم.';
+
+  @override
+  String get studentsNameHint => 'يُفضَّل الاسم الرباعي.';
+
+  @override
+  String get studentsNoSection => 'بلا شعبة';
+
+  @override
+  String get studentsCarryOverHelp =>
+      'المحمَّل يحضر الامتحانات فقط، فلا يظهر في قوائم الحضور ولا النسب.';
+
+  @override
+  String studentsGroupOf(String course) {
+    return 'مجموعة العملي: $course';
+  }
+
+  @override
+  String get studentsNoGroup => 'بلا مجموعة (تُحدَّد لاحقاً)';
+
+  @override
+  String get studentsPhonesNote =>
+      'يظهر الطالب في هواتف التدريسيين بعد مزامنتها (مرة يومياً، أو فوراً بـ«مزامنة الآن»).';
+
+  @override
+  String studentsAdded(String name) {
+    return 'أُضيف $name.';
+  }
+
+  @override
+  String get studentsSaved => 'حُفظت التعديلات.';
+
+  @override
+  String studentsExists(String name, String stage) {
+    return 'هذا الرقم الجامعي مسجّل باسم $name في $stage.';
+  }
+
+  @override
+  String get studentsElsewhere =>
+      'تعذّرت الإضافة: الرقم الجامعي غالباً مسجّل في مرحلة أخرى. راجع المدير.';
+
+  @override
+  String get coursePanelDeleteLecture => 'حذف هذه المحاضرة';
+
+  @override
+  String coursePanelDeleteLectureBody(String lecture) {
+    return 'تُحذف المحاضرة «$lecture» مع حضورها، وتخرج من نسب الطلبة، وتختفي من هاتف التدريسي عند فتحه الصف. لا يمكن التراجع.';
+  }
+
+  @override
+  String get coursePanelLectureDeleted => 'حُذفت المحاضرة.';
 }
