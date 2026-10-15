@@ -83,6 +83,7 @@ class ServerRegisterRepository {
 
     final sessionSnap = await _fs
         .collection(Col.sessions)
+        .where('stageId', isEqualTo: a.stageId) // stage managers: the rules check it
         .where('courseId', isEqualTo: a.courseId)
         .where('type', isEqualTo: a.type.name)
         .where('target', isEqualTo: a.target)

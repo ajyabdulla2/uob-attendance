@@ -188,7 +188,8 @@ void main() {
 
       remote.failExists = null;
       remote.failCommit = FirebaseException(plugin: 'cloud_firestore', code: 'permission-denied');
-      final denied = await OutboxUploader(db, remote).run();
+      // Before the lock deadline: a plain refusal, not «session-locked».
+      final denied = await OutboxUploader(db, remote, clock: () => today).run();
       expect(denied.rejected, 1);
       expect(denied.completed, isTrue);
       expect((await db.watchRejected().first).single.lastError, 'permission-denied');

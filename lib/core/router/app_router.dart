@@ -11,6 +11,7 @@ import '../../features/assignments/presentation/assignments_screen.dart';
 import '../../features/audit/presentation/audit_log_screen.dart';
 import '../../features/attendance/presentation/record_screen.dart';
 import '../../features/attendance/presentation/register_screen.dart';
+import '../../features/courses/presentation/course_panel_screen.dart';
 import '../../features/attendance/presentation/student_screen.dart';
 import '../../features/auth/application/auth_providers.dart';
 import '../../features/auth/presentation/login_screen.dart';
@@ -61,6 +62,11 @@ abstract final class Routes {
   static const announcements = '/announcements';
   static const appRelease = '/app-release';
   static const classRegister = '/class-register';
+  static const coursePanel = '/course-panel';
+
+  /// «لوحة المادة» of one course; without it, the course picker.
+  static String coursePanelFor(String courseId) =>
+      Uri(path: coursePanel, queryParameters: {'c': courseId}).toString();
 
   /// A teacher's class register read from the server (admins).
   static String classRegisterFor(String assignmentId) =>
@@ -115,7 +121,8 @@ String? redirectFor(AuthStatus status, String location) {
         _ when location.startsWith(Routes.stageDashboard) && !permissions.canViewStageDashboard => Routes.home,
         _ when location.startsWith(Routes.missedLecture) && !permissions.canViewStageDashboard => Routes.home,
         _ when location.startsWith(Routes.teacherActivity) && !permissions.canMonitorTeachers => Routes.home,
-        _ when location.startsWith(Routes.classRegister) && !permissions.canMonitorTeachers => Routes.home,
+        _ when location.startsWith(Routes.classRegister) && !permissions.canViewCoursePanel => Routes.home,
+        _ when location.startsWith(Routes.coursePanel) && !permissions.canViewCoursePanel => Routes.home,
         _ when location.startsWith(Routes.announcements) && !permissions.canManageAnnouncements => Routes.home,
         _ when location.startsWith(Routes.appRelease) && !permissions.canManageAppRelease => Routes.home,
         _ => null,
@@ -184,6 +191,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.classRegister,
         builder: (_, s) => ServerRegisterScreen(assignmentId: s.uri.queryParameters['a'] ?? ''),
+      ),
+      GoRoute(
+        path: Routes.coursePanel,
+        builder: (_, s) => switch (s.uri.queryParameters['c']) {
+          final c? when c.isNotEmpty => CoursePanelScreen(courseId: c),
+          _ => const CoursePickerScreen(),
+        },
       ),
       GoRoute(
         path: Routes.student,

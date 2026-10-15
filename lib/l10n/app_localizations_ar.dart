@@ -2946,4 +2946,99 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get releaseOpenLink => 'تجربة الرابط';
+
+  @override
+  String get activitySearch => 'ابحث باسم التدريسي أو بريده';
+
+  @override
+  String get coursePanelAction => 'لوحة المادة';
+
+  @override
+  String get coursePanelExport => 'تنزيل لوحة المادة PDF أو Excel';
+
+  @override
+  String get coursePanelInfo => 'المعلومات';
+
+  @override
+  String coursePanelLectures(int count) {
+    return 'المحاضرات ($count)';
+  }
+
+  @override
+  String coursePanelStudents(int count) {
+    return 'الطلبة ($count)';
+  }
+
+  @override
+  String get coursePanelMissing => 'لم تعد هذه المادة موجودة.';
+
+  @override
+  String coursePanelWithPractical(int count) {
+    return 'نظري وعملي ($count مجاميع)';
+  }
+
+  @override
+  String get coursePanelTheoryOnly => 'نظري فقط';
+
+  @override
+  String coursePanelLastLecture(String date) {
+    return 'آخر محاضرة: $date';
+  }
+
+  @override
+  String get coursePanelClasses => 'الصفوف والتدريسيون';
+
+  @override
+  String get coursePanelClassesHelp => 'المس صفاً لعرض سجله وتنزيله.';
+
+  @override
+  String get coursePanelNoClasses => 'لا تدريسي مُسنَد لهذه المادة بعد.';
+
+  @override
+  String get coursePanelNoTeacher => 'بلا تدريسي';
+
+  @override
+  String coursePanelLectureCount(int count) {
+    return '$count محاضرة';
+  }
+
+  @override
+  String get coursePanelAllPresent => 'لا غائب في هذه المحاضرة.';
+
+  @override
+  String get coursePanelSearch => 'ابحث باسم الطالب أو رقمه';
+
+  @override
+  String coursePanelReportTitle(String name) {
+    return 'لوحة مادة $name';
+  }
+
+  @override
+  String get coursePanelStudentsSheet => 'الطلبة';
+
+  @override
+  String get coursePanelLecturesSheet => 'المحاضرات';
+
+  @override
+  String get coursePanelGroup => 'المجموعة';
+
+  @override
+  String get coursePanelDate => 'التاريخ';
+
+  @override
+  String get coursePanelLectureNo => 'رقمها';
+
+  @override
+  String get coursePanelClass => 'الصف';
+
+  @override
+  String get coursePanelTeacher => 'التدريسي';
+
+  @override
+  String homeGroupsList(String groups) {
+    return 'المجاميع: $groups';
+  }
+
+  @override
+  String get homePickGroup => 'اختر المجموعة لتسجيل حضورها أو عرض سجلها.';
 }

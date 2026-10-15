@@ -129,6 +129,11 @@ void main() {
       // Data fixes: admins only.
       expect(redirectFor(manager, Routes.dataFix), Routes.home);
       expect(redirectFor(SignedIn(user({UserRole.deputyAdmin})), Routes.dataFix), isNull);
+      // Course panel and server registers: admins and stage managers.
+      expect(redirectFor(teacher, Routes.coursePanelFor('c')), Routes.home);
+      expect(redirectFor(teacher, Routes.classRegisterFor('a')), Routes.home);
+      expect(redirectFor(manager, Routes.coursePanelFor('c')), isNull);
+      expect(redirectFor(manager, Routes.classRegisterFor('a')), isNull);
       // Recording: every signed-in account (their own classes).
       expect(redirectFor(teacher, Routes.recordFor('a')), isNull);
     });

@@ -97,12 +97,16 @@ class OutboxUploader {
     this._remote, {
     this.chunkSize = 450,
     this.timeout = const Duration(seconds: 45),
+    this.clock = DateTime.now,
   });
 
   final AppDatabase _db;
   final RemoteWriter _remote;
   final int chunkSize;
   final Duration timeout;
+
+  /// Tells a refusal after the lock deadline from any other refusal.
+  final DateTime Function() clock;
 
   static const _permanent = {
     'permission-denied',
@@ -139,7 +143,7 @@ class OutboxUploader {
         uploaded++;
       } on FirebaseException catch (e) {
         if (isPermanent(e.code)) {
-          final lockedBefore = _locked || (_lockAt != null && !_lockAt!.isAfter(DateTime.now()));
+          final lockedBefore = _locked || (_lockAt != null && !_lockAt!.isAfter(clock()));
           await _db.rejectBatch(batchId, e.code == 'permission-denied' && lockedBefore ? lockedReason : e.code);
           rejected++;
           continue;
