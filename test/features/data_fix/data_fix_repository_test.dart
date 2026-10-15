@@ -467,5 +467,28 @@ void main() {
           stageId: '2-morning', actor: admin, rejectNote: '');
       expect(plan.sessionIds, [other.id]);
     });
+
+    test('one course only: other courses of the same day stay', () async {
+      final mine = on(DateTime.utc(2026, 10, 1));
+      final otherCourse = AttendanceSession(
+        courseId: 'CS102_1-morning',
+        stageId: stage.id,
+        yearId: '2026-2027',
+        type: AssignmentType.theory,
+        target: 'all',
+        date: DateTime.utc(2026, 10, 1),
+        lectureNo: 1,
+        openedBy: teacherEmail,
+        lockAt: AttendanceSession.lockAtFor(DateTime.utc(2026, 10, 1), 48),
+      );
+      await addSession(fs, mine, {'1': 'absent'});
+      await addSession(fs, otherCourse, {'1': 'absent'});
+      final plan = await repo.planLectureDeletion(DateTime(2026, 10, 1), DateTime(2026, 10, 1),
+          stageId: stage.id, courseId: course.id, actor: admin, rejectNote: '');
+      expect(plan.sessionIds, [mine.id]);
+      await repo.apply(plan);
+      expect(await data(fs, 'sessions/${otherCourse.id}'), isNotNull);
+      expect((await audit(fs)).single['before']['courseId'], course.id);
+    });
   });
 }

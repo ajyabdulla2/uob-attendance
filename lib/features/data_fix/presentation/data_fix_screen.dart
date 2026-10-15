@@ -7,6 +7,8 @@ import '../../../core/firebase/doc_ids.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../courses/application/courses_providers.dart';
+import '../../courses/domain/course.dart';
 import '../application/data_fix_providers.dart';
 import '../data/data_fix_repository.dart';
 import '../domain/fix_plan.dart';
@@ -38,6 +40,9 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
   /// Lecture deletion: the days, and one stage or (null) every stage.
   DateTimeRange? _days;
   StageRef? _lectureStage;
+
+  /// Lecture deletion: one course of [_lectureStage] (null = all its courses).
+  String? _lectureCourse;
   (int, int)? _progress;
 
   @override
@@ -78,6 +83,7 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
                     _days!.start,
                     _days!.end,
                     stageId: _lectureStage?.id,
+                    courseId: _lectureStage == null ? null : _lectureCourse,
                     actor: actor,
                     rejectNote: l10n.fixLecturesRejectNote,
                   ),
@@ -252,9 +258,35 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
                     DropdownMenuItem(value: null, child: Text(l10n.fixAllStages)),
                     for (final s in StageRef.all) DropdownMenuItem(value: s, child: Text(l10n.stage(s))),
                   ],
-                  onChanged: _busy ? null : (s) => _reset(() => _lectureStage = s),
+                  onChanged: _busy
+                      ? null
+                      : (s) => _reset(() {
+                            _lectureStage = s;
+                            _lectureCourse = null;
+                          }),
                 ),
                 const SizedBox(height: 12),
+                if (_lectureStage case final stage?) ...[
+                  DropdownButtonFormField<String?>(
+                    key: ValueKey('fix.lectureCourse.${stage.id}'),
+                    initialValue: _lectureCourse,
+                    isExpanded: true,
+                    decoration: InputDecoration(
+                      labelText: l10n.fixLecturesCourse,
+                      prefixIcon: const Icon(Icons.menu_book_outlined),
+                    ),
+                    items: [
+                      DropdownMenuItem(value: null, child: Text(l10n.fixAllCourses)),
+                      for (final c in ref.watch(stageCoursesProvider(stage.id)).value ?? const <Course>[])
+                        DropdownMenuItem(
+                          value: c.id,
+                          child: Text('${c.name} (${bidiIsolate(c.code)})', overflow: TextOverflow.ellipsis),
+                        ),
+                    ],
+                    onChanged: _busy ? null : (c) => _reset(() => _lectureCourse = c),
+                  ),
+                  const SizedBox(height: 12),
+                ],
                 OutlinedButton.icon(
                   key: const Key('fix.days'),
                   icon: const Icon(Icons.date_range),

@@ -413,7 +413,8 @@ class DataFixRepository {
   // ------------------------------------------------------------ lectures --
 
   /// Deletes every lecture recorded from [from] to [to] (whole days, at most
-  /// [maxDays]), in [stageId] or every stage — e.g. days entered at random
+  /// [maxDays]), in [stageId] or every stage, and only [courseId] when
+  /// given — e.g. days entered at random
   /// while trying the app out. With each lecture go its records, its entry
   /// in the students' `stats` (so the percentages drop it) and the pending
   /// edit requests about it (rejected with [rejectNote]; the rules keep
@@ -423,6 +424,7 @@ class DataFixRepository {
     DateTime from,
     DateTime to, {
     String? stageId,
+    String? courseId,
     required String actor,
     required String rejectNote,
   }) async {
@@ -440,7 +442,9 @@ class DataFixRepository {
           .get();
       sessions.addAll([
         for (final d in snap.docs)
-          if (stageId == null || d.data()['stageId'] == stageId) d,
+          if ((stageId == null || d.data()['stageId'] == stageId) &&
+              (courseId == null || d.data()['courseId'] == courseId))
+            d,
       ]);
     }
     if (sessions.isEmpty) return FixPlan.refused(FixProblem.nothingToDelete);
@@ -505,7 +509,13 @@ class DataFixRepository {
           [
             _audit(actor, 'sessions.delete', Col.sessions,
                 stageId: stageId,
-                before: {'from': keys.first, 'to': keys.last, 'count': sessions.length, 'ids': gone.take(100).toList()}),
+                before: {
+                  'from': keys.first,
+                  'to': keys.last,
+                  'courseId': ?courseId,
+                  'count': sessions.length,
+                  'ids': gone.take(100).toList(),
+                }),
           ],
         ],
       ],
