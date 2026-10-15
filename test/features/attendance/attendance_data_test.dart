@@ -310,6 +310,41 @@ void main() {
       expect(await TeacherDataSync(db, fs).pullClassSessions(theory, store), 0, reason: 'unchanged since last pull');
     });
 
+    test('a lecture an admin deleted leaves the phone, unless a save of it is queued', () async {
+      final sid = AttendanceStore.sessionIdFor(theory, day, 1);
+      await fs.doc('sessions/$sid').set({
+        ...AttendanceSession(
+          courseId: course, stageId: '3-morning', yearId: '2026-2027', type: AssignmentType.theory, target: 'all',
+          date: day, lectureNo: 1, openedBy: 'other@uob.iq', lockAt: day.add(const Duration(hours: 72)),
+        ).toMap(),
+        'updatedAt': Timestamp.fromDate(DateTime.utc(2026, 10, 12, 9)),
+      });
+      final store = AttendanceStore(db);
+      final sync = TeacherDataSync(db, fs);
+      await sync.pullClassSessions(theory, store);
+      expect(await store.session(sid), isNotNull);
+
+      // A second lecture saved on this phone and not uploaded yet.
+      final queued = (await store.save(
+        assignment: theory,
+        yearId: '2026-2027',
+        lockHours: 48,
+        date: today,
+        lectureNo: 2,
+        marks: marks({'1': AttendanceStatus.absent}),
+        actor: t1,
+        now: today,
+      ))
+          .session
+          .id;
+
+      await fs.doc('sessions/$sid').delete();
+      await sync.pullClassSessions(theory, store);
+      expect(await store.session(sid), isNull);
+      expect(await store.marksOf(sid), isEmpty);
+      expect(await store.session(queued), isNotNull, reason: 'its save is still queued');
+    });
+
     test('the register caches the course\'s stats and the stage\'s approved leaves for percentages', () async {
       final sid = AttendanceStore.sessionIdFor(theory, day, 1);
       await fs.doc('stats/${course}__1').set({

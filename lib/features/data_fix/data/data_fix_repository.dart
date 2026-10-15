@@ -410,6 +410,112 @@ class DataFixRepository {
 
   // ------------------------------------------------------------ teachers --
 
+  // ------------------------------------------------------------ lectures --
+
+  /// Deletes every lecture recorded from [from] to [to] (whole days, at most
+  /// [maxDays]), in [stageId] or every stage — e.g. days entered at random
+  /// while trying the app out. With each lecture go its records, its entry
+  /// in the students' `stats` (so the percentages drop it) and the pending
+  /// edit requests about it (rejected with [rejectNote]; the rules keep
+  /// requests). Phones drop their copy when the class next opens
+  /// (`TeacherDataSync.pullClassSessions`).
+  Future<FixPlan> planLectureDeletion(
+    DateTime from,
+    DateTime to, {
+    String? stageId,
+    required String actor,
+    required String rejectNote,
+  }) async {
+    final keys = <String>[];
+    for (var d = DateTime.utc(from.year, from.month, from.day);
+        !d.isAfter(DateTime.utc(to.year, to.month, to.day)) && keys.length < maxDays;
+        d = d.add(const Duration(days: 1))) {
+      keys.add(DocIds.dateKey(d));
+    }
+    final sessions = <QueryDocumentSnapshot<Map<String, dynamic>>>[];
+    for (var i = 0; i < keys.length; i += 30) {
+      final snap = await _fs
+          .collection(Col.sessions)
+          .where('dateKey', whereIn: keys.sublist(i, i + 30 > keys.length ? keys.length : i + 30))
+          .get();
+      sessions.addAll([
+        for (final d in snap.docs)
+          if (stageId == null || d.data()['stageId'] == stageId) d,
+      ]);
+    }
+    if (sessions.isEmpty) return FixPlan.refused(FixProblem.nothingToDelete);
+    sessions.sort((a, b) => a.id.compareTo(b.id));
+    final gone = {for (final d in sessions) d.id};
+
+    // The students' statistics: rewrite bySession without these lectures.
+    final courses = {for (final d in sessions) (Fs.str(d.data()['courseId']), Fs.str(d.data()['stageId']))};
+    final statItems = <List<FixWrite>>[];
+    for (final (courseId, stage) in courses) {
+      final stats = await _fs
+          .collection(Col.stats)
+          .where('stageId', isEqualTo: stage)
+          .where('courseId', isEqualTo: courseId)
+          .get();
+      for (final d in stats.docs) {
+        final bySession = Fs.map(d.data()['bySession']);
+        if (!bySession.keys.any(gone.contains)) continue;
+        statItems.add([
+          // The whole document: `update` of a map field merges on some
+          // clients instead of replacing it.
+          FixWrite.set(d.reference.path, {
+            ...d.data(),
+            'bySession': {for (final e in bySession.entries) if (!gone.contains(e.key)) e.key: e.value},
+            'updatedAt': _now,
+          }),
+        ]);
+      }
+    }
+
+    final pending = await _fs.collection(Col.editRequests).where('status', isEqualTo: 'pending').get();
+    final requestItems = [
+      for (final d in pending.docs)
+        if (gone.contains(d.data()['sessionId']))
+          [
+            FixWrite.update(d.reference.path, {
+              'status': 'rejected',
+              'decidedBy': actor,
+              'decidedAt': _now,
+              'decisionNote': rejectNote,
+              'updatedAt': _now,
+            }),
+          ],
+    ];
+
+    var records = 0;
+    final sessionItems = <List<FixWrite>>[];
+    for (final d in sessions) {
+      final recs = await d.reference.collection(Col.records).get();
+      records += recs.docs.length;
+      sessionItems.add([for (final r in recs.docs) FixWrite.delete(r.reference.path), FixWrite.delete(d.reference.path)]);
+    }
+
+    return FixPlan(
+      counts: {FixCount.sessions: sessions.length, FixCount.records: records, FixCount.stats: statItems.length},
+      // Statistics and requests first: if a run stops half-way, the lectures
+      // are still there to be found by the next run.
+      phases: [
+        [...statItems, ...requestItems],
+        [
+          ...sessionItems,
+          [
+            _audit(actor, 'sessions.delete', Col.sessions,
+                stageId: stageId,
+                before: {'from': keys.first, 'to': keys.last, 'count': sessions.length, 'ids': gone.take(100).toList()}),
+          ],
+        ],
+      ],
+      sessionIds: [for (final d in sessions) d.id],
+    );
+  }
+
+  /// The longest period one lecture deletion covers.
+  static const maxDays = 31;
+
   /// Deletes a teacher account (or, without [onlyEmail], every plain
   /// teacher account) that never recorded a lecture, with its class links —
   /// e.g. accounts imported with wrong e-mails. Accounts with history keep

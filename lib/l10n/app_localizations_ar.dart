@@ -2264,6 +2264,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'student_rename': 'تغيير رقم جامعي',
       'students_delete': 'حذف طلبة',
       'course_rename': 'تغيير رمز مادة',
+      'sessions_delete': 'حذف محاضرات',
       'courses_delete': 'حذف مواد',
       'import_students': 'استيراد طلبة',
       'import_teachers': 'استيراد تدريسيين',
@@ -3041,4 +3042,39 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get homePickGroup => 'اختر المجموعة لتسجيل حضورها أو عرض سجلها.';
+
+  @override
+  String get fixDeleteLectures => 'محاضرات';
+
+  @override
+  String get fixAllStages => 'كل المراحل';
+
+  @override
+  String get fixLecturesPickDays => 'اختر اليوم أو الأيام';
+
+  @override
+  String fixLecturesDays(String from, String to) {
+    return 'من $from إلى $to';
+  }
+
+  @override
+  String fixLecturesTooLong(int days) {
+    return 'اختر $days يوماً على الأكثر.';
+  }
+
+  @override
+  String get fixDeleteLecturesHelp =>
+      'تُحذف كل المحاضرات المسجلة في هذه الأيام (لكل الصفوف والتدريسيين) مع حضورها، وتُزال من نسب الطلبة، وتُرفض طلبات التعديل المعلّقة عليها. لأيام أُدخلت للتجربة أو بالخطأ. لا يمكن التراجع، فخذ نسخة احتياطية قبلها إن شئت.';
+
+  @override
+  String get fixLecturesPhonesNote =>
+      'تختفي من هاتف التدريسي حين يفتح الصف (التسجيل أو السجل)، إلا محاضرة لها حفظ غير مرفوع على هاتفه.';
+
+  @override
+  String fixLecturesList(int count) {
+    return 'المحاضرات التي ستُحذف ($count)';
+  }
+
+  @override
+  String get fixLecturesRejectNote => 'حُذفت المحاضرة من الإدارة.';
 }

@@ -3798,7 +3798,7 @@ abstract class AppLocalizations {
   /// No description provided for @auditActionLabel.
   ///
   /// In ar, this message translates to:
-  /// **'{action, select, session_missed{تسجيل محاضرة فائتة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} config_update{تعديل إصدار التطبيق} other{{action}}}'**
+  /// **'{action, select, session_missed{تسجيل محاضرة فائتة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} sessions_delete{حذف محاضرات} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} config_update{تعديل إصدار التطبيق} other{{action}}}'**
   String auditActionLabel(String action);
 
   /// No description provided for @deptAction.
@@ -5020,6 +5020,60 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'اختر المجموعة لتسجيل حضورها أو عرض سجلها.'**
   String get homePickGroup;
+
+  /// No description provided for @fixDeleteLectures.
+  ///
+  /// In ar, this message translates to:
+  /// **'محاضرات'**
+  String get fixDeleteLectures;
+
+  /// No description provided for @fixAllStages.
+  ///
+  /// In ar, this message translates to:
+  /// **'كل المراحل'**
+  String get fixAllStages;
+
+  /// No description provided for @fixLecturesPickDays.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر اليوم أو الأيام'**
+  String get fixLecturesPickDays;
+
+  /// No description provided for @fixLecturesDays.
+  ///
+  /// In ar, this message translates to:
+  /// **'من {from} إلى {to}'**
+  String fixLecturesDays(String from, String to);
+
+  /// No description provided for @fixLecturesTooLong.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر {days} يوماً على الأكثر.'**
+  String fixLecturesTooLong(int days);
+
+  /// No description provided for @fixDeleteLecturesHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'تُحذف كل المحاضرات المسجلة في هذه الأيام (لكل الصفوف والتدريسيين) مع حضورها، وتُزال من نسب الطلبة، وتُرفض طلبات التعديل المعلّقة عليها. لأيام أُدخلت للتجربة أو بالخطأ. لا يمكن التراجع، فخذ نسخة احتياطية قبلها إن شئت.'**
+  String get fixDeleteLecturesHelp;
+
+  /// No description provided for @fixLecturesPhonesNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'تختفي من هاتف التدريسي حين يفتح الصف (التسجيل أو السجل)، إلا محاضرة لها حفظ غير مرفوع على هاتفه.'**
+  String get fixLecturesPhonesNote;
+
+  /// No description provided for @fixLecturesList.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحاضرات التي ستُحذف ({count})'**
+  String fixLecturesList(int count);
+
+  /// No description provided for @fixLecturesRejectNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُذفت المحاضرة من الإدارة.'**
+  String get fixLecturesRejectNote;
 }
 
 class _AppLocalizationsDelegate

@@ -2276,6 +2276,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'student_rename': 'University ID changed',
       'students_delete': 'Students deleted',
       'course_rename': 'Course code changed',
+      'sessions_delete': 'Lectures deleted',
       'courses_delete': 'Courses deleted',
       'import_students': 'Students imported',
       'import_teachers': 'Teachers imported',
@@ -3052,4 +3053,40 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get homePickGroup =>
       'Pick a group to record its attendance or view its register.';
+
+  @override
+  String get fixDeleteLectures => 'Lectures';
+
+  @override
+  String get fixAllStages => 'All stages';
+
+  @override
+  String get fixLecturesPickDays => 'Pick the day or days';
+
+  @override
+  String fixLecturesDays(String from, String to) {
+    return '$from to $to';
+  }
+
+  @override
+  String fixLecturesTooLong(int days) {
+    return 'Pick at most $days days.';
+  }
+
+  @override
+  String get fixDeleteLecturesHelp =>
+      'Deletes every lecture recorded on these days (all classes and teachers) with its attendance, removes it from the students\' percentages and rejects pending edit requests about it. For days entered as a trial or by mistake. This cannot be undone; take a backup first if you wish.';
+
+  @override
+  String get fixLecturesPhonesNote =>
+      'They leave a teacher\'s phone when the class is opened (record or register), except a lecture with a save still waiting to upload on that phone.';
+
+  @override
+  String fixLecturesList(int count) {
+    return 'Lectures to delete ($count)';
+  }
+
+  @override
+  String get fixLecturesRejectNote =>
+      'The lecture was deleted by the administration.';
 }

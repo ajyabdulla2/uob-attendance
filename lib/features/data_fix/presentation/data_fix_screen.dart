@@ -3,15 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/domain/stage_ref.dart';
+import '../../../core/firebase/doc_ids.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
 import '../../auth/application/auth_providers.dart';
 import '../application/data_fix_providers.dart';
+import '../data/data_fix_repository.dart';
 import '../domain/fix_plan.dart';
 
 enum _Tool { rename, delete }
 
-enum _DeleteKind { students, courses, teachers }
+enum _DeleteKind { students, courses, teachers, lectures }
 
 /// تصحيح البيانات (admins): change a university ID / course code / teacher
 /// e-mail, or delete what a wrong import created. Always preview first.
@@ -32,6 +34,10 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
   final _only = TextEditingController();
   FixPlan? _plan;
   bool _busy = false;
+
+  /// Lecture deletion: the days, and one stage or (null) every stage.
+  DateTimeRange? _days;
+  StageRef? _lectureStage;
   (int, int)? _progress;
 
   @override
@@ -50,6 +56,7 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
   Future<void> _preview() async {
     final repo = ref.read(dataFixRepositoryProvider);
     final actor = ref.read(signedInUserProvider).id;
+    final l10n = context.l10n;
     setState(() {
       _busy = true;
       _plan = null;
@@ -65,8 +72,21 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
             _DeleteKind.students => await repo.planStudentDeletion(_stage.id, onlyId: _only.text, actor: actor),
             _DeleteKind.courses => await repo.planCourseDeletion(_stage.id, onlyCode: _only.text, actor: actor),
             _DeleteKind.teachers => await repo.planTeacherDeletion(onlyEmail: _only.text, actor: actor),
+            _DeleteKind.lectures => _days == null
+                ? null
+                : await repo.planLectureDeletion(
+                    _days!.start,
+                    _days!.end,
+                    stageId: _lectureStage?.id,
+                    actor: actor,
+                    rejectNote: l10n.fixLecturesRejectNote,
+                  ),
           },
       };
+      if (plan == null) {
+        if (mounted) showSnack(context, l10n.fixLecturesPickDays);
+        return;
+      }
       if (mounted) setState(() => _plan = plan);
     } on Object catch (e) {
       if (mounted) showError(context, e);
@@ -116,6 +136,23 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
     }
   }
 
+  Future<void> _pickDays() async {
+    final now = DateTime.now();
+    final picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(now.year - 1),
+      lastDate: DateTime(now.year, now.month, now.day),
+      initialDateRange: _days,
+      helpText: context.l10n.fixLecturesPickDays,
+    );
+    if (picked == null || !mounted) return;
+    if (picked.end.difference(picked.start).inDays >= DataFixRepository.maxDays) {
+      showSnack(context, context.l10n.fixLecturesTooLong(DataFixRepository.maxDays));
+      return;
+    }
+    _reset(() => _days = picked);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -123,9 +160,18 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
     final perms = ref.watch(permissionsProvider);
     final kinds = [FixKind.student, FixKind.course, if (perms.canRenameTeachers) FixKind.teacher];
     final kind = kinds.contains(_kind) ? _kind : FixKind.student;
-    final deleteKinds = [_DeleteKind.students, _DeleteKind.courses, if (perms.canRenameTeachers) _DeleteKind.teachers];
+    final deleteKinds = [
+      _DeleteKind.students,
+      _DeleteKind.courses,
+      _DeleteKind.lectures,
+      if (perms.canRenameTeachers) _DeleteKind.teachers,
+    ];
     final deleteKind = deleteKinds.contains(_deleteKind) ? _deleteKind : _DeleteKind.students;
-    final needsStage = _tool == _Tool.delete ? deleteKind != _DeleteKind.teachers : kind == FixKind.course;
+    final lectures = _tool == _Tool.delete && deleteKind == _DeleteKind.lectures;
+    final needsStage = _tool == _Tool.delete
+        ? deleteKind != _DeleteKind.teachers && !lectures
+        : kind == FixKind.course;
+    final format = MaterialLocalizations.of(context).formatMediumDate;
     final ltr = _tool == _Tool.rename ? kind == FixKind.teacher : deleteKind == _DeleteKind.teachers;
     final plan = _plan;
 
@@ -179,6 +225,7 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
                           _DeleteKind.students => l10n.fixDeleteStudents,
                           _DeleteKind.courses => l10n.fixDeleteCourses,
                           _DeleteKind.teachers => l10n.fixDeleteTeachers,
+                          _DeleteKind.lectures => l10n.fixDeleteLectures,
                         }),
                       ),
                   ],
@@ -196,7 +243,31 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
                 ),
                 const SizedBox(height: 12),
               ],
-              if (_tool == _Tool.rename) ...[
+              if (lectures) ...[
+                DropdownButtonFormField<StageRef?>(
+                  key: const Key('fix.lectureStage'),
+                  initialValue: _lectureStage,
+                  decoration: InputDecoration(labelText: l10n.fixStage, prefixIcon: const Icon(Icons.layers)),
+                  items: [
+                    DropdownMenuItem(value: null, child: Text(l10n.fixAllStages)),
+                    for (final s in StageRef.all) DropdownMenuItem(value: s, child: Text(l10n.stage(s))),
+                  ],
+                  onChanged: _busy ? null : (s) => _reset(() => _lectureStage = s),
+                ),
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  key: const Key('fix.days'),
+                  icon: const Icon(Icons.date_range),
+                  label: Text(switch (_days) {
+                    null => l10n.fixLecturesPickDays,
+                    final d when DateUtils.isSameDay(d.start, d.end) => format(d.start),
+                    final d => l10n.fixLecturesDays(format(d.start), format(d.end)),
+                  }),
+                  onPressed: _busy ? null : _pickDays,
+                ),
+                const SizedBox(height: 8),
+                Text(l10n.fixDeleteLecturesHelp, style: theme.textTheme.bodySmall),
+              ] else if (_tool == _Tool.rename) ...[
                 TextField(
                   key: const Key('fix.old'),
                   controller: _old,
@@ -235,7 +306,7 @@ class _DataFixScreenState extends ConsumerState<DataFixScreen> {
                 Text(ltr ? l10n.fixDeleteTeachersHelp : l10n.fixDeleteHelp, style: theme.textTheme.bodySmall),
               ],
               const SizedBox(height: 4),
-              Text(l10n.fixPhonesNote, style: theme.textTheme.bodySmall),
+              Text(lectures ? l10n.fixLecturesPhonesNote : l10n.fixPhonesNote, style: theme.textTheme.bodySmall),
               const SizedBox(height: 16),
               OutlinedButton.icon(
                 key: const Key('fix.preview'),
@@ -303,6 +374,19 @@ class _PlanCard extends StatelessWidget {
               const SizedBox(height: 4),
               for (final c in counts) Text('• $c'),
             ],
+            if (plan.sessionIds.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              ExpansionTile(
+                key: const Key('fix.lectures'),
+                tilePadding: EdgeInsets.zero,
+                shape: const Border(),
+                title: Text(l10n.fixLecturesList(plan.sessionIds.length), style: theme.textTheme.titleSmall),
+                children: [
+                  for (final id in plan.sessionIds)
+                    ListTile(dense: true, contentPadding: EdgeInsets.zero, title: Text(lectureLabel(context, id))),
+                ],
+              ),
+            ],
             if (kept > 0) ...[
               const SizedBox(height: 4),
               Text(l10n.fixCountKept(kept), style: theme.textTheme.bodySmall),
@@ -322,4 +406,28 @@ class _PlanCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// «12 تشرين الأول · CS101 · نظري · كل الشعب · المحاضرة 1 · المرحلة الأولى صباحي»
+/// from a session ID (`{courseId}__{type}__{target}__{yyyyMMdd}__{no}`).
+String lectureLabel(BuildContext context, String sessionId) {
+  final l10n = context.l10n;
+  final p = sessionId.split('__');
+  if (p.length != 5) return sessionId;
+  final courseId = p[0];
+  final cut = courseId.indexOf('_');
+  final code = cut < 0 ? courseId : courseId.substring(0, cut);
+  final stage = cut < 0 ? '' : courseId.substring(cut + 1);
+  final date = DocIds.parseDateKey(p[3]);
+  return [
+    if (date != null) MaterialLocalizations.of(context).formatMediumDate(date),
+    bidiIsolate(code),
+    if (p[1] == 'theory') ...[
+      l10n.theoryLabel,
+      p[2] == DocIds.allSections ? l10n.allSections : l10n.sectionLabel(p[2]),
+    ] else
+      l10n.groupLabel(p[2]),
+    l10n.activityLectureNo(int.tryParse(p[4]) ?? 1),
+    if (stage.isNotEmpty) l10n.stageId(stage),
+  ].join(' · ');
 }
