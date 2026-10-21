@@ -67,4 +67,72 @@ void main() {
     expect(c.data()!['studentIds'], isEmpty);
     expect(find.text('مجموعة C · عدد الطلبة: 0'), findsOneWidget);
   });
+
+  testWidgets('a move is repeated in the other practical courses chosen', (tester) async {
+    final env = await pumpApp(
+      tester,
+      user: MockUser(email: adminEmail, isEmailVerified: true),
+      profile: const AppUser(email: adminEmail, name: 'المدير', roles: {UserRole.deputyAdmin}),
+    );
+    final lab = Course(code: 'CS102', name: 'هياكل البيانات', stage: stage, semester: 1, units: 3, hasPractical: true);
+    final oneGroup = Course(code: 'CS103', name: 'الرياضيات المتقطعة', stage: stage, semester: 1, units: 3, hasPractical: true);
+    final theory = Course(code: 'CS104', name: 'اللغة العربية', stage: stage, semester: 1, units: 2, hasPractical: false);
+    for (final c in [course, lab, oneGroup, theory]) {
+      await env.db.doc('courses/${c.id}').set(c.toMap());
+    }
+    for (final s in students) {
+      await env.db.doc('students/${s.id}').set(s.toMap());
+    }
+    Future<void> group(Course c, String name, List<String> ids) =>
+        env.db.doc('groups/${c.id}__$name').set(
+            PracticalGroup(courseId: c.id, stageId: stage.id, name: name, studentIds: ids).toMap());
+    await group(course, 'A', ['1', '2']);
+    await group(course, 'B', ['3', '4']);
+    await group(lab, 'A', ['1', '2']);
+    await group(lab, 'B', ['3', '4']);
+    await group(oneGroup, 'A', ['1', '2', '3', '4']);
+    Future<List<Object?>> ids(Course c, String name) async =>
+        (await env.db.doc('groups/${c.id}__$name').get()).data()!['studentIds'] as List<Object?>;
+
+    await tester.tap(find.text('الربط'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('أساسيات البرمجة'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(Key('assignments.members.${course.id}')));
+    await tester.pumpAndSettle();
+
+    Future<void> move(String student, String to) async {
+      await tester.tap(find.byKey(Key('groups.student.$student')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('groups.move')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(Key('groups.to.$to')));
+      await tester.pumpAndSettle();
+    }
+
+    await move('1', 'B');
+    expect(find.text('تطبيق النقل على مواد أخرى؟'), findsOneWidget);
+    expect(find.byKey(Key('groups.apply.${theory.id}')), findsNothing, reason: 'no practical');
+    expect(tester.widget<CheckboxListTile>(find.byKey(Key('groups.apply.${oneGroup.id}'))).onChanged, isNull,
+        reason: 'it has no group B');
+    expect(find.text('لا توجد فيها مجموعة B'), findsOneWidget);
+    await tester.tap(find.byKey(Key('groups.apply.${lab.id}')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('groups.apply.confirm')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('نُقل 1 إلى مجموعة B في 2 مواد.'), findsOneWidget);
+    expect(await ids(course, 'B'), ['3', '4', '1']);
+    expect(await ids(lab, 'A'), ['2']);
+    expect(await ids(lab, 'B'), ['3', '4', '1']);
+    expect(await ids(oneGroup, 'A'), ['1', '2', '3', '4'], reason: 'untouched');
+
+    // The last choice is offered again; «this course only» leaves it out.
+    await move('2', 'B');
+    expect(tester.widget<CheckboxListTile>(find.byKey(Key('groups.apply.${lab.id}'))).value, isTrue);
+    await tester.tap(find.byKey(const Key('groups.apply.onlyThis')));
+    await tester.pumpAndSettle();
+    expect(await ids(course, 'A'), isEmpty);
+    expect(await ids(lab, 'A'), ['2']);
+  });
 }

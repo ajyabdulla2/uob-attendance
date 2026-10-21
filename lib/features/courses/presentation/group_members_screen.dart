@@ -28,11 +28,14 @@ class _GroupMembersScreenState extends ConsumerState<GroupMembersScreen> {
   String _query = '';
   bool _busy = false;
 
+  /// Other courses the last move was repeated in, offered again next time.
+  Set<String> _applyTo = {};
+
   Course get _course => widget.course;
 
   void _toggle(String id) => setState(() => _selected.contains(id) ? _selected.remove(id) : _selected.add(id));
 
-  Future<void> _move(List<PracticalGroup> groups) async {
+  Future<void> _move(List<PracticalGroup> groups, List<Course> otherCourses) async {
     final l10n = context.l10n;
     final to = await showModalBottomSheet<String>(
       context: context,
@@ -60,17 +63,50 @@ class _GroupMembersScreenState extends ConsumerState<GroupMembersScreen> {
     final moved = _selected.length;
     setState(() => _busy = true);
     try {
-      await ref
-          .read(coursesRepositoryProvider)
-          .moveStudents(
-            groups: groups,
-            studentIds: {..._selected},
+      final repo = ref.read(coursesRepositoryProvider);
+      // The same move in other practical courses of the stage, if chosen.
+      final others = [
+        for (final c in otherCourses)
+          if (c.hasPractical && c.id != _course.id) c,
+      ];
+      var all = groups;
+      var extra = 0;
+      if (others.isNotEmpty) {
+        final stageGroups = await repo.fetchStageGroups(_course.stageId);
+        if (!mounted) return;
+        final chosen = await showDialog<Set<String>>(
+          context: context,
+          builder: (_) => _ApplyToCoursesDialog(
+            course: _course,
+            courses: others,
+            stageGroups: stageGroups,
             toGroup: to,
-            actor: ref.read(signedInUserProvider).id,
-          );
+            count: moved,
+            initial: _applyTo,
+          ),
+        );
+        if (chosen == null || !mounted) return;
+        _applyTo = chosen;
+        all = [
+          ...groups,
+          for (final id in chosen) ...?stageGroups[id],
+        ];
+        extra = chosen.length;
+      }
+      await repo.moveStudents(
+        groups: all,
+        studentIds: {..._selected},
+        toGroup: to,
+        actor: ref.read(signedInUserProvider).id,
+      );
       if (!mounted) return;
       setState(_selected.clear);
-      showSnack(context, l10n.groupsMoved(moved, l10n.groupLabel(to)));
+      showSnack(
+        context,
+        extra == 0
+            ? l10n.groupsMoved(moved, l10n.groupLabel(to))
+            : l10n.groupsMovedCourses(moved, l10n.groupLabel(to), extra + 1),
+      );
     } on Object catch (e) {
       if (mounted) showError(context, e);
     } finally {
@@ -99,6 +135,7 @@ class _GroupMembersScreenState extends ConsumerState<GroupMembersScreen> {
     final theme = Theme.of(context);
     final groups = ref.watch(courseGroupsProvider((courseId: _course.id, stageId: _course.stageId)));
     final students = ref.watch(stageStudentsProvider(_course.stageId));
+    final stageCourses = ref.watch(stageCoursesProvider(_course.stageId)).value ?? const <Course>[];
     final list = groups.value ?? const <PracticalGroup>[];
 
     return Scaffold(
@@ -149,7 +186,7 @@ class _GroupMembersScreenState extends ConsumerState<GroupMembersScreen> {
                       key: const Key('groups.move'),
                       icon: const Icon(Icons.drive_file_move_outline),
                       label: Text(l10n.groupsMoveTo),
-                      onPressed: _busy || list.isEmpty ? null : () => _move(list),
+                      onPressed: _busy || list.isEmpty ? null : () => _move(list, stageCourses),
                     ),
                   ],
                 ),
@@ -233,6 +270,85 @@ class _GroupMembersScreenState extends ConsumerState<GroupMembersScreen> {
           for (final id in sorted(unassigned.map((s) => s.id))) tile(id),
         ],
         const SizedBox(height: 16),
+      ],
+    );
+  }
+}
+
+/// After a move: the other practical courses of the stage to repeat it in.
+/// A course without a group of that name cannot take it. Returns the chosen
+/// course IDs (empty = this course only), or null to cancel the move.
+class _ApplyToCoursesDialog extends StatefulWidget {
+  const _ApplyToCoursesDialog({
+    required this.course,
+    required this.courses,
+    required this.stageGroups,
+    required this.toGroup,
+    required this.count,
+    required this.initial,
+  });
+
+  final Course course;
+  final List<Course> courses;
+  final Map<String, List<PracticalGroup>> stageGroups;
+  final String toGroup;
+  final int count;
+  final Set<String> initial;
+
+  @override
+  State<_ApplyToCoursesDialog> createState() => _ApplyToCoursesDialogState();
+}
+
+class _ApplyToCoursesDialogState extends State<_ApplyToCoursesDialog> {
+  late final Set<String> _chosen = {
+    for (final c in widget.courses)
+      if (widget.initial.contains(c.id) && _canTake(c)) c.id,
+  };
+
+  bool _canTake(Course c) => (widget.stageGroups[c.id] ?? const []).any((g) => g.name == widget.toGroup);
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final group = l10n.groupLabel(widget.toGroup);
+    return AlertDialog(
+      title: Text(l10n.groupsApplyTitle),
+      content: SizedBox(
+        width: 420,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(l10n.groupsApplyBody(widget.count, group, widget.course.name)),
+              const SizedBox(height: 8),
+              for (final c in widget.courses)
+                CheckboxListTile(
+                  key: Key('groups.apply.${c.id}'),
+                  contentPadding: EdgeInsets.zero,
+                  value: _chosen.contains(c.id),
+                  title: Text(c.name),
+                  subtitle: Text(_canTake(c) ? bidiIsolate(c.code) : l10n.groupsApplyMissing(group)),
+                  onChanged: _canTake(c)
+                      ? (v) => setState(() => v == true ? _chosen.add(c.id) : _chosen.remove(c.id))
+                      : null,
+                ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.cancel)),
+        TextButton(
+          key: const Key('groups.apply.onlyThis'),
+          onPressed: () => Navigator.pop(context, <String>{}),
+          child: Text(l10n.groupsApplyOnlyThis),
+        ),
+        FilledButton(
+          key: const Key('groups.apply.confirm'),
+          onPressed: _chosen.isEmpty ? null : () => Navigator.pop(context, {..._chosen}),
+          child: Text(l10n.groupsApply(_chosen.length)),
+        ),
       ],
     );
   }

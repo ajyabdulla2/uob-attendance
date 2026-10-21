@@ -2468,6 +2468,42 @@ abstract class AppLocalizations {
   /// **'نُقل {count} إلى {group}.'**
   String groupsMoved(int count, String group);
 
+  /// No description provided for @groupsMovedCourses.
+  ///
+  /// In ar, this message translates to:
+  /// **'نُقل {count} إلى {group} في {courses} مواد.'**
+  String groupsMovedCourses(int count, String group, int courses);
+
+  /// No description provided for @groupsApplyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تطبيق النقل على مواد أخرى؟'**
+  String get groupsApplyTitle;
+
+  /// No description provided for @groupsApplyBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'نقل {count} طالب إلى {group} في «{course}». اختر المواد الأخرى التي يُطبَّق عليها النقل نفسه:'**
+  String groupsApplyBody(int count, String group, String course);
+
+  /// No description provided for @groupsApplyMissing.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد فيها {group}'**
+  String groupsApplyMissing(String group);
+
+  /// No description provided for @groupsApplyOnlyThis.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه المادة فقط'**
+  String get groupsApplyOnlyThis;
+
+  /// No description provided for @groupsApply.
+  ///
+  /// In ar, this message translates to:
+  /// **'تطبيق على {count} أخرى'**
+  String groupsApply(int count);
+
   /// No description provided for @groupsAdd.
   ///
   /// In ar, this message translates to:
