@@ -1412,6 +1412,32 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String groupsMovedCourses(int count, String group, int courses) {
+    return 'نُقل $count إلى $group في $courses مواد.';
+  }
+
+  @override
+  String get groupsApplyTitle => 'تطبيق النقل على مواد أخرى؟';
+
+  @override
+  String groupsApplyBody(int count, String group, String course) {
+    return 'نقل $count طالب إلى $group في «$course». اختر المواد الأخرى التي يُطبَّق عليها النقل نفسه:';
+  }
+
+  @override
+  String groupsApplyMissing(String group) {
+    return 'لا توجد فيها $group';
+  }
+
+  @override
+  String get groupsApplyOnlyThis => 'هذه المادة فقط';
+
+  @override
+  String groupsApply(int count) {
+    return 'تطبيق على $count أخرى';
+  }
+
+  @override
   String get groupsAdd => 'إضافة مجموعة';
 
   @override

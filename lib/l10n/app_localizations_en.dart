@@ -1419,6 +1419,32 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String groupsMovedCourses(int count, String group, int courses) {
+    return 'Moved $count to $group in $courses courses.';
+  }
+
+  @override
+  String get groupsApplyTitle => 'Apply the move to other courses?';
+
+  @override
+  String groupsApplyBody(int count, String group, String course) {
+    return 'Moving $count students to $group in «$course». Choose the other courses to repeat the same move in:';
+  }
+
+  @override
+  String groupsApplyMissing(String group) {
+    return 'Has no $group';
+  }
+
+  @override
+  String get groupsApplyOnlyThis => 'This course only';
+
+  @override
+  String groupsApply(int count) {
+    return 'Apply to $count more';
+  }
+
+  @override
   String get groupsAdd => 'Add a group';
 
   @override

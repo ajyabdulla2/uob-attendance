@@ -133,6 +133,38 @@ describe('practical groups', () => {
     const b = await getDoc(doc(db, 'groups', `${COURSE}__B`));
     if (JSON.stringify(b.data().studentIds) !== '["1001"]') throw new Error('not moved');
   });
+
+  it('stage manager repeats a move in another course of the stage in the same batch', async () => {
+    const other = 'CS302_3-morning';
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore();
+      await setDoc(doc(db, 'courses', other), { code: 'CS302', name: 'Lab 2', stageId: '3-morning', semester: 1, units: 3, hasPractical: true });
+      await setDoc(doc(db, 'groups', `${other}__A`), group(other, '3-morning', 'A'));
+      await updateDoc(doc(db, 'groups', `${other}__A`), { studentIds: ['1001'] });
+      await setDoc(doc(db, 'groups', `${COURSE}__B`), group(COURSE, '3-morning', 'B'));
+      await setDoc(doc(db, 'groups', `${other}__B`), group(other, '3-morning', 'B'));
+      await setDoc(doc(db, 'groups', `${COURSE_EVE}__A`), group(COURSE_EVE, '1-evening', 'A'));
+    });
+    const move = (who, extra) => {
+      const fs = as(env, who);
+      const b = writeBatch(fs);
+      const stamp = { updatedAt: serverTimestamp(), updatedBy: who };
+      for (const c of [COURSE, extra]) {
+        b.update(doc(fs, 'groups', `${c}__A`), { studentIds: arrayRemove('1001'), ...stamp });
+        b.update(doc(fs, 'groups', `${c}__B`), { studentIds: arrayUnion('1001'), ...stamp });
+      }
+      return b.commit();
+    };
+    await assertFails(move(T1, other));
+    await assertSucceeds(move(SM3, other));
+    const b = await getDoc(doc(as(env, SM3), 'groups', `${other}__B`));
+    if (JSON.stringify(b.data().studentIds) !== '["1001"]') throw new Error('not moved');
+    // A course of another stage cannot ride along.
+    const fs = as(env, SM3);
+    const bad = writeBatch(fs);
+    bad.update(doc(fs, 'groups', `${COURSE_EVE}__A`), { studentIds: arrayUnion('1001'), updatedAt: serverTimestamp(), updatedBy: SM3 });
+    await assertFails(bad.commit());
+  });
 });
 
 describe('assignments (teacher ↔ course / practical group)', () => {

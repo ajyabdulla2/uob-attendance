@@ -1013,6 +1013,52 @@
       }
     }
   },
+  "groupsMovedCourses": "نُقل {count} إلى {group} في {courses} مواد.",
+  "@groupsMovedCourses": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "group": {
+        "type": "String"
+      },
+      "courses": {
+        "type": "int"
+      }
+    }
+  },
+  "groupsApplyTitle": "تطبيق النقل على مواد أخرى؟",
+  "groupsApplyBody": "نقل {count} طالب إلى {group} في «{course}». اختر المواد الأخرى التي يُطبَّق عليها النقل نفسه:",
+  "@groupsApplyBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "group": {
+        "type": "String"
+      },
+      "course": {
+        "type": "String"
+      }
+    }
+  },
+  "groupsApplyMissing": "لا توجد فيها {group}",
+  "@groupsApplyMissing": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "groupsApplyOnlyThis": "هذه المادة فقط",
+  "groupsApply": "تطبيق على {count} أخرى",
+  "@groupsApply": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "groupsAdd": "إضافة مجموعة",
   "groupsAdded": "أُضيفت {group}؛ انقل إليها الطلبة.",
   "@groupsAdded": {

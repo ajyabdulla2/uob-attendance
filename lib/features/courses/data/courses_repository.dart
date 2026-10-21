@@ -88,10 +88,24 @@ class CoursesRepository {
     return removedTeachers;
   }
 
-  /// Moves [studentIds] into group [toGroup] of a course, taking them out of
-  /// whichever of [groups] holds them (also adds students who had no group).
-  /// Group sizes may differ afterwards. One batch, so a student is never in
-  /// two groups; array operations keep concurrent edits of other members.
+  /// Groups of every course of a stage, by course ID (the `stageId` filter is
+  /// what the rules check for a stage manager).
+  Future<Map<String, List<PracticalGroup>>> fetchStageGroups(String stageId) async {
+    final snap = await _groups.where('stageId', isEqualTo: stageId).get();
+    final byCourse = <String, List<PracticalGroup>>{};
+    for (final d in snap.docs) {
+      final g = PracticalGroup.fromMap(d.id, d.data());
+      (byCourse[g.courseId] ??= []).add(g);
+    }
+    return byCourse;
+  }
+
+  /// Moves [studentIds] into group [toGroup], taking them out of whichever
+  /// of [groups] holds them (also adds students who had no group). [groups]
+  /// may hold several courses' groups — each course with a group named
+  /// [toGroup] — to repeat the same move in every one of them. Group sizes
+  /// may differ afterwards. One batch, so a student is never in two groups;
+  /// array operations keep concurrent edits of other members.
   Future<void> moveStudents({
     required List<PracticalGroup> groups,
     required Set<String> studentIds,
