@@ -239,7 +239,7 @@ tool/            سكربتات الإعداد والفحص
 | EAS Build (بناء APK على خوادم سحابية) | **GitHub Actions** `.github/workflows/android.yml` على خوادم GitHub (فيها Android SDK) | ✅ جاهز |
 | EAS Update (تحديث JS بلا بناء جديد) | **Shorebird** code push لكود Dart: `android.yml` يبني كل APK كإصدار Shorebird، و`patch.yml` يرسل الرقع | ✅ مفعّل (`shorebird.yaml`) |
 | رسالة «تحديث جديد جاهز» | `config/app` + `UpdateGate` (لافتة أو شاشة إلزامية مع رابط التنزيل) | ✅ جاهز |
-| EAS Submit | iOS: `.github/workflows/ios.yml` على خادم macOS في GitHub يبني ويوقّع ويرفع إلى App Store Connect/TestFlight (انظر «iOS» أدناه) | 🔧 جاهز، بانتظار حساب Apple والأسرار |
+| EAS Submit | iOS: `.github/workflows/ios.yml` على خادم macOS في GitHub يبني ويوقّع ويرفع إلى App Store Connect/TestFlight (انظر «iOS» أدناه) | ✅ أول نسخة رُفعت إلى TestFlight في 23 تشرين الأول 2026 (1.5.0، بناء 3، إصدار Shorebird لـ iOS) |
 | Firebase Hosting (نسخة الحاسوب + صفحة الخصوصية) | `firebase.json` + `web/privacy.html` (تُخدَم في `/privacy.html`) | ✅ منشور على `uob-cs-attendance.web.app` (والقديم `basrah-researches.web.app` يحوّل إليه)؛ نص الخصوصية كامل مع بريد القسم `computer.edup@uobasrah.edu.iq`، بانتظار اعتماد القسم |
 | «اختبر القواعد قبل النشر» | `ci.yml` في كل push، و`deploy.yml` لا ينشر القواعد إلا بعد نجاح اختبارات المحاكي | ✅ جاهز |
 | QR التحقق والإعلانات | صفحتان ثابتتان على Hosting (`verify.html`، `announcements.html`) تقرآن عبر الـ Worker بحد يومي 15٪ من حصة القراءة | ✅ |
@@ -301,6 +301,7 @@ tool/            سكربتات الإعداد والفحص
 - `Runner.entitlements` فيه `aps-environment = production` (لا بناء تطوير محلي؛ البناء يوقَّع بملف App Store). `Info.plist`: `ITSAppUsesNonExemptEncryption = false` (HTTPS وAES لملف النسخة الاحتياطية فقط، معفى)، `remote-notification`، ونص إذن الصور (`file_picker`). `AppDelegate` يجعل الإشعارات تظهر والتطبيق مفتوح.
 - **Firebase على iOS**: يلزم إضافة تطبيق iOS في المشروع (`flutterfire configure` على جهاز المطوّر) ثم تحديث السر `FIREBASE_OPTIONS_DART_B64`؛ `ios.yml` يرفض ملفاً بلا خيارات iOS. والإشعارات تحتاج مفتاح APNs (.p8) يُرفع في Firebase ← Project settings ← Cloud Messaging.
 - صفحة الدعم `web/support.html` (Support URL في المتجر).
+- **أول بناء ناجح** (تشغيل 3 لـ `ios.yml`، 23 تشرين الأول): الأسرار الأربعة بمفتاح API `4P3TW3H4Q3` (أُنشئ قبله مفتاحان `ZT864PTQ5V` و`V54CM37YKS`، لا يُستعملان). الدقائق: بناء iOS نحو 20 دقيقة macOS، ومجاني لأن المستودع **عام** (جُعل عاماً في 18 تشرين الأول بعد نفاد حصة Actions للخاص؛ فُحص تاريخه بـ gitleaks فلا أسرار ولا بيانات حقيقية). `patch.yml` لـ Android فقط؛ رقعة iOS تحتاج `shorebird patch ios --release-version=1.5.0+3` (خطوة لم تُضف بعد).
 
 ### `config/app` و`accessRequests` (إضافات على جدول SPEC)
 `config/app`: `latestVersion`، `minVersion` (نصوص `X.Y.Z`)، `androidUrl`، `iosUrl`، `notes` (+ `updatedBy/updatedAt`). يقرؤها كل حساب نشط، ويكتبها المدراء فقط، من شاشة **«إصدار التطبيق»** (`/app-release`، `canManageAppRelease`): تحقق `AppUpdatePolicy.check` (رقم صحيح، الحد الأدنى لا يتجاوز الأحدث، روابط `https`)، والحقل الفارغ يُحذف، وتأكيد قبل رفع `minVersion` (يمنع النسخ الأقدم)، وزر لتجربة الرابط، وتدقيق `config.update`. **المستودع خاص**: رابط ملف GitHub Release يحتاج دخولاً، فرابط التنزيل للتدريسيين من Google Drive بمشاركة «أي شخص لديه الرابط» بصيغة التنزيل المباشر `https://drive.google.com/uc?export=download&id=<ID>`.
