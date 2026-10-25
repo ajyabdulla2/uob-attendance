@@ -85,17 +85,52 @@ class AppShell extends ConsumerWidget {
     } else {
       shell = Scaffold(
         body: PresenceReporter(child: PushLifecycle(child: SyncLifecycle(child: UpdateGate(child: child)))),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: index,
-          onDestinationSelected: go,
-          destinations: [
-            for (final d in destinations)
-              NavigationDestination(icon: Icon(d.icon), selectedIcon: Icon(d.selectedIcon), label: d.label),
-          ],
+        bottomNavigationBar: _ToScreenEdge(
+          child: NavigationBar(
+            selectedIndex: index,
+            onDestinationSelected: go,
+            destinations: [
+              for (final d in destinations)
+                NavigationDestination(icon: Icon(d.icon), selectedIcon: Icon(d.selectedIcon), label: d.label),
+            ],
+          ),
         ),
       );
     }
     return _BackToHome(location: location, child: shell);
+  }
+}
+
+/// The app-wide SafeArea (app.dart) keeps the system's bottom inset (the
+/// iPhone home indicator, Android's gesture bar) clear and fills it with the
+/// page colour, which left a band of another colour under the bottom bar.
+/// This paints the bar's own colour down to the screen edge.
+class _ToScreenEdge extends StatelessWidget {
+  const _ToScreenEdge({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    // The SafeArea removed the inset from MediaQuery; the view still has it.
+    final inset = MediaQueryData.fromView(View.of(context)).padding.bottom;
+    if (inset == 0) return child;
+    final color = NavigationBarTheme.of(context).backgroundColor ?? Theme.of(context).colorScheme.surfaceContainer;
+    return Stack(
+      fit: StackFit.passthrough,
+      clipBehavior: Clip.none,
+      children: [
+        child,
+        Positioned(
+          key: const Key('shell.navEdge'),
+          left: 0,
+          right: 0,
+          bottom: -inset,
+          height: inset,
+          child: ColoredBox(color: color),
+        ),
+      ],
+    );
   }
 }
 

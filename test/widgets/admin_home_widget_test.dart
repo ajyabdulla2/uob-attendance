@@ -70,6 +70,20 @@ void main() {
     expect(find.byKey(const Key('home.import')), findsOneWidget);
   });
 
+  testWidgets('the bottom bar colour reaches the screen edge under the home indicator', (tester) async {
+    tester.view.padding = const FakeViewPadding(bottom: 34); // an iPhone's home indicator
+    addTearDown(tester.view.resetPadding);
+    await pumpAdmin(tester);
+    final bar = tester.getRect(find.byType(NavigationBar));
+    final edge = tester.getRect(find.byKey(const Key('shell.navEdge')));
+    expect(edge.top, bar.bottom);
+    expect(edge.bottom, tester.view.physicalSize.height / tester.view.devicePixelRatio);
+    final band = tester.widget<ColoredBox>(
+        find.descendant(of: find.byKey(const Key('shell.navEdge')), matching: find.byType(ColoredBox)));
+    final context = tester.element(find.byType(NavigationBar));
+    expect(band.color, Theme.of(context).colorScheme.surfaceContainer);
+  });
+
   testWidgets('a plain teacher keeps their classes on the home screen and no extra tab', (tester) async {
     const teacher = 't1@uobasrah.edu.iq';
     await pumpApp(tester,
