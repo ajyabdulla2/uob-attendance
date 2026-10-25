@@ -1910,6 +1910,36 @@ abstract class AppLocalizations {
   /// **'لا تغييرات منذ آخر حفظ.'**
   String get recordNothingChanged;
 
+  /// No description provided for @recordConfirmTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مراجعة قبل الحفظ'**
+  String get recordConfirmTitle;
+
+  /// No description provided for @recordConfirmAbsent.
+  ///
+  /// In ar, this message translates to:
+  /// **'الغائبون ({count})'**
+  String recordConfirmAbsent(int count);
+
+  /// No description provided for @recordConfirmNoAbsent.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد غائب في هذه المحاضرة.'**
+  String get recordConfirmNoAbsent;
+
+  /// No description provided for @recordConfirmSave.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأكيد الحفظ'**
+  String get recordConfirmSave;
+
+  /// No description provided for @recordConfirmBack.
+  ///
+  /// In ar, this message translates to:
+  /// **'رجوع للتعديل'**
+  String get recordConfirmBack;
+
   /// No description provided for @recordLocked.
   ///
   /// In ar, this message translates to:

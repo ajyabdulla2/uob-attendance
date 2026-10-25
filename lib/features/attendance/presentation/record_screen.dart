@@ -190,6 +190,21 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   Future<void> _save(Assignment a, AcademicYear year, List<Student> students, int lectureNo, bool canOverride) async {
     final l10n = context.l10n;
     final marks = {for (final s in students) s.id: _markOf(s.id)};
+    // Review the absentees first (طلب القسم), unless nothing changed since
+    // the last save of this lecture.
+    if (_saved.isEmpty || _dirty) {
+      final absent = [
+        for (final s in students)
+          if (marks[s.id]!.status == AttendanceStatus.absent) s,
+      ];
+      final ok = await showModalBottomSheet<bool>(
+        context: context,
+        isScrollControlled: true,
+        showDragHandle: true,
+        builder: (_) => _ConfirmSaveSheet(absent: absent),
+      );
+      if (ok != true || !mounted) return;
+    }
     setState(() => _saving = true);
     try {
       final plan = await ref.read(attendanceStoreProvider).save(
@@ -597,6 +612,72 @@ class _EditRequestSheetState extends State<_EditRequestSheet> {
             child: Text(l10n.editRequestSend),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Half-screen review of the absentees before a save: confirm or go back.
+class _ConfirmSaveSheet extends StatelessWidget {
+  const _ConfirmSaveSheet({required this.absent});
+
+  final List<Student> absent;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final color = StatusPalette.of(context).forStatus(AttendanceStatus.absent);
+    return SizedBox(
+      key: const Key('record.confirm'),
+      height: MediaQuery.sizeOf(context).height * 0.5,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(l10n.recordConfirmTitle, style: theme.textTheme.titleMedium),
+            const SizedBox(height: 4),
+            Text(
+              absent.isEmpty ? l10n.recordConfirmNoAbsent : l10n.recordConfirmAbsent(absent.length),
+              style: theme.textTheme.bodyMedium?.copyWith(color: absent.isEmpty ? null : color),
+            ),
+            const SizedBox(height: 4),
+            Expanded(
+              child: ListView.builder(
+                itemCount: absent.length,
+                itemBuilder: (context, i) => ListTile(
+                  key: Key('record.confirm.${absent[i].id}'),
+                  dense: true,
+                  visualDensity: VisualDensity.compact,
+                  leading: Icon(StatusPalette.iconForStatus(AttendanceStatus.absent), color: color),
+                  title: Text('${i + 1}. ${absent[i].fullName}'),
+                  subtitle: Text(bidiIsolate(absent[i].universityId)),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    key: const Key('record.confirm.back'),
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text(l10n.recordConfirmBack),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: FilledButton(
+                    key: const Key('record.confirm.save'),
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text(l10n.recordConfirmSave),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

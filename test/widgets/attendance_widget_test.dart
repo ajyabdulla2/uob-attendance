@@ -99,7 +99,23 @@ void main() {
     expect(find.text('غائب 1'), findsOneWidget);
     expect(find.text('متأخر 1'), findsOneWidget);
 
+    // Saving first lists the absentees only; «رجوع للتعديل» saves nothing.
     await tester.tap(find.byKey(const Key('record.save')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('record.confirm')), findsOneWidget);
+    expect(find.text('الغائبون (1)'), findsOneWidget);
+    expect(find.byKey(Key('record.confirm.${students[1].id}')), findsOneWidget);
+    expect(find.byKey(Key('record.confirm.${students[0].id}')), findsNothing);
+    expect(find.byKey(Key('record.confirm.${students[2].id}')), findsNothing);
+    await tester.tap(find.byKey(const Key('record.confirm.back')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('record.confirm')), findsNothing);
+    expect(await env.db.oldestPendingAt(), isNull);
+    expect(find.text('غائب 1'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('record.save')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('record.confirm.save')));
     await tester.pumpAndSettle();
     expect(find.text('حُفظ على الهاتف، ويُرفع تلقائياً عند توفّر الاتصال.'), findsOneWidget);
 
@@ -152,6 +168,9 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('record.save')));
     await tester.pumpAndSettle();
+    expect(find.text('لا يوجد غائب في هذه المحاضرة.'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('record.confirm.save')));
+    await tester.pumpAndSettle();
 
     // A second lecture the same day.
     await tester.tap(find.byKey(const Key('record.newLecture')));
@@ -168,6 +187,8 @@ void main() {
     expect(studentTile(students[0]), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('record.save')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('record.confirm.save')));
     await tester.pumpAndSettle();
     expect(find.text('المحاضرة 2'), findsOneWidget);
     final second = await env.fs.collection('sessions').where('lectureNo', isEqualTo: 2).get();
