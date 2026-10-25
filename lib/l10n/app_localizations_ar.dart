@@ -1063,6 +1063,23 @@ class AppLocalizationsAr extends AppLocalizations {
   String get recordNothingChanged => 'لا تغييرات منذ آخر حفظ.';
 
   @override
+  String get recordConfirmTitle => 'مراجعة قبل الحفظ';
+
+  @override
+  String recordConfirmAbsent(int count) {
+    return 'الغائبون ($count)';
+  }
+
+  @override
+  String get recordConfirmNoAbsent => 'لا يوجد غائب في هذه المحاضرة.';
+
+  @override
+  String get recordConfirmSave => 'تأكيد الحفظ';
+
+  @override
+  String get recordConfirmBack => 'رجوع للتعديل';
+
+  @override
   String get recordLocked =>
       'انتهت مهلة التعديل لهذه المحاضرة؛ أي تعديل الآن يكون عبر مسؤول المرحلة.';
 
