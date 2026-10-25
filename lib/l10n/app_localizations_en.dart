@@ -1067,6 +1067,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordNothingChanged => 'No changes since the last save.';
 
   @override
+  String get recordConfirmTitle => 'Review before saving';
+
+  @override
+  String recordConfirmAbsent(int count) {
+    return 'Absent ($count)';
+  }
+
+  @override
+  String get recordConfirmNoAbsent => 'No one is absent in this lecture.';
+
+  @override
+  String get recordConfirmSave => 'Confirm save';
+
+  @override
+  String get recordConfirmBack => 'Back to edit';
+
+  @override
   String get recordLocked =>
       'Editing time for this lecture is over; changes now go through the stage manager.';
 

@@ -730,6 +730,18 @@
   "recordSave": "حفظ الحضور",
   "recordSaved": "حُفظ على الهاتف، ويُرفع تلقائياً عند توفّر الاتصال.",
   "recordNothingChanged": "لا تغييرات منذ آخر حفظ.",
+  "recordConfirmTitle": "مراجعة قبل الحفظ",
+  "recordConfirmAbsent": "الغائبون ({count})",
+  "@recordConfirmAbsent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordConfirmNoAbsent": "لا يوجد غائب في هذه المحاضرة.",
+  "recordConfirmSave": "تأكيد الحفظ",
+  "recordConfirmBack": "رجوع للتعديل",
   "recordLocked": "انتهت مهلة التعديل لهذه المحاضرة؛ أي تعديل الآن يكون عبر مسؤول المرحلة.",
   "recordLockedOverride": "المحاضرة مقفلة للتدريسي، ويمكنك تعديلها بصفتك مسؤولاً.",
   "recordLocksAt": "يُقفل التعديل {date} {time}",
