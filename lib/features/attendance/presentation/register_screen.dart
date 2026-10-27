@@ -325,7 +325,8 @@ class _RegisterTable extends StatelessWidget {
     final theme = Theme.of(context);
 
     int absences(String studentId) =>
-        sessions.where((s) => marks[s.id]?[studentId] == AttendanceStatus.absent).length;
+        sessions.where((s) => !s.excluded && marks[s.id]?[studentId] == AttendanceStatus.absent).length;
+    final faded = theme.colorScheme.onSurfaceVariant;
 
     return Scrollbar(
       child: SingleChildScrollView(
@@ -349,7 +350,7 @@ class _RegisterTable extends StatelessWidget {
               for (final s in sessions)
                 DataColumn(
                   label: Tooltip(
-                    message: l10n.registerOpenLecture,
+                    message: s.excluded ? l10n.lectureExcludedHelp : l10n.registerOpenLecture,
                     child: InkWell(
                       key: Key('register.session.${s.id}'),
                       onTap: interactive
@@ -360,6 +361,12 @@ class _RegisterTable extends StatelessWidget {
                         children: [
                           Text('${s.date.day}/${s.date.month}', style: theme.textTheme.labelSmall),
                           Text('#${s.lectureNo}', style: theme.textTheme.labelSmall),
+                          if (s.excluded)
+                            Text(
+                              l10n.lectureExcludedShort,
+                              key: Key('register.excluded.${s.id}'),
+                              style: theme.textTheme.labelSmall?.copyWith(color: faded),
+                            ),
                         ],
                       ),
                     ),
@@ -387,8 +394,14 @@ class _RegisterTable extends StatelessWidget {
                   for (final s in sessions)
                     DataCell(switch (marks[s.id]?[st.id]) {
                       final status? => Tooltip(
-                          message: l10n.attendance(status),
-                          child: Icon(StatusPalette.iconForStatus(status), color: palette.forStatus(status), size: 20),
+                          message: s.excluded
+                              ? '${l10n.attendance(status)} · ${l10n.lectureExcludedShort}'
+                              : l10n.attendance(status),
+                          child: Icon(
+                            StatusPalette.iconForStatus(status),
+                            color: s.excluded ? faded.withValues(alpha: 0.5) : palette.forStatus(status),
+                            size: 20,
+                          ),
                         ),
                       null => const Text('–'),
                     }),

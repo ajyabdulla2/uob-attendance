@@ -75,6 +75,7 @@ class AttendanceStore {
     required String actor,
     DateTime? now,
     bool canOverrideLock = false,
+    bool excluded = false,
   }) async {
     final at = now ?? DateTime.now();
     final sid = sessionIdFor(assignment, date, lectureNo);
@@ -91,6 +92,8 @@ class AttendanceStore {
       now: at,
       openedBy: existing?.openedBy,
       canOverrideLock: canOverrideLock,
+      excluded: excluded,
+      previousExcluded: existing != null && _fromRow(existing).excluded,
     );
     if (plan.isEmpty) return plan;
 
@@ -143,6 +146,8 @@ class AttendanceStore {
     return true;
   }
 
+  static const _excludedKey = 'excluded';
+
   LocalSessionsCompanion _toRow(AttendanceSession s, {DateTime? savedAt, DateTime? deviceCreatedAt}) =>
       LocalSessionsCompanion.insert(
         id: s.id,
@@ -158,7 +163,12 @@ class AttendanceStore {
         openedBy: s.openedBy,
         lockAt: s.lockAt,
         locked: Value(s.locked),
-        countsJson: Value(jsonEncode({for (final e in s.counts.entries) e.key.name: e.value})),
+        // «لا تُحتسب» rides in the counts JSON (no schema change, so the
+        // flag reaches phones in a patch; older code ignores the key).
+        countsJson: Value(jsonEncode({
+          for (final e in s.counts.entries) e.key.name: e.value,
+          if (s.excluded) _excludedKey: true,
+        })),
         deviceCreatedAt: Value(deviceCreatedAt ?? s.deviceCreatedAt),
         savedAt: Value(savedAt),
       );
@@ -177,6 +187,7 @@ class AttendanceStore {
       openedBy: r.openedBy,
       lockAt: r.lockAt.toUtc(),
       locked: r.locked,
+      excluded: counts[_excludedKey] == true,
       counts: {
         for (final s in AttendanceStatus.values)
           if (counts[s.name] is num) s: (counts[s.name] as num).toInt(),

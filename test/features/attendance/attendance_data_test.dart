@@ -53,8 +53,15 @@ void main() {
   setUpAll(() => driftRuntimeOptions.dontWarnAboutMultipleDatabases = true);
 
   group('SavePlan', () {
-    SavePlan build(Map<String, Mark> now, {Map<String, Mark> previous = const {}, DateTime? date, DateTime? at}) =>
+    SavePlan build(Map<String, Mark> now,
+            {Map<String, Mark> previous = const {},
+            DateTime? date,
+            DateTime? at,
+            bool excluded = false,
+            bool previousExcluded = false}) =>
         SavePlan.build(
+          excluded: excluded,
+          previousExcluded: previousExcluded,
           assignment: theory,
           yearId: '2026-2027',
           lockHours: 48,
@@ -98,6 +105,34 @@ void main() {
       expect(plan.writes.map((w) => w.path.split('/').last), [plan.session.id, '1', '${course}__1', '2']);
       expect(plan.writes[2].data['bySession'], {plan.session.id: 'present'});
       expect(build(before, previous: before).isEmpty, isTrue);
+    });
+
+    test('«لا تُحتسب»: every student\'s entry becomes "excluded"; turning it off restores the real statuses', () {
+      final m = marks({'1': AttendanceStatus.present, '2': AttendanceStatus.absent});
+      final sid = '${course}__theory__all__20261012__1';
+      Map<String, Object?> statOf(SavePlan p, String id) =>
+          p.writes.firstWhere((w) => w.path == 'stats/${course}__$id').data['bySession'] as Map<String, Object?>;
+
+      final first = build(m, excluded: true);
+      expect((first.writes.first.data['create'] as Map)['excluded'], isTrue);
+      expect(statOf(first, '1'), {sid: 'excluded'});
+      expect(statOf(first, '2'), {sid: 'excluded'});
+
+      // Excluded, unchanged: nothing to send; a changed mark sends its record only.
+      expect(build(m, previous: m, excluded: true, previousExcluded: true).isEmpty, isTrue);
+      final edit = build(marks({'1': AttendanceStatus.absent, '2': AttendanceStatus.absent}),
+          previous: m, excluded: true, previousExcluded: true);
+      expect(edit.writes.map((w) => w.path.split('/').last), [sid, '1']);
+
+      // Toggled off with the same marks: the session and every real status.
+      final back = build(m, previous: m, previousExcluded: true);
+      expect((back.writes.first.data['update'] as Map)['excluded'], isFalse);
+      expect(statOf(back, '1'), {sid: 'present'});
+      expect(statOf(back, '2'), {sid: 'absent'});
+      expect(back.writes.where((w) => w.path.contains('/records/')), isEmpty);
+
+      // An ordinary save keeps the fields older rules accept.
+      expect((build(m).writes.first.data['update'] as Map).containsKey('excluded'), isFalse);
     });
 
     test('refuses future dates, locked lectures and empty classes', () {

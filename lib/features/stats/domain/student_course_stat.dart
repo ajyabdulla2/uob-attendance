@@ -100,9 +100,11 @@ final class StudentCourseStat {
         percent: Fs.dbl(map['percent']),
         level: Fs.enumByName(WarningLevel.values, map['level'], WarningLevel.none),
         lastSessionId: Fs.strOrNull(map['lastSessionId']),
+        // An excluded lecture counts for nobody: it is left out entirely.
         bySession: {
           for (final MapEntry(:key, :value) in Fs.map(map['bySession']).entries)
-            key: Fs.enumByName(AttendanceStatus.values, value, AttendanceStatus.present),
+            if (value != AttendanceSession.excludedValue)
+              key: Fs.enumByName(AttendanceStatus.values, value, AttendanceStatus.present),
         },
         departmentId: Fs.str(map['departmentId'], AppConfig.departmentId),
       );

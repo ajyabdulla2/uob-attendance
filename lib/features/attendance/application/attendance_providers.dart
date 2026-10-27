@@ -146,8 +146,11 @@ final classAbsenceDataProvider = FutureProvider.autoDispose.family<ClassAbsenceD
   final a = ref.watch(localClassProvider(id));
   final marks = ref.watch(classMarksProvider(id)).value;
   final students = ref.watch(classStudentsProvider(id)).value;
+  final sessions = ref.watch(classSessionsProvider(id)).value;
   final year = await ref.watch(cachedYearProvider.future);
-  if (a == null || marks == null || students == null || year == null) return null;
+  if (a == null || marks == null || students == null || sessions == null || year == null) return null;
+  // «لا تُحتسب»: neither this phone's marks nor the server's entry count.
+  final excluded = {for (final s in sessions) if (s.excluded) s.id};
   final sync = ref.watch(teacherDataSyncProvider);
   final server = await sync.cachedCourseStats(a.courseId);
   final leaves = await sync.cachedLeaves(a.stageId);
@@ -164,8 +167,10 @@ final classAbsenceDataProvider = FutureProvider.autoDispose.family<ClassAbsenceD
     bySession: {
       for (final s in students)
         s.id: {
-          ...?server[s.id],
-          for (final MapEntry(key: sid, value: byStudent) in marks.entries) sid: ?byStudent[s.id],
+          for (final MapEntry(key: sid, value: status) in (server[s.id] ?? const {}).entries)
+            if (!excluded.contains(sid)) sid: status,
+          for (final MapEntry(key: sid, value: byStudent) in marks.entries)
+            if (!excluded.contains(sid)) sid: ?byStudent[s.id],
         },
     },
     leaves: leavesOf,

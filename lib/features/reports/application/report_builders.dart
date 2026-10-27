@@ -72,7 +72,9 @@ abstract final class ReportBuilders {
     }
     if (chunks.isEmpty) chunks.add(const []);
 
-    int absences(String id) => ordered.where((s) => marks[s.id]?[id] == AttendanceStatus.absent).length;
+    int absences(String id) =>
+        ordered.where((s) => !s.excluded && marks[s.id]?[id] == AttendanceStatus.absent).length;
+    final anyExcluded = ordered.any((s) => s.excluded);
 
     final tables = [
       for (final (n, chunk) in chunks.indexed)
@@ -84,7 +86,8 @@ abstract final class ReportBuilders {
           columns: [
             const ReportColumn('ت', flex: 0.5, numeric: true),
             ReportColumn(l10n.registerStudent, flex: 4),
-            for (final s in chunk) ReportColumn('${s.date.day}/${s.date.month}\n#${s.lectureNo}', flex: 0.6, numeric: true),
+            for (final s in chunk)
+              ReportColumn('${s.date.day}/${s.date.month}\n#${s.lectureNo}${s.excluded ? '*' : ''}', flex: 0.6, numeric: true),
             ReportColumn(l10n.registerAbsences, flex: 0.9, numeric: true),
             ReportColumn(l10n.registerPercent, flex: 0.9, numeric: true),
           ],
@@ -94,7 +97,7 @@ abstract final class ReportBuilders {
                 ReportCell('${i + 1}'),
                 ReportCell(st.fullName),
                 for (final s in chunk)
-                  ReportCell(letter(l10n, marks[s.id]?[st.id]), tone: toneOfStatus(marks[s.id]?[st.id])),
+                  ReportCell(letter(l10n, marks[s.id]?[st.id]), tone: s.excluded ? ReportTone.normal : toneOfStatus(marks[s.id]?[st.id])),
                 ReportCell('${absences(st.id)}'),
                 switch (standings[st.id]) {
                   final sum? when sum.planned > 0 =>
@@ -115,7 +118,12 @@ abstract final class ReportBuilders {
         l10n.reportLectureCount(ordered.length),
       ],
       tables: tables,
-      notes: [l10n.reportLegend, l10n.reportPercentNote, if (period != null) l10n.reportPeriodNote],
+      notes: [
+        l10n.reportLegend,
+        l10n.reportPercentNote,
+        if (period != null) l10n.reportPeriodNote,
+        if (anyExcluded) l10n.reportExcludedNote,
+      ],
       signatures: [l10n.reportSignTeacher, l10n.reportSignStageManager, l10n.reportSignHead],
       orientation: ReportOrientation.landscape,
     );

@@ -3864,7 +3864,7 @@ abstract class AppLocalizations {
   /// No description provided for @auditActionLabel.
   ///
   /// In ar, this message translates to:
-  /// **'{action, select, session_missed{تسجيل محاضرة فائتة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_create{إضافة طالب} student_update{تعديل طالب} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} sessions_delete{حذف محاضرات} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} config_update{تعديل إصدار التطبيق} other{{action}}}'**
+  /// **'{action, select, session_missed{تسجيل محاضرة فائتة} session_exclude{جعل محاضرة غير محتسبة} session_include{إرجاع محاضرة محتسبة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_create{إضافة طالب} student_update{تعديل طالب} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} sessions_delete{حذف محاضرات} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} config_update{تعديل إصدار التطبيق} other{{action}}}'**
   String auditActionLabel(String action);
 
   /// No description provided for @deptAction.
@@ -4010,6 +4010,60 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'لم تُنزَّل بيانات هذه المادة بعد؛ اضغط تحديث السجل.'**
   String get studentNoData;
+
+  /// No description provided for @lectureExcludeTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا تُحتسب هذه المحاضرة'**
+  String get lectureExcludeTitle;
+
+  /// No description provided for @lectureExcludeHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يُحسب غياب أي طالب فيها (مثلاً إن لم يحضر الطلبة). يبقى التسجيل كما هو، ويمكن إرجاعها.'**
+  String get lectureExcludeHelp;
+
+  /// No description provided for @lectureExcludedShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'غير محتسبة'**
+  String get lectureExcludedShort;
+
+  /// No description provided for @lectureExcludedHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'محاضرة غير محتسبة: لا يُحسب غيابها لأي طالب'**
+  String get lectureExcludedHelp;
+
+  /// No description provided for @lectureExcludedLocked.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه المحاضرة غير محتسبة: لا يُحسب غياب أحد فيها.'**
+  String get lectureExcludedLocked;
+
+  /// No description provided for @lectureExcludedConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحاضرة غير محتسبة: لن يُحسب غياب أي طالب فيها.'**
+  String get lectureExcludedConfirm;
+
+  /// No description provided for @lectureExcludedDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'صارت المحاضرة غير محتسبة.'**
+  String get lectureExcludedDone;
+
+  /// No description provided for @lectureIncludedDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'عادت المحاضرة محتسبة.'**
+  String get lectureIncludedDone;
+
+  /// No description provided for @reportExcludedNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'* محاضرة غير محتسبة: لا يدخل غيابها في العدد ولا في النسبة.'**
+  String get reportExcludedNote;
 
   /// No description provided for @studentHistory.
   ///

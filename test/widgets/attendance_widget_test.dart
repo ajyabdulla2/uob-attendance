@@ -162,6 +162,58 @@ void main() {
     await unmountApp(tester);
   });
 
+  testWidgets('«لا تُحتسب هذه المحاضرة»: nobody\'s absence in it counts; it can be counted again', (tester) async {
+    final env = await openAsTeacher(tester);
+    await tester.tap(find.byKey(Key('home.class.${assignment.id}')));
+    await tester.pumpAndSettle();
+    // Nobody came: all absent, and the lecture is not counted.
+    for (final s in students) {
+      await tester.tap(studentTile(s));
+    }
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('record.exclude')));
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('record.save')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('record.confirm.excluded')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('record.confirm.save')));
+    await tester.pumpAndSettle();
+
+    final sid = DocIds.session(courseId: course.id, type: 'theory', target: DocIds.allSections, date: today(), lectureNo: 1);
+    expect((await env.fs.doc('sessions/$sid').get()).data()!['excluded'], isTrue);
+    for (final s in students) {
+      expect((await env.fs.doc('sessions/$sid/records/${s.id}').get()).data()!['status'], 'absent');
+      expect((await env.fs.doc('stats/${course.id}__${s.id}').get()).data()!['bySession'],
+          {sid: AttendanceSession.excludedValue});
+    }
+
+    // The register marks the lecture and nobody has an absence or a percentage.
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(Key('home.register.${assignment.id}')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(Key('register.excluded.$sid')), findsOneWidget);
+    expect(find.text('0.0%'), findsNWidgets(3));
+
+    // Counted again: the real statuses come back.
+    await tester.tap(find.byKey(Key('register.session.$sid')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('record.exclude')));
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('record.save')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('record.confirm.save')));
+    await tester.pumpAndSettle();
+    expect((await env.fs.doc('sessions/$sid').get()).data()!['excluded'], isFalse);
+    expect((await env.fs.doc('stats/${course.id}__1001').get()).data()!['bySession'], {sid: 'absent'});
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    expect(find.byKey(Key('register.excluded.$sid')), findsNothing);
+    expect(find.text('2.2%'), findsNWidgets(3));
+
+    await unmountApp(tester);
+  });
+
   testWidgets('leaving with unsaved marks asks first; a second lecture gets the next number', (tester) async {
     final env = await openAsTeacher(tester);
     await tester.tap(find.byKey(Key('home.class.${assignment.id}')));

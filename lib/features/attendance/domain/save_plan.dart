@@ -56,6 +56,9 @@ class SaveRefusedException implements Exception {
 /// * A record per student on the first save; afterwards only changed ones.
 /// * A `stats` entry `bySession[sessionId] = status` for students who are
 ///   not simply present, and for any status change (idempotent; see rules).
+/// * An excluded lecture («لا تُحتسب») sets every student's entry to
+///   [AttendanceSession.excludedValue]; turning it back on rewrites every
+///   student's real status. The records keep the marks either way.
 final class SavePlan {
   const SavePlan({required this.session, required this.writes, required this.changedStudents});
 
@@ -77,6 +80,8 @@ final class SavePlan {
     required DateTime now,
     String? openedBy,
     bool canOverrideLock = false,
+    bool excluded = false,
+    bool previousExcluded = false,
   }) {
     if (marks.isEmpty) throw const SaveRefusedException(SaveRefusal.noStudents);
     final day = DateTime.utc(date.year, date.month, date.day);
@@ -98,6 +103,7 @@ final class SavePlan {
       lectureNo: lectureNo,
       openedBy: openedBy ?? actor,
       lockAt: AttendanceSession.lockAtFor(day, lockHours),
+      excluded: excluded,
       counts: counts,
       deviceCreatedAt: now,
     );
@@ -110,10 +116,12 @@ final class SavePlan {
       for (final e in marks.entries)
         if (isNew || previous[e.key] != e.value) e.key,
     };
+    // Turning «لا تُحتسب» on or off changes every student's stats entry.
+    final toggled = isNew ? excluded : excluded != previousExcluded;
     final sid = session.id;
     final countsMap = {for (final e in counts.entries) e.key.name: e.value};
     final writes = <PlannedWrite>[];
-    if (changed.isNotEmpty) {
+    if (changed.isNotEmpty || toggled) {
       writes.add(PlannedWrite(WriteKind.createOrUpdate, '${Col.sessions}/$sid', {
         'create': {
           ...session.toMap(),
@@ -121,27 +129,46 @@ final class SavePlan {
           'updatedAt': serverTime,
           'counts': countsMap,
         },
-        'update': {'counts': countsMap, 'updatedAt': serverTime, 'updatedBy': actor},
-      }));
-      for (final id in changed) {
-        final mark = marks[id]!;
-        writes.add(PlannedWrite(WriteKind.merge, '${Col.sessions}/$sid/${Col.records}/$id', {
-          'studentId': id,
-          'status': mark.status.name,
-          'note': mark.note.trim(),
-          'updatedBy': actor,
+        // Only sent when it is or was set, so ordinary saves keep the
+        // fields older rules allowed.
+        'update': {
+          'counts': countsMap,
           'updatedAt': serverTime,
-          'deviceUpdatedAt': now.toUtc(),
-        }));
+          'updatedBy': actor,
+          if (excluded || previousExcluded) 'excluded': excluded,
+        },
+      }));
+      for (final id in marks.keys) {
+        final mark = marks[id]!;
+        if (changed.contains(id)) {
+          writes.add(PlannedWrite(WriteKind.merge, '${Col.sessions}/$sid/${Col.records}/$id', {
+            'studentId': id,
+            'status': mark.status.name,
+            'note': mark.note.trim(),
+            'updatedBy': actor,
+            'updatedAt': serverTime,
+            'deviceUpdatedAt': now.toUtc(),
+          }));
+        }
         final before = previous[id]?.status;
-        final statusChanged = isNew ? mark.status != AttendanceStatus.present : before != mark.status;
-        if (statusChanged) {
+        final String? stat;
+        if (excluded) {
+          stat = toggled ? AttendanceSession.excludedValue : null;
+        } else if (toggled) {
+          stat = mark.status.name;
+        } else if (!changed.contains(id)) {
+          stat = null;
+        } else {
+          final statusChanged = isNew ? mark.status != AttendanceStatus.present : before != mark.status;
+          stat = statusChanged ? mark.status.name : null;
+        }
+        if (stat != null) {
           writes.add(PlannedWrite(WriteKind.merge, '${Col.stats}/${DocIds.stat(assignment.courseId, id)}', {
             'courseId': assignment.courseId,
             'studentId': id,
             'stageId': assignment.stageId,
             'lastSessionId': sid,
-            'bySession': {sid: mark.status.name},
+            'bySession': {sid: stat},
             'updatedAt': serverTime,
             'departmentId': AppConfig.departmentId,
           }));

@@ -1750,7 +1750,7 @@
   "auditEnd": "نهاية السجل",
   "auditBefore": "قبل",
   "auditAfter": "بعد",
-  "auditActionLabel": "{action, select, session_missed{تسجيل محاضرة فائتة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_create{إضافة طالب} student_update{تعديل طالب} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} sessions_delete{حذف محاضرات} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} config_update{تعديل إصدار التطبيق} other{{action}}}",
+  "auditActionLabel": "{action, select, session_missed{تسجيل محاضرة فائتة} session_exclude{جعل محاضرة غير محتسبة} session_include{إرجاع محاضرة محتسبة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_create{إضافة طالب} student_update{تعديل طالب} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} sessions_delete{حذف محاضرات} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} config_update{تعديل إصدار التطبيق} other{{action}}}",
   "@auditActionLabel": {
     "placeholders": {
       "action": {
@@ -1841,6 +1841,15 @@
     }
   },
   "studentNoData": "لم تُنزَّل بيانات هذه المادة بعد؛ اضغط تحديث السجل.",
+  "lectureExcludeTitle": "لا تُحتسب هذه المحاضرة",
+  "lectureExcludeHelp": "لا يُحسب غياب أي طالب فيها (مثلاً إن لم يحضر الطلبة). يبقى التسجيل كما هو، ويمكن إرجاعها.",
+  "lectureExcludedShort": "غير محتسبة",
+  "lectureExcludedHelp": "محاضرة غير محتسبة: لا يُحسب غيابها لأي طالب",
+  "lectureExcludedLocked": "هذه المحاضرة غير محتسبة: لا يُحسب غياب أحد فيها.",
+  "lectureExcludedConfirm": "المحاضرة غير محتسبة: لن يُحسب غياب أي طالب فيها.",
+  "lectureExcludedDone": "صارت المحاضرة غير محتسبة.",
+  "lectureIncludedDone": "عادت المحاضرة محتسبة.",
+  "reportExcludedNote": "* محاضرة غير محتسبة: لا يدخل غيابها في العدد ولا في النسبة.",
   "studentHistory": "{count, plural, =0{لا غياب ولا تأخير} =1{محاضرة واحدة لم يحضرها كاملة} =2{محاضرتان لم يحضرهما كاملتين} few{{count} محاضرات لم يحضرها كاملة} other{{count} محاضرة لم يحضرها كاملة}}",
   "studentNoAbsences": "حضر كل المحاضرات المسجّلة.",
   "studentSourceNote": "يشمل محاضرات المادة لكل تدريسييها كما نُزّلت آخر مرة (زر التحديث في السجل)، وتسجيلات هذا الهاتف.",

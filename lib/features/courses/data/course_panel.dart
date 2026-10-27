@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../core/config/app_config.dart';
 import '../../../core/firebase/collections.dart';
+import '../../../core/firebase/doc_ids.dart';
 import '../../academic/domain/academic_year.dart';
 import '../../assignments/domain/assignment.dart';
 import '../../attendance/domain/attendance_session.dart';
+import '../../audit/domain/audit_entry.dart';
 import '../../leaves/domain/leave.dart';
+import '../../stats/domain/absence_entry.dart';
 import '../../stats/domain/absence_summary.dart';
 import '../../stats/domain/student_course_stat.dart';
 import '../../students/domain/student.dart';
@@ -13,7 +17,7 @@ import '../domain/practical_group.dart';
 
 /// One student's row in «لوحة المادة».
 final class CoursePanelStudent {
-  const CoursePanelStudent({required this.student, required this.group, required this.summaries});
+  const CoursePanelStudent({required this.student, required this.group, required this.summaries, this.entries = const []});
 
   final Student student;
 
@@ -23,6 +27,10 @@ final class CoursePanelStudent {
   /// Key '' = one percentage for theory and practical together; otherwise
   /// 'theory' and 'practical' (the year's «نسبتان»).
   final Map<String, AbsenceSummary> summaries;
+
+  /// Every lecture of the course they did not simply attend, theory and
+  /// practical together, newest first (the student's unified register).
+  final List<AbsenceEntry> entries;
 
   /// The highest of their percentages (for ordering and the level colour).
   AbsenceSummary? get worst => summaries.values.isEmpty
@@ -88,6 +96,42 @@ class CoursePanelRepository {
   CoursePanelRepository(this._fs);
 
   final FirebaseFirestore _fs;
+
+  /// «لا تُحتسب هذه المحاضرة» set or cleared by a stage manager or admin
+  /// (any time, locked or not): the session's flag and every student's
+  /// `stats.bySession` entry for it — [AttendanceSession.excludedValue], or
+  /// back to the recorded status — in one batch with an audit entry. The
+  /// session's `updatedAt` makes the teachers' phones download the change.
+  Future<void> setExcluded(AttendanceSession s, bool excluded, {required String actor}) async {
+    final session = _fs.collection(Col.sessions).doc(s.id);
+    final records = await session.collection(Col.records).get();
+    final batch = _fs.batch()
+      ..update(session, {'excluded': excluded, 'updatedAt': FieldValue.serverTimestamp(), 'updatedBy': actor});
+    for (final d in records.docs) {
+      final r = AttendanceRecord.fromMap(d.id, d.data());
+      batch.set(_fs.collection(Col.stats).doc(DocIds.stat(s.courseId, r.studentId)), {
+        'courseId': s.courseId,
+        'studentId': r.studentId,
+        'stageId': s.stageId,
+        'lastSessionId': s.id,
+        'bySession': {s.id: excluded ? AttendanceSession.excludedValue : r.status.name},
+        'updatedAt': FieldValue.serverTimestamp(),
+        'departmentId': AppConfig.departmentId,
+      }, SetOptions(merge: true));
+    }
+    batch.set(_fs.collection(Col.auditLog).doc(), {
+      ...AuditEntry(
+        actor: actor,
+        action: excluded ? 'session.exclude' : 'session.include',
+        targetPath: '${Col.sessions}/${s.id}',
+        stageId: s.stageId,
+        before: {'excluded': !excluded},
+        after: {'excluded': excluded},
+      ).toMap(),
+      'at': FieldValue.serverTimestamp(),
+    });
+    await batch.commit();
+  }
 
   Future<CoursePanel?> load(String courseId) async {
     final courseSnap = await _fs.collection(Col.courses).doc(courseId).get();
@@ -156,6 +200,10 @@ class CoursePanelRepository {
                         AssignmentType.theory.name: summary(s.id, AssignmentType.theory.name),
                         if (course.hasPractical) AssignmentType.practical.name: summary(s.id, AssignmentType.practical.name),
                       },
+            entries: AbsenceEntry.of(
+              bySession[s.id] ?? const {},
+              leaveDays: AbsenceSummary.excusedLeaveDays(leaves[s.id] ?? const [], year?.maxLeaveDays),
+            ),
           ),
     ]..sort((a, b) => Student.compare(a.student, b.student));
 

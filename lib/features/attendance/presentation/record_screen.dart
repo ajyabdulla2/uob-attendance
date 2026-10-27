@@ -49,6 +49,10 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
 
   /// Current marks of the loaded lecture (students missing = present).
   Map<String, Mark> _marks = {};
+
+  /// «لا تُحتسب هذه المحاضرة», as saved and as currently chosen.
+  bool _savedExcluded = false;
+  bool _excluded = false;
   String _query = '';
   bool _saving = false;
   bool _pullStarted = false;
@@ -60,17 +64,22 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
 
   Mark _markOf(String id) => _marks[id] ?? Mark.present;
 
-  bool get _dirty => _marks.entries.any((e) => e.value != (_saved[e.key] ?? Mark.present));
+  bool get _dirty =>
+      _excluded != _savedExcluded || _marks.entries.any((e) => e.value != (_saved[e.key] ?? Mark.present));
 
   void _ensureLoaded(String sid) {
     if (sid == _loadingSid) return;
     _loadingSid = sid;
-    unawaited(ref.read(attendanceStoreProvider).marksOf(sid).then((saved) {
+    final store = ref.read(attendanceStoreProvider);
+    unawaited(Future.wait([store.marksOf(sid), store.session(sid)]).then((loaded) {
       if (!mounted || _loadingSid != sid) return;
+      final saved = loaded[0]! as Map<String, Mark>;
+      final excluded = (loaded[1] as AttendanceSession?)?.excluded ?? false;
       setState(() {
         _loadedSid = sid;
         _saved = saved;
         _marks = {...saved};
+        _savedExcluded = _excluded = excluded;
       });
     }));
   }
@@ -108,6 +117,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
         _loadedSid = null;
         _saved = const {};
         _marks = {};
+        _savedExcluded = _excluded = false;
       });
 
   /// The first day a teacher may still record (the lock window).
@@ -201,7 +211,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
         context: context,
         isScrollControlled: true,
         showDragHandle: true,
-        builder: (_) => _ConfirmSaveSheet(absent: absent),
+        builder: (_) => _ConfirmSaveSheet(absent: absent, excluded: _excluded),
       );
       if (ok != true || !mounted) return;
     }
@@ -216,6 +226,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             marks: marks,
             actor: ref.read(signedInUserProvider).id,
             canOverrideLock: canOverride,
+            excluded: _excluded,
           );
       if (!mounted) return;
       setState(() {
@@ -223,6 +234,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
         _loadingSid = _loadedSid = plan.session.id;
         _saved = marks;
         _marks = {...marks};
+        _savedExcluded = _excluded;
       });
       showSnack(context, plan.isEmpty ? l10n.recordNothingChanged : l10n.recordSaved);
       if (!plan.isEmpty) unawaited(ref.read(syncControllerProvider.notifier).sync());
@@ -390,6 +402,22 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
           style: theme.textTheme.bodySmall,
         ),
       ),
+      // طلب القسم: a lecture the students did not come to need not count.
+      if (!readOnly)
+        SwitchListTile(
+          key: const Key('record.exclude'),
+          dense: true,
+          title: Text(l10n.lectureExcludeTitle),
+          subtitle: Text(l10n.lectureExcludeHelp),
+          value: _excluded,
+          onChanged: loaded ? (v) => setState(() => _excluded = v) : null,
+        )
+      else if (_savedExcluded)
+        Padding(
+          key: const Key('record.excludedNote'),
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+          child: Text(l10n.lectureExcludedLocked, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary)),
+        ),
     ];
 
     return scaffold(
@@ -619,9 +647,12 @@ class _EditRequestSheetState extends State<_EditRequestSheet> {
 
 /// Half-screen review of the absentees before a save: confirm or go back.
 class _ConfirmSaveSheet extends StatelessWidget {
-  const _ConfirmSaveSheet({required this.absent});
+  const _ConfirmSaveSheet({required this.absent, this.excluded = false});
 
   final List<Student> absent;
+
+  /// «لا تُحتسب»: the absentees are listed but none of them will count.
+  final bool excluded;
 
   @override
   Widget build(BuildContext context) {
@@ -638,6 +669,12 @@ class _ConfirmSaveSheet extends StatelessWidget {
           children: [
             Text(l10n.recordConfirmTitle, style: theme.textTheme.titleMedium),
             const SizedBox(height: 4),
+            if (excluded)
+              Text(
+                l10n.lectureExcludedConfirm,
+                key: const Key('record.confirm.excluded'),
+                style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary),
+              ),
             Text(
               absent.isEmpty ? l10n.recordConfirmNoAbsent : l10n.recordConfirmAbsent(absent.length),
               style: theme.textTheme.bodyMedium?.copyWith(color: absent.isEmpty ? null : color),
