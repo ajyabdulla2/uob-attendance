@@ -659,6 +659,21 @@
   "lectureExcludedDone": "The lecture is no longer counted.",
   "lectureIncludedDone": "The lecture counts again.",
   "reportExcludedNote": "* Lecture not counted: its absences are left out of the count and the percentage.",
+  "reportCourseRegisterAction": "Full course register: theory and practical",
+  "reportThisClassAction": "This class only",
+  "coursePanelSummaryAction": "Course summary: students and lectures",
+  "reportCourseRegisterSheet": "Full register",
+  "reportCourseRegisterTitle": "Full register of {name}",
+  "@reportCourseRegisterTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reportCourseRegisterNote": "T = theory, P = practical with its group. A blank cell is a lecture of another class.",
+  "registerTheoryShort": "T",
+  "registerPracticalShort": "P",
   "studentHistory": "{count, plural, =0{No absences or lateness} =1{One lecture not fully attended} other{{count} lectures not fully attended}}",
   "studentNoAbsences": "Attended every recorded lecture.",
   "studentSourceNote": "Includes the course's lectures by all its teachers as last downloaded (refresh in the register) and this phone's records.",

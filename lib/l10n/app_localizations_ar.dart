@@ -2459,6 +2459,34 @@ class AppLocalizationsAr extends AppLocalizations {
       '* محاضرة غير محتسبة: لا يدخل غيابها في العدد ولا في النسبة.';
 
   @override
+  String get reportCourseRegisterAction =>
+      'السجل الكامل للمادة: النظري والعملي';
+
+  @override
+  String get reportThisClassAction => 'سجل هذا الصف فقط';
+
+  @override
+  String get coursePanelSummaryAction => 'ملخّص المادة: الطلبة والمحاضرات';
+
+  @override
+  String get reportCourseRegisterSheet => 'السجل الكامل';
+
+  @override
+  String reportCourseRegisterTitle(String name) {
+    return 'السجل الكامل لمادة $name';
+  }
+
+  @override
+  String get reportCourseRegisterNote =>
+      'ن = نظري، ع = عملي ومعه اسم المجموعة. الخانة الفارغة محاضرة لصف آخر غير صف الطالب.';
+
+  @override
+  String get registerTheoryShort => 'ن';
+
+  @override
+  String get registerPracticalShort => 'ع';
+
+  @override
   String studentHistory(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

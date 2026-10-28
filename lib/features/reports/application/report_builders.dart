@@ -1,3 +1,4 @@
+import '../../../core/firebase/doc_ids.dart';
 import '../../../l10n/l10n.dart';
 import '../../assignments/domain/assignment.dart';
 import '../../attendance/domain/attendance_session.dart';
@@ -125,6 +126,118 @@ abstract final class ReportBuilders {
         if (anyExcluded) l10n.reportExcludedNote,
       ],
       signatures: [l10n.reportSignTeacher, l10n.reportSignStageManager, l10n.reportSignHead],
+      orientation: ReportOrientation.landscape,
+    );
+  }
+
+  /// السجل الكامل للمادة: every student of the stage (register order,
+  /// whatever their group) × every lecture of the course, theory and
+  /// practical together by date. A lecture of another class is blank.
+  static Report courseRegister(
+    AppLocalizations l10n, {
+    required CoursePanel panel,
+    required ReportFormat format,
+    ({DateTime from, DateTime to})? period,
+    String Function(DateTime)? formatDate,
+  }) {
+    final c = panel.course;
+    bool inPeriod(AttendanceSession s) {
+      if (period == null) return true;
+      final day = DateTime.utc(s.date.year, s.date.month, s.date.day);
+      return !day.isBefore(DateTime.utc(period.from.year, period.from.month, period.from.day)) &&
+          !day.isAfter(DateTime.utc(period.to.year, period.to.month, period.to.day));
+    }
+
+    final ordered = [...panel.sessions.where(inPeriod)]
+      ..sort((a, b) => a.date != b.date
+          ? a.date.compareTo(b.date)
+          : a.type != b.type
+              ? (a.type == AssignmentType.theory ? -1 : 1)
+              : a.target != b.target
+                  ? a.target.compareTo(b.target)
+                  : a.lectureNo.compareTo(b.lectureNo));
+    final chunks = <List<AttendanceSession>>[];
+    final size = format == ReportFormat.pdf ? lecturesPerPdfTable : (ordered.isEmpty ? 1 : ordered.length);
+    for (var i = 0; i < ordered.length; i += size) {
+      chunks.add(ordered.sublist(i, (i + size).clamp(0, ordered.length)));
+    }
+    if (chunks.isEmpty) chunks.add(const []);
+
+    String header(AttendanceSession s) {
+      final kind = s.type == AssignmentType.theory ? l10n.registerTheoryShort : l10n.registerPracticalShort;
+      final target = s.target == DocIds.allSections ? '' : ' ${s.target}';
+      final no = s.lectureNo > 1 ? ' #${s.lectureNo}' : '';
+      return '${s.date.day}/${s.date.month}\n$kind$target$no${s.excluded ? '*' : ''}';
+    }
+
+    ReportCell cell(CoursePanelStudent p, AttendanceSession s) {
+      if (!panel.attended(p, s)) return const ReportCell('');
+      if (s.excluded) return const ReportCell('*');
+      final status = panel.marks[p.student.id]?[s.id] ?? AttendanceStatus.present;
+      return ReportCell(letter(l10n, status), tone: toneOfStatus(status));
+    }
+
+    int absences(CoursePanelStudent p) =>
+        ordered.where((s) => !s.excluded && panel.marks[p.student.id]?[s.id] == AttendanceStatus.absent).length;
+
+    final keys = panel.students.isEmpty ? const <String>[] : panel.students.first.summaries.keys.toList();
+    String suffix(String key) => switch (key) {
+          '' => '',
+          'theory' => '\n${l10n.theoryLabel}',
+          _ => '\n${l10n.practicalLabel}',
+        };
+    final date = formatDate ?? _isoDate;
+
+    return Report(
+      title: l10n.reportCourseRegisterTitle(c.name),
+      fileBase: '${l10n.reportCourseRegisterSheet} ${c.name} ${c.stageId}',
+      meta: [
+        l10n.stageId(c.stageId),
+        if (period != null) l10n.reportPeriod(date(period.from), date(period.to)),
+        l10n.reportLectureCount(ordered.length),
+        l10n.reportStudentCount(panel.students.length),
+      ],
+      tables: [
+        for (final (n, chunk) in chunks.indexed)
+          ReportTable(
+            name: chunks.length == 1 ? l10n.reportCourseRegisterSheet : '${l10n.reportCourseRegisterSheet} ${n + 1}',
+            heading: chunks.length == 1 || chunk.isEmpty
+                ? null
+                : l10n.reportLecturesRange(n * size + 1, n * size + chunk.length),
+            columns: [
+              const ReportColumn('ت', flex: 0.5, numeric: true),
+              ReportColumn(l10n.registerStudent, flex: 4),
+              if (c.hasPractical) ReportColumn(l10n.coursePanelGroup, flex: 0.7),
+              for (final s in chunk) ReportColumn(header(s), flex: 0.6, numeric: true),
+              ReportColumn(l10n.registerAbsences, flex: 0.9, numeric: true),
+              for (final k in keys) ReportColumn('${l10n.registerPercent}${suffix(k)}', flex: 0.9, numeric: true),
+            ],
+            rows: [
+              for (final (i, p) in panel.students.indexed)
+                [
+                  ReportCell('${i + 1}'),
+                  ReportCell(p.student.fullName),
+                  if (c.hasPractical) ReportCell(p.group ?? '–'),
+                  for (final s in chunk) cell(p, s),
+                  ReportCell('${absences(p)}'),
+                  for (final k in keys)
+                    switch (p.summaries[k]) {
+                      final sum? when sum.planned > 0 =>
+                        ReportCell(percent(sum.percent), tone: toneOfLevel(sum.level), bold: sum.level != WarningLevel.none),
+                      _ => const ReportCell('–'),
+                    },
+                ],
+            ],
+          ),
+      ],
+      notes: [
+        l10n.reportLegend,
+        l10n.reportCourseRegisterNote,
+        l10n.reportPercentNote,
+        if (period != null) l10n.reportPeriodNote,
+        if (ordered.any((s) => s.excluded)) l10n.reportExcludedNote,
+      ],
+      signatures: [l10n.reportSignStageManager, l10n.reportSignHead],
       orientation: ReportOrientation.landscape,
     );
   }

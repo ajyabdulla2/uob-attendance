@@ -49,6 +49,7 @@ final class CoursePanel {
     required this.groups,
     required this.sessions,
     required this.students,
+    this.marks = const {},
   });
 
   final Course course;
@@ -61,6 +62,21 @@ final class CoursePanel {
   /// Newest first.
   final List<AttendanceSession> sessions;
   final List<CoursePanelStudent> students;
+
+  /// Each student's `stats.bySession`: every lecture they did not simply
+  /// attend (a missing lecture of their class = present). Excluded lectures
+  /// are not in it.
+  final Map<String, Map<String, AttendanceStatus>> marks;
+
+  /// Whether [s] was a lecture of [p]'s class: their section (or all
+  /// sections) for theory, their practical group for practical — or they
+  /// have a mark in it (moved since).
+  bool attended(CoursePanelStudent p, AttendanceSession s) {
+    if (marks[p.student.id]?.containsKey(s.id) ?? false) return true;
+    return s.type == AssignmentType.theory
+        ? s.target == DocIds.allSections || s.target == p.student.section
+        : s.target == p.group;
+  }
 
   bool get separate => year != null && !year!.combinedTheoryPractical;
 
@@ -133,7 +149,9 @@ class CoursePanelRepository {
     await batch.commit();
   }
 
-  Future<CoursePanel?> load(String courseId) async {
+  /// [withClasses] false skips the course's assignments (a teacher reads
+  /// only their own), for the full register they download.
+  Future<CoursePanel?> load(String courseId, {bool withClasses = true}) async {
     final courseSnap = await _fs.collection(Col.courses).doc(courseId).get();
     if (!courseSnap.exists) return null;
     final course = Course.fromMap(courseSnap.id, courseSnap.data()!);
@@ -143,16 +161,20 @@ class CoursePanelRepository {
     final year = yearSnap.docs.isEmpty ? null : AcademicYear.fromMap(yearSnap.docs.first.id, yearSnap.docs.first.data());
 
     final results = await Future.wait([
-      _fs.collection(Col.assignments).where('stageId', isEqualTo: stageId).where('courseId', isEqualTo: courseId).get(),
+      if (withClasses)
+        _fs.collection(Col.assignments).where('stageId', isEqualTo: stageId).where('courseId', isEqualTo: courseId).get(),
       _fs.collection(Col.groups).where('stageId', isEqualTo: stageId).where('courseId', isEqualTo: courseId).get(),
       _fs.collection(Col.sessions).where('stageId', isEqualTo: stageId).where('courseId', isEqualTo: courseId).get(),
       _fs.collection(Col.students).where('stageId', isEqualTo: stageId).get(),
       _fs.collection(Col.stats).where('stageId', isEqualTo: stageId).where('courseId', isEqualTo: courseId).get(),
       _fs.collection(Col.leaves).where('stageId', isEqualTo: stageId).get(),
     ]);
-    final [assignSnap, groupSnap, sessionSnap, studentSnap, statSnap, leaveSnap] = results;
+    final [...assignSnaps, groupSnap, sessionSnap, studentSnap, statSnap, leaveSnap] = results;
 
-    final classes = [for (final d in assignSnap.docs) Assignment.fromMap(d.id, d.data())]
+    final classes = [
+      for (final snap in assignSnaps)
+        for (final d in snap.docs) Assignment.fromMap(d.id, d.data()),
+    ]
       ..sort((a, b) => a.type != b.type
           ? a.type.index.compareTo(b.type.index)
           : a.target != b.target
@@ -214,6 +236,7 @@ class CoursePanelRepository {
       groups: groups,
       sessions: sessions,
       students: students,
+      marks: bySession,
     );
   }
 
