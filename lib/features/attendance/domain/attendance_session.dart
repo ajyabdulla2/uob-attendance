@@ -22,6 +22,7 @@ final class AttendanceSession {
     required this.lockAt,
     this.groupId,
     this.locked = false,
+    this.excluded = false,
     this.counts = const {},
     this.deviceCreatedAt,
     this.updatedAt,
@@ -42,6 +43,15 @@ final class AttendanceSession {
   final int lectureNo;
   final String openedBy;
   final bool locked;
+
+  /// «لا تُحتسب هذه المحاضرة» (طلب القسم: e.g. the students did not come):
+  /// the records stay as marked, but nobody's absence in it counts — every
+  /// student's `stats.bySession` entry for it is [excludedValue].
+  final bool excluded;
+
+  /// The `stats.bySession` value of an excluded lecture. Readers drop it
+  /// (and app versions that predate it read it as «حاضر»).
+  static const excludedValue = 'excluded';
 
   /// After this instant teachers can no longer edit (rules enforce it).
   final DateTime lockAt;
@@ -83,6 +93,7 @@ final class AttendanceSession {
       lectureNo: Fs.integer(map['lectureNo'], 1),
       openedBy: Fs.str(map['openedBy']),
       locked: Fs.boolean(map['locked']),
+      excluded: Fs.boolean(map['excluded']),
       lockAt: Fs.date(map['lockAt']) ?? DateTime.utc(1970),
       counts: {
         for (final s in AttendanceStatus.values)
@@ -108,6 +119,7 @@ final class AttendanceSession {
         'openedBy': openedBy,
         'updatedBy': openedBy,
         'locked': locked,
+        if (excluded) 'excluded': true,
         'lockAt': Fs.timestamp(lockAt),
         'counts': {for (final e in counts.entries) e.key.name: e.value},
         'deviceCreatedAt': Fs.timestamp(deviceCreatedAt),

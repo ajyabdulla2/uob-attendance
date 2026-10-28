@@ -12,6 +12,7 @@ import '../../academic/application/academic_providers.dart';
 import '../../assignments/domain/assignment.dart';
 import '../../attendance/application/server_register_providers.dart';
 import '../../attendance/domain/attendance_session.dart';
+import '../../attendance/presentation/student_screen.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../reports/application/report_builders.dart';
 import '../../reports/application/report_exporter.dart';
@@ -314,7 +315,10 @@ class _LecturesTab extends StatelessWidget {
             child: ListTile(
               key: Key('coursePanel.session.${s.id}'),
               title: Text('${date(s.date)} · ${l10n.activityLectureNo(s.lectureNo)}'),
-              subtitle: Text('${l10n.sessionClassLabel(s)}\n${panel.teacherOf(s)}'),
+              subtitle: Text([
+                '${l10n.sessionClassLabel(s)}${s.excluded ? ' · ${l10n.lectureExcludedShort}' : ''}',
+                panel.teacherOf(s),
+              ].join('\n')),
               isThreeLine: true,
               trailing: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -367,6 +371,17 @@ class _LectureSheet extends ConsumerWidget {
           Text('${MaterialLocalizations.of(context).formatMediumDate(s.date)} · ${l10n.activityLectureNo(s.lectureNo)}',
               style: theme.textTheme.titleLarge),
           Text('${l10n.sessionClassLabel(s)} · ${panel.teacherOf(s)}', style: theme.textTheme.bodySmall),
+          if (ref.watch(permissionsProvider).canManageStage(s.stageId))
+            SwitchListTile(
+              key: const Key('coursePanel.exclude'),
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.lectureExcludeTitle),
+              subtitle: Text(l10n.lectureExcludeHelp),
+              value: s.excluded,
+              onChanged: (v) => _setExcluded(context, ref, v),
+            )
+          else if (s.excluded)
+            Text(l10n.lectureExcludedLocked, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary)),
           const SizedBox(height: 8),
           Wrap(
             spacing: 12,
@@ -422,6 +437,22 @@ class _LectureSheet extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _setExcluded(BuildContext context, WidgetRef ref, bool excluded) async {
+    final l10n = context.l10n;
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      await ref.read(coursePanelRepositoryProvider).setExcluded(session, excluded, actor: ref.read(signedInUserProvider).id);
+      ref.invalidate(coursePanelProvider(panel.course.id));
+      navigator.pop();
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(excluded ? l10n.lectureExcludedDone : l10n.lectureIncludedDone)));
+    } on Object catch (e) {
+      if (context.mounted) showError(context, e);
+    }
   }
 
   /// Deletes this lecture with its attendance and its place in the
@@ -519,6 +550,12 @@ class _StudentsTabState extends State<_StudentsTab> {
             child: ListTile(
               key: Key('coursePanel.student.${r.student.id}'),
               title: Text(r.student.fullName),
+              onTap: () => showModalBottomSheet<void>(
+                context: context,
+                isScrollControlled: true,
+                showDragHandle: true,
+                builder: (_) => _StudentSheet(row: r),
+              ),
               subtitle: Text([
                 bidiIsolate(r.student.universityId),
                 if (r.student.section.isNotEmpty) l10n.sectionLabel(r.student.section),
@@ -543,6 +580,36 @@ class _StudentsTabState extends State<_StudentsTab> {
             ),
           ),
       ],
+    );
+  }
+}
+
+/// A student's register in the course: theory and practical in one list.
+class _StudentSheet extends StatelessWidget {
+  const _StudentSheet({required this.row});
+
+  final CoursePanelStudent row;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    return SafeArea(
+      child: ListView(
+        key: const Key('coursePanel.studentSheet'),
+        shrinkWrap: true,
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        children: [
+          Text(row.student.fullName, style: theme.textTheme.titleLarge),
+          Text(bidiIsolate(row.student.universityId), style: theme.textTheme.bodySmall),
+          const SizedBox(height: 8),
+          Text(l10n.studentHistory(row.entries.length), style: theme.textTheme.titleMedium),
+          if (row.entries.isEmpty)
+            ListTile(leading: const Icon(Icons.check_circle), title: Text(l10n.studentNoAbsences))
+          else
+            for (final e in row.entries) AbsenceEntryTile(entry: e),
+        ],
+      ),
     );
   }
 }

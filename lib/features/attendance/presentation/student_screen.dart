@@ -1,65 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/firebase/doc_ids.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
-import '../../edit_requests/domain/edit_request.dart';
+import '../../stats/domain/absence_entry.dart';
 import '../../stats/domain/absence_summary.dart';
 import '../../stats/domain/student_course_stat.dart';
 import '../../students/domain/student.dart';
 import '../application/attendance_providers.dart';
-import '../domain/attendance_session.dart';
-
-/// One lecture the student did not simply attend.
-final class AbsenceEntry {
-  const AbsenceEntry({
-    required this.sessionId,
-    required this.date,
-    required this.lectureNo,
-    required this.type,
-    required this.status,
-    required this.onLeave,
-  });
-
-  final String sessionId;
-  final DateTime? date;
-  final int lectureNo;
-  final String type;
-  final AttendanceStatus status;
-
-  /// An absence on a day an approved leave covers (counted as excused).
-  final bool onLeave;
-
-  /// Newest first; only [type] when the year keeps theory and practical
-  /// apart.
-  static List<AbsenceEntry> of(Map<String, AttendanceStatus> bySession, {required Set<String> leaveDays, String? type}) {
-    final out = <AbsenceEntry>[];
-    for (final MapEntry(key: sid, value: status) in bySession.entries) {
-      if (status == AttendanceStatus.present) continue;
-      final p = EditRequest.parseSession(sid);
-      if (p == null || (type != null && p.type != type)) continue;
-      out.add(AbsenceEntry(
-        sessionId: sid,
-        date: DocIds.parseDateKey(p.dateKey),
-        lectureNo: p.lectureNo,
-        type: p.type,
-        status: status,
-        onLeave: status == AttendanceStatus.absent && leaveDays.contains(p.dateKey),
-      ));
-    }
-    out.sort((a, b) {
-      final byDate = (b.date ?? DateTime(0)).compareTo(a.date ?? DateTime(0));
-      return byDate != 0 ? byDate : b.lectureNo.compareTo(a.lectureNo);
-    });
-    return out;
-  }
-}
 
 /// «الطالب» (from the register): the student's percentage in the course and
 /// every absence, lateness and excuse with its date — the course's lectures
-/// by all its teachers as last fetched, plus this phone's own marks.
+/// by all its teachers as last fetched, plus this phone's own marks. One
+/// register for theory and practical together (طلب القسم), each lecture
+/// labelled; when the year keeps two percentages both are shown.
 class StudentScreen extends ConsumerWidget {
   const StudentScreen({super.key, required this.assignmentId, required this.studentId});
 
@@ -77,16 +32,40 @@ class StudentScreen extends ConsumerWidget {
         value: ref.watch(classAbsenceDataProvider(assignmentId)),
         data: (data) {
           if (data == null) return Center(child: MessageView(icon: Icons.info_outline, title: l10n.studentNoData));
-          final summary = data.summaryOf(studentId);
+          final bySession = data.bySession[studentId] ?? const {};
+          final leaves = data.leaves[studentId] ?? const [];
+          AbsenceSummary summary(String? type) => AbsenceSummary.of(
+                bySession: bySession,
+                leaves: leaves,
+                units: data.course.units,
+                year: data.year,
+                stageId: data.course.stageId,
+                type: type,
+              );
           final entries = AbsenceEntry.of(
-            data.bySession[studentId] ?? const {},
-            leaveDays: AbsenceSummary.excusedLeaveDays(data.leaves[studentId] ?? const [], data.year.maxLeaveDays),
-            type: data.type,
+            bySession,
+            leaveDays: AbsenceSummary.excusedLeaveDays(leaves, data.year.maxLeaveDays),
           );
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              _SummaryCard(summary: summary, courseName: data.course.name, universityId: studentId),
+              if (data.year.combinedTheoryPractical)
+                _SummaryCard(summary: summary(null), courseName: data.course.name, universityId: studentId)
+              else ...[
+                _SummaryCard(
+                  key: const Key('student.summary.theory'),
+                  summary: summary('theory'),
+                  courseName: '${data.course.name} · ${l10n.theoryLabel}',
+                  universityId: studentId,
+                ),
+                if (data.course.hasPractical)
+                  _SummaryCard(
+                    key: const Key('student.summary.practical'),
+                    summary: summary('practical'),
+                    courseName: '${data.course.name} · ${l10n.practicalLabel}',
+                    universityId: studentId,
+                  ),
+              ],
               const SizedBox(height: 12),
               Text(l10n.studentHistory(entries.length), style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 4),
@@ -95,7 +74,7 @@ class StudentScreen extends ConsumerWidget {
               else
                 Card(
                   child: Column(
-                    children: [for (final e in entries) _EntryTile(entry: e)],
+                    children: [for (final e in entries) AbsenceEntryTile(entry: e)],
                   ),
                 ),
               const SizedBox(height: 8),
@@ -109,7 +88,7 @@ class StudentScreen extends ConsumerWidget {
 }
 
 class _SummaryCard extends StatelessWidget {
-  const _SummaryCard({required this.summary, required this.courseName, required this.universityId});
+  const _SummaryCard({super.key, required this.summary, required this.courseName, required this.universityId});
 
   final AbsenceSummary summary;
   final String courseName;
@@ -123,7 +102,7 @@ class _SummaryCard extends StatelessWidget {
     final color = palette.forLevel(summary.level);
     final next = summary.nextLevel;
     return Card(
-      key: const Key('student.summary'),
+      key: key == null ? const Key('student.summary') : null,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -164,8 +143,10 @@ class _SummaryCard extends StatelessWidget {
   }
 }
 
-class _EntryTile extends StatelessWidget {
-  const _EntryTile({required this.entry});
+/// One lecture of the student's register: date, lecture, theory or
+/// practical, status (also in «لوحة المادة»).
+class AbsenceEntryTile extends StatelessWidget {
+  const AbsenceEntryTile({super.key, required this.entry});
 
   final AbsenceEntry entry;
 

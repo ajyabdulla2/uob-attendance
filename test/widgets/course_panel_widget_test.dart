@@ -185,6 +185,67 @@ void main() {
     expect(find.byKey(Key('coursePanel.session.${s2.id}')), findsOneWidget);
   });
 
+  testWidgets('a stage manager makes a lecture «غير محتسبة» and back; a student\'s register lists theory and practical', (tester) async {
+    final env = await pumpApp(
+      tester,
+      firestore: await seed(),
+      user: MockUser(email: 'sm@uobasrah.edu.iq', isEmailVerified: true),
+      profile: AppUser(email: 'sm@uobasrah.edu.iq', name: 'م', roles: const {UserRole.stageManager}, stageScopes: [stage.id]),
+    );
+    final tile = find.byKey(const Key('home.coursePanel'));
+    await tester.ensureVisible(tile);
+    await tester.pumpAndSettle();
+    await tester.tap(tile);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(Key('coursePanel.pick.${course.id}')));
+    await tester.pumpAndSettle();
+
+    // زينب's register: both lectures, theory and practical.
+    await tester.tap(find.byKey(const Key('coursePanel.tab.students')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('coursePanel.student.2')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(Key('student.entry.${s1.id}')), findsOneWidget);
+    expect(find.byKey(Key('student.entry.${s2.id}')), findsOneWidget);
+    expect(find.textContaining('عملي'), findsWidgets);
+    await tester.tapAt(const Offset(10, 10));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('coursePanel.tab.lectures')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(Key('coursePanel.session.${s1.id}')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('coursePanel.exclude')));
+    await tester.pumpAndSettle();
+    expect(find.text('صارت المحاضرة غير محتسبة.'), findsOneWidget);
+    expect((await env.db.doc('sessions/${s1.id}').get()).data()!['excluded'], isTrue);
+    expect((await env.db.doc('stats/${course.id}__2').get()).data()!['bySession'],
+        {s1.id: AttendanceSession.excludedValue, s2.id: 'absent'});
+    expect((await env.db.doc('stats/${course.id}__1').get()).data()!['bySession'], {s1.id: AttendanceSession.excludedValue});
+    final audit = (await env.db.collection('auditLog').get()).docs.single.data();
+    expect(audit['action'], 'session.exclude');
+
+    // One absence left for زينب (the practical lecture).
+    await tester.tap(find.byKey(const Key('coursePanel.tab.students')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('coursePanel.student.2')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(Key('student.entry.${s1.id}')), findsNothing);
+    expect(find.byKey(Key('student.entry.${s2.id}')), findsOneWidget);
+    await tester.tapAt(const Offset(10, 10));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('coursePanel.tab.lectures')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(Key('coursePanel.session.${s1.id}')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('coursePanel.exclude')));
+    await tester.pumpAndSettle();
+    expect((await env.db.doc('sessions/${s1.id}').get()).data()!['excluded'], isFalse);
+    expect((await env.db.doc('stats/${course.id}__2').get()).data()!['bySession'], {s1.id: 'absent', s2.id: 'absent'});
+    expect((await env.db.doc('stats/${course.id}__1').get()).data()!['bySession'], {s1.id: 'present'});
+  });
+
   testWidgets('a stage manager sees no delete button', (tester) async {
     await pumpApp(
       tester,

@@ -2302,6 +2302,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String auditActionLabel(String action) {
     String _temp0 = intl.Intl.selectLogic(action, {
       'session_missed': 'Missed lecture recorded',
+      'session_exclude': 'Lecture made not counted',
+      'session_include': 'Lecture counted again',
       'record_update': 'Attendance changed',
       'editRequest_reject': 'Edit request rejected',
       'leave_create': 'Leave added',
@@ -2433,6 +2435,38 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get studentNoData =>
       'This course has not been downloaded yet; refresh the register.';
+
+  @override
+  String get lectureExcludeTitle => 'Do not count this lecture';
+
+  @override
+  String get lectureExcludeHelp =>
+      'No student\'s absence in it counts (e.g. the students did not come). The marks stay as recorded, and it can be counted again.';
+
+  @override
+  String get lectureExcludedShort => 'not counted';
+
+  @override
+  String get lectureExcludedHelp =>
+      'Lecture not counted: nobody\'s absence in it counts';
+
+  @override
+  String get lectureExcludedLocked =>
+      'This lecture is not counted: nobody\'s absence in it counts.';
+
+  @override
+  String get lectureExcludedConfirm =>
+      'The lecture is not counted: no student\'s absence in it will count.';
+
+  @override
+  String get lectureExcludedDone => 'The lecture is no longer counted.';
+
+  @override
+  String get lectureIncludedDone => 'The lecture counts again.';
+
+  @override
+  String get reportExcludedNote =>
+      '* Lecture not counted: its absences are left out of the count and the percentage.';
 
   @override
   String studentHistory(int count) {

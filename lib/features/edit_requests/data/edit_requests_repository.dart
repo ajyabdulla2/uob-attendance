@@ -49,6 +49,8 @@ class EditRequestsRepository {
   Future<void> approve(EditRequest request, {required String note, required String actor}) async {
     final session = _db.collection(Col.sessions).doc(request.sessionId);
     final records = await session.collection(Col.records).get();
+    // An excluded lecture keeps counting for nobody: only its record changes.
+    final excluded = AttendanceSession.fromMap(session.id, (await session.get()).data() ?? const {}).excluded;
     final statuses = {
       for (final d in records.docs)
         d.id: AttendanceStatus.values.firstWhere((s) => s.name == d.data()['status'], orElse: () => AttendanceStatus.present),
@@ -71,7 +73,7 @@ class EditRequestsRepository {
         'studentId': request.studentId,
         'stageId': stageId,
         'lastSessionId': request.sessionId,
-        'bySession': {request.sessionId: request.requestedStatus.name},
+        'bySession': {request.sessionId: excluded ? AttendanceSession.excludedValue : request.requestedStatus.name},
         'updatedAt': FieldValue.serverTimestamp(),
         'departmentId': AppConfig.departmentId,
       }, SetOptions(merge: true))

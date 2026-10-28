@@ -213,6 +213,50 @@ describe('app save batches (AttendanceUploader payloads)', () => {
     await assertSucceeds(batch.commit());
   });
 
+  it('«لا تُحتسب»: the teacher sets excluded on an open session and every student\'s entry to "excluded"', async () => {
+    const db = as(env, T1);
+    const batch = writeBatch(db);
+    batch.update(doc(db, 'sessions', OPEN_SID), {
+      counts: { present: 0, absent: 1, late: 0, excused: 0 }, updatedAt: serverTimestamp(), updatedBy: T1, excluded: true,
+    });
+    batch.set(doc(db, 'stats', `${COURSE}__1001`), {
+      courseId: COURSE, studentId: '1001', stageId: '3-morning', lastSessionId: OPEN_SID,
+      bySession: { [OPEN_SID]: 'excluded' }, updatedAt: serverTimestamp(), departmentId: 'cs',
+    }, { merge: true });
+    await assertSucceeds(batch.commit());
+    // …and back again.
+    await assertSucceeds(updateDoc(doc(db, 'sessions', OPEN_SID),
+      { excluded: false, updatedAt: serverTimestamp(), updatedBy: T1 }));
+  });
+
+  it('«لا تُحتسب»: not on a locked session, not as a non-boolean, not by another teacher', async () => {
+    await assertFails(updateDoc(doc(as(env, T1), 'sessions', LOCKED_SID),
+      { excluded: true, updatedAt: serverTimestamp(), updatedBy: T1 }));
+    await assertFails(updateDoc(doc(as(env, T1), 'sessions', OPEN_SID),
+      { excluded: 'yes', updatedAt: serverTimestamp(), updatedBy: T1 }));
+    await assertFails(updateDoc(doc(as(env, T2), 'sessions', OPEN_SID),
+      { excluded: true, updatedAt: serverTimestamp(), updatedBy: T2 }));
+    await assertFails(setDoc(doc(as(env, T1), 'stats', `${COURSE}__1001`), {
+      courseId: COURSE, studentId: '1001', stageId: '3-morning', lastSessionId: LOCKED_SID,
+      bySession: { [LOCKED_SID]: 'excluded' }, updatedAt: serverTimestamp(), departmentId: 'cs',
+    }, { merge: true }));
+  });
+
+  it('«لا تُحتسب» after locking: the stage manager sets it with every student\'s entry (course panel)', async () => {
+    const db = as(env, SM3);
+    const batch = writeBatch(db);
+    batch.update(doc(db, 'sessions', LOCKED_SID), { excluded: true, updatedAt: serverTimestamp(), updatedBy: SM3 });
+    batch.set(doc(db, 'stats', `${COURSE}__1001`), {
+      courseId: COURSE, studentId: '1001', stageId: '3-morning', lastSessionId: LOCKED_SID,
+      bySession: { [LOCKED_SID]: 'excluded' }, updatedAt: serverTimestamp(), departmentId: 'cs',
+    }, { merge: true });
+    batch.set(doc(collection(db, 'auditLog')), {
+      actor: SM3, action: 'session.exclude', targetPath: `sessions/${LOCKED_SID}`, stageId: '3-morning',
+      before: { excluded: false }, after: { excluded: true }, at: serverTimestamp(), departmentId: 'cs',
+    });
+    await assertSucceeds(batch.commit());
+  });
+
   it('a teacher cannot overwrite the identity of a session someone else opened', async () => {
     const db = as(env, T1);
     await assertFails(setDoc(doc(db, 'sessions', OPEN_SID),

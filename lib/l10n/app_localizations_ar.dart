@@ -2290,6 +2290,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String auditActionLabel(String action) {
     String _temp0 = intl.Intl.selectLogic(action, {
       'session_missed': 'تسجيل محاضرة فائتة',
+      'session_exclude': 'جعل محاضرة غير محتسبة',
+      'session_include': 'إرجاع محاضرة محتسبة',
       'record_update': 'تعديل حضور طالب',
       'editRequest_reject': 'رفض طلب تعديل',
       'leave_create': 'إضافة إجازة',
@@ -2423,6 +2425,38 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get studentNoData =>
       'لم تُنزَّل بيانات هذه المادة بعد؛ اضغط تحديث السجل.';
+
+  @override
+  String get lectureExcludeTitle => 'لا تُحتسب هذه المحاضرة';
+
+  @override
+  String get lectureExcludeHelp =>
+      'لا يُحسب غياب أي طالب فيها (مثلاً إن لم يحضر الطلبة). يبقى التسجيل كما هو، ويمكن إرجاعها.';
+
+  @override
+  String get lectureExcludedShort => 'غير محتسبة';
+
+  @override
+  String get lectureExcludedHelp =>
+      'محاضرة غير محتسبة: لا يُحسب غيابها لأي طالب';
+
+  @override
+  String get lectureExcludedLocked =>
+      'هذه المحاضرة غير محتسبة: لا يُحسب غياب أحد فيها.';
+
+  @override
+  String get lectureExcludedConfirm =>
+      'المحاضرة غير محتسبة: لن يُحسب غياب أي طالب فيها.';
+
+  @override
+  String get lectureExcludedDone => 'صارت المحاضرة غير محتسبة.';
+
+  @override
+  String get lectureIncludedDone => 'عادت المحاضرة محتسبة.';
+
+  @override
+  String get reportExcludedNote =>
+      '* محاضرة غير محتسبة: لا يدخل غيابها في العدد ولا في النسبة.';
 
   @override
   String studentHistory(int count) {

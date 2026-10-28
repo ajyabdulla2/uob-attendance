@@ -342,14 +342,16 @@ service cloud.firestore {
       allow create: if validSession(sid)
                     && (canManageStage(request.resource.data.stageId) || teacherCanOpen());
 
-      // Teachers may only touch bookkeeping fields of an unlocked session;
-      // lock / lockAt / identity fields are for stage managers and admins.
+      // Teachers may only touch bookkeeping fields of an unlocked session —
+      // and «لا تُحتسب» (`excluded`); lock / lockAt / identity fields are for
+      // stage managers and admins.
       allow update: if validSession(sid)
                     && ((canManageStage(resource.data.stageId)
                          && canManageStage(request.resource.data.stageId))
                         || (isAssignedToSession(resource.data)
                             && !isLockedSession(resource.data)
-                            && changedKeys().hasOnly(['updatedAt', 'updatedBy', 'counts'])));
+                            && changedKeys().hasOnly(['updatedAt', 'updatedBy', 'counts', 'excluded'])
+                            && request.resource.data.get('excluded', false) is bool));
 
       allow delete: if canManageStage(resource.data.stageId);
 
@@ -403,7 +405,7 @@ service cloud.firestore {
         && d.diff(before).affectedKeys().hasOnly(
              ['courseId', 'studentId', 'stageId', 'lastSessionId', 'bySession', 'updatedAt', 'departmentId'])
         && d.get('bySession', {}).diff(before.get('bySession', {})).affectedKeys().hasOnly([d.lastSessionId])
-        && d.get('bySession', {}).get(d.lastSessionId, 'present') in ['present', 'absent', 'late', 'excused'];
+        && d.get('bySession', {}).get(d.lastSessionId, 'present') in ['present', 'absent', 'late', 'excused', 'excluded'];
     }
 
     match /stats/{statId} {
@@ -662,7 +664,7 @@ service cloud.firestore {
     // rulesVersion/<its version>; a refusal means older rules are deployed.
     // Change both together whenever these rules change.
     match /rulesVersion/{version} {
-      allow get: if version == '2026-10-14a';
+      allow get: if version == '2026-10-27a';
     }
 
     // ============================================================ auditLog ==
