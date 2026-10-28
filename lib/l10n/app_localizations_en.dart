@@ -2469,6 +2469,35 @@ class AppLocalizationsEn extends AppLocalizations {
       '* Lecture not counted: its absences are left out of the count and the percentage.';
 
   @override
+  String get reportCourseRegisterAction =>
+      'Full course register: theory and practical';
+
+  @override
+  String get reportThisClassAction => 'This class only';
+
+  @override
+  String get coursePanelSummaryAction =>
+      'Course summary: students and lectures';
+
+  @override
+  String get reportCourseRegisterSheet => 'Full register';
+
+  @override
+  String reportCourseRegisterTitle(String name) {
+    return 'Full register of $name';
+  }
+
+  @override
+  String get reportCourseRegisterNote =>
+      'T = theory, P = practical with its group. A blank cell is a lecture of another class.';
+
+  @override
+  String get registerTheoryShort => 'T';
+
+  @override
+  String get registerPracticalShort => 'P';
+
+  @override
   String studentHistory(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

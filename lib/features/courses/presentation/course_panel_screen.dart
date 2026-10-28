@@ -12,6 +12,7 @@ import '../../academic/application/academic_providers.dart';
 import '../../assignments/domain/assignment.dart';
 import '../../attendance/application/server_register_providers.dart';
 import '../../attendance/domain/attendance_session.dart';
+import '../../attendance/presentation/register_export.dart';
 import '../../attendance/presentation/student_screen.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../reports/application/report_builders.dart';
@@ -114,10 +115,17 @@ class CoursePanelScreen extends ConsumerWidget {
                 key: const Key('coursePanel.export'),
                 tooltip: l10n.coursePanelExport,
                 icon: const Icon(Icons.download),
-                onPressed: () {
+                onPressed: () async {
+                  final whole = await chooseRegisterScope(
+                    context,
+                    first: l10n.coursePanelSummaryAction,
+                    firstIcon: Icons.table_chart_outlined,
+                  );
+                  if (whole == null || !context.mounted) return;
+                  if (whole) return exportCourseRegister(context, ref, p);
                   final formatDate = MaterialLocalizations.of(context).formatMediumDate;
                   final info = courseInfo(context, ref, p.course);
-                  exportReport(
+                  await exportReport(
                     context,
                     ref,
                     year: p.year,

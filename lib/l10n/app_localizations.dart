@@ -4065,6 +4065,54 @@ abstract class AppLocalizations {
   /// **'* محاضرة غير محتسبة: لا يدخل غيابها في العدد ولا في النسبة.'**
   String get reportExcludedNote;
 
+  /// No description provided for @reportCourseRegisterAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'السجل الكامل للمادة: النظري والعملي'**
+  String get reportCourseRegisterAction;
+
+  /// No description provided for @reportThisClassAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'سجل هذا الصف فقط'**
+  String get reportThisClassAction;
+
+  /// No description provided for @coursePanelSummaryAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملخّص المادة: الطلبة والمحاضرات'**
+  String get coursePanelSummaryAction;
+
+  /// No description provided for @reportCourseRegisterSheet.
+  ///
+  /// In ar, this message translates to:
+  /// **'السجل الكامل'**
+  String get reportCourseRegisterSheet;
+
+  /// No description provided for @reportCourseRegisterTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'السجل الكامل لمادة {name}'**
+  String reportCourseRegisterTitle(String name);
+
+  /// No description provided for @reportCourseRegisterNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'ن = نظري، ع = عملي ومعه اسم المجموعة. الخانة الفارغة محاضرة لصف آخر غير صف الطالب.'**
+  String get reportCourseRegisterNote;
+
+  /// No description provided for @registerTheoryShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'ن'**
+  String get registerTheoryShort;
+
+  /// No description provided for @registerPracticalShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'ع'**
+  String get registerPracticalShort;
+
   /// No description provided for @studentHistory.
   ///
   /// In ar, this message translates to:

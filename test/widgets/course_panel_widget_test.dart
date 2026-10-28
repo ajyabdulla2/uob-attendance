@@ -10,6 +10,7 @@ import 'package:uob_attendance/features/auth/domain/app_user.dart';
 import 'package:uob_attendance/features/courses/data/course_panel.dart';
 import 'package:uob_attendance/features/courses/domain/course.dart';
 import 'package:uob_attendance/features/reports/application/report_builders.dart';
+import 'package:uob_attendance/features/reports/application/report_exporter.dart';
 import 'package:uob_attendance/features/students/domain/student.dart';
 import 'package:uob_attendance/l10n/app_localizations.dart';
 
@@ -94,6 +95,27 @@ void main() {
     expect(report.meta, contains('عدد المحاضرات المسجلة: 2'));
   });
 
+  test('the full course register: theory and practical by date, students in register order', () async {
+    final db = await seed();
+    await db.doc('students/3').set(Student(universityId: '3', fullName: 'باسم كاظم عبد الله ناصر', stage: stage).toMap());
+    await db.doc('groups/${course.id}__B').update({'studentIds': ['3']});
+    // A teacher's load skips the course's assignments (they read only their own).
+    final p = (await CoursePanelRepository(db).load(course.id, withClasses: false))!;
+    expect(p.classes, isEmpty);
+
+    final l10n = lookupAppLocalizations(const Locale('ar'));
+    final report = ReportBuilders.courseRegister(l10n, panel: p, format: ReportFormat.excel);
+    expect(report.title, 'السجل الكامل لمادة البرمجة');
+    final t = report.tables.single;
+    expect(t.columns.map((c) => c.title), ['ت', l10n.registerStudent, l10n.coursePanelGroup, '5/10\nن', '6/10\nع A', l10n.registerAbsences, l10n.registerPercent]);
+    final rows = {for (final r in t.rows) r[1].text: [for (final c in r.skip(2)) c.text]};
+    expect(t.rows.map((r) => r[1].text), ['أحمد علي حسين جاسم', 'باسم كاظم عبد الله ناصر', 'زينب صالح مهدي حسن'],
+        reason: 'register order, whatever the group');
+    expect(rows['أحمد علي حسين جاسم']!.take(4), ['A', 'ح', 'ح', '0']);
+    expect(rows['باسم كاظم عبد الله ناصر']!.take(4), ['B', 'ح', '', '0'], reason: 'group A\'s lecture is blank for group B');
+    expect(rows['زينب صالح مهدي حسن']!.take(4), ['A', 'غ', 'غ', '2']);
+  });
+
   testWidgets('a stage manager opens «لوحة المادة»: info, lectures with absentees, students', (tester) async {
     await pumpApp(
       tester,
@@ -125,6 +147,15 @@ void main() {
     expect(find.byKey(Key('coursePanel.class.${groupA.id}')), findsOneWidget);
     expect(find.text('بلا تدريسي'), findsOneWidget);
     expect(find.byKey(const Key('coursePanel.export')), findsOneWidget);
+    // Download: the panel's summary, or the full register (theory and practical).
+    await tester.tap(find.byKey(const Key('coursePanel.export')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('export.scope.class')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('export.scope.course')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('export.period.all')), findsOneWidget, reason: 'the full register asks its period');
+    await tester.tapAt(const Offset(10, 10));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('coursePanel.tab.lectures')));
     await tester.pumpAndSettle();

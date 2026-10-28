@@ -1850,6 +1850,21 @@
   "lectureExcludedDone": "صارت المحاضرة غير محتسبة.",
   "lectureIncludedDone": "عادت المحاضرة محتسبة.",
   "reportExcludedNote": "* محاضرة غير محتسبة: لا يدخل غيابها في العدد ولا في النسبة.",
+  "reportCourseRegisterAction": "السجل الكامل للمادة: النظري والعملي",
+  "reportThisClassAction": "سجل هذا الصف فقط",
+  "coursePanelSummaryAction": "ملخّص المادة: الطلبة والمحاضرات",
+  "reportCourseRegisterSheet": "السجل الكامل",
+  "reportCourseRegisterTitle": "السجل الكامل لمادة {name}",
+  "@reportCourseRegisterTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reportCourseRegisterNote": "ن = نظري، ع = عملي ومعه اسم المجموعة. الخانة الفارغة محاضرة لصف آخر غير صف الطالب.",
+  "registerTheoryShort": "ن",
+  "registerPracticalShort": "ع",
   "studentHistory": "{count, plural, =0{لا غياب ولا تأخير} =1{محاضرة واحدة لم يحضرها كاملة} =2{محاضرتان لم يحضرهما كاملتين} few{{count} محاضرات لم يحضرها كاملة} other{{count} محاضرة لم يحضرها كاملة}}",
   "studentNoAbsences": "حضر كل المحاضرات المسجّلة.",
   "studentSourceNote": "يشمل محاضرات المادة لكل تدريسييها كما نُزّلت آخر مرة (زر التحديث في السجل)، وتسجيلات هذا الهاتف.",

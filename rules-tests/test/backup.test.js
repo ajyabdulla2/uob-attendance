@@ -173,7 +173,7 @@ describe('audit log viewer and department dashboard', () => {
 
 describe('rules version canary', () => {
   it('only the current version can be read', async () => {
-    await assertSucceeds(getDoc(doc(as(env, T1), 'rulesVersion', '2026-10-27a')));
+    await assertSucceeds(getDoc(doc(as(env, T1), 'rulesVersion', '2026-10-28a')));
     await assertFails(getDoc(doc(as(env, T1), 'rulesVersion', '2026-01-01')));
   });
 });

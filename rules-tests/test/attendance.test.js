@@ -6,7 +6,7 @@ import {
 } from 'firebase/firestore';
 import {
   createEnv, seed, as, sessionData, sessionId, utcMidnight, lockAtFor, HOUR,
-  SUPER, SM3, T1, T2, COURSE, OPEN_SID, LOCKED_SID, EXPIRED_SID,
+  SUPER, SM3, T1, T2, SUSPENDED, COURSE, OPEN_SID, LOCKED_SID, EXPIRED_SID,
 } from './helpers.js';
 
 let env;
@@ -289,6 +289,16 @@ describe('download and register query shapes (teacher)', () => {
     await assertSucceeds(getDocs(collection(db, 'sessions', OPEN_SID, 'records')));
     await assertFails(getDocs(query(collection(as(env, T2), 'sessions'),
       where('courseId', '==', COURSE), where('type', '==', 'theory'), where('target', '==', 'all'))));
+  });
+
+  it('full course register: a teacher reads every lecture of a stage they teach', async () => {
+    const q = (who, stageId) => getDocs(query(collection(as(env, who), 'sessions'),
+      where('stageId', '==', stageId), where('courseId', '==', COURSE)));
+    await assertSucceeds(q(T1, '3-morning'));
+    await assertFails(q(T2, '3-morning'));
+    await assertFails(q(SUSPENDED, '3-morning'));
+    // Without the stage the query is not provable for a teacher.
+    await assertFails(getDocs(query(collection(as(env, T2), 'sessions'), where('courseId', '==', COURSE))));
   });
 
   it('register percentages: the course\'s stats and the stage\'s leaves', async () => {

@@ -330,8 +330,11 @@ service cloud.firestore {
     }
 
     match /sessions/{sid} {
+      // A teacher reads every lecture of the stages they teach, for the full
+      // course register (theory and practical together).
       allow read: if isAdmin()
                   || inStageScope(resource.data.stageId)
+                  || teachesStage(resource.data.stageId)
                   || isAssignedToSession(resource.data);
 
       // Before the first upload of a lecture the app asks the server whether
@@ -664,7 +667,7 @@ service cloud.firestore {
     // rulesVersion/<its version>; a refusal means older rules are deployed.
     // Change both together whenever these rules change.
     match /rulesVersion/{version} {
-      allow get: if version == '2026-10-27a';
+      allow get: if version == '2026-10-28a';
     }
 
     // ============================================================ auditLog ==
