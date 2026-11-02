@@ -54,6 +54,10 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   bool _savedExcluded = false;
   bool _excluded = false;
   String _query = '';
+
+  /// The student last tapped, highlighted so a teacher calling the names
+  /// sees where they reached after scrolling (طلب القسم).
+  String? _lastTapped;
   bool _saving = false;
   bool _pullStarted = false;
 
@@ -118,6 +122,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
         _saved = const {};
         _marks = {};
         _savedExcluded = _excluded = false;
+        _lastTapped = null;
       });
 
   /// The first day a teacher may still record (the lock window).
@@ -159,7 +164,12 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
       showDragHandle: true,
       builder: (_) => _MarkSheet(student: s, initial: _markOf(s.id)),
     );
-    if (mark != null && mounted) setState(() => _marks[s.id] = mark);
+    if (mark != null && mounted) {
+      setState(() {
+        _marks[s.id] = mark;
+        _lastTapped = s.id;
+      });
+    }
   }
 
   /// A locked lecture: ask the stage manager to change one student's status.
@@ -191,6 +201,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   }
 
   void _toggle(Student s) => setState(() {
+        _lastTapped = s.id;
         final m = _markOf(s.id);
         _marks[s.id] = m.copyWith(
           status: m.status == AttendanceStatus.present ? AttendanceStatus.absent : AttendanceStatus.present,
@@ -454,11 +465,17 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                       final s = shown[i - header.length];
                       final mark = _markOf(s.id);
                       final color = palette.forStatus(mark.status);
+                      final last = s.id == _lastTapped;
                       return ListTile(
                         key: Key('record.student.${s.id}'),
                         visualDensity: VisualDensity.compact,
+                        tileColor: last ? theme.colorScheme.primaryContainer.withValues(alpha: 0.55) : null,
                         leading: Icon(StatusPalette.iconForStatus(mark.status), color: color),
-                        title: Text(s.fullName),
+                        title: Text(
+                          s.fullName,
+                          key: last ? const Key('record.lastTapped') : null,
+                          style: last ? const TextStyle(fontWeight: FontWeight.bold) : null,
+                        ),
                         subtitle: Text([
                           bidiIsolate(s.universityId),
                           if (mark.note.isNotEmpty) mark.note,

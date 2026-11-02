@@ -2487,6 +2487,43 @@ class AppLocalizationsAr extends AppLocalizations {
   String get registerPracticalShort => 'ع';
 
   @override
+  String get periodAction => 'غياب فترة محددة';
+
+  @override
+  String get periodTitle => 'غياب فترة';
+
+  @override
+  String periodReportTitle(String stage) {
+    return 'غياب الطلبة لفترة محددة: $stage';
+  }
+
+  @override
+  String periodCount(int count) {
+    return 'عدد الطلبة الغائبين في الفترة: $count';
+  }
+
+  @override
+  String periodRow(int absences, int lectures) {
+    return '$absences غياب من $lectures محاضرة';
+  }
+
+  @override
+  String get periodEmpty => 'لا غياب في هذه الفترة.';
+
+  @override
+  String get periodAbsences => 'غيابات الفترة';
+
+  @override
+  String get periodLectures => 'محاضرات الفترة';
+
+  @override
+  String get periodPercent => 'نسبة الفترة';
+
+  @override
+  String get periodNote =>
+      'نسبة الفترة = غيابات الفترة ÷ محاضرات صف الطالب في الفترة × 100. للاطلاع فقط: نسبة الفصل والتنبيه والإنذار لا تتغيّر.';
+
+  @override
   String studentHistory(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

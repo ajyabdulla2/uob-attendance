@@ -57,4 +57,13 @@ describe('course panel', () => {
       where('courseId', '==', COURSE))));
     await assertFails(getDocs(collection(db, 'sessions', OPEN_SID, 'records')));
   });
+
+  it('«غياب فترة»: the stage\'s lectures between two days (stageId + dateKey range)', async () => {
+    const period = (who, stageId) => getDocs(query(collection(as(env, who), 'sessions'),
+      where('stageId', '==', stageId), where('dateKey', '>=', '20261001'), where('dateKey', '<=', '20261030')));
+    await assertSucceeds(period(SM3, '3-morning'));
+    await assertSucceeds(period(SUPER, '1-evening'));
+    await assertFails(period(SM3, '1-evening'));
+    await assertFails(period(T2, '3-morning'));
+  });
 });

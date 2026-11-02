@@ -4,6 +4,7 @@ import '../../assignments/domain/assignment.dart';
 import '../../attendance/domain/attendance_session.dart';
 import '../../courses/data/course_panel.dart';
 import '../../stats/domain/absence_summary.dart';
+import '../../stats/domain/period_standings.dart';
 import '../../stats/domain/standings.dart';
 import '../../stats/domain/student_course_stat.dart';
 import '../../students/domain/student.dart';
@@ -383,6 +384,52 @@ abstract final class ReportBuilders {
           ),
         ],
         notes: [l10n.reportPercentNote],
+        signatures: [l10n.reportSignStageManager, l10n.reportSignHead],
+      );
+
+  /// «غياب فترة»: each student's absences between two days, against the
+  /// lectures their classes held then. Informative; the semester's
+  /// percentages and warnings are unchanged.
+  static Report periodAbsences(
+    AppLocalizations l10n, {
+    required String stageLabel,
+    required String periodLabel,
+    required String? courseName,
+    required List<PeriodStanding> rows,
+  }) =>
+      Report(
+        title: l10n.periodReportTitle(stageLabel),
+        fileBase: '${l10n.periodTitle} $stageLabel ${courseName ?? ''}',
+        meta: [periodLabel, courseName ?? l10n.warnAllCourses, l10n.periodCount(rows.length)],
+        tables: [
+          ReportTable(
+            name: l10n.periodTitle,
+            columns: [
+              const ReportColumn('ت', flex: 0.5, numeric: true),
+              ReportColumn(l10n.registerStudent, flex: 3.5),
+              ReportColumn(l10n.fieldUniversityId, flex: 1.4),
+              ReportColumn(l10n.fieldSection, flex: 0.8),
+              ReportColumn(l10n.warnCourse, flex: 2.4),
+              ReportColumn(l10n.periodAbsences, flex: 0.9, numeric: true),
+              ReportColumn(l10n.periodLectures, flex: 0.9, numeric: true),
+              ReportColumn(l10n.periodPercent, flex: 0.9, numeric: true),
+            ],
+            rows: [
+              for (final (i, s) in rows.indexed)
+                [
+                  ReportCell('${i + 1}'),
+                  ReportCell(s.student.fullName),
+                  ReportCell(s.student.universityId),
+                  ReportCell(s.student.section),
+                  ReportCell(_courseLabel(l10n, s.course.name, s.type)),
+                  ReportCell('${s.absences}'),
+                  ReportCell('${s.lectures}'),
+                  ReportCell(percent(s.percent), bold: true),
+                ],
+            ],
+          ),
+        ],
+        notes: [l10n.periodNote],
         signatures: [l10n.reportSignStageManager, l10n.reportSignHead],
       );
 

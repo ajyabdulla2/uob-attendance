@@ -25,4 +25,16 @@ class StatsRepository {
       .where('dateKey', whereIn: dateKeys)
       .snapshots()
       .map((snap) => [for (final d in snap.docs) AttendanceSession.fromMap(d.id, d.data())]);
+
+  /// Lectures of a stage from [fromKey] to [toKey] (`yyyyMMdd`, inclusive),
+  /// read once for «غياب فترة» (index: stageId + dateKey).
+  Future<List<AttendanceSession>> sessionsBetween(String stageId, String fromKey, String toKey) async {
+    final snap = await _db
+        .collection(Col.sessions)
+        .where('stageId', isEqualTo: stageId)
+        .where('dateKey', isGreaterThanOrEqualTo: fromKey)
+        .where('dateKey', isLessThanOrEqualTo: toKey)
+        .get();
+    return [for (final d in snap.docs) AttendanceSession.fromMap(d.id, d.data())];
+  }
 }
