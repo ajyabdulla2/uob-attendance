@@ -4113,6 +4113,66 @@ abstract class AppLocalizations {
   /// **'ع'**
   String get registerPracticalShort;
 
+  /// No description provided for @periodAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'غياب فترة محددة'**
+  String get periodAction;
+
+  /// No description provided for @periodTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'غياب فترة'**
+  String get periodTitle;
+
+  /// No description provided for @periodReportTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'غياب الطلبة لفترة محددة: {stage}'**
+  String periodReportTitle(String stage);
+
+  /// No description provided for @periodCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدد الطلبة الغائبين في الفترة: {count}'**
+  String periodCount(int count);
+
+  /// No description provided for @periodRow.
+  ///
+  /// In ar, this message translates to:
+  /// **'{absences} غياب من {lectures} محاضرة'**
+  String periodRow(int absences, int lectures);
+
+  /// No description provided for @periodEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا غياب في هذه الفترة.'**
+  String get periodEmpty;
+
+  /// No description provided for @periodAbsences.
+  ///
+  /// In ar, this message translates to:
+  /// **'غيابات الفترة'**
+  String get periodAbsences;
+
+  /// No description provided for @periodLectures.
+  ///
+  /// In ar, this message translates to:
+  /// **'محاضرات الفترة'**
+  String get periodLectures;
+
+  /// No description provided for @periodPercent.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسبة الفترة'**
+  String get periodPercent;
+
+  /// No description provided for @periodNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسبة الفترة = غيابات الفترة ÷ محاضرات صف الطالب في الفترة × 100. للاطلاع فقط: نسبة الفصل والتنبيه والإنذار لا تتغيّر.'**
+  String get periodNote;
+
   /// No description provided for @studentHistory.
   ///
   /// In ar, this message translates to:

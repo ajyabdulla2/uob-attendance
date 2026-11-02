@@ -15,6 +15,7 @@ import '../../stats/domain/standings.dart';
 import '../../stats/domain/student_course_stat.dart';
 import '../application/warnings_providers.dart';
 import '../domain/warning_list.dart';
+import 'period_absences_screen.dart';
 
 /// What the list shows: one level, or students one absence short of the next.
 enum _View { alert, warning, dismissal, edge }
@@ -284,6 +285,18 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(_view == _View.edge ? l10n.warnEdgeHelp : l10n.warnHelp, style: theme.textTheme.bodySmall),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: OutlinedButton.icon(
+                  key: const Key('warn.period'),
+                  icon: const Icon(Icons.date_range),
+                  label: Text(l10n.periodAction),
+                  onPressed: () => openPeriodAbsences(context, stage, courseId: _courseId, section: _section),
+                ),
+              ),
             ),
             if (rows.isEmpty)
               Padding(

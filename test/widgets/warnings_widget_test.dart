@@ -1,15 +1,20 @@
+import 'dart:async';
+
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:uob_attendance/core/domain/stage_ref.dart';
 import 'package:uob_attendance/features/academic/domain/academic_year.dart';
+import 'package:uob_attendance/features/assignments/domain/assignment.dart';
+import 'package:uob_attendance/features/attendance/domain/attendance_session.dart';
 import 'package:uob_attendance/features/auth/domain/app_user.dart';
 import 'package:uob_attendance/features/courses/domain/course.dart';
 import 'package:uob_attendance/features/leaves/domain/leave.dart';
 import 'package:uob_attendance/features/stats/domain/student_course_stat.dart';
 import 'package:uob_attendance/features/students/domain/student.dart';
 import 'package:uob_attendance/features/warnings/domain/warning_list.dart';
+import 'package:uob_attendance/features/warnings/presentation/period_absences_screen.dart';
 
 import '../helpers/pump_app.dart';
 
@@ -114,6 +119,51 @@ void main() {
     await tester.tap(find.descendant(of: find.byType(AlertDialog), matching: find.byType(FilledButton)));
     await tester.pumpAndSettle();
     expect(((await db.doc('warningLists/${list.id}').get()).data()!['entries'] as List), hasLength(2));
+  });
+
+  testWidgets('«غياب فترة»: absences between two days against the lectures held then', (tester) async {
+    const sm = 'sm@uobasrah.edu.iq';
+    final db = await seed();
+    for (final day in [1, 2, 5, 20]) {
+      final date = DateTime.utc(2026, 10, day);
+      await db.doc('sessions/${sid(day)}').set(AttendanceSession(
+            courseId: course.id,
+            stageId: stage.id,
+            yearId: '2026-2027',
+            type: AssignmentType.theory,
+            target: 'all',
+            date: date,
+            lectureNo: 1,
+            openedBy: 't@uob.iq',
+            lockAt: AttendanceSession.lockAtFor(date, 48),
+          ).toMap());
+    }
+    await pumpApp(
+      tester,
+      firestore: db,
+      user: MockUser(email: sm, isEmailVerified: true),
+      profile: AppUser(email: sm, name: 'مسؤول', roles: const {UserRole.stageManager}, stageScopes: [stage.id]),
+    );
+    await tester.tap(find.byKey(const Key('home.warnings')));
+    await tester.pumpAndSettle();
+
+    // The button asks the days.
+    await tester.tap(find.byKey(const Key('warn.period')));
+    await tester.pumpAndSettle();
+    expect(find.byType(DateRangePickerDialog), findsOneWidget);
+    Navigator.of(tester.element(find.byType(DateRangePickerDialog))).pop();
+    await tester.pumpAndSettle();
+
+    // 1–10/10: three lectures (1, 2, 5); the 20th is outside.
+    unawaited(Navigator.of(tester.element(find.byKey(const Key('warn.period')))).push(MaterialPageRoute<void>(
+      builder: (_) => PeriodAbsencesScreen(stage: stage, from: DateTime.utc(2026, 10, 1), to: DateTime.utc(2026, 10, 10)),
+    )));
+    await tester.pumpAndSettle();
+    expect(find.text('عدد الطلبة الغائبين في الفترة: 2'), findsOneWidget, reason: 'the third student\'s absence is excused');
+    expect(find.textContaining('2 غياب من 3 محاضرة'), findsOneWidget);
+    expect(find.text('66.7%'), findsOneWidget);
+    expect(find.text('33.3%'), findsOneWidget);
+    expect(find.byKey(const Key('period.export')), findsOneWidget);
   });
 
   testWidgets('an admin turns a department decision into a locked deanery decision', (tester) async {

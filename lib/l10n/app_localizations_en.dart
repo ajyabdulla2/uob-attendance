@@ -2498,6 +2498,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registerPracticalShort => 'P';
 
   @override
+  String get periodAction => 'Absences in a period';
+
+  @override
+  String get periodTitle => 'Period absences';
+
+  @override
+  String periodReportTitle(String stage) {
+    return 'Student absences in a period: $stage';
+  }
+
+  @override
+  String periodCount(int count) {
+    return 'Students absent in the period: $count';
+  }
+
+  @override
+  String periodRow(int absences, int lectures) {
+    return '$absences absences of $lectures lectures';
+  }
+
+  @override
+  String get periodEmpty => 'No absences in this period.';
+
+  @override
+  String get periodAbsences => 'Period absences';
+
+  @override
+  String get periodLectures => 'Period lectures';
+
+  @override
+  String get periodPercent => 'Period %';
+
+  @override
+  String get periodNote =>
+      'Period percentage = absences in the period ÷ lectures of the student\'s classes in the period × 100. For information only: the semester percentage and warnings are unchanged.';
+
+  @override
   String studentHistory(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

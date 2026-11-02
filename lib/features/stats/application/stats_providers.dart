@@ -1,11 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/firebase/doc_ids.dart';
 import '../../../core/firebase/firebase_providers.dart';
 import '../../academic/application/academic_providers.dart';
 import '../../courses/application/courses_providers.dart';
 import '../../leaves/application/leaves_providers.dart';
 import '../../students/application/students_providers.dart';
 import '../data/stats_repository.dart';
+import '../domain/period_standings.dart';
 import '../domain/standings.dart';
 import '../domain/student_course_stat.dart';
 
@@ -37,4 +39,31 @@ final stageStandingsProvider = Provider.autoDispose.family<AsyncValue<List<Stand
   }
   if (year == null) return const AsyncValue.data([]);
   return AsyncValue.data(buildStandings(students: students, courses: courses, stats: stats, leaves: leaves, year: year));
+});
+
+/// «غياب فترة»: the stage's students absent between two days, read once
+/// when opened (the period's lectures and the stage's practical groups).
+final periodStandingsProvider = FutureProvider.autoDispose
+    .family<List<PeriodStanding>, ({String stageId, DateTime from, DateTime to})>((ref, key) async {
+  final year = await ref.watch(activeYearProvider.future);
+  if (year == null) return const [];
+  final (students, courses, stats, leaves, sessions, groups) = await (
+    ref.watch(stageStudentsProvider(key.stageId).future),
+    ref.watch(stageCoursesProvider(key.stageId).future),
+    ref.watch(stageStatsProvider(key.stageId).future),
+    ref.watch(stageLeavesProvider(key.stageId).future),
+    ref.read(statsRepositoryProvider).sessionsBetween(key.stageId, DocIds.dateKey(key.from), DocIds.dateKey(key.to)),
+    ref.read(coursesRepositoryProvider).fetchStageGroups(key.stageId),
+  ).wait;
+  return buildPeriodStandings(
+    students: students,
+    courses: courses,
+    stats: stats,
+    leaves: leaves,
+    sessions: sessions,
+    groups: groups,
+    year: year,
+    from: key.from,
+    to: key.to,
+  );
 });

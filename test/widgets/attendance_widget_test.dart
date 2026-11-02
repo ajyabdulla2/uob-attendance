@@ -89,12 +89,16 @@ void main() {
     // Tap → absent; long press → late with a note.
     await tester.tap(studentTile(students[1]));
     await tester.pump();
+    // The last tapped student stays highlighted (where the call reached).
+    expect(find.descendant(of: studentTile(students[1]), matching: find.byKey(const Key('record.lastTapped'))), findsOneWidget);
     await tester.longPress(studentTile(students[2]));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('mark.late')));
     await tester.enterText(find.byKey(const Key('mark.note')), 'تأخر بسبب الزحام');
     await tester.tap(find.byKey(const Key('mark.done')));
     await tester.pumpAndSettle();
+    expect(find.byKey(const Key('record.lastTapped')), findsOneWidget);
+    expect(find.descendant(of: studentTile(students[2]), matching: find.byKey(const Key('record.lastTapped'))), findsOneWidget);
     expect(find.text('حاضر 1'), findsOneWidget);
     expect(find.text('غائب 1'), findsOneWidget);
     expect(find.text('متأخر 1'), findsOneWidget);
