@@ -2524,6 +2524,25 @@ class AppLocalizationsAr extends AppLocalizations {
       'نسبة الفترة = غيابات الفترة ÷ محاضرات صف الطالب في الفترة × 100. للاطلاع فقط: نسبة الفصل والتنبيه والإنذار لا تتغيّر.';
 
   @override
+  String get dayAbsencesAction => 'غيابات يوم';
+
+  @override
+  String get dayAbsencesHelp => 'أسماء الغائبين في يوم واحد تختاره';
+
+  @override
+  String dayAbsencesTitle(String course, String day) {
+    return 'غيابات $course ليوم $day';
+  }
+
+  @override
+  String dayAbsencesCount(int count) {
+    return 'عدد الغائبين: $count';
+  }
+
+  @override
+  String get dayAbsencesNone => 'لا يوجد غائب في هذا اليوم.';
+
+  @override
   String studentHistory(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

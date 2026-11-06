@@ -11,6 +11,7 @@ import 'package:uob_attendance/features/courses/data/course_panel.dart';
 import 'package:uob_attendance/features/courses/domain/course.dart';
 import 'package:uob_attendance/features/reports/application/report_builders.dart';
 import 'package:uob_attendance/features/reports/application/report_exporter.dart';
+import 'package:uob_attendance/features/reports/domain/report.dart';
 import 'package:uob_attendance/features/students/domain/student.dart';
 import 'package:uob_attendance/l10n/app_localizations.dart';
 
@@ -116,6 +117,28 @@ void main() {
     expect(rows['زينب صالح مهدي حسن']!.take(4), ['A', 'غ', 'غ', '2']);
   });
 
+  test('غيابات يوم: the absentees of one day\'s lectures, in register order', () async {
+    final p = (await CoursePanelRepository(await seed()).load(course.id))!;
+    final l10n = lookupAppLocalizations(const Locale('ar'));
+    Report on(DateTime d) => ReportBuilders.dayAbsences(
+          l10n,
+          courseName: course.name,
+          stageLabel: 'الأولى',
+          dayLabel: '${d.day}/${d.month}',
+          students: [for (final s in p.students) s.student],
+          sessions: [for (final s in p.sessions) if (s.date == d) s],
+          marks: p.marksBySession,
+        );
+    final report = on(day);
+    expect(report.title, 'غيابات البرمجة ليوم 5/10');
+    final rows = report.tables.single.rows;
+    expect(rows, hasLength(1));
+    expect(rows.single[1].text, 'زينب صالح مهدي حسن');
+    expect(rows.single[4].text, contains('نظري'));
+    expect(report.meta, contains('عدد الغائبين: 1'));
+    expect(on(DateTime.utc(2026, 10, 20)).notes, contains('لا يوجد غائب في هذا اليوم.'));
+  });
+
   testWidgets('a stage manager opens «لوحة المادة»: info, lectures with absentees, students', (tester) async {
     await pumpApp(
       tester,
@@ -151,6 +174,7 @@ void main() {
     await tester.tap(find.byKey(const Key('coursePanel.export')));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('export.scope.class')), findsOneWidget);
+    expect(find.byKey(const Key('export.scope.day')), findsOneWidget);
     await tester.tap(find.byKey(const Key('export.scope.course')));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('export.period.all')), findsOneWidget, reason: 'the full register asks its period');

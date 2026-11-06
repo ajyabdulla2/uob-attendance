@@ -243,6 +243,61 @@ abstract final class ReportBuilders {
     );
   }
 
+  /// غيابات يوم: the students absent in each lecture of one day, in register
+  /// order. Lectures marked «لا تُحتسب» are left out (and noted).
+  static Report dayAbsences(
+    AppLocalizations l10n, {
+    required String courseName,
+    required String stageLabel,
+    required String dayLabel,
+    required List<Student> students,
+    required List<AttendanceSession> sessions,
+    required Map<String, Map<String, AttendanceStatus>> marks,
+  }) {
+    final counted = [for (final s in sessions) if (!s.excluded) s]
+      ..sort((a, b) => a.type != b.type
+          ? (a.type == AssignmentType.theory ? -1 : 1)
+          : a.target != b.target
+              ? a.target.compareTo(b.target)
+              : a.lectureNo.compareTo(b.lectureNo));
+    final rows = <List<ReportCell>>[];
+    for (final s in counted) {
+      for (final st in students) {
+        if (marks[s.id]?[st.id] != AttendanceStatus.absent) continue;
+        rows.add([
+          ReportCell('${rows.length + 1}'),
+          ReportCell(st.fullName),
+          ReportCell(st.universityId),
+          ReportCell(st.section),
+          ReportCell('${l10n.sessionClassLabel(s)} · ${l10n.coursePanelLectureNo} ${s.lectureNo}'),
+        ]);
+      }
+    }
+    return Report(
+      title: l10n.dayAbsencesTitle(courseName, dayLabel),
+      fileBase: '${l10n.dayAbsencesAction} $courseName $dayLabel',
+      meta: [stageLabel, l10n.reportLectureCount(counted.length), l10n.dayAbsencesCount(rows.length)],
+      tables: [
+        ReportTable(
+          name: l10n.dayAbsencesAction,
+          columns: [
+            const ReportColumn('ت', flex: 0.5, numeric: true),
+            ReportColumn(l10n.registerStudent, flex: 3.5),
+            ReportColumn(l10n.fieldUniversityId, flex: 1.4),
+            ReportColumn(l10n.fieldSection, flex: 0.8),
+            ReportColumn(l10n.coursePanelClass, flex: 2.4),
+          ],
+          rows: rows,
+        ),
+      ],
+      notes: [
+        if (rows.isEmpty) l10n.dayAbsencesNone,
+        if (counted.length < sessions.length) l10n.reportExcludedNote,
+      ],
+      signatures: [l10n.reportSignTeacher, l10n.reportSignStageManager],
+    );
+  }
+
   /// «لوحة المادة»: the course, its classes and teachers, its students with
   /// their percentages, and every lecture recorded in it.
   static Report coursePanel(

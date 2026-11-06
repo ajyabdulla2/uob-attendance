@@ -28,6 +28,10 @@ on:
         description: 'Build as a Shorebird release (needs SHOREBIRD_TOKEN)'
         type: boolean
         default: true
+      patch_release:
+        description: 'Instead: send a Shorebird patch (Dart only) to this iOS release, e.g. 1.5.0+4'
+        type: string
+        default: ''
 
 concurrency:
   group: ios-${{ github.ref }}
@@ -48,7 +52,8 @@ jobs:
       APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
       APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
       CERTIFICATE_PRIVATE_KEY: ${{ secrets.IOS_CERTIFICATE_PRIVATE_KEY }}
-      SHOREBIRD_TOKEN: ${{ inputs.shorebird && secrets.SHOREBIRD_TOKEN || '' }}
+      SHOREBIRD_TOKEN: ${{ (inputs.shorebird || inputs.patch_release != '') && secrets.SHOREBIRD_TOKEN || '' }}
+      PATCH_RELEASE: ${{ inputs.patch_release }}
     steps:
       # Names only, never values.
       - name: Required secrets
@@ -88,7 +93,10 @@ jobs:
 
       - run: flutter pub get
 
+      # A patch ships only Dart code to phones that already have the signed
+      # release, so it needs no signing (and no Apple API).
       - name: Signing (certificate and App Store profile)
+        if: env.PATCH_RELEASE == ''
         run: |
           pip3 install --quiet --break-system-packages codemagic-cli-tools
           keychain initialize
@@ -101,8 +109,31 @@ jobs:
         with:
           cache: true
 
+      - name: Patch the release
+        if: env.PATCH_RELEASE != ''
+        env:
+          PUSH_URL: ${{ vars.PUSH_URL }}
+        run: |
+          [ -n "$SHOREBIRD_TOKEN" ] || { echo "::error::SHOREBIRD_TOKEN is missing"; exit 1; }
+          # As in patch.yml: only the license list (NOTICES.Z) may differ
+          # from the release's assets.
+          set +e
+          shorebird patch ios --release-version="$PATCH_RELEASE" --no-codesign -- --dart-define=PUSH_URL="$PUSH_URL" 2>&1 | tee patch.log
+          status=${PIPESTATUS[0]}
+          set -e
+          [ "$status" -eq 0 ] && exit 0
+          grep -q 'asset changes' patch.log || exit "$status"
+          changed=$(grep -E '^\s+.*flutter_assets/' patch.log | sed 's/^ *//')
+          echo "Changed assets:"; echo "$changed"
+          if echo "$changed" | grep -qv 'flutter_assets/NOTICES.Z$'; then
+            echo "::error::The patch changes assets the release does not have (see above). Use only icons/assets present in release $PATCH_RELEASE, or build a new release."
+            exit 1
+          fi
+          shorebird patch ios --release-version="$PATCH_RELEASE" --no-codesign --allow-asset-diffs -- --dart-define=PUSH_URL="$PUSH_URL"
+
       # CFBundleVersion must grow with every upload of the same version.
       - name: Build IPA
+        if: env.PATCH_RELEASE == ''
         env:
           BUILD_NUMBER: ${{ github.run_number }}
           PUSH_URL: ${{ vars.PUSH_URL }}
@@ -115,10 +146,11 @@ jobs:
           ls -l build/ios/ipa
 
       - name: Upload to App Store Connect
-        if: inputs.upload
+        if: inputs.upload && env.PATCH_RELEASE == ''
         run: app-store-connect publish --path "$(ls build/ios/ipa/*.ipa | head -1)"
 
       - uses: actions/upload-artifact@v6
+        if: env.PATCH_RELEASE == ''
         with:
           name: ios-ipa-${{ github.run_number }}
           path: build/ios/ipa/*.ipa

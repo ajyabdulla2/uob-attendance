@@ -78,6 +78,17 @@ final class CoursePanel {
         : s.target == p.group;
   }
 
+  /// [marks] turned around: session → student → status.
+  Map<String, Map<String, AttendanceStatus>> get marksBySession {
+    final out = <String, Map<String, AttendanceStatus>>{};
+    for (final MapEntry(key: studentId, value: bySession) in marks.entries) {
+      for (final MapEntry(key: sid, value: status) in bySession.entries) {
+        (out[sid] ??= {})[studentId] = status;
+      }
+    }
+    return out;
+  }
+
   bool get separate => year != null && !year!.combinedTheoryPractical;
 
   List<Assignment> get theoryClasses => [for (final a in classes) if (a.type == AssignmentType.theory) a];
