@@ -81,10 +81,12 @@ Icons.refresh
 Icons.remove_circle_outline
 Icons.report_outlined
 Icons.save
+Icons.save_alt
 Icons.schedule
 Icons.search
 Icons.send
 Icons.settings_suggest
+Icons.share
 Icons.skip_next
 Icons.supervisor_account
 Icons.swap_horiz

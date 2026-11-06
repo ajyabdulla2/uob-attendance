@@ -12,6 +12,7 @@ import '../../auth/application/auth_providers.dart';
 import '../application/backup_providers.dart';
 import '../domain/backup_file.dart';
 import '../domain/restore_plan.dart';
+import '../../../core/widgets/file_delivery.dart';
 
 /// النسخ الاحتياطي (admins): an encrypted `.uobk` file of the whole
 /// department, saved wherever the admin chooses; the super admin can restore
@@ -121,14 +122,14 @@ class _CreateCardState extends ConsumerState<_CreateCard> {
       final bytes = await BackupFile.encrypt(data, _password.text);
       final now = DateTime.now();
       final stamp = '${DocIds.dateKey(now)}-${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}';
-      final saved = await FilePicker.saveFile(
+      if (!mounted) return;
+      final how = await deliverFile(
+        context,
         fileName: 'uob-attendance-backup-$stamp.${BackupFile.extension}',
         bytes: bytes,
         mimeType: 'application/octet-stream',
-        type: FileType.any,
       );
-      // On the web the download starts without a path.
-      if (saved == null && !kIsWeb) return;
+      if (how == null) return;
       await repo.markSaved(data, actor: actor);
       _password.clear();
       _confirm.clear();

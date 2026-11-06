@@ -14,6 +14,7 @@ import '../application/import_controller.dart';
 import '../data/import_templates.dart';
 import '../data/import_writer.dart';
 import '../domain/import_models.dart';
+import '../../../core/widgets/file_delivery.dart';
 
 /// SPEC §2 «الاستيراد»: template download, preview before saving, duplicate
 /// detection and «تحديث الموجود».
@@ -66,14 +67,14 @@ class _ImportPanelState extends ConsumerState<_ImportPanel> with AutomaticKeepAl
   Future<void> _downloadTemplate() async {
     final l10n = context.l10n;
     try {
-      final uri = await FilePicker.saveFile(
+      final how = await deliverFile(
+        context,
         fileName: ImportTemplates.fileName(widget.kind),
         bytes: _controller.template(),
         mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        type: FileType.custom,
-        allowedExtensions: const ['xlsx'],
+        extensions: const ['xlsx'],
       );
-      if (uri != null && mounted) showSnack(context, l10n.importTemplateSaved);
+      if (how == FileDelivery.save && mounted) showSnack(context, l10n.importTemplateSaved);
     } catch (e) {
       if (mounted) showError(context, e);
     }

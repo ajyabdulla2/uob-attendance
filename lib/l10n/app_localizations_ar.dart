@@ -2543,6 +2543,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dayAbsencesNone => 'لا يوجد غائب في هذا اليوم.';
 
   @override
+  String get fileShare => 'مشاركة';
+
+  @override
+  String get fileShareHelp => 'واتساب، البريد، Drive… أو أي تطبيق آخر';
+
+  @override
+  String get fileSave => 'حفظ في الهاتف';
+
+  @override
   String studentHistory(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
