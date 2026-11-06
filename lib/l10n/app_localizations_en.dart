@@ -2555,6 +2555,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dayAbsencesNone => 'No one was absent on this day.';
 
   @override
+  String get fileShare => 'Share';
+
+  @override
+  String get fileShareHelp => 'WhatsApp, e-mail, Drive… or any other app';
+
+  @override
+  String get fileSave => 'Save on this phone';
+
+  @override
   String studentHistory(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

@@ -1,9 +1,9 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/widgets/common_widgets.dart';
+import '../../../core/widgets/file_delivery.dart';
 import '../../../l10n/l10n.dart';
 import '../../../core/firebase/firebase_providers.dart';
 import '../../academic/domain/academic_year.dart';
@@ -64,21 +64,16 @@ Future<void> exportPdfBatch(
     final renderer = await ref.read(pdfRendererProvider.future);
     final issued = await _issue(ref, reports);
     final bytes = await renderer.renderAll(issued, brandingFor(l10n, m, year, DateTime.now()));
-    final saved = await FilePicker.saveFile(
-      fileName: fileName,
-      bytes: bytes,
-      mimeType: 'application/pdf',
-      type: FileType.custom,
-      allowedExtensions: const ['pdf'],
-    );
-    if (saved != null && context.mounted) showSnack(context, l10n.reportSaved);
+    if (!context.mounted) return;
+    final how = await deliverFile(context, bytes: bytes, fileName: fileName, mimeType: 'application/pdf', extensions: const ['pdf']);
+    if (how == FileDelivery.save && context.mounted) showSnack(context, l10n.reportSaved);
   } on Object catch (e) {
     if (context.mounted) showError(context, e);
   }
 }
 
-/// Asks PDF or Excel, renders [build]'s report and lets the user save it
-/// (Android: the system «save as» dialog; web: a download).
+/// Asks PDF or Excel, renders [build]'s report and lets the user save or
+/// share it ([deliverFile]; web: a download).
 Future<void> exportReport(
   BuildContext context,
   WidgetRef ref, {
@@ -133,14 +128,9 @@ Future<void> exportReport(
         mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         ext = 'xlsx';
     }
-    final saved = await FilePicker.saveFile(
-      fileName: report.fileName(ext),
-      bytes: bytes,
-      mimeType: mime,
-      type: FileType.custom,
-      allowedExtensions: [ext],
-    );
-    if (saved != null && context.mounted) showSnack(context, l10n.reportSaved);
+    if (!context.mounted) return;
+    final how = await deliverFile(context, bytes: bytes, fileName: report.fileName(ext), mimeType: mime, extensions: [ext]);
+    if (how == FileDelivery.save && context.mounted) showSnack(context, l10n.reportSaved);
   } on Object catch (e) {
     if (context.mounted) showError(context, e);
   }
@@ -165,14 +155,9 @@ Future<void> exportQrPoster(
       url: url,
       branding: brandingFor(l10n, m, null, DateTime.now()),
     );
-    final saved = await FilePicker.saveFile(
-      fileName: fileName,
-      bytes: bytes,
-      mimeType: 'application/pdf',
-      type: FileType.custom,
-      allowedExtensions: const ['pdf'],
-    );
-    if (saved != null && context.mounted) showSnack(context, l10n.reportSaved);
+    if (!context.mounted) return;
+    final how = await deliverFile(context, bytes: bytes, fileName: fileName, mimeType: 'application/pdf', extensions: const ['pdf']);
+    if (how == FileDelivery.save && context.mounted) showSnack(context, l10n.reportSaved);
   } on Object catch (e) {
     if (context.mounted) showError(context, e);
   }

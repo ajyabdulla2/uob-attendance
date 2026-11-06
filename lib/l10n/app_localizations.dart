@@ -4203,6 +4203,24 @@ abstract class AppLocalizations {
   /// **'لا يوجد غائب في هذا اليوم.'**
   String get dayAbsencesNone;
 
+  /// No description provided for @fileShare.
+  ///
+  /// In ar, this message translates to:
+  /// **'مشاركة'**
+  String get fileShare;
+
+  /// No description provided for @fileShareHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'واتساب، البريد، Drive… أو أي تطبيق آخر'**
+  String get fileShareHelp;
+
+  /// No description provided for @fileSave.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظ في الهاتف'**
+  String get fileSave;
+
   /// No description provided for @studentHistory.
   ///
   /// In ar, this message translates to:

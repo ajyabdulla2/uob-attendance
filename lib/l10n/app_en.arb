@@ -730,6 +730,9 @@
     }
   },
   "dayAbsencesNone": "No one was absent on this day.",
+  "fileShare": "Share",
+  "fileShareHelp": "WhatsApp, e-mail, Drive… or any other app",
+  "fileSave": "Save on this phone",
   "studentHistory": "{count, plural, =0{No absences or lateness} =1{One lecture not fully attended} other{{count} lectures not fully attended}}",
   "studentNoAbsences": "Attended every recorded lecture.",
   "studentSourceNote": "Includes the course's lectures by all its teachers as last downloaded (refresh in the register) and this phone's records.",
