@@ -116,13 +116,14 @@ class CoursePanelScreen extends ConsumerWidget {
                 tooltip: l10n.coursePanelExport,
                 icon: const Icon(Icons.download),
                 onPressed: () async {
-                  final whole = await chooseRegisterScope(
+                  final scope = await chooseRegisterScope(
                     context,
                     first: l10n.coursePanelSummaryAction,
                     firstIcon: Icons.table_chart_outlined,
                   );
-                  if (whole == null || !context.mounted) return;
-                  if (whole) return exportCourseRegister(context, ref, p);
+                  if (scope == null || !context.mounted) return;
+                  if (scope == RegisterScope.course) return exportCourseRegister(context, ref, p);
+                  if (scope == RegisterScope.day) return exportPanelDayAbsences(context, ref, p);
                   final formatDate = MaterialLocalizations.of(context).formatMediumDate;
                   final info = courseInfo(context, ref, p.course);
                   await exportReport(

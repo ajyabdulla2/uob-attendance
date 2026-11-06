@@ -4173,6 +4173,36 @@ abstract class AppLocalizations {
   /// **'نسبة الفترة = غيابات الفترة ÷ محاضرات صف الطالب في الفترة × 100. للاطلاع فقط: نسبة الفصل والتنبيه والإنذار لا تتغيّر.'**
   String get periodNote;
 
+  /// No description provided for @dayAbsencesAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'غيابات يوم'**
+  String get dayAbsencesAction;
+
+  /// No description provided for @dayAbsencesHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'أسماء الغائبين في يوم واحد تختاره'**
+  String get dayAbsencesHelp;
+
+  /// No description provided for @dayAbsencesTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'غيابات {course} ليوم {day}'**
+  String dayAbsencesTitle(String course, String day);
+
+  /// No description provided for @dayAbsencesCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدد الغائبين: {count}'**
+  String dayAbsencesCount(int count);
+
+  /// No description provided for @dayAbsencesNone.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد غائب في هذا اليوم.'**
+  String get dayAbsencesNone;
+
   /// No description provided for @studentHistory.
   ///
   /// In ar, this message translates to:

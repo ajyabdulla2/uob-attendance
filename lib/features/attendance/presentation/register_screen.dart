@@ -99,9 +99,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               tooltip: l10n.reportRegisterAction,
               icon: const Icon(Icons.download),
               onPressed: () async {
-                final whole = await chooseRegisterScope(context, first: l10n.reportThisClassAction, firstIcon: Icons.menu_book);
-                if (whole == null || !context.mounted) return;
-                if (whole) return loadAndExportCourseRegister(context, ref, a.courseId, withClasses: false);
+                final scope = await chooseRegisterScope(context, first: l10n.reportThisClassAction, firstIcon: Icons.menu_book);
+                if (scope == null || !context.mounted) return;
+                if (scope == RegisterScope.course) return loadAndExportCourseRegister(context, ref, a.courseId, withClasses: false);
+                if (scope == RegisterScope.day) {
+                  return exportDayAbsences(
+                    context,
+                    ref,
+                    courseName: a.courseName.isEmpty ? a.courseId : a.courseName,
+                    stageId: a.stageId,
+                    students: students.value!,
+                    sessions: sessions.value!,
+                    marks: marks.value ?? const {},
+                    year: ref.read(cachedYearProvider).value,
+                  );
+                }
                 final period = await chooseRegisterPeriod(context, sessions.value!);
                 if (period == null || !context.mounted) return;
                 final formatDate = MaterialLocalizations.of(context).formatMediumDate;
@@ -182,9 +194,23 @@ class ServerRegisterScreen extends ConsumerWidget {
               tooltip: l10n.reportRegisterAction,
               icon: const Icon(Icons.download),
               onPressed: () async {
-                final whole = await chooseRegisterScope(context, first: l10n.reportThisClassAction, firstIcon: Icons.menu_book);
-                if (whole == null || !context.mounted) return;
-                if (whole) return loadAndExportCourseRegister(context, ref, r.assignment.courseId, withClasses: true);
+                final scope = await chooseRegisterScope(context, first: l10n.reportThisClassAction, firstIcon: Icons.menu_book);
+                if (scope == null || !context.mounted) return;
+                if (scope == RegisterScope.course) {
+                  return loadAndExportCourseRegister(context, ref, r.assignment.courseId, withClasses: true);
+                }
+                if (scope == RegisterScope.day) {
+                  return exportDayAbsences(
+                    context,
+                    ref,
+                    courseName: r.courseName,
+                    stageId: r.assignment.stageId,
+                    students: r.students,
+                    sessions: r.sessions,
+                    marks: r.marks,
+                    year: r.year,
+                  );
+                }
                 final period = await chooseRegisterPeriod(context, r.sessions);
                 if (period == null || !context.mounted) return;
                 final formatDate = MaterialLocalizations.of(context).formatMediumDate;

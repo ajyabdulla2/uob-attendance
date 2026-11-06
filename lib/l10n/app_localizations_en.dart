@@ -2535,6 +2535,26 @@ class AppLocalizationsEn extends AppLocalizations {
       'Period percentage = absences in the period ÷ lectures of the student\'s classes in the period × 100. For information only: the semester percentage and warnings are unchanged.';
 
   @override
+  String get dayAbsencesAction => 'Absences of a day';
+
+  @override
+  String get dayAbsencesHelp =>
+      'Names of the students absent on one day you pick';
+
+  @override
+  String dayAbsencesTitle(String course, String day) {
+    return '$course absences on $day';
+  }
+
+  @override
+  String dayAbsencesCount(int count) {
+    return 'Absent: $count';
+  }
+
+  @override
+  String get dayAbsencesNone => 'No one was absent on this day.';
+
+  @override
   String studentHistory(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
