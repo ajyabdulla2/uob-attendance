@@ -32,6 +32,10 @@ on:
         description: 'Instead: send a Shorebird patch (Dart only) to this iOS release, e.g. 1.5.0+4'
         type: string
         default: ''
+      allow_native_diffs:
+        description: 'Patch even if the rebuilt native binary differs (e.g. a newer Xcode on the runner); only when no native code changed'
+        type: boolean
+        default: false
 
 concurrency:
   group: ios-${{ github.ref }}
@@ -54,6 +58,7 @@ jobs:
       CERTIFICATE_PRIVATE_KEY: ${{ secrets.IOS_CERTIFICATE_PRIVATE_KEY }}
       SHOREBIRD_TOKEN: ${{ (inputs.shorebird || inputs.patch_release != '') && secrets.SHOREBIRD_TOKEN || '' }}
       PATCH_RELEASE: ${{ inputs.patch_release }}
+      NATIVE_DIFFS: ${{ inputs.allow_native_diffs && '--allow-native-diffs' || '' }}
     steps:
       # Names only, never values.
       - name: Required secrets
@@ -118,7 +123,7 @@ jobs:
           # As in patch.yml: only the license list (NOTICES.Z) may differ
           # from the release's assets.
           set +e
-          shorebird patch ios --release-version="$PATCH_RELEASE" --no-codesign -- --dart-define=PUSH_URL="$PUSH_URL" 2>&1 | tee patch.log
+          shorebird patch ios --release-version="$PATCH_RELEASE" --no-codesign $NATIVE_DIFFS -- --dart-define=PUSH_URL="$PUSH_URL" 2>&1 | tee patch.log
           status=${PIPESTATUS[0]}
           set -e
           [ "$status" -eq 0 ] && exit 0
@@ -129,7 +134,7 @@ jobs:
             echo "::error::The patch changes assets the release does not have (see above). Use only icons/assets present in release $PATCH_RELEASE, or build a new release."
             exit 1
           fi
-          shorebird patch ios --release-version="$PATCH_RELEASE" --no-codesign --allow-asset-diffs -- --dart-define=PUSH_URL="$PUSH_URL"
+          shorebird patch ios --release-version="$PATCH_RELEASE" --no-codesign --allow-asset-diffs $NATIVE_DIFFS -- --dart-define=PUSH_URL="$PUSH_URL"
 
       # CFBundleVersion must grow with every upload of the same version.
       - name: Build IPA
