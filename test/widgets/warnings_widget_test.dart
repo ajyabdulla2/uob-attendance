@@ -147,11 +147,13 @@ void main() {
     await tester.tap(find.byKey(const Key('home.warnings')));
     await tester.pumpAndSettle();
 
-    // The button asks the days.
+    // The button opens «تقرير غياب المرحلة» on this stage (the whole
+    // semester: four lectures, 1, 2, 5 and 20).
     await tester.tap(find.byKey(const Key('warn.period')));
     await tester.pumpAndSettle();
-    expect(find.byType(DateRangePickerDialog), findsOneWidget);
-    Navigator.of(tester.element(find.byType(DateRangePickerDialog))).pop();
+    expect(find.byKey(const Key('period.stage')), findsOneWidget);
+    expect(find.textContaining('2 غياب من 4 محاضرة'), findsOneWidget);
+    Navigator.of(tester.element(find.byKey(const Key('period.stage')))).pop();
     await tester.pumpAndSettle();
 
     // 1–10/10: three lectures (1, 2, 5); the 20th is outside.
@@ -160,10 +162,55 @@ void main() {
     )));
     await tester.pumpAndSettle();
     expect(find.text('عدد الطلبة الغائبين في الفترة: 2'), findsOneWidget, reason: 'the third student\'s absence is excused');
-    expect(find.textContaining('2 غياب من 3 محاضرة'), findsOneWidget);
-    expect(find.text('66.7%'), findsOneWidget);
-    expect(find.text('33.3%'), findsOneWidget);
+    expect(find.textContaining('2 غياب من 3 محاضرة (66.7%)'), findsOneWidget);
+    expect(find.textContaining('1 غياب من 3 محاضرة (33.3%)'), findsOneWidget);
     expect(find.byKey(const Key('period.export')), findsOneWidget);
+
+    // At least 2 hours: only the student absent twice.
+    await tester.tap(find.byKey(const Key('period.min')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('2').last);
+    await tester.pumpAndSettle();
+    expect(find.text('عدد الطلبة الغائبين في الفترة: 1'), findsOneWidget);
+    expect(find.byKey(const Key('period.student.1')), findsOneWidget);
+  });
+
+  testWidgets('a letter issued outside the app is entered and the lists count it', (tester) async {
+    const sm = 'sm@uobasrah.edu.iq';
+    final db = await seed();
+    await pumpApp(
+      tester,
+      firestore: db,
+      user: MockUser(email: sm, isEmailVerified: true),
+      profile: AppUser(email: sm, name: 'مسؤول', roles: const {UserRole.stageManager}, stageScopes: [stage.id]),
+    );
+    await tester.tap(find.byKey(const Key('home.warnings')));
+    await tester.pumpAndSettle();
+    expect(find.text('تنبيه 1'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('warn.tab.notices')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('notice.add')));
+    await tester.pumpAndSettle();
+    // Without a student and a course it is refused.
+    await tester.tap(find.byKey(const Key('notice.save')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('notice.error')), findsOneWidget);
+    await tester.enterText(find.byKey(const Key('notice.student.field')), 'حسن جواد');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(names[2]).last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(Key('notice.course.${course.id}')));
+    await tester.tap(find.byKey(const Key('notice.save')));
+    await tester.pumpAndSettle();
+    final saved = (await db.collection('externalNotices').get()).docs.single.data();
+    expect([saved['studentId'], saved['level'], saved['courseIds']], ['3', 'alert', [course.id]]);
+    expect(find.text(names[2]), findsOneWidget, reason: 'listed in the tab');
+
+    // حسن (his only absence excused) now stands at تنبيه by the letter.
+    await tester.tap(find.byKey(const Key('warn.tab.lists')));
+    await tester.pumpAndSettle();
+    expect(find.text('تنبيه 2'), findsOneWidget);
   });
 
   testWidgets('an admin turns a department decision into a locked deanery decision', (tester) async {

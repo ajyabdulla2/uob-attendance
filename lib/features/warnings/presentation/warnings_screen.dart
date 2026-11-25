@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/domain/stage_ref.dart';
+import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../l10n/l10n.dart';
@@ -15,7 +17,12 @@ import '../../stats/domain/standings.dart';
 import '../../stats/domain/student_course_stat.dart';
 import '../application/warnings_providers.dart';
 import '../domain/warning_list.dart';
-import 'period_absences_screen.dart';
+import '../../../core/utils/arabic_text.dart';
+import '../../courses/application/courses_providers.dart';
+import '../../courses/domain/course.dart';
+import '../../students/application/students_providers.dart';
+import '../../students/domain/student.dart';
+import '../domain/external_notice.dart';
 
 /// What the list shows: one level, or students one absence short of the next.
 enum _View { alert, warning, dismissal, edge }
@@ -47,7 +54,7 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
     if (_courseId != null && s.course.id != _courseId) return false;
     if (_section != null && s.student.section != _section) return false;
     final level = _levelOf(v);
-    return level == null ? s.summary.untilNext == 1 && s.level != WarningLevel.dismissal : s.level == level;
+    return level == null ? s.untilNext == 1 && s.level != WarningLevel.dismissal : s.level == level;
   }
 
   /// A student's row: their summary over every course of the stage.
@@ -149,7 +156,7 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
     final stage = _stage != null && stages.contains(_stage) ? _stage : stages.firstOrNull;
 
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.warnTitle),
@@ -174,6 +181,7 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
           bottom: TabBar(tabs: [
             Tab(key: const Key('warn.tab.lists'), text: l10n.warnTabLists),
             Tab(key: const Key('warn.tab.decisions'), text: l10n.warnTabDecisions),
+            Tab(key: const Key('warn.tab.notices'), text: l10n.warnTabNotices),
           ]),
         ),
         body: stage == null
@@ -199,6 +207,7 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
                     child: TabBarView(children: [
                       _lists(stage),
                       _DecisionsTab(stage: stage),
+                      _NoticesTab(stage: stage),
                     ]),
                   ),
                 ],
@@ -294,7 +303,11 @@ class _WarningsScreenState extends ConsumerState<WarningsScreen> {
                   key: const Key('warn.period'),
                   icon: const Icon(Icons.date_range),
                   label: Text(l10n.periodAction),
-                  onPressed: () => openPeriodAbsences(context, stage, courseId: _courseId, section: _section),
+                  onPressed: () => context.push(Uri(path: Routes.absenceReport, queryParameters: {
+                    's': stage.id,
+                    'c': ?_courseId,
+                    'sec': ?_section,
+                  }).toString()),
                 ),
               ),
             ),
@@ -390,8 +403,9 @@ class _StandingTile extends StatelessWidget {
     final l10n = context.l10n;
     final palette = StatusPalette.of(context);
     final s = standing.summary;
-    final color = palette.forLevel(s.level);
-    final next = s.nextLevel;
+    final color = palette.forLevel(standing.level);
+    final next = standing.nextLevel;
+    final notice = standing.notice;
     return ListTile(
       key: Key('warn.row.${standing.student.id}.${standing.course.id}${standing.type == null ? '' : '.${standing.type}'}'),
       leading: CircleAvatar(
@@ -407,7 +421,9 @@ class _StandingTile extends StatelessWidget {
         ].join(' · '),
         l10n.warnAbsences(s.absences, s.planned, s.percent.toStringAsFixed(1)),
         if (s.excused > 0) l10n.warnExcused(s.excused),
-        if (next != null && s.untilNext == 1) l10n.warnOneMore(l10n.warningLevel(next)),
+        if (notice != null)
+          l10n.noticeLine(l10n.warningLevel(notice.level), MaterialLocalizations.of(context).formatMediumDate(notice.date)),
+        if (next != null && standing.untilNext == 1) l10n.warnOneMore(l10n.warningLevel(next)),
       ].join('\n')),
       isThreeLine: true,
       onTap: onTap,
@@ -695,6 +711,261 @@ class _OrderDialogState extends State<_OrderDialog> {
               : () => Navigator.pop(context, (_number.text.trim(), DateTime.utc(date.year, date.month, date.day))),
           child: Text(l10n.warnFinalize),
         ),
+      ],
+    );
+  }
+}
+
+/// «كتب خارجية»: letters issued outside the app, so the lists count them.
+class _NoticesTab extends ConsumerWidget {
+  const _NoticesTab({required this.stage});
+
+  final StageRef stage;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final palette = StatusPalette.of(context);
+    final m = MaterialLocalizations.of(context);
+    final students = {for (final s in ref.watch(stageStudentsProvider(stage.id)).value ?? const <Student>[]) s.id: s};
+    final courses = {for (final c in ref.watch(stageCoursesProvider(stage.id)).value ?? const <Course>[]) c.id: c};
+    return AsyncBody<List<ExternalNotice>>(
+      value: ref.watch(stageNoticesProvider(stage.id)),
+      data: (notices) => ListView(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        children: [
+          Text(l10n.noticeHelp, style: theme.textTheme.bodySmall),
+          const SizedBox(height: 8),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: FilledButton.icon(
+              key: const Key('notice.add'),
+              icon: const Icon(Icons.add),
+              label: Text(l10n.noticeAdd),
+              onPressed: () => showDialog<void>(
+                context: context,
+                builder: (_) => _NoticeDialog(stage: stage),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          if (notices.isEmpty)
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: MessageView(icon: Icons.email_outlined, title: l10n.noticeEmpty),
+            ),
+          for (final n in notices)
+            Card(
+              key: Key('notice.${n.id}'),
+              child: ListTile(
+                leading: Icon(StatusPalette.iconForLevel(n.level), color: palette.forLevel(n.level)),
+                title: Text(students[n.studentId]?.fullName ?? n.studentId),
+                subtitle: Text([
+                  '${l10n.warningLevel(n.level)} · ${m.formatMediumDate(n.date)}${n.reference.isEmpty ? '' : ' · ${n.reference}'}',
+                  [for (final c in n.courseIds) courses[c]?.name ?? c].join('، '),
+                ].join('\n')),
+                isThreeLine: true,
+                trailing: IconButton(
+                  key: Key('notice.delete.${n.id}'),
+                  tooltip: l10n.delete,
+                  icon: const Icon(Icons.delete_outline),
+                  onPressed: () async {
+                    final ok = await confirmDialog(
+                      context,
+                      title: l10n.noticeDeleteTitle,
+                      body: l10n.noticeDeleteBody,
+                      confirmLabel: l10n.delete,
+                      destructive: true,
+                    );
+                    if (!ok || !context.mounted) return;
+                    try {
+                      await ref.read(externalNoticesRepositoryProvider).delete(n, actor: ref.read(signedInUserProvider).id);
+                    } on Object catch (e) {
+                      if (context.mounted) showError(context, e);
+                    }
+                  },
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _NoticeDialog extends ConsumerStatefulWidget {
+  const _NoticeDialog({required this.stage});
+
+  final StageRef stage;
+
+  @override
+  ConsumerState<_NoticeDialog> createState() => _NoticeDialogState();
+}
+
+class _NoticeDialogState extends ConsumerState<_NoticeDialog> {
+  Student? _student;
+  WarningLevel _level = WarningLevel.alert;
+  DateTime _date = () {
+    final now = DateTime.now();
+    return DateTime.utc(now.year, now.month, now.day);
+  }();
+  final _courses = <String>{};
+  final _reference = TextEditingController();
+  bool _busy = false;
+  String? _error;
+
+  @override
+  void dispose() {
+    _reference.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    final l10n = context.l10n;
+    final student = _student;
+    if (student == null || _courses.isEmpty) {
+      setState(() => _error = l10n.noticeRequired);
+      return;
+    }
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      await ref.read(externalNoticesRepositoryProvider).add(
+            ExternalNotice(
+              studentId: student.id,
+              stageId: widget.stage.id,
+              courseIds: _courses.toList()..sort(),
+              level: _level,
+              date: _date,
+              reference: _reference.text,
+            ),
+            actor: ref.read(signedInUserProvider).id,
+          );
+      if (!mounted) return;
+      final messenger = ScaffoldMessenger.of(context);
+      Navigator.pop(context);
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(l10n.noticeSaved)));
+    } on Object catch (e) {
+      if (mounted) showError(context, e);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final students = ref.watch(stageStudentsProvider(widget.stage.id)).value ?? const <Student>[];
+    final courses = ref.watch(stageCoursesProvider(widget.stage.id)).value ?? const <Course>[];
+    return AlertDialog(
+      title: Text(l10n.noticeAdd),
+      content: SizedBox(
+        width: 440,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Autocomplete<Student>(
+                key: const Key('notice.student'),
+                displayStringForOption: (s) => s.fullName,
+                optionsBuilder: (v) {
+                  final q = ArabicText.normalizeForCompare(v.text);
+                  final digits = ArabicText.normalizeDigits(v.text.trim());
+                  if (q.isEmpty) return const Iterable<Student>.empty();
+                  return students
+                      .where((s) => ArabicText.normalizeForCompare(s.fullName).contains(q) || s.universityId.contains(digits))
+                      .take(20);
+                },
+                onSelected: (s) => setState(() => _student = s),
+                fieldViewBuilder: (context, controller, focus, onSubmit) => TextField(
+                  key: const Key('notice.student.field'),
+                  controller: controller,
+                  focusNode: focus,
+                  enabled: !_busy,
+                  decoration: InputDecoration(labelText: l10n.noticeStudent, prefixIcon: const Icon(Icons.search)),
+                  onChanged: (_) {
+                    if (_student != null) setState(() => _student = null);
+                  },
+                ),
+              ),
+              DropdownButtonFormField<WarningLevel>(
+                key: const Key('notice.level'),
+                initialValue: _level,
+                decoration: InputDecoration(labelText: l10n.noticeLevel),
+                items: [
+                  for (final l in const [WarningLevel.alert, WarningLevel.warning, WarningLevel.dismissal])
+                    DropdownMenuItem(value: l, child: Text(l10n.warningLevel(l))),
+                ],
+                onChanged: _busy ? null : (v) => setState(() => _level = v ?? _level),
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                key: const Key('notice.date'),
+                icon: const Icon(Icons.event),
+                label: Text('${l10n.noticeDate}: ${MaterialLocalizations.of(context).formatMediumDate(_date)}'),
+                onPressed: _busy
+                    ? null
+                    : () async {
+                        final now = DateTime.now();
+                        final d = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime(_date.year, _date.month, _date.day),
+                          firstDate: DateTime(now.year - 1),
+                          lastDate: DateTime(now.year, now.month, now.day),
+                        );
+                        if (d != null) setState(() => _date = DateTime.utc(d.year, d.month, d.day));
+                      },
+              ),
+              const SizedBox(height: 8),
+              Text(l10n.noticeCourses, style: theme.textTheme.titleSmall),
+              CheckboxListTile(
+                key: const Key('notice.course.all'),
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+                title: Text(l10n.noticeAllCourses),
+                value: courses.isNotEmpty && _courses.length == courses.length,
+                onChanged: _busy
+                    ? null
+                    : (v) => setState(() {
+                          _courses.clear();
+                          if (v == true) _courses.addAll(courses.map((c) => c.id));
+                        }),
+              ),
+              for (final c in courses)
+                CheckboxListTile(
+                  key: Key('notice.course.${c.id}'),
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
+                  title: Text(c.name),
+                  value: _courses.contains(c.id),
+                  onChanged: _busy
+                      ? null
+                      : (v) => setState(() => v == true ? _courses.add(c.id) : _courses.remove(c.id)),
+                ),
+              TextField(
+                key: const Key('notice.reference'),
+                controller: _reference,
+                enabled: !_busy,
+                decoration: InputDecoration(labelText: l10n.noticeReference),
+              ),
+              if (_error != null) ...[
+                const SizedBox(height: 8),
+                Text(_error!, key: const Key('notice.error'), style: TextStyle(color: theme.colorScheme.error)),
+              ],
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(onPressed: _busy ? null : () => Navigator.pop(context), child: Text(l10n.cancel)),
+        FilledButton(key: const Key('notice.save'), onPressed: _busy ? null : _save, child: Text(l10n.save)),
       ],
     );
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:uob_attendance/core/domain/stage_ref.dart';
 import 'package:uob_attendance/features/academic/domain/academic_year.dart';
@@ -6,9 +7,11 @@ import 'package:uob_attendance/features/attendance/domain/attendance_session.dar
 import 'package:uob_attendance/features/courses/domain/course.dart';
 import 'package:uob_attendance/features/courses/domain/practical_group.dart';
 import 'package:uob_attendance/features/leaves/domain/leave.dart';
+import 'package:uob_attendance/features/reports/application/report_builders.dart';
 import 'package:uob_attendance/features/stats/domain/period_standings.dart';
 import 'package:uob_attendance/features/stats/domain/student_course_stat.dart';
 import 'package:uob_attendance/features/students/domain/student.dart';
+import 'package:uob_attendance/l10n/app_localizations.dart';
 
 void main() {
   const stage = StageRef(2, Shift.morning);
@@ -116,4 +119,26 @@ void main() {
       ('practical', 1, 2),
     ]);
   });
+
+  test('«تقرير غياب المرحلة»: by student, courses with at least the chosen hours, Excel columns per course', () {
+    final rows = groupByStudent(build(combined: false), minAbsences: 1);
+    expect(rows.single.student.id, ali.id);
+    expect(rows.single.total, 2);
+    expect(groupByStudent(build(combined: false), minAbsences: 2), isEmpty, reason: 'one absence in each part');
+    expect(groupByStudent(build(), minAbsences: 2).single.total, 2);
+
+    final l10n = lookupAppLocalizations(const Locale('ar'));
+    final report = ReportBuilders.periodAbsences(
+      l10n,
+      stageLabel: 'الثانية',
+      periodLabel: 'الفصل كله',
+      courseName: null,
+      minAbsences: 1,
+      rows: rows,
+    );
+    final t = report.tables.single;
+    expect([for (final c in t.columns) c.title].sublist(4), ['قواعد البيانات\nنظري', 'قواعد البيانات\nعملي', 'المجموع']);
+    expect([for (final c in t.rows.single) c.text].sublist(4), ['1', '1', '2']);
+  });
 }
+

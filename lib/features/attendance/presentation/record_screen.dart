@@ -379,6 +379,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             for (final s in list)
               if (ArabicText.normalizeForCompare(s.fullName).contains(q) || s.universityId.contains(qDigits)) s,
           ];
+    final serial = {for (final (i, s) in list.indexed) s.id: i + 1};
     final palette = StatusPalette.of(context);
     final theme = Theme.of(context);
     final m = MaterialLocalizations.of(context);
@@ -466,11 +467,38 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                       final mark = _markOf(s.id);
                       final color = palette.forStatus(mark.status);
                       final last = s.id == _lastTapped;
-                      return ListTile(
+                      // Any touch marks the row — a tap, or a finger landing
+                      // on it to scroll — so the caller sees where they
+                      // reached; only a tap changes the status.
+                      return Listener(
+                        onPointerDown: (_) {
+                          if (_lastTapped != s.id) setState(() => _lastTapped = s.id);
+                        },
+                        child: ListTile(
                         key: Key('record.student.${s.id}'),
                         visualDensity: VisualDensity.compact,
                         tileColor: last ? theme.colorScheme.primaryContainer.withValues(alpha: 0.55) : null,
-                        leading: Icon(StatusPalette.iconForStatus(mark.status), color: color),
+                        leading: SizedBox(
+                          width: 56,
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 26,
+                                child: Text(
+                                  '${serial[s.id]}',
+                                  key: Key('record.serial.${s.id}'),
+                                  textAlign: TextAlign.center,
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                    fontWeight: last ? FontWeight.bold : null,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              Icon(StatusPalette.iconForStatus(mark.status), color: color),
+                            ],
+                          ),
+                        ),
                         title: Text(
                           s.fullName,
                           key: last ? const Key('record.lastTapped') : null,
@@ -486,6 +514,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                             ? (existing == null || pending.contains(s.id) ? null : () => _requestEdit(a, sid, s))
                             : () => _toggle(s),
                         onLongPress: readOnly ? null : () => _editMark(s),
+                        ),
                       );
                     },
                   ),

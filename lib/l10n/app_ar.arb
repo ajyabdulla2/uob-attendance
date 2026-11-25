@@ -1750,7 +1750,7 @@
   "auditEnd": "نهاية السجل",
   "auditBefore": "قبل",
   "auditAfter": "بعد",
-  "auditActionLabel": "{action, select, session_missed{تسجيل محاضرة فائتة} session_exclude{جعل محاضرة غير محتسبة} session_include{إرجاع محاضرة محتسبة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_create{إضافة طالب} student_update{تعديل طالب} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} sessions_delete{حذف محاضرات} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} config_update{تعديل إصدار التطبيق} other{{action}}}",
+  "auditActionLabel": "{action, select, session_missed{تسجيل محاضرة فائتة} session_exclude{جعل محاضرة غير محتسبة} session_include{إرجاع محاضرة محتسبة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_create{إضافة طالب} student_update{تعديل طالب} student_transfer{نقل طالب إلى مرحلة أخرى} notice_create{إضافة كتاب خارجي} notice_delete{حذف كتاب خارجي} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} sessions_delete{حذف محاضرات} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} config_update{تعديل إصدار التطبيق} other{{action}}}",
   "@auditActionLabel": {
     "placeholders": {
       "action": {
@@ -1865,9 +1865,9 @@
   "reportCourseRegisterNote": "ن = نظري، ع = عملي ومعه اسم المجموعة. الخانة الفارغة محاضرة لصف آخر غير صف الطالب.",
   "registerTheoryShort": "ن",
   "registerPracticalShort": "ع",
-  "periodAction": "غياب فترة محددة",
-  "periodTitle": "غياب فترة",
-  "periodReportTitle": "غياب الطلبة لفترة محددة: {stage}",
+  "periodAction": "تقرير غياب المرحلة",
+  "periodTitle": "تقرير غياب المرحلة",
+  "periodReportTitle": "غياب طلبة {stage}",
   "@periodReportTitle": {
     "placeholders": {
       "stage": {
@@ -1924,6 +1924,91 @@
   "fileShare": "مشاركة",
   "fileShareHelp": "واتساب، البريد، Drive… أو أي تطبيق آخر",
   "fileSave": "حفظ في الهاتف",
+  "transferAction": "نقل إلى مرحلة أخرى",
+  "transferTitle": "نقل الطالب إلى مرحلة أخرى",
+  "transferFrom": "المرحلة الحالية: {stage}",
+  "@transferFrom": {
+    "placeholders": {
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "transferTo": "المرحلة الجديدة",
+  "transferHelp": "يُنقل الطالب بكل تفاصيله: غياباته في كل مادة تُضاف إلى المادة بالرمز نفسه في المرحلة الجديدة فتستمر نسبته، وإجازاته، ويخرج من مجاميع العملي القديمة إلى ما تختاره هنا. سجلات المحاضرات القديمة تبقى كما هي.",
+  "transferDone": "نُقل {name} إلى {stage}.",
+  "@transferDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "stage": {
+        "type": "String"
+      }
+    }
+  },
+  "transferNotCarried": "لم تُنقل غيابات مواد ليست في المرحلة الجديدة: {codes}",
+  "@transferNotCarried": {
+    "placeholders": {
+      "codes": {
+        "type": "String"
+      }
+    }
+  },
+  "periodWholeSemester": "الفصل كله",
+  "periodDayChoice": "يوم واحد",
+  "periodOneDay": "يوم {day}",
+  "@periodOneDay": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "periodMinHours": "الحد الأدنى للساعات",
+  "periodMinHoursLine": "من غاب {count} ساعة أو أكثر في مادة",
+  "@periodMinHoursLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "periodHours": "{count} ساعة",
+  "@periodHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "periodTotal": "المجموع",
+  "menuAbsenceReport": "تقرير غياب المرحلة",
+  "warnTabNotices": "كتب خارجية",
+  "noticeHelp": "كتاب تنبيه أو إنذار صدر للطالب خارج التطبيق (مثلاً ورقياً قبل العمل بالتطبيق): أضِفه هنا ليُحتسب. يبقى الطالب في المستوى نفسه على الأقل في المواد التي شملها، وأي غياب جديد بعد تاريخه ينقله إلى المستوى التالي.",
+  "noticeAdd": "إضافة كتاب صادر خارج التطبيق",
+  "noticeStudent": "الطالب (الاسم أو الرقم الجامعي)",
+  "noticeLevel": "نوع الكتاب",
+  "noticeDate": "تاريخ الكتاب",
+  "noticeCourses": "المواد التي شملها الكتاب",
+  "noticeAllCourses": "كل مواد المرحلة",
+  "noticeReference": "رقم الكتاب (اختياري)",
+  "noticeEmpty": "لا توجد كتب خارجية لهذه المرحلة.",
+  "noticeSaved": "أُضيف الكتاب.",
+  "noticeRequired": "اختر الطالب من القائمة ومادة واحدة على الأقل.",
+  "noticeDeleteTitle": "حذف الكتاب؟",
+  "noticeDeleteBody": "يعود مستوى الطالب إلى ما تحسبه نسبة غيابه في التطبيق.",
+  "noticeLine": "كتاب خارجي: {level} بتاريخ {date}",
+  "@noticeLine": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "studentHistory": "{count, plural, =0{لا غياب ولا تأخير} =1{محاضرة واحدة لم يحضرها كاملة} =2{محاضرتان لم يحضرهما كاملتين} few{{count} محاضرات لم يحضرها كاملة} other{{count} محاضرة لم يحضرها كاملة}}",
   "studentNoAbsences": "حضر كل المحاضرات المسجّلة.",
   "studentSourceNote": "يشمل محاضرات المادة لكل تدريسييها كما نُزّلت آخر مرة (زر التحديث في السجل)، وتسجيلات هذا الهاتف.",

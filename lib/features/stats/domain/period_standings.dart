@@ -36,6 +36,11 @@ final class PeriodStanding {
   final int lectures;
 
   double get percent => lectures == 0 ? 0 : absences * 100 / lectures;
+
+  /// Course code order, theory before practical.
+  static int compareCourse(PeriodStanding a, PeriodStanding b) => a.course.code != b.course.code
+      ? a.course.code.compareTo(b.course.code)
+      : (a.type == 'practical' ? 1 : 0).compareTo(b.type == 'practical' ? 1 : 0);
 }
 
 /// Students with at least one counted absence between [from] and [to]
@@ -113,4 +118,36 @@ List<PeriodStanding> buildPeriodStandings({
     return byPercent != 0 ? byPercent : Student.compare(a.student, b.student);
   });
   return out;
+}
+
+/// One student of «تقرير غياب المرحلة»: their courses with at least the
+/// chosen number of absences in the period.
+final class StudentPeriodRow {
+  const StudentPeriodRow(this.student, this.courses);
+
+  final Student student;
+  final List<PeriodStanding> courses;
+
+  int get total => courses.fold(0, (sum, c) => sum + c.absences);
+}
+
+/// [rows] by student, keeping only courses with at least [minAbsences]
+/// absences (hours) and students left with one: most absences first.
+List<StudentPeriodRow> groupByStudent(Iterable<PeriodStanding> rows, {int minAbsences = 1}) {
+  final byStudent = <String, List<PeriodStanding>>{};
+  final students = <String, Student>{};
+  for (final r in rows) {
+    if (r.absences < minAbsences) continue;
+    (byStudent[r.student.id] ??= []).add(r);
+    students[r.student.id] = r.student;
+  }
+  final out = [
+    for (final MapEntry(key: id, value: courses) in byStudent.entries)
+      StudentPeriodRow(
+        students[id]!,
+        courses..sort(PeriodStanding.compareCourse),
+      ),
+  ];
+  return out
+    ..sort((a, b) => a.total != b.total ? b.total.compareTo(a.total) : Student.compare(a.student, b.student));
 }

@@ -3864,7 +3864,7 @@ abstract class AppLocalizations {
   /// No description provided for @auditActionLabel.
   ///
   /// In ar, this message translates to:
-  /// **'{action, select, session_missed{تسجيل محاضرة فائتة} session_exclude{جعل محاضرة غير محتسبة} session_include{إرجاع محاضرة محتسبة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_create{إضافة طالب} student_update{تعديل طالب} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} sessions_delete{حذف محاضرات} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} config_update{تعديل إصدار التطبيق} other{{action}}}'**
+  /// **'{action, select, session_missed{تسجيل محاضرة فائتة} session_exclude{جعل محاضرة غير محتسبة} session_include{إرجاع محاضرة محتسبة} record_update{تعديل حضور طالب} editRequest_reject{رفض طلب تعديل} leave_create{إضافة إجازة} leave_delete{حذف إجازة} warnings_create{إنشاء قرار} warnings_regenerate{إعادة توليد قرار} warnings_delete{حذف قرار} warnings_finalize{تحويل قرار إلى العمادة} user_create{إضافة حساب} user_update{تعديل حساب} user_approve{قبول طلب انضمام} user_reject{رفض طلب انضمام} user_rename{تغيير بريد حساب} users_delete{حذف حسابات} student_create{إضافة طالب} student_update{تعديل طالب} student_transfer{نقل طالب إلى مرحلة أخرى} notice_create{إضافة كتاب خارجي} notice_delete{حذف كتاب خارجي} student_rename{تغيير رقم جامعي} students_delete{حذف طلبة} course_rename{تغيير رمز مادة} sessions_delete{حذف محاضرات} courses_delete{حذف مواد} import_students{استيراد طلبة} import_teachers{استيراد تدريسيين} import_courses{استيراد مواد} year_update{تعديل إعدادات السنة} backup_export{نسخة احتياطية} backup_restore{استعادة نسخة احتياطية} config_update{تعديل إصدار التطبيق} other{{action}}}'**
   String auditActionLabel(String action);
 
   /// No description provided for @deptAction.
@@ -4116,19 +4116,19 @@ abstract class AppLocalizations {
   /// No description provided for @periodAction.
   ///
   /// In ar, this message translates to:
-  /// **'غياب فترة محددة'**
+  /// **'تقرير غياب المرحلة'**
   String get periodAction;
 
   /// No description provided for @periodTitle.
   ///
   /// In ar, this message translates to:
-  /// **'غياب فترة'**
+  /// **'تقرير غياب المرحلة'**
   String get periodTitle;
 
   /// No description provided for @periodReportTitle.
   ///
   /// In ar, this message translates to:
-  /// **'غياب الطلبة لفترة محددة: {stage}'**
+  /// **'غياب طلبة {stage}'**
   String periodReportTitle(String stage);
 
   /// No description provided for @periodCount.
@@ -4220,6 +4220,186 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'حفظ في الهاتف'**
   String get fileSave;
+
+  /// No description provided for @transferAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'نقل إلى مرحلة أخرى'**
+  String get transferAction;
+
+  /// No description provided for @transferTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'نقل الطالب إلى مرحلة أخرى'**
+  String get transferTitle;
+
+  /// No description provided for @transferFrom.
+  ///
+  /// In ar, this message translates to:
+  /// **'المرحلة الحالية: {stage}'**
+  String transferFrom(String stage);
+
+  /// No description provided for @transferTo.
+  ///
+  /// In ar, this message translates to:
+  /// **'المرحلة الجديدة'**
+  String get transferTo;
+
+  /// No description provided for @transferHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُنقل الطالب بكل تفاصيله: غياباته في كل مادة تُضاف إلى المادة بالرمز نفسه في المرحلة الجديدة فتستمر نسبته، وإجازاته، ويخرج من مجاميع العملي القديمة إلى ما تختاره هنا. سجلات المحاضرات القديمة تبقى كما هي.'**
+  String get transferHelp;
+
+  /// No description provided for @transferDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'نُقل {name} إلى {stage}.'**
+  String transferDone(String name, String stage);
+
+  /// No description provided for @transferNotCarried.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تُنقل غيابات مواد ليست في المرحلة الجديدة: {codes}'**
+  String transferNotCarried(String codes);
+
+  /// No description provided for @periodWholeSemester.
+  ///
+  /// In ar, this message translates to:
+  /// **'الفصل كله'**
+  String get periodWholeSemester;
+
+  /// No description provided for @periodDayChoice.
+  ///
+  /// In ar, this message translates to:
+  /// **'يوم واحد'**
+  String get periodDayChoice;
+
+  /// No description provided for @periodOneDay.
+  ///
+  /// In ar, this message translates to:
+  /// **'يوم {day}'**
+  String periodOneDay(String day);
+
+  /// No description provided for @periodMinHours.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحد الأدنى للساعات'**
+  String get periodMinHours;
+
+  /// No description provided for @periodMinHoursLine.
+  ///
+  /// In ar, this message translates to:
+  /// **'من غاب {count} ساعة أو أكثر في مادة'**
+  String periodMinHoursLine(int count);
+
+  /// No description provided for @periodHours.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} ساعة'**
+  String periodHours(int count);
+
+  /// No description provided for @periodTotal.
+  ///
+  /// In ar, this message translates to:
+  /// **'المجموع'**
+  String get periodTotal;
+
+  /// No description provided for @menuAbsenceReport.
+  ///
+  /// In ar, this message translates to:
+  /// **'تقرير غياب المرحلة'**
+  String get menuAbsenceReport;
+
+  /// No description provided for @warnTabNotices.
+  ///
+  /// In ar, this message translates to:
+  /// **'كتب خارجية'**
+  String get warnTabNotices;
+
+  /// No description provided for @noticeHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'كتاب تنبيه أو إنذار صدر للطالب خارج التطبيق (مثلاً ورقياً قبل العمل بالتطبيق): أضِفه هنا ليُحتسب. يبقى الطالب في المستوى نفسه على الأقل في المواد التي شملها، وأي غياب جديد بعد تاريخه ينقله إلى المستوى التالي.'**
+  String get noticeHelp;
+
+  /// No description provided for @noticeAdd.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة كتاب صادر خارج التطبيق'**
+  String get noticeAdd;
+
+  /// No description provided for @noticeStudent.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطالب (الاسم أو الرقم الجامعي)'**
+  String get noticeStudent;
+
+  /// No description provided for @noticeLevel.
+  ///
+  /// In ar, this message translates to:
+  /// **'نوع الكتاب'**
+  String get noticeLevel;
+
+  /// No description provided for @noticeDate.
+  ///
+  /// In ar, this message translates to:
+  /// **'تاريخ الكتاب'**
+  String get noticeDate;
+
+  /// No description provided for @noticeCourses.
+  ///
+  /// In ar, this message translates to:
+  /// **'المواد التي شملها الكتاب'**
+  String get noticeCourses;
+
+  /// No description provided for @noticeAllCourses.
+  ///
+  /// In ar, this message translates to:
+  /// **'كل مواد المرحلة'**
+  String get noticeAllCourses;
+
+  /// No description provided for @noticeReference.
+  ///
+  /// In ar, this message translates to:
+  /// **'رقم الكتاب (اختياري)'**
+  String get noticeReference;
+
+  /// No description provided for @noticeEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد كتب خارجية لهذه المرحلة.'**
+  String get noticeEmpty;
+
+  /// No description provided for @noticeSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُضيف الكتاب.'**
+  String get noticeSaved;
+
+  /// No description provided for @noticeRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر الطالب من القائمة ومادة واحدة على الأقل.'**
+  String get noticeRequired;
+
+  /// No description provided for @noticeDeleteTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف الكتاب؟'**
+  String get noticeDeleteTitle;
+
+  /// No description provided for @noticeDeleteBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'يعود مستوى الطالب إلى ما تحسبه نسبة غيابه في التطبيق.'**
+  String get noticeDeleteBody;
+
+  /// No description provided for @noticeLine.
+  ///
+  /// In ar, this message translates to:
+  /// **'كتاب خارجي: {level} بتاريخ {date}'**
+  String noticeLine(String level, String date);
 
   /// No description provided for @studentHistory.
   ///

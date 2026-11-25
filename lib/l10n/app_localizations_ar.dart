@@ -2308,6 +2308,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'users_delete': 'حذف حسابات',
       'student_create': 'إضافة طالب',
       'student_update': 'تعديل طالب',
+      'student_transfer': 'نقل طالب إلى مرحلة أخرى',
+      'notice_create': 'إضافة كتاب خارجي',
+      'notice_delete': 'حذف كتاب خارجي',
       'student_rename': 'تغيير رقم جامعي',
       'students_delete': 'حذف طلبة',
       'course_rename': 'تغيير رمز مادة',
@@ -2487,14 +2490,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get registerPracticalShort => 'ع';
 
   @override
-  String get periodAction => 'غياب فترة محددة';
+  String get periodAction => 'تقرير غياب المرحلة';
 
   @override
-  String get periodTitle => 'غياب فترة';
+  String get periodTitle => 'تقرير غياب المرحلة';
 
   @override
   String periodReportTitle(String stage) {
-    return 'غياب الطلبة لفترة محددة: $stage';
+    return 'غياب طلبة $stage';
   }
 
   @override
@@ -2550,6 +2553,113 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get fileSave => 'حفظ في الهاتف';
+
+  @override
+  String get transferAction => 'نقل إلى مرحلة أخرى';
+
+  @override
+  String get transferTitle => 'نقل الطالب إلى مرحلة أخرى';
+
+  @override
+  String transferFrom(String stage) {
+    return 'المرحلة الحالية: $stage';
+  }
+
+  @override
+  String get transferTo => 'المرحلة الجديدة';
+
+  @override
+  String get transferHelp =>
+      'يُنقل الطالب بكل تفاصيله: غياباته في كل مادة تُضاف إلى المادة بالرمز نفسه في المرحلة الجديدة فتستمر نسبته، وإجازاته، ويخرج من مجاميع العملي القديمة إلى ما تختاره هنا. سجلات المحاضرات القديمة تبقى كما هي.';
+
+  @override
+  String transferDone(String name, String stage) {
+    return 'نُقل $name إلى $stage.';
+  }
+
+  @override
+  String transferNotCarried(String codes) {
+    return 'لم تُنقل غيابات مواد ليست في المرحلة الجديدة: $codes';
+  }
+
+  @override
+  String get periodWholeSemester => 'الفصل كله';
+
+  @override
+  String get periodDayChoice => 'يوم واحد';
+
+  @override
+  String periodOneDay(String day) {
+    return 'يوم $day';
+  }
+
+  @override
+  String get periodMinHours => 'الحد الأدنى للساعات';
+
+  @override
+  String periodMinHoursLine(int count) {
+    return 'من غاب $count ساعة أو أكثر في مادة';
+  }
+
+  @override
+  String periodHours(int count) {
+    return '$count ساعة';
+  }
+
+  @override
+  String get periodTotal => 'المجموع';
+
+  @override
+  String get menuAbsenceReport => 'تقرير غياب المرحلة';
+
+  @override
+  String get warnTabNotices => 'كتب خارجية';
+
+  @override
+  String get noticeHelp =>
+      'كتاب تنبيه أو إنذار صدر للطالب خارج التطبيق (مثلاً ورقياً قبل العمل بالتطبيق): أضِفه هنا ليُحتسب. يبقى الطالب في المستوى نفسه على الأقل في المواد التي شملها، وأي غياب جديد بعد تاريخه ينقله إلى المستوى التالي.';
+
+  @override
+  String get noticeAdd => 'إضافة كتاب صادر خارج التطبيق';
+
+  @override
+  String get noticeStudent => 'الطالب (الاسم أو الرقم الجامعي)';
+
+  @override
+  String get noticeLevel => 'نوع الكتاب';
+
+  @override
+  String get noticeDate => 'تاريخ الكتاب';
+
+  @override
+  String get noticeCourses => 'المواد التي شملها الكتاب';
+
+  @override
+  String get noticeAllCourses => 'كل مواد المرحلة';
+
+  @override
+  String get noticeReference => 'رقم الكتاب (اختياري)';
+
+  @override
+  String get noticeEmpty => 'لا توجد كتب خارجية لهذه المرحلة.';
+
+  @override
+  String get noticeSaved => 'أُضيف الكتاب.';
+
+  @override
+  String get noticeRequired => 'اختر الطالب من القائمة ومادة واحدة على الأقل.';
+
+  @override
+  String get noticeDeleteTitle => 'حذف الكتاب؟';
+
+  @override
+  String get noticeDeleteBody =>
+      'يعود مستوى الطالب إلى ما تحسبه نسبة غيابه في التطبيق.';
+
+  @override
+  String noticeLine(String level, String date) {
+    return 'كتاب خارجي: $level بتاريخ $date';
+  }
 
   @override
   String studentHistory(int count) {
