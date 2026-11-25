@@ -283,6 +283,23 @@ class _StudentDialogState extends ConsumerState<StudentDialog> {
         ),
       ),
       actions: [
+        if (!_adding &&
+            ref.watch(permissionsProvider).manageableStages.any((s) => s != widget.stage))
+          TextButton.icon(
+            key: const Key('student.transfer'),
+            icon: const Icon(Icons.swap_horiz),
+            label: Text(l10n.transferAction),
+            onPressed: _busy
+                ? null
+                : () async {
+                    final navigator = Navigator.of(context);
+                    final moved = await showDialog<bool>(
+                      context: context,
+                      builder: (_) => TransferDialog(student: widget.student!),
+                    );
+                    if (moved == true) navigator.pop();
+                  },
+          ),
         TextButton(onPressed: _busy ? null : () => Navigator.pop(context), child: Text(l10n.cancel)),
         FilledButton(
           key: const Key('student.save'),
@@ -318,6 +335,134 @@ class _GroupPicker extends ConsumerWidget {
           DropdownMenuItem(value: g.id, child: Text('${l10n.groupLabel(g.name)} (${g.studentIds.length})')),
       ],
       onChanged: onChanged,
+    );
+  }
+}
+
+/// «نقل إلى مرحلة أخرى»: e.g. a hosted student from the evening study to
+/// the morning one, with their absences, leaves and practical groups
+/// ([StudentsRepository.transfer]). For whoever manages both stages.
+class TransferDialog extends ConsumerStatefulWidget {
+  const TransferDialog({super.key, required this.student});
+
+  final Student student;
+
+  @override
+  ConsumerState<TransferDialog> createState() => _TransferDialogState();
+}
+
+class _TransferDialogState extends ConsumerState<TransferDialog> {
+  StageRef? _to;
+  String _section = '';
+  final _groups = <String, String>{};
+  bool _busy = false;
+
+  Future<void> _transfer(StageRef to) async {
+    final l10n = context.l10n;
+    setState(() => _busy = true);
+    try {
+      final notCarried = await ref.read(studentsRepositoryProvider).transfer(
+            widget.student,
+            to: to,
+            section: _section,
+            groupIds: _groups.values.toList(),
+            actor: ref.read(signedInUserProvider).id,
+          );
+      if (!mounted) return;
+      final messenger = ScaffoldMessenger.of(context);
+      Navigator.pop(context, true);
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: Text([
+            l10n.transferDone(widget.student.fullName, l10n.stage(to)),
+            if (notCarried.isNotEmpty) l10n.transferNotCarried(notCarried.join('، ')),
+          ].join('\n')),
+        ));
+    } on Object catch (e) {
+      if (mounted) showError(context, e);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final from = widget.student.stage;
+    final stages = [for (final s in ref.watch(permissionsProvider).manageableStages) if (s != from) s];
+    // The same level in the other study first (evening → morning).
+    final to = _to ??
+        stages.where((s) => s.level == from.level).firstOrNull ??
+        stages.firstOrNull;
+    final students = to == null ? const <Student>[] : ref.watch(stageStudentsProvider(to.id)).value ?? const <Student>[];
+    final sections = {for (final s in students) if (s.section.isNotEmpty) s.section}.toList()..sort();
+    final courses = to == null ? const <Course>[] : ref.watch(stageCoursesProvider(to.id)).value ?? const <Course>[];
+    return AlertDialog(
+      title: Text(l10n.transferTitle),
+      content: SizedBox(
+        width: 420,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(widget.student.fullName, style: theme.textTheme.titleSmall),
+              Text(l10n.transferFrom(l10n.stage(from)), style: theme.textTheme.bodySmall),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<StageRef>(
+                key: const Key('transfer.stage'),
+                initialValue: to,
+                isExpanded: true,
+                decoration: InputDecoration(labelText: l10n.transferTo),
+                items: [for (final s in stages) DropdownMenuItem(value: s, child: Text(l10n.stage(s)))],
+                onChanged: _busy
+                    ? null
+                    : (s) => setState(() {
+                          _to = s;
+                          _section = '';
+                          _groups.clear();
+                        }),
+              ),
+              if (sections.isNotEmpty)
+                DropdownButtonFormField<String>(
+                  key: ValueKey('transfer.section.${to?.id}'),
+                  initialValue: sections.contains(_section) ? _section : '',
+                  decoration: InputDecoration(labelText: l10n.fieldSection),
+                  items: [
+                    DropdownMenuItem(value: '', child: Text(l10n.studentsNoSection)),
+                    for (final s in sections) DropdownMenuItem(value: s, child: Text(l10n.sectionLabel(s))),
+                  ],
+                  onChanged: _busy ? null : (v) => setState(() => _section = v ?? ''),
+                ),
+              for (final c in courses)
+                if (c.hasPractical)
+                  _GroupPicker(
+                    course: c,
+                    value: _groups[c.id],
+                    onChanged: (g) => setState(() {
+                      if (g == null) {
+                        _groups.remove(c.id);
+                      } else {
+                        _groups[c.id] = g;
+                      }
+                    }),
+                  ),
+              const SizedBox(height: 8),
+              Text(l10n.transferHelp, style: theme.textTheme.bodySmall),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(onPressed: _busy ? null : () => Navigator.pop(context), child: Text(l10n.cancel)),
+        FilledButton(
+          key: const Key('transfer.confirm'),
+          onPressed: _busy || to == null ? null : () => _transfer(to),
+          child: Text(l10n.transferAction),
+        ),
+      ],
     );
   }
 }

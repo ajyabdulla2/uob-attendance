@@ -435,6 +435,28 @@ service cloud.firestore {
       return after == null || after == myEmail() || after == before;
     }
 
+    // «كتب خارجية»: letters (تنبيه/إنذار/فصل) issued outside the app, so the
+    // lists count them. Added or deleted by whoever manages the stage.
+    function validNotice() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['studentId', 'stageId', 'courseIds', 'level', 'date', 'reference', 'note',
+                               'createdBy', 'createdAt', 'departmentId'])
+        && nonEmptyString(d.studentId)
+        && validStageId(d.stageId)
+        && d.courseIds is list && d.courseIds.size() > 0 && d.courseIds.size() <= 40
+        && d.level in ['alert', 'warning', 'dismissal']
+        && d.date is timestamp
+        && d.get('reference', '') is string && d.get('note', '') is string
+        && d.createdBy == myEmail()
+        && d.createdAt == request.time;
+    }
+
+    match /externalNotices/{noticeId} {
+      allow read: if isAdmin() || inStageScope(resource.data.stageId);
+      allow create: if validNotice() && canManageStage(request.resource.data.stageId);
+      allow delete: if canManageStage(resource.data.stageId);
+    }
+
     match /leaves/{leaveId} {
       allow read: if isAdmin()
                   || inStageScope(resource.data.stageId)
@@ -667,7 +689,7 @@ service cloud.firestore {
     // rulesVersion/<its version>; a refusal means older rules are deployed.
     // Change both together whenever these rules change.
     match /rulesVersion/{version} {
-      allow get: if version == '2026-10-28a';
+      allow get: if version == '2026-11-25a';
     }
 
     // ============================================================ auditLog ==

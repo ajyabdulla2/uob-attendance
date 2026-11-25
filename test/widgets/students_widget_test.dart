@@ -97,4 +97,36 @@ void main() {
     );
     expect((await db.doc('students/900').get()).data()!['fullName'], 'سارة علي كاظم حسن');
   });
+
+  testWidgets('a manager of both studies moves an evening student to the morning one', (tester) async {
+    const evening = StageRef(2, Shift.evening);
+    final db = await seed();
+    await db.doc('students/300').set(Student(universityId: '300', fullName: 'حسين علي كاظم جواد', stage: evening).toMap());
+    final env = await pumpApp(
+      tester,
+      firestore: db,
+      user: MockUser(email: sm, isEmailVerified: true),
+      profile: AppUser(email: sm, name: 'مسؤول', roles: const {UserRole.stageManager}, stageScopes: [stage.id, evening.id]),
+    );
+    final tile = find.byKey(const Key('home.students'));
+    await tester.ensureVisible(tile);
+    await tester.pumpAndSettle();
+    await tester.tap(tile);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('students.stage')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('المرحلة الثانية — مسائي').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('students.row.300')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('student.transfer')));
+    await tester.pumpAndSettle();
+    // The same level in the other study is proposed.
+    expect(find.descendant(of: find.byKey(const Key('transfer.stage')), matching: find.text('المرحلة الثانية — صباحي')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('transfer.confirm')));
+    await tester.pumpAndSettle();
+    expect((await env.db.doc('students/300').get()).data()!['stageId'], stage.id);
+    expect(find.byKey(const Key('student.transfer')), findsNothing, reason: 'both dialogs closed');
+  });
 }
+

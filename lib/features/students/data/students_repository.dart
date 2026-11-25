@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../core/config/app_config.dart';
+import '../../../core/domain/stage_ref.dart';
 import '../../../core/firebase/collections.dart';
+import '../../../core/firebase/doc_ids.dart';
 import '../../audit/domain/audit_entry.dart';
 import '../domain/student.dart';
 
@@ -93,6 +96,99 @@ class StudentsRepository {
     batch.set(_db.collection(Col.auditLog).doc(),
         _audit(actor, 'student.update', after, before: before.toMap(), after: after.toMap()));
     await batch.commit();
+  }
+
+  /// Moves [student] to [to] (e.g. a hosted student from the evening study
+  /// to the morning one) with everything that follows them, in one batch:
+  /// the student (new stage and [section]); out of their old practical
+  /// groups and into [groupIds] of the new stage; their absences — every
+  /// `stats` of an old course copied onto the new stage's course with the
+  /// same code, so the percentage carries on (the old ones stay as
+  /// history); their leaves; and an audit entry. Returns the codes of old
+  /// courses with absences that the new stage does not have (not carried).
+  Future<List<String>> transfer(
+    Student student, {
+    required StageRef to,
+    required String section,
+    required List<String> groupIds,
+    required String actor,
+  }) async {
+    final from = student.stageId;
+    final results = await Future.wait([
+      _db.collection(Col.groups).where('stageId', isEqualTo: from).where('studentIds', arrayContains: student.id).get(),
+      _db.collection(Col.stats).where('stageId', isEqualTo: from).where('studentId', isEqualTo: student.id).get(),
+      _db.collection(Col.leaves).where('stageId', isEqualTo: from).where('studentId', isEqualTo: student.id).get(),
+      _db.collection(Col.courses).where('stageId', isEqualTo: to.id).get(),
+    ]);
+    final [oldGroups, oldStats, leaves, targetCourses] = results;
+    final targetIds = {for (final d in targetCourses.docs) d.id};
+    final moved = Student(
+      universityId: student.universityId,
+      fullName: student.fullName,
+      stage: to,
+      section: section,
+      status: student.status,
+      carryOver: student.carryOver,
+    );
+
+    final batch = _db.batch()
+      ..set(_col.doc(student.id), {
+        ...moved.toMap(),
+        'updatedAt': FieldValue.serverTimestamp(),
+        'updatedBy': actor,
+      }, SetOptions(merge: true));
+    for (final g in oldGroups.docs) {
+      batch.update(g.reference, {
+        'studentIds': FieldValue.arrayRemove([student.id]),
+        'updatedAt': FieldValue.serverTimestamp(),
+        'updatedBy': actor,
+      });
+    }
+    for (final g in groupIds) {
+      batch.update(_db.collection(Col.groups).doc(g), {
+        'studentIds': FieldValue.arrayUnion([student.id]),
+        'updatedAt': FieldValue.serverTimestamp(),
+        'updatedBy': actor,
+      });
+    }
+    final notCarried = <String>[];
+    for (final d in oldStats.docs) {
+      final oldCourse = '${d.data()['courseId'] ?? ''}';
+      final suffix = '_$from';
+      final code = oldCourse.endsWith(suffix) ? oldCourse.substring(0, oldCourse.length - suffix.length) : oldCourse;
+      final bySession = Map<String, Object?>.from((d.data()['bySession'] as Map?) ?? const {});
+      if (bySession.isEmpty) continue;
+      final newCourse = DocIds.course(code, to.id);
+      if (!targetIds.contains(newCourse)) {
+        notCarried.add(code);
+        continue;
+      }
+      batch.set(_db.collection(Col.stats).doc(DocIds.stat(newCourse, student.id)), {
+        'courseId': newCourse,
+        'studentId': student.id,
+        'stageId': to.id,
+        'bySession': bySession,
+        'updatedAt': FieldValue.serverTimestamp(),
+        'departmentId': AppConfig.departmentId,
+      }, SetOptions(merge: true));
+    }
+    for (final l in leaves.docs) {
+      batch.update(l.reference, {'stageId': to.id});
+    }
+    batch.set(
+      _db.collection(Col.auditLog).doc(),
+      _audit(actor, 'student.transfer', moved, before: {
+        'stageId': from,
+        'section': student.section,
+      }, after: {
+        'stageId': to.id,
+        'section': section,
+        'groups': groupIds,
+        'notCarried': notCarried,
+      }),
+    );
+    await batch.commit();
+    return notCarried;
   }
 
   static Map<String, Object?> _audit(

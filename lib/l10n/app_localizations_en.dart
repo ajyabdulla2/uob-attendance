@@ -2320,6 +2320,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'users_delete': 'Accounts deleted',
       'student_create': 'إضافة طالب',
       'student_update': 'تعديل طالب',
+      'student_transfer': 'Student moved to another stage',
+      'notice_create': 'External letter added',
+      'notice_delete': 'External letter deleted',
       'student_rename': 'University ID changed',
       'students_delete': 'Students deleted',
       'course_rename': 'Course code changed',
@@ -2498,14 +2501,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registerPracticalShort => 'P';
 
   @override
-  String get periodAction => 'Absences in a period';
+  String get periodAction => 'Stage absence report';
 
   @override
-  String get periodTitle => 'Period absences';
+  String get periodTitle => 'Stage absence report';
 
   @override
   String periodReportTitle(String stage) {
-    return 'Student absences in a period: $stage';
+    return 'Absences of $stage';
   }
 
   @override
@@ -2562,6 +2565,114 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fileSave => 'Save on this phone';
+
+  @override
+  String get transferAction => 'Move to another stage';
+
+  @override
+  String get transferTitle => 'Move the student to another stage';
+
+  @override
+  String transferFrom(String stage) {
+    return 'Current stage: $stage';
+  }
+
+  @override
+  String get transferTo => 'New stage';
+
+  @override
+  String get transferHelp =>
+      'The student moves with everything: their absences in each course are added to the course with the same code in the new stage, so the percentage carries on; their leaves; and they leave their old practical groups for the ones chosen here. Old lecture records stay as they are.';
+
+  @override
+  String transferDone(String name, String stage) {
+    return '$name moved to $stage.';
+  }
+
+  @override
+  String transferNotCarried(String codes) {
+    return 'Absences not carried for courses the new stage lacks: $codes';
+  }
+
+  @override
+  String get periodWholeSemester => 'Whole semester';
+
+  @override
+  String get periodDayChoice => 'One day';
+
+  @override
+  String periodOneDay(String day) {
+    return 'On $day';
+  }
+
+  @override
+  String get periodMinHours => 'Minimum hours';
+
+  @override
+  String periodMinHoursLine(int count) {
+    return 'Absent $count hours or more in a course';
+  }
+
+  @override
+  String periodHours(int count) {
+    return '$count h';
+  }
+
+  @override
+  String get periodTotal => 'Total';
+
+  @override
+  String get menuAbsenceReport => 'Stage absence report';
+
+  @override
+  String get warnTabNotices => 'External letters';
+
+  @override
+  String get noticeHelp =>
+      'A notice or warning letter issued to a student outside the app (e.g. on paper before the app): add it here so it counts. The student stays at least at that level in the courses it covers, and any new absence after its date moves them to the next level.';
+
+  @override
+  String get noticeAdd => 'Add a letter issued outside the app';
+
+  @override
+  String get noticeStudent => 'Student (name or university ID)';
+
+  @override
+  String get noticeLevel => 'Letter type';
+
+  @override
+  String get noticeDate => 'Letter date';
+
+  @override
+  String get noticeCourses => 'Courses the letter covers';
+
+  @override
+  String get noticeAllCourses => 'All courses of the stage';
+
+  @override
+  String get noticeReference => 'Letter number (optional)';
+
+  @override
+  String get noticeEmpty => 'No external letters for this stage.';
+
+  @override
+  String get noticeSaved => 'Letter added.';
+
+  @override
+  String get noticeRequired =>
+      'Pick the student from the list and at least one course.';
+
+  @override
+  String get noticeDeleteTitle => 'Delete the letter?';
+
+  @override
+  String get noticeDeleteBody =>
+      'The student\'s level goes back to what their absences in the app give.';
+
+  @override
+  String noticeLine(String level, String date) {
+    return 'External letter: $level on $date';
+  }
 
   @override
   String studentHistory(int count) {

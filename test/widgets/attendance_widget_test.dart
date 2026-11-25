@@ -89,6 +89,20 @@ void main() {
     // Tap → absent; long press → late with a note.
     await tester.tap(studentTile(students[1]));
     await tester.pump();
+    // Each row shows its place in the register.
+    expect(find.descendant(of: studentTile(students[0]), matching: find.text('1')), findsOneWidget);
+    // A finger landing on a row (to scroll) marks it without changing it.
+    final gesture = await tester.startGesture(tester.getCenter(studentTile(students[2])));
+    await tester.pump();
+    expect(find.descendant(of: studentTile(students[2]), matching: find.byKey(const Key('record.lastTapped'))), findsOneWidget);
+    await gesture.moveBy(const Offset(0, -40));
+    await gesture.up();
+    await tester.pumpAndSettle();
+    expect(find.text('حاضر 2'), findsOneWidget, reason: 'dragging changes no status');
+    await tester.tap(studentTile(students[1]));
+    await tester.pump();
+    await tester.tap(studentTile(students[1]));
+    await tester.pump();
     // The last tapped student stays highlighted (where the call reached).
     expect(find.descendant(of: studentTile(students[1]), matching: find.byKey(const Key('record.lastTapped'))), findsOneWidget);
     await tester.longPress(studentTile(students[2]));

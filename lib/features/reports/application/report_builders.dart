@@ -442,51 +442,71 @@ abstract final class ReportBuilders {
         signatures: [l10n.reportSignStageManager, l10n.reportSignHead],
       );
 
-  /// «غياب فترة»: each student's absences between two days, against the
-  /// lectures their classes held then. Informative; the semester's
-  /// percentages and warnings are unchanged.
+  /// «تقرير غياب المرحلة»: the students with at least [minAbsences]
+  /// absences (hours) in a course during the period — one row each, one
+  /// column per course with their hours there, and their total.
+  /// Informative; the semester's percentages and warnings are unchanged.
   static Report periodAbsences(
     AppLocalizations l10n, {
     required String stageLabel,
     required String periodLabel,
     required String? courseName,
-    required List<PeriodStanding> rows,
-  }) =>
-      Report(
-        title: l10n.periodReportTitle(stageLabel),
-        fileBase: '${l10n.periodTitle} $stageLabel ${courseName ?? ''}',
-        meta: [periodLabel, courseName ?? l10n.warnAllCourses, l10n.periodCount(rows.length)],
-        tables: [
-          ReportTable(
-            name: l10n.periodTitle,
-            columns: [
-              const ReportColumn('ت', flex: 0.5, numeric: true),
-              ReportColumn(l10n.registerStudent, flex: 3.5),
-              ReportColumn(l10n.fieldUniversityId, flex: 1.4),
-              ReportColumn(l10n.fieldSection, flex: 0.8),
-              ReportColumn(l10n.warnCourse, flex: 2.4),
-              ReportColumn(l10n.periodAbsences, flex: 0.9, numeric: true),
-              ReportColumn(l10n.periodLectures, flex: 0.9, numeric: true),
-              ReportColumn(l10n.periodPercent, flex: 0.9, numeric: true),
-            ],
-            rows: [
-              for (final (i, s) in rows.indexed)
-                [
-                  ReportCell('${i + 1}'),
-                  ReportCell(s.student.fullName),
-                  ReportCell(s.student.universityId),
-                  ReportCell(s.student.section),
-                  ReportCell(_courseLabel(l10n, s.course.name, s.type)),
-                  ReportCell('${s.absences}'),
-                  ReportCell('${s.lectures}'),
-                  ReportCell(percent(s.percent), bold: true),
-                ],
-            ],
-          ),
-        ],
-        notes: [l10n.periodNote],
-        signatures: [l10n.reportSignStageManager, l10n.reportSignHead],
-      );
+    required int minAbsences,
+    required List<StudentPeriodRow> rows,
+  }) {
+    // One column per course (or course part), in code order.
+    final columns = <String, PeriodStanding>{};
+    for (final r in rows) {
+      for (final c in r.courses) {
+        columns.putIfAbsent('${c.course.id}|${c.type}', () => c);
+      }
+    }
+    final keys = columns.keys.toList()
+      ..sort((a, b) => PeriodStanding.compareCourse(columns[a]!, columns[b]!));
+    String title(PeriodStanding c) =>
+        c.type == null ? c.course.name : '${c.course.name}\n${c.type == 'theory' ? l10n.theoryLabel : l10n.practicalLabel}';
+    return Report(
+      title: l10n.periodReportTitle(stageLabel),
+      fileBase: '${l10n.periodTitle} $stageLabel ${courseName ?? ''}',
+      meta: [
+        periodLabel,
+        courseName ?? l10n.warnAllCourses,
+        l10n.periodMinHoursLine(minAbsences),
+        l10n.periodCount(rows.length),
+      ],
+      tables: [
+        ReportTable(
+          name: l10n.periodTitle,
+          columns: [
+            const ReportColumn('ت', flex: 0.5, numeric: true),
+            ReportColumn(l10n.registerStudent, flex: 3.5),
+            ReportColumn(l10n.fieldUniversityId, flex: 1.4),
+            ReportColumn(l10n.fieldSection, flex: 0.8),
+            for (final k in keys) ReportColumn(title(columns[k]!), flex: 1.1, numeric: true),
+            ReportColumn(l10n.periodTotal, flex: 0.9, numeric: true),
+          ],
+          rows: [
+            for (final (i, r) in rows.indexed)
+              [
+                ReportCell('${i + 1}'),
+                ReportCell(r.student.fullName),
+                ReportCell(r.student.universityId),
+                ReportCell(r.student.section),
+                for (final k in keys)
+                  switch ([for (final c in r.courses) if ('${c.course.id}|${c.type}' == k) c].firstOrNull) {
+                    final c? => ReportCell('${c.absences}', tone: ReportTone.absent),
+                    _ => const ReportCell(''),
+                  },
+                ReportCell('${r.total}', bold: true),
+              ],
+          ],
+        ),
+      ],
+      notes: [l10n.periodNote],
+      signatures: [l10n.reportSignStageManager, l10n.reportSignHead],
+      orientation: ReportOrientation.landscape,
+    );
+  }
 
   /// A saved decision exactly as it was saved.
   static Report decision(

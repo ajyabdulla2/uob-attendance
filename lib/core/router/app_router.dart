@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../domain/stage_ref.dart';
 import '../../features/attendance/presentation/missed_lecture_screen.dart';
 import '../../features/announcements/presentation/announcements_screen.dart';
 import '../../features/app_update/presentation/app_release_screen.dart';
@@ -31,6 +32,7 @@ import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/settings/presentation/profile_screen.dart';
 import '../../features/stats/presentation/stage_dashboard_screen.dart';
 import '../../features/users/presentation/accounts_screen.dart';
+import '../../features/warnings/presentation/period_absences_screen.dart';
 import '../../features/warnings/presentation/warnings_screen.dart';
 import '../firebase/doc_ids.dart';
 import '../diagnostics/error_log.dart';
@@ -52,6 +54,7 @@ abstract final class Routes {
   static const yearSettings = '/year-settings';
   static const leaves = '/leaves';
   static const warnings = '/warnings';
+  static const absenceReport = '/absence-report';
   static const editRequests = '/edit-requests';
   static const stageDashboard = '/stage-dashboard';
   static const missedLecture = '/missed-lecture';
@@ -119,6 +122,7 @@ String? redirectFor(AuthStatus status, String location) {
         _ when location.startsWith(Routes.yearSettings) && !permissions.canEditYear => Routes.home,
         _ when location.startsWith(Routes.leaves) && !permissions.canManageLeaves => Routes.home,
         _ when location.startsWith(Routes.warnings) && !permissions.canViewWarnings => Routes.home,
+        _ when location.startsWith(Routes.absenceReport) && !permissions.canViewWarnings => Routes.home,
         _ when location.startsWith(Routes.editRequests) && !permissions.canReviewEditRequests => Routes.home,
         _ when location.startsWith(Routes.stageDashboard) && !permissions.canViewStageDashboard => Routes.home,
         _ when location.startsWith(Routes.missedLecture) && !permissions.canViewStageDashboard => Routes.home,
@@ -170,6 +174,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.yearSettings, builder: (_, _) => const YearSettingsScreen()),
       GoRoute(path: Routes.leaves, builder: (_, _) => const LeavesScreen()),
       GoRoute(path: Routes.warnings, builder: (_, _) => const WarningsScreen()),
+      GoRoute(
+        path: Routes.absenceReport,
+        builder: (_, s) => PeriodAbsencesScreen(
+          stage: StageRef.tryParse(s.uri.queryParameters['s'] ?? ''),
+          courseId: s.uri.queryParameters['c'],
+          section: s.uri.queryParameters['sec'],
+        ),
+      ),
       GoRoute(path: Routes.editRequests, builder: (_, s) => EditRequestsScreen(stageId: s.uri.queryParameters['s'])),
       GoRoute(path: Routes.stageDashboard, builder: (_, _) => const StageDashboardScreen()),
       GoRoute(

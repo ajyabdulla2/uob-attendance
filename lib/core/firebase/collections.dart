@@ -12,6 +12,7 @@ abstract final class Col {
   static const leaves = 'leaves';
   static const stats = 'stats';
   static const warningLists = 'warningLists';
+  static const externalNotices = 'externalNotices';
   static const editRequests = 'editRequests';
   static const auditLog = 'auditLog';
 

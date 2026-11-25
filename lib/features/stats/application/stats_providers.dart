@@ -6,6 +6,7 @@ import '../../academic/application/academic_providers.dart';
 import '../../courses/application/courses_providers.dart';
 import '../../leaves/application/leaves_providers.dart';
 import '../../students/application/students_providers.dart';
+import '../../warnings/application/warnings_providers.dart';
 import '../data/stats_repository.dart';
 import '../domain/period_standings.dart';
 import '../domain/standings.dart';
@@ -38,7 +39,12 @@ final stageStandingsProvider = Provider.autoDispose.family<AsyncValue<List<Stand
     return const AsyncValue.loading();
   }
   if (year == null) return const AsyncValue.data([]);
-  return AsyncValue.data(buildStandings(students: students, courses: courses, stats: stats, leaves: leaves, year: year));
+  // Letters issued outside the app; if they cannot be read (older rules),
+  // the lists still show the percentages.
+  final notices = ref.watch(stageNoticesProvider(stageId)).value ?? const [];
+  return AsyncValue.data(
+    buildStandings(students: students, courses: courses, stats: stats, leaves: leaves, year: year, notices: notices),
+  );
 });
 
 /// «غياب فترة»: the stage's students absent between two days, read once

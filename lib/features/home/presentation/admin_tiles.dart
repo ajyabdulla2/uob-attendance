@@ -119,6 +119,7 @@ class _Tile extends StatelessWidget {
       AdminTool.coursePanel => ('home.coursePanel', Icons.menu_book_outlined, l10n.coursePanelAction, Routes.coursePanel),
       AdminTool.students => ('home.students', Icons.groups, l10n.studentsTitle, Routes.manageStudents),
       AdminTool.warnings => ('home.warnings', Icons.warning_amber, l10n.menuWarnings, Routes.warnings),
+      AdminTool.absenceReport => ('home.absenceReport', Icons.date_range, l10n.menuAbsenceReport, Routes.absenceReport),
       AdminTool.leaves => ('home.leaves', Icons.event_available, l10n.leavesAction, Routes.leaves),
       AdminTool.import => ('home.import', Icons.upload_file_outlined, l10n.navImport, Routes.import),
       AdminTool.assignments => ('home.assignments', Icons.link_outlined, l10n.navAssignments, Routes.assignments),
