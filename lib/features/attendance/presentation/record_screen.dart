@@ -200,6 +200,14 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
     }
   }
 
+  /// «الكل حاضر» / «الكل غائب»: every student of the class (notes kept).
+  void _markAll(List<Student> students, AttendanceStatus status) => setState(() {
+        for (final s in students) {
+          _marks[s.id] = _markOf(s.id).copyWith(status: status);
+        }
+        _lastTapped = null;
+      });
+
   void _toggle(Student s) => setState(() {
         _lastTapped = s.id;
         final m = _markOf(s.id);
@@ -387,47 +395,109 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
     // The student list gets the screen: day/lecture stay on one line above
     // it, the lock time, search and hint scroll away with the list, and the
     // counters share the bottom bar with the save button.
+    final lockLine = locked
+        ? null
+        : l10n.recordLocksAt(
+            m.formatShortDate(lockAt.toLocal()),
+            m.formatTimeOfDay(TimeOfDay.fromDateTime(lockAt.toLocal())),
+          );
+    // The explanations live behind «ⓘ» so the students get the screen.
+    void showHelp() => showDialog<void>(
+          context: context,
+          builder: (context) => AlertDialog(
+            key: const Key('record.help'),
+            icon: const Icon(Icons.info_outline),
+            title: Text(l10n.recordHelpTitle),
+            content: SingleChildScrollView(
+              child: Text(
+                [
+                  ?lockLine,
+                  if (!readOnly) l10n.recordTapHint else if (existing != null) l10n.recordRequestHint,
+                  if (!readOnly) l10n.recordAllHelp,
+                  if (!readOnly) '${l10n.lectureExcludeTitle}: ${l10n.lectureExcludeHelp}',
+                ].join('\n\n'),
+              ),
+            ),
+            actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.close))],
+          ),
+        );
     final header = <Widget>[
       Padding(
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-        child: TextField(
-          key: const Key('record.search'),
-          decoration: InputDecoration(
-            isDense: true,
-            prefixIcon: const Icon(Icons.search),
-            hintText: l10n.recordSearch,
-          ),
-          onChanged: (v) => setState(() => _query = v),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
-        child: Text(
-          [
-            if (!locked)
-              l10n.recordLocksAt(
-                m.formatShortDate(lockAt.toLocal()),
-                m.formatTimeOfDay(TimeOfDay.fromDateTime(lockAt.toLocal())),
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 4, 4, 0),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                key: const Key('record.search'),
+                decoration: InputDecoration(
+                  isDense: true,
+                  prefixIcon: const Icon(Icons.search),
+                  hintText: l10n.recordSearch,
+                ),
+                onChanged: (v) => setState(() => _query = v),
               ),
-            if (!readOnly) l10n.recordTapHint else if (existing != null) l10n.recordRequestHint,
-          ].join('\n'),
-          style: theme.textTheme.bodySmall,
+            ),
+            IconButton(
+              key: const Key('record.info'),
+              tooltip: l10n.recordHelpTitle,
+              icon: const Icon(Icons.info_outline),
+              onPressed: showHelp,
+            ),
+          ],
         ),
       ),
-      // طلب القسم: a lecture the students did not come to need not count.
       if (!readOnly)
-        SwitchListTile(
-          key: const Key('record.exclude'),
-          dense: true,
-          title: Text(l10n.lectureExcludeTitle),
-          subtitle: Text(l10n.lectureExcludeHelp),
-          value: _excluded,
-          onChanged: loaded ? (v) => setState(() => _excluded = v) : null,
-        )
-      else if (_savedExcluded)
+        Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(12, 2, 4, 0),
+          child: Row(
+            children: [
+              // طلب القسم: mark the whole class at once, then fix the few.
+              TextButton.icon(
+                key: const Key('record.allPresent'),
+                style: TextButton.styleFrom(visualDensity: VisualDensity.compact, padding: const EdgeInsets.symmetric(horizontal: 6)),
+                icon: Icon(Icons.check_circle, size: 18, color: palette.forStatus(AttendanceStatus.present)),
+                label: Text(l10n.recordAllPresent),
+                onPressed: loaded ? () => _markAll(list, AttendanceStatus.present) : null,
+              ),
+              TextButton.icon(
+                key: const Key('record.allAbsent'),
+                style: TextButton.styleFrom(visualDensity: VisualDensity.compact, padding: const EdgeInsets.symmetric(horizontal: 6)),
+                icon: Icon(Icons.cancel, size: 18, color: palette.forStatus(AttendanceStatus.absent)),
+                label: Text(l10n.recordAllAbsent),
+                onPressed: loaded ? () => _markAll(list, AttendanceStatus.absent) : null,
+              ),
+              const Spacer(),
+              // طلب القسم: a lecture the students did not come to need not count.
+              Flexible(
+                child: Text(
+                  l10n.lectureExcludeShort,
+                  style: theme.textTheme.bodySmall,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Switch(
+                key: const Key('record.exclude'),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                value: _excluded,
+                onChanged: loaded ? (v) => setState(() => _excluded = v) : null,
+              ),
+            ],
+          ),
+        ),
+      if (readOnly ? existing != null : lockLine != null)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+          child: Text(
+            readOnly ? (existing != null ? l10n.recordRequestHint : '') : lockLine!,
+            style: theme.textTheme.bodySmall,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      if (readOnly && _savedExcluded)
         Padding(
           key: const Key('record.excludedNote'),
-          padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
           child: Text(l10n.lectureExcludedLocked, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary)),
         ),
     ];
