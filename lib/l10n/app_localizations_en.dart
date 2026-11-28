@@ -2688,7 +2688,7 @@ class AppLocalizationsEn extends AppLocalizations {
       '«All present» and «All absent» set every student of the class at once; then tap the few who differ.';
 
   @override
-  String get lectureExcludeShort => 'Not counted';
+  String get lectureExcludeShortHelp => '(no one\'s absence in it counts)';
 
   @override
   String studentHistory(int count) {

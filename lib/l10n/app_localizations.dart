@@ -4425,11 +4425,11 @@ abstract class AppLocalizations {
   /// **'«الكل حاضر» و«الكل غائب» تجعل كل طلبة الصف بالحالة نفسها، ثم تعدّل القلة المختلفين بالضغط عليهم.'**
   String get recordAllHelp;
 
-  /// No description provided for @lectureExcludeShort.
+  /// No description provided for @lectureExcludeShortHelp.
   ///
   /// In ar, this message translates to:
-  /// **'لا تُحتسب'**
-  String get lectureExcludeShort;
+  /// **'(لا يُحسب غياب أحد فيها)'**
+  String get lectureExcludeShortHelp;
 
   /// No description provided for @studentHistory.
   ///
