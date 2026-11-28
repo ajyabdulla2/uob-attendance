@@ -2675,7 +2675,7 @@ class AppLocalizationsAr extends AppLocalizations {
       '«الكل حاضر» و«الكل غائب» تجعل كل طلبة الصف بالحالة نفسها، ثم تعدّل القلة المختلفين بالضغط عليهم.';
 
   @override
-  String get lectureExcludeShort => 'لا تُحتسب';
+  String get lectureExcludeShortHelp => '(لا يُحسب غياب أحد فيها)';
 
   @override
   String studentHistory(int count) {

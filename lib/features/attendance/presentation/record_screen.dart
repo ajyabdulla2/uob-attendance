@@ -466,13 +466,25 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                 label: Text(l10n.recordAllAbsent),
                 onPressed: loaded ? () => _markAll(list, AttendanceStatus.absent) : null,
               ),
-              const Spacer(),
-              // طلب القسم: a lecture the students did not come to need not count.
-              Flexible(
-                child: Text(
-                  l10n.lectureExcludeShort,
-                  style: theme.textTheme.bodySmall,
-                  overflow: TextOverflow.ellipsis,
+            ],
+          ),
+        ),
+      // طلب القسم: a lecture the students did not come to need not count.
+      // Its own line, with the full title, so it reads as what it is.
+      if (!readOnly)
+        Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 8, 0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text.rich(
+                  TextSpan(children: [
+                    TextSpan(text: l10n.lectureExcludeTitle, style: const TextStyle(fontWeight: FontWeight.w600)),
+                    TextSpan(text: '  ${l10n.lectureExcludeShortHelp}', style: theme.textTheme.bodySmall),
+                  ]),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: _excluded ? theme.colorScheme.error : null,
+                  ),
                 ),
               ),
               Switch(
