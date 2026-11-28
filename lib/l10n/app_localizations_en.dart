@@ -2675,6 +2675,22 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get recordHelpTitle => 'How to record';
+
+  @override
+  String get recordAllPresent => 'All present';
+
+  @override
+  String get recordAllAbsent => 'All absent';
+
+  @override
+  String get recordAllHelp =>
+      '«All present» and «All absent» set every student of the class at once; then tap the few who differ.';
+
+  @override
+  String get lectureExcludeShort => 'Not counted';
+
+  @override
   String studentHistory(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

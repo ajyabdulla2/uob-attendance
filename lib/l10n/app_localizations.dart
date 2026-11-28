@@ -4401,6 +4401,36 @@ abstract class AppLocalizations {
   /// **'كتاب خارجي: {level} بتاريخ {date}'**
   String noticeLine(String level, String date);
 
+  /// No description provided for @recordHelpTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعليمات التسجيل'**
+  String get recordHelpTitle;
+
+  /// No description provided for @recordAllPresent.
+  ///
+  /// In ar, this message translates to:
+  /// **'الكل حاضر'**
+  String get recordAllPresent;
+
+  /// No description provided for @recordAllAbsent.
+  ///
+  /// In ar, this message translates to:
+  /// **'الكل غائب'**
+  String get recordAllAbsent;
+
+  /// No description provided for @recordAllHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'«الكل حاضر» و«الكل غائب» تجعل كل طلبة الصف بالحالة نفسها، ثم تعدّل القلة المختلفين بالضغط عليهم.'**
+  String get recordAllHelp;
+
+  /// No description provided for @lectureExcludeShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا تُحتسب'**
+  String get lectureExcludeShort;
+
   /// No description provided for @studentHistory.
   ///
   /// In ar, this message translates to:

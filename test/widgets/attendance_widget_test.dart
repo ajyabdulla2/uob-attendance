@@ -86,6 +86,21 @@ void main() {
     }
     expect(find.text('حاضر 3'), findsOneWidget);
 
+    // The whole class at once, both ways.
+    await tester.tap(find.byKey(const Key('record.allAbsent')));
+    await tester.pump();
+    expect(find.text('غائب 3'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('record.allPresent')));
+    await tester.pump();
+    expect(find.text('حاضر 3'), findsOneWidget);
+    // The explanations open from «ⓘ».
+    await tester.tap(find.byKey(const Key('record.info')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('record.help')), findsOneWidget);
+    expect(find.textContaining('اضغط على الطالب للتبديل'), findsOneWidget);
+    await tester.tap(find.text('إغلاق'));
+    await tester.pumpAndSettle();
+
     // Tap → absent; long press → late with a note.
     await tester.tap(studentTile(students[1]));
     await tester.pump();

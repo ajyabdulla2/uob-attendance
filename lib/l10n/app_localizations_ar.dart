@@ -2662,6 +2662,22 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get recordHelpTitle => 'تعليمات التسجيل';
+
+  @override
+  String get recordAllPresent => 'الكل حاضر';
+
+  @override
+  String get recordAllAbsent => 'الكل غائب';
+
+  @override
+  String get recordAllHelp =>
+      '«الكل حاضر» و«الكل غائب» تجعل كل طلبة الصف بالحالة نفسها، ثم تعدّل القلة المختلفين بالضغط عليهم.';
+
+  @override
+  String get lectureExcludeShort => 'لا تُحتسب';
+
+  @override
   String studentHistory(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
